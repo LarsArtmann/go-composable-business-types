@@ -3,6 +3,24 @@
 **Date:** 2026-02-12 15:18
 **Status:** Idea / Design Proposal
 **Context:** `go-composable-business-types`
+**Inspired by:** "100 Things I hate in modern Software Development"
+
+---
+
+## Direct Pain Points Addressed
+
+From "100 Things I hate in modern Software Development":
+
+| # | Pain Point | How DataPoint Solves It |
+|---|------------|------------------------|
+| 1 | No Event Sourcing | DataPoint IS event-sourcing inspired - every change is a fact |
+| 2 | Easy to do wrong thing | Strong types make invalid states unrepresentable |
+| 25 | Metadata management | Core problem this design solves |
+| 26 | Long unreadable UUIDs | Use `NanoId` - shorter, readable, same uniqueness |
+| 27 | Errors not isolated/recovered | `Cause` captures full context for debugging |
+| 36 | Not learning from mistakes | Full causal chain enables analysis |
+| 41 | No event log on data access | Every DataPoint IS an auditable event |
+| 44 | MEGA files (+1000 lines) | Implementation kept under 250 lines per file |
 
 ---
 
@@ -229,6 +247,18 @@ type OrderStatus struct {
 
 ---
 
+## Design Constraints (Non-Negotiable)
+
+From project standards:
+
+- **File size:** All implementation files < 250 lines
+- **Package structure:** Clear module boundaries, no mixing Kernel/Plugin with Domain
+- **Test setup:** Use native Go test or onsi/ginkgo
+- **Id type:** Prefer `NanoId` over UUID (shorter, more readable)
+- **Error handling:** Isolated, recoverable, well-communicated to users
+
+---
+
 ## Open Questions
 
 1. **Storage efficiency** - How to store without exploding size?
@@ -243,15 +273,37 @@ type OrderStatus struct {
 4. **Schema evolution** - How to handle `payload` type changes over time?
    - Consider: Versioned schemas, migration functions
 
+5. **Deterministic Simulation Testing** (#42) - Can we replay causal chains for testing?
+   - Consider: Capture enough context to enable full replay
+
 ---
 
-## Next Steps
+## Implementation Plan
 
-- [ ] Implement core `DataPoint[T]` type in `cbt` package
+**File structure (each < 250 lines):**
+
+```
+cbt/
+├── datapoint.go        # Core DataPoint[T] type
+├── datapoint_cause.go  # Cause, Trigger types
+├── datapoint_context.go # Context, trace info
+├── datapoint_temporal.go # Bitemporal handling
+├── datapoint_ref.go    # Reference types
+├── nanoid.go           # NanoId implementation (not UUID!)
+└── datapoint_test.go   # Tests using native go test
+```
+
+**Next Steps:**
+
+- [ ] Implement `nanoid.go` - prefer over UUID
+- [ ] Implement `datapoint_temporal.go` - Bitemporal first (foundation)
+- [ ] Implement `datapoint_cause.go` - Causal chain
+- [ ] Implement `datapoint_context.go` - Operational context
+- [ ] Implement `datapoint_ref.go` - Rich references
+- [ ] Implement `datapoint.go` - Core type composing all above
+- [ ] Add native Go tests
 - [ ] Add JSON serialization (preserving all metadata)
-- [ ] Add helper constructors for common patterns
-- [ ] Explore storage adapters (Postgres, event stores)
-- [ ] Add query helpers for causal chain traversal
+- [ ] Explore storage adapters (sqlite for small, swap to ScyllaDB for scale)
 
 ---
 
