@@ -25,7 +25,7 @@ golangci-lint run --fix
 
 - `github.com/abice/go-enum` - Enum code generation (`//go:generate go-enum`)
 - `github.com/bojanz/currency` - ISO 4217 currency handling
-- `github.com/matoous/go-nanoid` - NanoId generation
+- `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
 
 ## Project Structure
 

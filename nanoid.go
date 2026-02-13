@@ -1,19 +1,18 @@
 package cbt
 
 import (
-	"crypto/rand"
 	"errors"
+
+	"github.com/sixafter/nanoid"
 )
 
 // NanoId is a URL-safe, unique identifier (default 21 characters).
-// Inspired by https://github.com/ai/nanoid - shorter and more readable than UUID.
+// Wrapped around https://github.com/sixafter/nanoid - FIPS-140 compatible, high-performance.
 type NanoId struct{ value string }
 
 const (
-	// nanoIdAlphabet contains URL-safe characters used for NanoId generation.
-	nanoIdAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_"
 	// DefaultNanoIdLength is the default length for new NanoIds (21 chars = 126 bits of entropy).
-	DefaultNanoIdLength = 21
+	DefaultNanoIdLength = nanoid.DefaultLength
 )
 
 var (
@@ -29,23 +28,9 @@ func NewNanoId() NanoId {
 }
 
 // NewNanoIdWithLength generates a new random NanoId with a custom length.
-// Panics if length < 1 (programming error).
+// Panics if generation fails (should never happen with valid length).
 func NewNanoIdWithLength(length int) NanoId {
-	if length < 1 {
-		panic("nanoid: length must be at least 1")
-	}
-
-	bytes := make([]byte, length)
-	// crypto/rand.Read is guaranteed to not return an error on supported platforms
-	// and will panic if the system's PRNG fails. This is the desired behavior
-	// for identifier generation - we cannot continue without randomness.
-	_, _ = rand.Read(bytes)
-
-	for i, b := range bytes {
-		bytes[i] = nanoIdAlphabet[b%byte(len(nanoIdAlphabet))]
-	}
-
-	return NanoId{value: string(bytes)}
+	return NanoId{value: string(nanoid.MustWithLength(length))}
 }
 
 // ParseNanoId validates and creates a NanoId from a string.

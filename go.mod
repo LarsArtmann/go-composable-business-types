@@ -25,6 +25,9 @@ require (
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
+	github.com/sixafter/aes-ctr-drbg v1.17.0 // indirect
+	github.com/sixafter/nanoid v1.63.1 // indirect
+	github.com/sixafter/prng-chacha v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
