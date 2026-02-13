@@ -919,3 +919,161 @@ func TestNanoIdGoString(t *testing.T) {
 		t.Errorf("GoString: expected VwSt1Xx5, got %s", id.GoString())
 	}
 }
+
+func TestBitemporal_IsCurrentlyValid(t *testing.T) {
+	now := Now()
+
+	// Fact that started in the past, no end date - should be valid
+	pastOngoing := NewBitemporal(now)
+	if !pastOngoing.IsCurrentlyValid() {
+		t.Error("past ongoing fact should be currently valid")
+	}
+
+	// Fact with explicit end date in the future - should be valid
+	futureEnd := NewBitemporalWithRange(now, NewTimestamp(now.Time.Add(24*time.Hour)), now)
+	if !futureEnd.IsCurrentlyValid() {
+		t.Error("fact ending in future should be currently valid")
+	}
+
+	// Fact that ended in the past - should not be valid
+	pastEnd := NewBitemporalWithRange(
+		NewTimestamp(now.Time.Add(-2*time.Hour)),
+		NewTimestamp(now.Time.Add(-1*time.Hour)),
+		now,
+	)
+	if pastEnd.IsCurrentlyValid() {
+		t.Error("fact that ended in past should not be currently valid")
+	}
+}
+
+func TestBitemporal_WithValidUntil(t *testing.T) {
+	now := Now()
+	b := NewBitemporal(now)
+
+	endTime := NewTimestamp(now.Time.Add(24 * time.Hour))
+	updated := b.WithValidUntil(endTime)
+
+	if updated.ValidUntil() != endTime {
+		t.Errorf("WithValidUntil: expected %v, got %v", endTime, updated.ValidUntil())
+	}
+
+	// Original should be unchanged
+	if !b.ValidUntil().IsZero() {
+		t.Error("original Bitemporal should still have zero ValidUntil")
+	}
+}
+
+func TestContext_WithSource(t *testing.T) {
+	ctx := NewContext("original-source")
+	updated := ctx.WithSource("new-source")
+
+	if updated.Source() != "new-source" {
+		t.Errorf("WithSource: expected new-source, got %s", updated.Source())
+	}
+
+	// Original should be unchanged
+	if ctx.Source() != "original-source" {
+		t.Error("original Context should still have original source")
+	}
+}
+
+func TestContext_WithTags(t *testing.T) {
+	ctx := NewContext("test-service").
+		WithTag("key1", "value1")
+
+	updated := ctx.WithTags(map[string]string{
+		"key2": "value2",
+		"key3": "value3",
+	})
+
+	tags := updated.Tags()
+	if tags["key1"] != "value1" {
+		t.Errorf("WithTags: expected key1=value1, got %s", tags["key1"])
+	}
+	if tags["key2"] != "value2" {
+		t.Errorf("WithTags: expected key2=value2, got %s", tags["key2"])
+	}
+	if tags["key3"] != "value3" {
+		t.Errorf("WithTags: expected key3=value3, got %s", tags["key3"])
+	}
+
+	// Original should be unchanged
+	originalTags := ctx.Tags()
+	if _, exists := originalTags["key2"]; exists {
+		t.Error("original Context should not have key2")
+	}
+}
+
+func TestReference_WithVersion(t *testing.T) {
+	ref := NewReference("entity-123", "parent")
+	updated := ref.WithVersion(5)
+
+	if updated.Version() != 5 {
+		t.Errorf("WithVersion: expected 5, got %d", updated.Version())
+	}
+
+	// Original should be unchanged
+	if ref.Version() != 0 {
+		t.Errorf("original Reference should still have version 0, got %d", ref.Version())
+	}
+}
+
+func TestID_MarshalText(t *testing.T) {
+	// Non-zero ID should marshal to its string representation
+	uid := NewID[UserBrand, string]("user-123")
+	data, err := uid.MarshalText()
+	if err != nil {
+		t.Fatalf("MarshalText error: %v", err)
+	}
+	if string(data) != "user-123" {
+		t.Errorf("MarshalText: expected user-123, got %s", string(data))
+	}
+
+	// Zero ID should return nil
+	var zeroUserID UserID
+	data, err = zeroUserID.MarshalText()
+	if err != nil {
+		t.Fatalf("MarshalText zero error: %v", err)
+	}
+	if data != nil {
+		t.Errorf("MarshalText zero: expected nil, got %s", string(data))
+	}
+}
+
+func TestID_UnmarshalText(t *testing.T) {
+	// Unmarshal valid text
+	var uid UserID
+	err := uid.UnmarshalText([]byte("user-abc"))
+	if err != nil {
+		t.Fatalf("UnmarshalText error: %v", err)
+	}
+	if uid.Value() != "user-abc" {
+		t.Errorf("UnmarshalText: expected user-abc, got %s", uid.Value())
+	}
+
+	// Unmarshal empty text should give zero value
+	var uid2 UserID
+	err = uid2.UnmarshalText([]byte{})
+	if err != nil {
+		t.Fatalf("UnmarshalText empty error: %v", err)
+	}
+	if !uid2.IsZero() {
+		t.Error("UnmarshalText empty: expected zero ID")
+	}
+}
+
+func TestLocale_NewLocale(t *testing.T) {
+	tag := MustParseLocale("fr-FR").Tag()
+	locale := NewLocale(tag)
+	if locale.String() != "fr-FR" {
+		t.Errorf("NewLocale: expected fr-FR, got %s", locale.String())
+	}
+}
+
+func TestLocale_Tag(t *testing.T) {
+	locale := LocaleEnUS
+	tag := locale.Tag()
+	if tag.String() != "en-US" {
+		t.Errorf("Tag: expected en-US, got %s", tag.String())
+	}
+}
