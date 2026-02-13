@@ -2,6 +2,7 @@ package cbt
 
 import (
 	"encoding/json"
+	"maps"
 	"time"
 )
 
@@ -97,9 +98,7 @@ func (dp DataPoint[T]) Tags() map[string]string {
 		return nil
 	}
 	result := make(map[string]string, len(dp.tags))
-	for k, v := range dp.tags {
-		result[k] = v
-	}
+	maps.Copy(result, dp.tags)
 	return result
 }
 
@@ -162,9 +161,7 @@ func (dp DataPoint[T]) WithVersion(version int) DataPoint[T] {
 // WithTags returns a copy with the tags set.
 func (dp DataPoint[T]) WithTags(tags map[string]string) DataPoint[T] {
 	dp.tags = make(map[string]string, len(tags))
-	for k, v := range tags {
-		dp.tags[k] = v
-	}
+	maps.Copy(dp.tags, tags)
 	return dp
 }
 

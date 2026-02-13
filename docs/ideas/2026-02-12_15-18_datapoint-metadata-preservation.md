@@ -11,16 +11,16 @@
 
 From "100 Things I hate in modern Software Development":
 
-| # | Pain Point | How DataPoint Solves It |
-|---|------------|------------------------|
-| 1 | No Event Sourcing | DataPoint IS event-sourcing inspired - every change is a fact |
-| 2 | Easy to do wrong thing | Strong types make invalid states unrepresentable |
-| 25 | Metadata management | Core problem this design solves |
-| 26 | Long unreadable UUIDs | Use `NanoId` - shorter, readable, same uniqueness |
-| 27 | Errors not isolated/recovered | `Cause` captures full context for debugging |
-| 36 | Not learning from mistakes | Full causal chain enables analysis |
-| 41 | No event log on data access | Every DataPoint IS an auditable event |
-| 44 | MEGA files (+1000 lines) | Implementation kept under 250 lines per file |
+| #   | Pain Point                    | How DataPoint Solves It                                       |
+| --- | ----------------------------- | ------------------------------------------------------------- |
+| 1   | No Event Sourcing             | DataPoint IS event-sourcing inspired - every change is a fact |
+| 2   | Easy to do wrong thing        | Strong types make invalid states unrepresentable              |
+| 25  | Metadata management           | Core problem this design solves                               |
+| 26  | Long unreadable UUIDs         | Use `NanoId` - shorter, readable, same uniqueness             |
+| 27  | Errors not isolated/recovered | `Cause` captures full context for debugging                   |
+| 36  | Not learning from mistakes    | Full causal chain enables analysis                            |
+| 41  | No event log on data access   | Every DataPoint IS an auditable event                         |
+| 44  | MEGA files (+1000 lines)      | Implementation kept under 250 lines per file                  |
 
 ---
 
@@ -28,14 +28,14 @@ From "100 Things I hate in modern Software Development":
 
 Modern applications lose enormous amounts of valuable metadata by default:
 
-| What We Lose | Why It Matters |
-|--------------|----------------|
-| **Why** data was created | No causal chain, can't explain "how did we get here" |
-| **Who** initiated changes | Lost intent, context, and accountability |
-| **When** (both dimensions) | Only current timestamp, no "occurred vs recorded" |
-| **Relationships** | Only explicit FKs, no semantic relationship metadata |
-| **Context** | Session, environment, trace info discarded |
-| **Intent** | Business reasoning not captured |
+| What We Lose               | Why It Matters                                       |
+| -------------------------- | ---------------------------------------------------- |
+| **Why** data was created   | No causal chain, can't explain "how did we get here" |
+| **Who** initiated changes  | Lost intent, context, and accountability             |
+| **When** (both dimensions) | Only current timestamp, no "occurred vs recorded"    |
+| **Relationships**          | Only explicit FKs, no semantic relationship metadata |
+| **Context**                | Session, environment, trace info discarded           |
+| **Intent**                 | Business reasoning not captured                      |
 
 **Result:** Systems that can't explain themselves, can't be audited properly, and lose institutional knowledge.
 
@@ -117,6 +117,7 @@ validUntil ── When it stops being valid (nil = forever)
 ```
 
 **Enables:**
+
 - Backdated corrections
 - Late-arriving data handling
 - Point-in-time queries ("what did we believe on date X?")
@@ -132,6 +133,7 @@ intent  ─── What the actor was trying to accomplish
 ```
 
 **Enables:**
+
 - Impact analysis ("what will break if I change this?")
 - Root cause debugging
 - Compliance ("explain this number")
@@ -148,6 +150,7 @@ Reference{
 ```
 
 **Enables:**
+
 - Graph queries
 - Semantic relationship understanding
 - Impact analysis
@@ -164,6 +167,7 @@ trace       ─── Full distributed trace path
 ```
 
 **Enables:**
+
 - Cross-system debugging
 - Environment-aware queries
 - Compliance and audit
@@ -232,15 +236,18 @@ type OrderStatus struct {
 ## Implementation Variations
 
 ### 1. Minimal Version
+
 - Just `id`, `payload`, `actor`, `occurred`, `recorded`
 - Good starting point, can evolve
 
 ### 2. With Versioning
+
 - Built-in event schema versioning
 - Enables safe schema evolution
 - Backward-compatible deserialization
 
 ### 3. With Aggregation
+
 - `DerivedDataPoint` type that references source data
 - Computations preserve their inputs
 - Reproducible results

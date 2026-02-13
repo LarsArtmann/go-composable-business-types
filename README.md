@@ -31,12 +31,12 @@ go get github.com/larsartmann/go-composable-business-types
 
 ## Enums (generated)
 
-| Enum        | Values                                                 |
-| ----------- | ------------------------------------------------------ |
-| `ActorKind` | User, Bot, System, Service                             |
-| `Locale`    | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN |
-| `Priority`  | Low, Medium, High, Critical                            |
-| `Status`    | Draft, Active, Paused, Archived, Deleted               |
+| Enum        | Values                                                            |
+| ----------- | ----------------------------------------------------------------- |
+| `ActorKind` | User, Bot, System, Service                                        |
+| `Locale`    | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN            |
+| `Priority`  | Low, Medium, High, Critical                                       |
+| `Status`    | Draft, Active, Paused, Archived, Deleted                          |
 | `Trigger`   | Manual, Scheduled, Webhook, Import, Migration, System, Correction |
 
 ## Usage
