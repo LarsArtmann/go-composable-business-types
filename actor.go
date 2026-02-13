@@ -5,7 +5,7 @@ import "slices"
 // ActorEntry represents a single actor in an actor chain.
 type ActorEntry[T comparable] struct {
 	Kind ActorKind
-	Id   Id[T]
+	Id   ID[struct{}, T]
 	Name string // optional human-readable name
 }
 
@@ -40,12 +40,12 @@ func (c ActorChain[T]) HasKind(kind ActorKind) bool {
 // Constructor helpers
 
 // UserActor creates an actor entry for a human user.
-func UserActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
+func UserActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
 	return newActorEntry(ActorKindUser, id, name...)
 }
 
 // BotActor creates an actor entry for an automated bot.
-func BotActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
+func BotActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
 	return newActorEntry(ActorKindBot, id, name...)
 }
 
@@ -55,12 +55,12 @@ func SystemActor[T comparable]() ActorEntry[T] {
 }
 
 // ServiceActor creates an actor entry for a service-to-service call.
-func ServiceActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
+func ServiceActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
 	return newActorEntry(ActorKindService, id, name...)
 }
 
 // newActorEntry is a helper to create ActorEntry with optional name.
-func newActorEntry[T comparable](kind ActorKind, id Id[T], name ...string) ActorEntry[T] {
+func newActorEntry[T comparable](kind ActorKind, id ID[struct{}, T], name ...string) ActorEntry[T] {
 	n := ""
 	if len(name) > 0 {
 		n = name[0]

@@ -32,6 +32,11 @@ func CurrencySymbol(code, locale string) (string, bool) {
 	return currency.GetSymbol(code, currency.NewLocale(locale))
 }
 
+// CurrencySymbolForLocale returns the symbol for a currency using the Locale type.
+func CurrencySymbolForLocale(code string, locale Locale) (string, bool) {
+	return currency.GetSymbol(code, currency.NewLocale(locale.String()))
+}
+
 // AllCurrencyCodes returns all valid ISO 4217 currency codes.
 func AllCurrencyCodes() []string {
 	return currency.GetCurrencyCodes()
@@ -43,10 +48,21 @@ func FormatMoney(money Money, locale string) string {
 	return formatter.Format(money)
 }
 
+// FormatMoneyForLocale formats a monetary amount using the Locale type.
+func FormatMoneyForLocale(money Money, locale Locale) string {
+	formatter := currency.NewFormatter(currency.NewLocale(locale.String()))
+	return formatter.Format(money)
+}
+
 // MoneyFormatter wraps currency.Formatter for reuse.
 type MoneyFormatter = currency.Formatter
 
 // NewMoneyFormatter creates a locale-aware money formatter.
 func NewMoneyFormatter(locale string) *MoneyFormatter {
 	return currency.NewFormatter(currency.NewLocale(locale))
+}
+
+// NewMoneyFormatterForLocale creates a money formatter using the Locale type.
+func NewMoneyFormatterForLocale(locale Locale) *MoneyFormatter {
+	return currency.NewFormatter(currency.NewLocale(locale.String()))
 }
