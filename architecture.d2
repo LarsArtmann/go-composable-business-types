@@ -1,0 +1,478 @@
+# CBT (Composable Business Types) Architecture Diagram
+# A Go library of strongly typed, composable base values for business applications
+
+direction: right
+
+# Styles
+classes: {
+  core: {
+    style: {
+      fill: "#e3f2fd"
+      stroke: "#1976d2"
+      stroke-width: 2
+      border-radius: 8
+      shadow: true
+    }
+  }
+  enum: {
+    style: {
+      fill: "#f3e5f5"
+      stroke: "#7b1fa2"
+      border-radius: 8
+    }
+  }
+  value: {
+    style: {
+      fill: "#e8f5e9"
+      stroke: "#388e3c"
+      border-radius: 8
+    }
+  }
+  external: {
+    style: {
+      fill: "#fff3e0"
+      stroke: "#f57c00"
+      stroke-dash: 3
+      border-radius: 8
+    }
+  }
+  primitive: {
+    style: {
+      fill: "#fafafa"
+      stroke: "#616161"
+      border-radius: 4
+    }
+  }
+}
+
+# ============================================
+# CORE DOMAIN TYPES
+# ============================================
+
+datapoint: {
+  class: core
+  label: |md
+    **DataPoint**\[T comparable\]
+    ---
+    Self-contained unit of data
+    with complete audit trail
+    ---
+    • id: NanoId
+    • payload: T
+    • actor: ActorEntry\[string\]
+    • temporal: Bitemporal
+    • trigger: Trigger
+    • reason: string
+    • context: Context
+    • version: int
+    • tags: map\[string\]string
+    • references: []Reference\[string\]
+    • causes: []Cause\[string\]
+  |
+}
+
+# ============================================
+# ACTOR CHAIN
+# ============================================
+
+actor_chain: {
+  class: core
+  label: |md
+    **ActorChain**\[T comparable\]
+    ---
+    Ordered chain of actors
+    from original to current
+    ---
+    []ActorEntry\[T\]
+  |
+}
+
+actor_entry: {
+  class: core
+  label: |md
+    **ActorEntry**\[T comparable\]
+    ---
+    Single actor in a chain
+    ---
+    • kind: ActorKind
+    • id: Id\[T\]
+    • name: string
+  |
+}
+
+# ============================================
+# TEMPORAL TYPES
+# ============================================
+
+bitemporal: {
+  class: core
+  label: |md
+    **Bitemporal**
+    ---
+    Valid time + Transaction time
+    ---
+    • validFrom: Timestamp
+    • validUntil: Timestamp
+    • recorded: Timestamp
+    • correction: bool
+  |
+}
+
+timestamp: {
+  class: value
+  label: |md
+    **Timestamp**
+    ---
+    Domain wrapper around
+    time.Time
+  |
+}
+
+duration: {
+  class: value
+  label: |md
+    **Duration**
+    ---
+    Domain wrapper around
+    time.Duration
+  |
+}
+
+# ============================================
+# CONTEXT & REFERENCES
+# ============================================
+
+context: {
+  class: core
+  label: |md
+    **Context**
+    ---
+    Execution context metadata
+    ---
+    • environment: string
+    • session: string
+    • request: string
+    • source: string
+    • tags: map\[string\]string
+  |
+}
+
+reference: {
+  class: core
+  label: |md
+    **Reference**\[T comparable\]
+    ---
+    Type-safe entity reference
+    ---
+    • id: T
+    • relation: string
+    • version: int
+    • tags: map\[string\]string
+  |
+}
+
+cause: {
+  class: core
+  label: |md
+    **Cause**\[T comparable\]
+    ---
+    Causal relationship between
+    data points
+    ---
+    • id: NanoId
+    • kind: string
+    • effect: string
+    • trace: []NanoId
+  |
+}
+
+# ============================================
+# IDENTIFIERS
+# ============================================
+
+nanoid: {
+  class: core
+  label: |md
+    **NanoId**
+    ---
+    URL-safe unique identifier
+    (21 chars, 126 bits entropy)
+    ---
+    FIPS-140 compatible
+  |
+}
+
+id_generic: {
+  class: core
+  label: |md
+    **ID**\[B any, V comparable\]
+    ---
+    Branded, strongly-typed ID
+    prevents mixing entity IDs
+    ---
+    • value: V
+  |
+}
+
+id_compat: {
+  class: core
+  label: |md
+    **Id**\[T comparable\]
+    ---
+    Unbranded ID alias
+    for backwards compatibility
+  |
+}
+
+# ============================================
+# VALUE TYPES
+# ============================================
+
+bounded_string: {
+  class: value
+  label: |md
+    **BoundedString**
+    ---
+    Length-constrained string
+    validated at construction
+    ---
+    • value: string
+    • minLen: int
+    • maxLen: int
+  |
+}
+
+email: {
+  class: value
+  label: |md
+    **Email**
+    ---
+    Validated email address
+  |
+}
+
+url: {
+  class: value
+  label: |md
+    **URL**
+    ---
+    Validated URL
+  |
+}
+
+percentage: {
+  class: value
+  label: |md
+    **Percentage**
+    ---
+    Value 0-100 (uint8)
+  |
+}
+
+cents: {
+  class: value
+  label: |md
+    **Cents**
+    ---
+    Monetary amount in smallest
+    currency unit (int64)
+  |
+}
+
+money: {
+  class: value
+  label: |md
+    **Money**
+    ---
+    Alias for currency.Amount
+    ISO 4217 compliant
+  |
+}
+
+# ============================================
+# ENUMERATIONS
+# ============================================
+
+actor_kind: {
+  class: enum
+  label: |md
+    **ActorKind**
+    ---
+    • User
+    • Bot
+    • System
+    • Service
+  |
+}
+
+locale: {
+  class: enum
+  label: |md
+    **Locale**
+    ---
+    • en_US, en_GB
+    • de_DE, fr_FR
+    • es_ES, it_IT
+    • ja_JP, zh_CN
+  |
+}
+
+priority: {
+  class: enum
+  label: |md
+    **Priority**
+    ---
+    • Low
+    • Medium
+    • High
+    • Critical
+  |
+}
+
+status: {
+  class: enum
+  label: |md
+    **Status**
+    ---
+    • Draft
+    • Active
+    • Paused
+    • Archived
+    • Deleted
+  |
+}
+
+trigger: {
+  class: enum
+  label: |md
+    **Trigger**
+    ---
+    • Manual
+    • Scheduled
+    • Webhook
+    • Import
+    • Migration
+    • System
+    • Correction
+  |
+}
+
+# ============================================
+# EXTERNAL DEPENDENCIES
+# ============================================
+
+external_currency: {
+  class: external
+  label: |md
+    **github.com/bojanz/currency**
+    ---
+    ISO 4217 currency handling
+    • currency.Amount
+    • currency.Formatter
+    • currency.Locale
+  |
+}
+
+external_nanoid: {
+  class: external
+  label: |md
+    **github.com/sixafter/nanoid**
+    ---
+    FIPS-140 compatible
+    high-performance NanoID
+    generation
+  |
+}
+
+# ============================================
+# RELATIONSHIPS
+# ============================================
+
+# DataPoint composition
+datapoint -> nanoid: id
+
+# DataPoint contains ActorEntry
+datapoint -> actor_entry: actor
+actor_entry -> actor_kind: kind
+actor_entry -> id_compat: id
+
+# ActorChain
+datapoint -> actor_chain: via actor
+actor_chain -> actor_entry: "[]elements"
+
+# Temporal
+datapoint -> bitemporal: temporal
+bitemporal -> timestamp: validFrom
+bitemporal -> timestamp: validUntil
+bitemporal -> timestamp: recorded
+
+# Context & Metadata
+datapoint -> context: context
+datapoint -> trigger: trigger
+
+# References & Causality
+datapoint -> reference: "references[]"
+datapoint -> cause: "causes[]"
+cause -> nanoid: id
+cause -> nanoid: "trace[]"
+
+# ID relationships
+id_compat -> id_generic: alias
+
+# External dependencies
+money -> external_currency: wraps
+nanoid -> external_nanoid: uses
+
+# Time relationships
+timestamp -> duration: time.Duration
+
+# Enums used by
+actor_kind -> actor_entry: used by
+trigger -> datapoint: used by
+
+# ============================================
+# LAYOUT GROUPS
+# ============================================
+
+Core Types: {
+  datapoint
+  actor_chain
+  actor_entry
+  bitemporal
+  context
+  reference
+  cause
+}
+
+Identifiers: {
+  nanoid
+  id_generic
+  id_compat
+}
+
+Value Types: {
+  bounded_string
+  email
+  url
+  percentage
+  cents
+  money
+}
+
+Temporal: {
+  timestamp
+  duration
+}
+
+Enums: {
+  actor_kind
+  trigger
+  locale
+  priority
+  status
+}
+
+External: {
+  external_currency
+  external_nanoid
+}
