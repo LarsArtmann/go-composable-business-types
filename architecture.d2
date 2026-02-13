@@ -196,8 +196,9 @@ nanoid: {
     **NanoId**
     ---
     URL-safe unique identifier
-    (21 chars, 126 bits entropy)
+    (default 21 chars, 126 bits)
     ---
+    Length: 8-256 chars
     FIPS-140 compatible
   |
 }
@@ -423,8 +424,29 @@ id_compat -> id_generic: alias
 money -> external_currency: wraps
 nanoid -> external_nanoid: uses
 
-# Time relationships
-timestamp -> duration: time.Duration
+# Value type conversions
+cents -> money: "converts via\nNewMoneyFromCents"
+
+# Time primitives (both wrap Go stdlib)
+timestamp_primitive: {
+  class: primitive
+  label: |md
+    **time.Time**
+    (Go stdlib)
+  |
+}
+
+duration_primitive: {
+  class: primitive
+  label: |md
+    **time.Duration**
+    (Go stdlib)
+  |
+}
+
+# Time wraps primitives
+timestamp -> timestamp_primitive: wraps
+duration -> duration_primitive: wraps
 
 # Enums used by
 actor_kind -> actor_entry: used by
@@ -475,4 +497,9 @@ Enums: {
 External: {
   external_currency
   external_nanoid
+}
+
+Primitives: {
+  timestamp_primitive
+  duration_primitive
 }

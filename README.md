@@ -17,7 +17,6 @@ go get github.com/larsartmann/go-composable-business-types
 | Type            | Purpose                                                             |
 | --------------- | ------------------------------------------------------------------- |
 | `ID[B, V]`      | Branded, type-safe identifier - prevents mixing different entity IDs |
-| `Id[T]`         | Unbranded identifier (alias for `ID[struct{}, T]`)                   |
 | `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)            |
 | `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails |
 | `DataPoint[T]`  | Self-contained data unit with complete audit trail                  |
@@ -58,14 +57,14 @@ type OrderID = cbt.ID[OrderBrand, int64]
 userId := cbt.NewID[UserBrand, string]("user-123")
 orderId := cbt.NewID[OrderBrand, int64](42)
 
-// Or use the simpler unbranded form (backwards compatible)
-type SessionID = cbt.Id[string] // alias for ID[struct{}, string]
-sessionId := cbt.NewId("sess-abc")
+// Unbranded ID (when you don't need type separation)
+type SessionID = cbt.ID[struct{}, string]
+sessionId := cbt.NewID[struct{}, string]("sess-abc")
 
 // Actor chain for audit trails and authorization
-chain := cbt.NewActorChain(cbt.UserActor(cbt.NewId("user-1"), "Alice")).
-    Append(cbt.ServiceActor(cbt.NewId("api-gateway"), "API Gateway")).
-    Append(cbt.ServiceActor(cbt.NewId("order-svc"), "Order Service"))
+chain := cbt.NewActorChain(cbt.UserActor(cbt.NewID[struct{}, string]("user-1"), "Alice")).
+    Append(cbt.ServiceActor(cbt.NewID[struct{}, string]("api-gateway"), "API Gateway")).
+    Append(cbt.ServiceActor(cbt.NewID[struct{}, string]("order-svc"), "Order Service"))
 
 origin := chain.Origin()   // User Alice
 current := chain.Current() // Order Service
@@ -133,7 +132,7 @@ type OrderState struct {
 }
 
 // Create a DataPoint
-actor := cbt.UserActor(cbt.NewId("user-1"), "Alice")
+actor := cbt.UserActor(cbt.NewID[struct{}, string]("user-1"), "Alice")
 dp := cbt.NewDataPointNow(OrderState{
     OrderId: "order-123",
     Status:  "created",
