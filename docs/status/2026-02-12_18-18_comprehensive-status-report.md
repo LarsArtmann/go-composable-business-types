@@ -23,7 +23,8 @@
 
 **Implemented Types:**
 
-- `Id[T]` - Type-safe identifier wrapper
+- `ID[B, V]` - Branded type-safe identifier (prevents mixing different entity IDs)
+- `Id[T]` - Alias for `ID[struct{}, T]` (backwards compatibility)
 - `ActorChain[T]` - Ordered chain of actors (User → Service → Service)
 - `ActorEntry[T]` - Single actor in chain with Kind, Id, Name
 - `BoundedString` - Length-validated string with min/max constraints
@@ -94,7 +95,7 @@
 | Concern                                 | Location       | Risk                                                     |
 | --------------------------------------- | -------------- | -------------------------------------------------------- |
 | `enum_enum.go` is 460 lines             | Generated file | Acceptable (generated), but could split enum definitions |
-| `Id[T].GoString()` panics on non-string | `id.go:10`     | Low risk, but could use `fmt.Sprintf` instead            |
+| ~~`Id[T].GoString()` panics on non-string~~ | `id.go:10`     | ✅ FIXED with `ID[B, V]` using `fmt.Sprintf`            |
 | No actual email/URL validation          | `common.go`    | Types exist but accept any string                        |
 
 ---
@@ -105,7 +106,7 @@
 
 1. **Add email validation** - RFC 5322 compliant
 2. **Add URL validation** - RFC 3986 compliant
-3. **Replace `any(id.value).(string)`** with safer type assertion in `Id.GoString()`
+3. ~~Replace `any(id.value).(string)` with safer type assertion~~ - ✅ FIXED with `ID[B, V]` branded type
 4. **Add `PositiveInt64`, `NonNegativeInt64`** types for unsigned semantics
 5. **Add `IsAtLeastMinLength()`** method to BoundedString (test expected it)
 

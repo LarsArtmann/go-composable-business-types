@@ -12,7 +12,8 @@ go get github.com/larsartmann/go-composable-business-types
 
 | Type            | Purpose                                                             |
 | --------------- | ------------------------------------------------------------------- |
-| `Id[T]`         | Type-safe identifier wrapper - prevents mixing different entity IDs |
+| `ID[B, V]`      | Branded, type-safe identifier - prevents mixing different entity IDs |
+| `Id[T]`         | Unbranded identifier (alias for `ID[struct{}, T]`)                   |
 | `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)            |
 | `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails |
 | `DataPoint[T]`  | Self-contained data unit with complete audit trail                  |
@@ -44,15 +45,21 @@ go get github.com/larsartmann/go-composable-business-types
 ```go
 import cbt "github.com/larsartmann/go-composable-business-types"
 
-// Type-safe IDs - can't mix UserId with OrderId
-type UserId = cbt.Id[string]
-type OrderId = cbt.Id[int]
+// Branded IDs - can't mix UserId with OrderId at compile time
+type UserBrand struct{}
+type OrderBrand struct{}
+type UserID = cbt.ID[UserBrand, string]
+type OrderID = cbt.ID[OrderBrand, int64]
 
-userId := cbt.NewId("user-123")
-orderId := cbt.NewId(42)
+userId := cbt.NewID[UserBrand, string]("user-123")
+orderId := cbt.NewID[OrderBrand, int64](42)
+
+// Or use the simpler unbranded form (backwards compatible)
+type SessionID = cbt.Id[string] // alias for ID[struct{}, string]
+sessionId := cbt.NewId("sess-abc")
 
 // Actor chain for audit trails and authorization
-chain := cbt.NewActorChain(cbt.UserActor(userId, "Alice")).
+chain := cbt.NewActorChain(cbt.UserActor(cbt.NewId("user-1"), "Alice")).
     Append(cbt.ServiceActor(cbt.NewId("api-gateway"), "API Gateway")).
     Append(cbt.ServiceActor(cbt.NewId("order-svc"), "Order Service"))
 

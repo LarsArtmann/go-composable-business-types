@@ -54,7 +54,7 @@ All functions are under 30 lines. The largest functions are constructors and JSO
 
 ### 3. Type Safety - EXCELLENT
 
-- ✅ Uses phantom types: `NanoId`, `Id[T]`, `ActorChain[T]`, `DataPoint[T]`
+- ✅ Uses phantom types: `NanoId`, `ID[B, V]`, `ActorChain[T]`, `DataPoint[T]`
 - ✅ Generic constraints: `T comparable`
 - ✅ No `any` types found
 - ✅ Makes impossible states unrepresentable
@@ -250,20 +250,24 @@ This violates the core principle: **"Make impossible states unrepresentable."**
 
 An `Email` type that can contain "not-an-email" is a broken abstraction.
 
-### 3. Id[T] GoString Panic Risk
+### 3. ~~Id[T] GoString Panic Risk~~ ✅ FIXED
+
+**Previously:**
 
 ```go
 // id.go:10
 func (id Id[T]) GoString() string { return any(id.value).(string) }
 ```
 
-This will panic if `T` is not a string! Should be:
+This would panic if `T` is not a string.
+
+**Now fixed with `ID[B, V]` type:**
 
 ```go
-func (id Id[T]) GoString() string {
-    return fmt.Sprintf("%v", id.value)
-}
+func (id ID[B, V]) GoString() string { return fmt.Sprintf("%v", id.value) }
 ```
+
+Also added branded type `ID[B, V]` for compile-time ID separation.
 
 ---
 
@@ -273,7 +277,7 @@ func (id Id[T]) GoString() string {
 
 1. **Add Email validation** — Use regex or a library like `check-mail`
 2. **Add URL validation** — Use `net/url` parsing
-3. **Fix `Id[T].GoString()`** — Prevent panic for non-string types
+3. ~~Fix `Id[T].GoString()`~~ — ✅ FIXED with `ID[B, V]` branded type
 4. **Extract magic numbers** — `MinNanoIdLength`, `MaxNanoIdLength` constants
 5. **Split `datapoint.go`** — 281 lines exceeds 250 limit
 
@@ -299,7 +303,7 @@ func (id Id[T]) GoString() string {
 | --- | ---------------------------------------- | ----------- | ------ |
 | 1   | Add Email validation with proper error   | `common.go` | 30min  |
 | 2   | Add URL validation with proper error     | `common.go` | 20min  |
-| 3   | Fix `Id[T].GoString()` panic risk        | `id.go:10`  | 5min   |
+| 3   | ~~Fix `Id[T].GoString()` panic risk~~    | `id.go:10`  | ✅ DONE |
 | 4   | Extract `MinNanoIdLength = 8` constant   | `nanoid.go` | 5min   |
 | 5   | Extract `MaxNanoIdLength = 256` constant | `nanoid.go` | 5min   |
 
@@ -338,7 +342,7 @@ func (id Id[T]) GoString() string {
 | #   | Task                                    | File           | Effort |
 | --- | --------------------------------------- | -------------- | ------ |
 | 21  | Add benchmark tests                     | `*_test.go`    | 2hr    |
-| 22  | Add `String()` method to `Id[T]`        | `id.go`        | 5min   |
+| 22  | ~~Add `String()` method to `ID[B, V]`~~ | `id.go`        | ✅ DONE |
 | 23  | Consider adding `Version` type          | New file       | 1hr    |
 | 24  | Add `WithPayload` method to `DataPoint` | `datapoint.go` | 10min  |
 | 25  | Add SQL driver implementations          | `*sql.go`      | 4hr    |

@@ -44,7 +44,8 @@ The DataPoint[T] implementation is **COMPLETE** - all 3 phases delivered with fu
 | Type                    | File         | Lines | Description                              |
 | ----------------------- | ------------ | ----- | ---------------------------------------- |
 | `NanoId`                | `nanoid.go`  | 122   | URL-safe crypto random ID (21 chars)     |
-| `Id[T]`                 | `id.go`      | 10    | Type-safe identifier wrapper             |
+| `ID[B, V]`             | `id.go`      | 75    | Branded type-safe identifier             |
+| `Id[T]`                | `id.go`      | -     | Alias for `ID[struct{}, T]`              |
 | `ActorChain[T]`         | `actor.go`   | 69    | Ordered chain of actors for audit trails |
 | `ActorEntry[T]`         | `actor.go`   | -     | Single actor with Kind, Id, Name         |
 | `BoundedString`         | `bounded.go` | 80    | Length-validated string with min/max     |
@@ -315,7 +316,7 @@ go-composable-business-types/
 ├── datapoint_test.go        # 890 lines - DataPoint tests
 ├── enum.go                  # 33 lines  - Enum definitions
 ├── enum_enum.go             # 594 lines - Generated enums
-├── id.go                    # 10 lines  - Id[T] type
+├── id.go                    # 75 lines  - ID[B, V] branded type
 ├── money.go                 # 52 lines  - Money wrapper
 ├── nanoid.go                # 122 lines - NanoId type
 ├── go.mod

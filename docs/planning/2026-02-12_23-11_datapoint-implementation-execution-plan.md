@@ -471,7 +471,7 @@ cbt/
 ├── common.go                # ✅ DONE - Email, URL, Percentage, etc.
 ├── enum.go                  # ✅ DONE - Enum definitions
 ├── enum_enum.go             # ✅ DONE - Generated enums
-├── id.go                    # ✅ DONE - Id[T]
+├── id.go                    # ✅ DONE - ID[B, V] branded, Id[T] alias
 ├── money.go                 # ✅ DONE - Money wrapper
 │
 ├── nanoid.go                # 🆕 Phase 1 - NanoId type
