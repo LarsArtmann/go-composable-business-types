@@ -1077,3 +1077,161 @@ func TestLocale_Tag(t *testing.T) {
 		t.Errorf("Tag: expected en-US, got %s", tag.String())
 	}
 }
+
+func TestPriorityEnum(t *testing.T) {
+	// Test Names()
+	names := PriorityNames()
+	if len(names) != 4 {
+		t.Fatalf("PriorityNames: expected 4, got %d", len(names))
+	}
+	expectedNames := []string{"Low", "Medium", "High", "Critical"}
+	for i, name := range names {
+		if name != expectedNames[i] {
+			t.Errorf("PriorityNames[%d]: expected %s, got %s", i, expectedNames[i], name)
+		}
+	}
+
+	// Test Values()
+	values := PriorityValues()
+	if len(values) != 4 {
+		t.Fatalf("PriorityValues: expected 4, got %d", len(values))
+	}
+	if values[0] != PriorityLow || values[3] != PriorityCritical {
+		t.Errorf("PriorityValues: unexpected values %v", values)
+	}
+
+	// Test String()
+	if PriorityLow.String() != "Low" {
+		t.Errorf("String: expected Low, got %s", PriorityLow.String())
+	}
+
+	// Test String() for invalid value
+	invalid := Priority(99)
+	if invalid.String() != "Priority(99)" {
+		t.Errorf("String invalid: expected Priority(99), got %s", invalid.String())
+	}
+
+	// Test IsValid()
+	if !PriorityMedium.IsValid() {
+		t.Error("IsValid: expected Medium to be valid")
+	}
+	if invalid.IsValid() {
+		t.Error("IsValid: expected 99 to be invalid")
+	}
+
+	// Test ParsePriority
+	parsed, err := ParsePriority("High")
+	if err != nil || parsed != PriorityHigh {
+		t.Errorf("ParsePriority: expected High, got %v (err: %v)", parsed, err)
+	}
+
+	// Test ParsePriority with invalid
+	_, err = ParsePriority("Invalid")
+	if err == nil {
+		t.Error("ParsePriority: expected error for invalid value")
+	}
+
+	// Test MustParsePriority
+	mustParsed := MustParsePriority("Critical")
+	if mustParsed != PriorityCritical {
+		t.Errorf("MustParsePriority: expected Critical, got %v", mustParsed)
+	}
+
+	// Test MarshalText
+	data, err := PriorityHigh.MarshalText()
+	if err != nil || string(data) != "High" {
+		t.Errorf("MarshalText: expected High, got %s (err: %v)", data, err)
+	}
+
+	// Test UnmarshalText
+	var p Priority
+	err = p.UnmarshalText([]byte("Low"))
+	if err != nil || p != PriorityLow {
+		t.Errorf("UnmarshalText: expected Low, got %v (err: %v)", p, err)
+	}
+
+	// Test UnmarshalText with invalid
+	err = p.UnmarshalText([]byte("Invalid"))
+	if err == nil {
+		t.Error("UnmarshalText: expected error for invalid value")
+	}
+
+	// Test AppendText
+	p2 := PriorityCritical
+	appended, err2 := p2.AppendText([]byte("prefix-"))
+	if err2 != nil || string(appended) != "prefix-Critical" {
+		t.Errorf("AppendText: expected prefix-Critical, got %s (err: %v)", appended, err2)
+	}
+}
+
+func TestStatusEnum(t *testing.T) {
+	// Test basic operations
+	if StatusActive.String() != "Active" {
+		t.Errorf("String: expected Active, got %s", StatusActive.String())
+	}
+
+	if !StatusDraft.IsValid() {
+		t.Error("IsValid: expected Draft to be valid")
+	}
+
+	parsed, err := ParseStatus("Paused")
+	if err != nil || parsed != StatusPaused {
+		t.Errorf("ParseStatus: expected Paused, got %v (err: %v)", parsed, err)
+	}
+
+	// Test MustParse panics on invalid
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseStatus: expected panic for invalid value")
+		}
+	}()
+	MustParseStatus("Invalid")
+}
+
+func TestTriggerEnum(t *testing.T) {
+	// Test Names and Values
+	if len(TriggerNames()) != 7 {
+		t.Errorf("TriggerNames: expected 7, got %d", len(TriggerNames()))
+	}
+	if len(TriggerValues()) != 7 {
+		t.Errorf("TriggerValues: expected 7, got %d", len(TriggerValues()))
+	}
+
+	// Test String
+	if TriggerWebhook.String() != "Webhook" {
+		t.Errorf("String: expected Webhook, got %s", TriggerWebhook.String())
+	}
+
+	// Test text marshaling
+	data, _ := TriggerManual.MarshalText()
+	var t2 Trigger
+	_ = t2.UnmarshalText(data)
+	if t2 != TriggerManual {
+		t.Errorf("Marshal/Unmarshal: expected Manual, got %v", t2)
+	}
+}
+
+func TestActorKindEnum(t *testing.T) {
+	// Test basic operations
+	if ActorKindUser.String() != "User" {
+		t.Errorf("String: expected User, got %s", ActorKindUser.String())
+	}
+
+	if !ActorKindBot.IsValid() {
+		t.Error("IsValid: expected Bot to be valid")
+	}
+
+	parsed, err := ParseActorKind("System")
+	if err != nil || parsed != ActorKindSystem {
+		t.Errorf("ParseActorKind: expected System, got %v (err: %v)", parsed, err)
+	}
+
+	// Test invalid kind
+	invalid := ActorKind(99)
+	if invalid.IsValid() {
+		t.Error("IsValid: expected 99 to be invalid")
+	}
+	if invalid.String() != "ActorKind(99)" {
+		t.Errorf("String invalid: expected ActorKind(99), got %s", invalid.String())
+	}
+}
