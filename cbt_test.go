@@ -428,6 +428,32 @@ func TestEmail_MustParseEmail(t *testing.T) {
 	MustParseEmail("invalid")
 }
 
+func TestEmail_Helpers(t *testing.T) {
+	email := MustParseEmail("user.name@example.org")
+
+	if email.IsZero() {
+		t.Error("expected IsZero to be false for valid email")
+	}
+	if email.LocalPart() != "user.name" {
+		t.Errorf("expected LocalPart 'user.name', got %q", email.LocalPart())
+	}
+	if email.Domain() != "example.org" {
+		t.Errorf("expected Domain 'example.org', got %q", email.Domain())
+	}
+
+	// Test empty email
+	var empty Email
+	if !empty.IsZero() {
+		t.Error("expected IsZero to be true for empty email")
+	}
+	if empty.LocalPart() != "" {
+		t.Errorf("expected empty LocalPart, got %q", empty.LocalPart())
+	}
+	if empty.Domain() != "" {
+		t.Errorf("expected empty Domain, got %q", empty.Domain())
+	}
+}
+
 func TestURL_Validation(t *testing.T) {
 	tests := []struct {
 		url     string
@@ -463,6 +489,46 @@ func TestURL_MustParseURL(t *testing.T) {
 		}
 	}()
 	MustParseURL("invalid")
+}
+
+func TestURL_Helpers(t *testing.T) {
+	url := MustParseURL("https://example.com:8080/api/v1/users?limit=10")
+
+	if url.IsZero() {
+		t.Error("expected IsZero to be false for valid URL")
+	}
+	if url.Scheme() != "https" {
+		t.Errorf("expected Scheme 'https', got %q", url.Scheme())
+	}
+	if url.Host() != "example.com:8080" {
+		t.Errorf("expected Host 'example.com:8080', got %q", url.Host())
+	}
+	if url.Path() != "/api/v1/users" {
+		t.Errorf("expected Path '/api/v1/users', got %q", url.Path())
+	}
+
+	parsed, err := url.Parse()
+	if err != nil {
+		t.Errorf("Parse returned unexpected error: %v", err)
+	}
+	if parsed.Query().Get("limit") != "10" {
+		t.Errorf("expected query param limit=10, got %s", parsed.Query().Get("limit"))
+	}
+
+	// Test empty URL
+	var empty URL
+	if !empty.IsZero() {
+		t.Error("expected IsZero to be true for empty URL")
+	}
+	if empty.Scheme() != "" {
+		t.Errorf("expected empty Scheme, got %q", empty.Scheme())
+	}
+	if empty.Host() != "" {
+		t.Errorf("expected empty Host, got %q", empty.Host())
+	}
+	if empty.Path() != "" {
+		t.Errorf("expected empty Path, got %q", empty.Path())
+	}
 }
 
 func TestLocale_Parse(t *testing.T) {

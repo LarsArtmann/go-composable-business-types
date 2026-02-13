@@ -46,7 +46,28 @@ func MustParseEmail(v string) Email {
 	return e
 }
 
-func (e Email) String() string { return string(e) }
+func (e Email) String() string    { return string(e) }
+func (e Email) IsZero() bool      { return e == "" }
+func (e Email) LocalPart() string { s, _, _ := e.split(); return s }
+func (e Email) Domain() string    { _, d, _ := e.split(); return d }
+
+// split returns local part, domain, and whether the split was successful.
+func (e Email) split() (local, domain string, ok bool) {
+	if e == "" {
+		return "", "", false
+	}
+	idx := -1
+	for i := 0; i < len(e); i++ {
+		if e[i] == '@' {
+			idx = i
+			break
+		}
+	}
+	if idx <= 0 || idx >= len(e)-1 {
+		return "", "", false
+	}
+	return string(e[:idx]), string(e[idx+1:]), true
+}
 
 // URL represents a validated URL with http or https scheme.
 type URL string
@@ -84,6 +105,44 @@ func MustParseURL(v string) URL {
 }
 
 func (u URL) String() string { return string(u) }
+
+// IsZero returns true if the URL is empty.
+func (u URL) IsZero() bool { return u == "" }
+
+// Parse returns the underlying url.URL. Since URLs are validated at construction,
+// this should never fail, but returns error for safety.
+func (u URL) Parse() (*url.URL, error) { return url.Parse(string(u)) }
+
+// Scheme returns the URL scheme (http or https). Returns empty string if URL is zero.
+func (u URL) Scheme() string {
+	if u == "" {
+		return ""
+	}
+	for i := 0; i < len(u); i++ {
+		if u[i] == ':' {
+			return string(u[:i])
+		}
+	}
+	return ""
+}
+
+// Host returns the URL host (e.g., "example.com" or "example.com:8080").
+func (u URL) Host() string {
+	parsed, _ := u.Parse()
+	if parsed == nil {
+		return ""
+	}
+	return parsed.Host
+}
+
+// Path returns the URL path (e.g., "/api/v1/users").
+func (u URL) Path() string {
+	parsed, _ := u.Parse()
+	if parsed == nil {
+		return ""
+	}
+	return parsed.Path
+}
 
 // Percentage represents a value from 0-100.
 type Percentage uint8
