@@ -2,6 +2,10 @@
 
 A Go library of strongly typed, composable base values for business applications.
 
+## Project Goal
+
+Build the best possible data types for Lars Artmann's Golang applications, leveraging superb existing libraries where appropriate. **Backwards compatibility is NOT a concern** — we prioritize clean, optimal design over legacy support.
+
 ## Build & Test Commands
 
 ```bash
