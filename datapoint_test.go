@@ -108,7 +108,7 @@ type TestPayload struct {
 
 func TestDataPoint(t *testing.T) {
 	payload := TestPayload{Value: "test", Count: 42}
-	actor := UserActor(NewId[string]("user-1"), "Alice")
+	actor := UserActor(NewID[struct{}, string]("user-1"), "Alice")
 	occurred := NewTimestamp(time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC))
 	recorded := NewTimestamp(time.Date(2024, 1, 15, 10, 31, 0, 0, time.UTC))
 
@@ -133,7 +133,7 @@ func TestDataPoint(t *testing.T) {
 
 func TestDataPointNow(t *testing.T) {
 	payload := TestPayload{Value: "now", Count: 1}
-	actor := BotActor(NewId[string]("bot-1"), "TestBot")
+	actor := BotActor(NewID[struct{}, string]("bot-1"), "TestBot")
 
 	before := time.Now().UTC()
 	dp := NewDataPointNow(payload, actor)
@@ -178,7 +178,7 @@ func TestDataPointWithReason(t *testing.T) {
 
 func TestDataPointJSON(t *testing.T) {
 	payload := TestPayload{Value: "json-test", Count: 99}
-	actor := UserActor(NewId[string]("user-42"), "Bob")
+	actor := UserActor(NewID[struct{}, string]("user-42"), "Bob")
 	occurred := NewTimestamp(time.Date(2024, 6, 1, 12, 0, 0, 0, time.UTC))
 	recorded := NewTimestamp(time.Date(2024, 6, 1, 12, 1, 0, 0, time.UTC))
 
@@ -213,7 +213,7 @@ func TestDataPointJSON(t *testing.T) {
 
 func TestDataPointJSONRoundTrip(t *testing.T) {
 	payload := TestPayload{Value: "round-trip", Count: 123}
-	actor := ServiceActor(NewId[string]("svc-1"), "OrderService")
+	actor := ServiceActor(NewID[struct{}, string]("svc-1"), "OrderService")
 
 	dp1 := NewDataPointNow(payload, actor, "first version")
 	data, _ := json.Marshal(dp1)
