@@ -1,6 +1,9 @@
 package cbt
 
-import "testing"
+import (
+	"encoding/json"
+	"testing"
+)
 
 func TestId(t *testing.T) {
 	id := NewId("user-123")
@@ -149,5 +152,163 @@ func TestNonEmptyString(t *testing.T) {
 	}
 	if bs.String() != "x" {
 		t.Errorf("expected x, got %s", bs.String())
+	}
+}
+
+// Branded ID tests
+
+type UserBrand struct{}
+type OrderBrand struct{}
+
+type UserID = ID[UserBrand, string]
+type OrderID = ID[OrderBrand, int64]
+
+func TestBrandedID_String(t *testing.T) {
+	uid := NewID[UserBrand, string]("user-123")
+	if uid.Value() != "user-123" {
+		t.Errorf("expected user-123, got %s", uid.Value())
+	}
+	if uid.String() != "user-123" {
+		t.Errorf("expected String() = user-123, got %s", uid.String())
+	}
+	if uid.GoString() != "user-123" {
+		t.Errorf("expected GoString() = user-123, got %s", uid.GoString())
+	}
+}
+
+func TestBrandedID_Int64(t *testing.T) {
+	oid := NewID[OrderBrand, int64](42)
+	if oid.Value() != 42 {
+		t.Errorf("expected 42, got %d", oid.Value())
+	}
+	if oid.String() != "42" {
+		t.Errorf("expected String() = 42, got %s", oid.String())
+	}
+}
+
+func TestBrandedID_IsZero(t *testing.T) {
+	uid := NewID[UserBrand, string]("user-123")
+	if uid.IsZero() {
+		t.Error("expected non-zero ID to return false")
+	}
+
+	var zeroUserID UserID
+	if !zeroUserID.IsZero() {
+		t.Error("expected zero ID to return true")
+	}
+
+	var zeroOrderID OrderID
+	if !zeroOrderID.IsZero() {
+		t.Error("expected zero int64 ID to return true")
+	}
+}
+
+func TestBrandedID_JSON_String(t *testing.T) {
+	uid := NewID[UserBrand, string]("user-abc")
+
+	// Marshal
+	data, err := json.Marshal(uid)
+	if err != nil {
+		t.Fatalf("marshal error: %v", err)
+	}
+	if string(data) != `"user-abc"` {
+		t.Errorf("expected JSON \"user-abc\", got %s", string(data))
+	}
+
+	// Unmarshal
+	var parsed UserID
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
+	if parsed.Value() != "user-abc" {
+		t.Errorf("expected user-abc, got %s", parsed.Value())
+	}
+}
+
+func TestBrandedID_JSON_Zero(t *testing.T) {
+	var uid UserID
+
+	// Zero value should marshal to null
+	data, err := json.Marshal(uid)
+	if err != nil {
+		t.Fatalf("marshal error: %v", err)
+	}
+	if string(data) != "null" {
+		t.Errorf("expected JSON null for zero value, got %s", string(data))
+	}
+}
+
+func TestBrandedID_JSON_EmptyString(t *testing.T) {
+	data := []byte(`""`)
+	var uid UserID
+	if err := json.Unmarshal(data, &uid); err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
+	if uid.Value() != "" {
+		t.Errorf("expected empty string, got %s", uid.Value())
+	}
+}
+
+func TestBrandedID_BackwardsCompatibility(t *testing.T) {
+	// Id[T] should still work as before
+	id := NewId("legacy-id")
+	if id.Value() != "legacy-id" {
+		t.Errorf("expected legacy-id, got %s", id.Value())
+	}
+
+	// Id[T] should be assignable from ID[struct{}, T]
+	var id2 = NewID[struct{}, string]("test")
+	if id2.Value() != "test" {
+		t.Errorf("expected test, got %s", id2.Value())
+	}
+}
+
+func TestBrandedID_JSON_Int64_Marshal(t *testing.T) {
+	// int64 IDs serialize as strings (by design)
+	oid := NewID[OrderBrand, int64](42)
+
+	data, err := json.Marshal(oid)
+	if err != nil {
+		t.Fatalf("marshal error: %v", err)
+	}
+	// int64 serializes as string "42" (not number 42)
+	if string(data) != `"42"` {
+		t.Errorf("expected JSON \"42\", got %s", string(data))
+	}
+}
+
+func TestBrandedID_JSON_Int64_Unmarshal_Error(t *testing.T) {
+	// Unmarshaling into int64 ID should return error (documented limitation)
+	data := []byte(`"42"`)
+	var oid OrderID
+	err := json.Unmarshal(data, &oid)
+	if err == nil {
+		t.Error("expected error when unmarshaling string into int64 ID")
+	}
+}
+
+func TestBrandedID_Comparability(t *testing.T) {
+	// IDs with same value should be equal
+	uid1 := NewID[UserBrand, string]("user-123")
+	uid2 := NewID[UserBrand, string]("user-123")
+	if uid1 != uid2 {
+		t.Error("expected equal IDs to be equal")
+	}
+
+	// IDs with different values should not be equal
+	uid3 := NewID[UserBrand, string]("user-456")
+	if uid1 == uid3 {
+		t.Error("expected different IDs to not be equal")
+	}
+}
+
+func TestBrandedID_JSON_Null_Unmarshal(t *testing.T) {
+	data := []byte("null")
+	var uid UserID
+	if err := json.Unmarshal(data, &uid); err != nil {
+		t.Fatalf("unmarshal error: %v", err)
+	}
+	if !uid.IsZero() {
+		t.Error("expected null to unmarshal to zero value")
 	}
 }

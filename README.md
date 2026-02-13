@@ -217,6 +217,19 @@ go generate ./...
 - `github.com/abice/go-enum` - Enum code generation
 - `github.com/bojanz/currency` - ISO 4217 currency handling with 370+ locales
 
+## encoding/json/v2 Support
+
+This library supports Go's experimental `encoding/json/v2` for improved performance. The `ID[B, V]` type implements both v1 and v2 marshaler interfaces.
+
+**Enable json/v2 (Go 1.26+):**
+
+```bash
+GOEXPERIMENT=jsonv2 go build ./...
+GOEXPERIMENT=jsonv2 go test ./...
+```
+
+When `GOEXPERIMENT=jsonv2` is enabled, types will use the streaming v2 interfaces (`MarshalJSONTo`/`UnmarshalJSONFrom`) for better performance. Without the experiment, the standard v1 interfaces work as expected.
+
 ## License
 
 MIT

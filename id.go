@@ -2,6 +2,9 @@ package cbt
 
 import (
 	"encoding"
+	"encoding/json"
+	jsonv2 "encoding/json/v2"
+	"encoding/json/jsontext"
 	"fmt"
 )
 
@@ -31,7 +34,77 @@ func (id ID[B, V]) String() string { return fmt.Sprintf("%v", id.value) }
 // GoString implements fmt.GoStringer for debugging.
 func (id ID[B, V]) GoString() string { return fmt.Sprintf("%v", id.value) }
 
-// MarshalText implements encoding.TextMarshaler for JSON serialization.
+// MarshalJSON implements json.Marshaler for proper null handling.
+// Zero values serialize to JSON null, non-zero values serialize as JSON strings.
+func (id ID[B, V]) MarshalJSON() ([]byte, error) {
+	if id.IsZero() {
+		return []byte("null"), nil
+	}
+	return json.Marshal(id.String())
+}
+
+// UnmarshalJSON implements json.Unmarshaler for JSON deserialization.
+func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
+	if string(data) == "null" {
+		var zero V
+		*id = ID[B, V]{value: zero}
+		return nil
+	}
+
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return fmt.Errorf("id: cannot unmarshal %s into %T", string(data), *id)
+	}
+
+	var zero V
+	switch any(zero).(type) {
+	case string:
+		*id = ID[B, V]{value: any(s).(V)}
+		return nil
+	default:
+		return fmt.Errorf("id: cannot unmarshal string into %T (only string-based IDs supported)", zero)
+	}
+}
+
+// MarshalJSONTo implements jsonv2.MarshalerTo for efficient streaming JSON encoding.
+// Zero values serialize to JSON null, non-zero values serialize as JSON strings.
+func (id ID[B, V]) MarshalJSONTo(enc *jsontext.Encoder) error {
+	if id.IsZero() {
+		return enc.WriteToken(jsontext.Null)
+	}
+	return enc.WriteToken(jsontext.String(id.String()))
+}
+
+// UnmarshalJSONFrom implements jsonv2.UnmarshalerFrom for efficient streaming JSON decoding.
+func (id *ID[B, V]) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
+	val, err := dec.ReadValue()
+	if err != nil {
+		return err
+	}
+
+	if string(val) == "null" {
+		var zero V
+		*id = ID[B, V]{value: zero}
+		return nil
+	}
+
+	var s string
+	if err := jsonv2.Unmarshal(val, &s); err != nil {
+		return fmt.Errorf("id: cannot unmarshal %s into %T", string(val), *id)
+	}
+
+	var zero V
+	switch any(zero).(type) {
+	case string:
+		*id = ID[B, V]{value: any(s).(V)}
+		return nil
+	default:
+		return fmt.Errorf("id: cannot unmarshal string into %T (only string-based IDs supported)", zero)
+	}
+}
+
+// MarshalText implements encoding.TextMarshaler for text-based encoding (e.g., XML, TOML).
+// For JSON, prefer the json.Marshaler implementation which handles null properly.
 func (id ID[B, V]) MarshalText() ([]byte, error) {
 	if id.IsZero() {
 		return nil, nil
@@ -61,10 +134,14 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 
 // Compile-time interface assertions
 var (
-	_ fmt.Stringer           = ID[struct{}, string]{}
-	_ fmt.GoStringer         = ID[struct{}, string]{}
-	_ encoding.TextMarshaler = ID[struct{}, string]{}
-	_ encoding.TextUnmarshaler = (*ID[struct{}, string])(nil)
+	_ fmt.Stringer               = ID[struct{}, string]{}
+	_ fmt.GoStringer             = ID[struct{}, string]{}
+	_ json.Marshaler             = ID[struct{}, string]{}
+	_ json.Unmarshaler           = (*ID[struct{}, string])(nil)
+	_ jsonv2.MarshalerTo         = ID[struct{}, string]{}
+	_ jsonv2.UnmarshalerFrom     = (*ID[struct{}, string])(nil)
+	_ encoding.TextMarshaler     = ID[struct{}, string]{}
+	_ encoding.TextUnmarshaler   = (*ID[struct{}, string])(nil)
 )
 
 // Id is an unbranded identifier for backwards compatibility.
