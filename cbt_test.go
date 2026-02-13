@@ -3,6 +3,7 @@ package cbt
 import (
 	"encoding/json"
 	"testing"
+	"time"
 )
 
 func TestId(t *testing.T) {
@@ -219,11 +220,15 @@ func TestNonEmptyString(t *testing.T) {
 
 // Branded ID tests
 
-type UserBrand struct{}
-type OrderBrand struct{}
+type (
+	UserBrand  struct{}
+	OrderBrand struct{}
+)
 
-type UserID = ID[UserBrand, string]
-type OrderID = ID[OrderBrand, int64]
+type (
+	UserID  = ID[UserBrand, string]
+	OrderID = ID[OrderBrand, int64]
+)
 
 func TestBrandedID_String(t *testing.T) {
 	uid := NewID[UserBrand, string]("user-123")
@@ -377,8 +382,8 @@ func TestBrandedID_JSON_Null_Unmarshal(t *testing.T) {
 
 func TestEmail_Validation(t *testing.T) {
 	tests := []struct {
-		email    string
-		wantErr  bool
+		email   string
+		wantErr bool
 	}{
 		{"test@example.com", false},
 		{"user.name@domain.org", false},
@@ -425,8 +430,8 @@ func TestEmail_MustParseEmail(t *testing.T) {
 
 func TestURL_Validation(t *testing.T) {
 	tests := []struct {
-		url      string
-		wantErr  bool
+		url     string
+		wantErr bool
 	}{
 		{"https://example.com", false},
 		{"http://example.com", false},
@@ -561,11 +566,11 @@ func TestLocale_MustParseLocale(t *testing.T) {
 
 func TestNewMoney(t *testing.T) {
 	tests := []struct {
-		name        string
-		amount      string
-		currency    string
-		wantErr     bool
-		wantString  string
+		name       string
+		amount     string
+		currency   string
+		wantErr    bool
+		wantString string
 	}{
 		{"valid USD", "10.99", "USD", false, "10.99 USD"},
 		{"valid EUR", "100.00", "EUR", false, "100.00 EUR"},
@@ -821,4 +826,96 @@ func containsAnyDigit(s string) bool {
 		}
 	}
 	return false
+}
+
+func TestDuration(t *testing.T) {
+	tests := []struct {
+		name     string
+		input    time.Duration
+		expected time.Duration
+	}{
+		{"seconds", 5 * time.Second, 5 * time.Second},
+		{"minutes", 2 * time.Minute, 2 * time.Minute},
+		{"hours", 3 * time.Hour, 3 * time.Hour},
+		{"zero", 0, 0},
+		{"negative", -10 * time.Second, -10 * time.Second},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			d := NewDuration(tt.input)
+			if d.Duration != tt.expected {
+				t.Errorf("NewDuration(%v).Duration = %v, want %v", tt.input, d.Duration, tt.expected)
+			}
+		})
+	}
+}
+
+func TestURLString(t *testing.T) {
+	tests := []struct {
+		name    string
+		url     string
+		wantErr bool
+	}{
+		{"valid http", "http://example.com", false},
+		{"valid https", "https://example.com/path", false},
+		{"valid with query", "https://example.com/path?query=1", false},
+		{"invalid scheme", "ftp://example.com", true},
+		{"missing host", "http://", true},
+		{"empty", "", true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			u, err := NewURL(tt.url)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewURL(%q) error = %v, wantErr %v", tt.url, err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr {
+				if u.String() != tt.url {
+					t.Errorf("URL.String() = %q, want %q", u.String(), tt.url)
+				}
+			}
+		})
+	}
+}
+
+func TestMustParseURL(t *testing.T) {
+	u := MustParseURL("https://example.com")
+	if u.String() != "https://example.com" {
+		t.Errorf("MustParseURL: expected https://example.com, got %s", u.String())
+	}
+}
+
+func TestMustParseURL_Panic(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseURL with invalid URL should panic")
+		}
+	}()
+	MustParseURL("not-a-valid-url")
+}
+
+func TestNanoIdMustParseNanoId(t *testing.T) {
+	id := MustParseNanoId("VwSt1Xx5")
+	if id.String() != "VwSt1Xx5" {
+		t.Errorf("MustParseNanoId: expected VwSt1Xx5, got %s", id.String())
+	}
+}
+
+func TestNanoIdMustParseNanoId_Panic(t *testing.T) {
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseNanoId with invalid ID should panic")
+		}
+	}()
+	MustParseNanoId("invalid!@#")
+}
+
+func TestNanoIdGoString(t *testing.T) {
+	id := MustParseNanoId("VwSt1Xx5")
+	if id.GoString() != "VwSt1Xx5" {
+		t.Errorf("GoString: expected VwSt1Xx5, got %s", id.GoString())
+	}
 }
