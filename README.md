@@ -14,24 +14,24 @@ go get github.com/larsartmann/go-composable-business-types
 
 ## Types
 
-| Type            | Purpose                                                             |
-| --------------- | ------------------------------------------------------------------- |
+| Type            | Purpose                                                              |
+| --------------- | -------------------------------------------------------------------- |
 | `ID[B, V]`      | Branded, type-safe identifier - prevents mixing different entity IDs |
-| `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)            |
-| `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails |
-| `DataPoint[T]`  | Self-contained data unit with complete audit trail                  |
-| `Bitemporal`    | Bitemporal tracking (validFrom, validUntil, recorded)               |
-| `Context`       | Execution context (environment, session, request, source)           |
-| `Reference[T]`  | Type-safe reference to another entity with relationship metadata    |
-| `Cause[T]`      | Causal chain tracking for building audit/lineage graphs             |
-| `BoundedString` | String with validated length constraints                            |
-| `Email`         | Email address string                                                |
-| `URL`           | URL string                                                          |
-| `Percentage`    | 0-100 value with float conversion (clamps overflow to 100)          |
-| `Cents`         | Monetary amount in smallest unit (no float errors)                  |
-| `Timestamp`     | Domain-wrapped time.Time                                            |
-| `Duration`      | Domain-wrapped time.Duration                                        |
-| `Money`         | ISO 4217 currency via `github.com/bojanz/currency`                  |
+| `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)             |
+| `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails  |
+| `DataPoint[T]`  | Self-contained data unit with complete audit trail                   |
+| `Bitemporal`    | Bitemporal tracking (validFrom, validUntil, recorded)                |
+| `Context`       | Execution context (environment, session, request, source)            |
+| `Reference[T]`  | Type-safe reference to another entity with relationship metadata     |
+| `Cause[T]`      | Causal chain tracking for building audit/lineage graphs              |
+| `BoundedString` | String with validated length constraints                             |
+| `Email`         | Email address string                                                 |
+| `URL`           | URL string                                                           |
+| `Percentage`    | 0-100 value with float conversion (clamps overflow to 100)           |
+| `Cents`         | Monetary amount in smallest unit (no float errors)                   |
+| `Timestamp`     | Domain-wrapped time.Time                                             |
+| `Duration`      | Domain-wrapped time.Duration                                         |
+| `Money`         | ISO 4217 currency via `github.com/bojanz/currency`                   |
 
 ## Enums (generated)
 

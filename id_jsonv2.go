@@ -3,8 +3,8 @@
 package cbt
 
 import (
-	jsonv2 "encoding/json/v2"
 	"encoding/json/jsontext"
+	jsonv2 "encoding/json/v2"
 	"fmt"
 )
 

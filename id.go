@@ -102,4 +102,3 @@ var (
 	_ encoding.TextMarshaler   = ID[struct{}, string]{}
 	_ encoding.TextUnmarshaler = (*ID[struct{}, string])(nil)
 )
-

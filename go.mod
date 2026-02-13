@@ -4,7 +4,11 @@ go 1.26.0
 
 tool github.com/abice/go-enum
 
-require github.com/bojanz/currency v1.4.2
+require (
+	github.com/bojanz/currency v1.4.2
+	github.com/sixafter/nanoid v1.63.1
+	golang.org/x/text v0.34.0
+)
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
@@ -26,7 +30,6 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/sixafter/aes-ctr-drbg v1.17.0 // indirect
-	github.com/sixafter/nanoid v1.63.1 // indirect
 	github.com/sixafter/prng-chacha v1.15.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
@@ -35,8 +38,7 @@ require (
 	golang.org/x/mod v0.33.0 // indirect
 	golang.org/x/sync v0.19.0 // indirect
 	golang.org/x/sys v0.41.0 // indirect
-	golang.org/x/telemetry v0.0.0-20260211191001-d65f0a9c301c // indirect
-	golang.org/x/text v0.34.0 // indirect
+	golang.org/x/telemetry v0.0.0-20260213145524-e0ab670178e1 // indirect
 	golang.org/x/tools v0.42.0 // indirect
 	golang.org/x/tools/cmd/cover v0.1.0-deprecated // indirect
 )

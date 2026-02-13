@@ -8,11 +8,9 @@ import (
 	"time"
 )
 
-var (
-	// emailRegex matches most common valid email formats.
-	// Not exhaustive RFC 5322 compliance, but practical validation.
-	emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
-)
+// emailRegex matches most common valid email formats.
+// Not exhaustive RFC 5322 compliance, but practical validation.
+var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 
 // Email represents a validated email address.
 type Email string
@@ -105,16 +103,17 @@ func NewCents(v int64) Cents     { return Cents(v) }
 func (c Cents) Int64() int64     { return int64(c) }
 func (c Cents) Float64() float64 { return float64(c) / 100 }
 
-func (c Cents) Add(other Cents) Cents      { return c + other }
-func (c Cents) Sub(other Cents) Cents      { return c - other }
-func (c Cents) Mul(n int64) Cents          { return c * Cents(n) }
-func (c Cents) Div(n int64) Cents          { return c / Cents(n) }
+func (c Cents) Add(other Cents) Cents { return c + other }
+func (c Cents) Sub(other Cents) Cents { return c - other }
+func (c Cents) Mul(n int64) Cents     { return c * Cents(n) }
+func (c Cents) Div(n int64) Cents     { return c / Cents(n) }
 func (c Cents) Abs() Cents {
 	if c < 0 {
 		return -c
 	}
 	return c
 }
+
 func (c Cents) Sign() int {
 	if c < 0 {
 		return -1
@@ -124,7 +123,7 @@ func (c Cents) Sign() int {
 	}
 	return 0
 }
-func (c Cents) IsZero() bool { return c == 0 }
+func (c Cents) IsZero() bool     { return c == 0 }
 func (c Cents) IsPositive() bool { return c > 0 }
 func (c Cents) IsNegative() bool { return c < 0 }
 
