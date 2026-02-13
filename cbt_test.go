@@ -558,3 +558,267 @@ func TestLocale_MustParseLocale(t *testing.T) {
 		t.Errorf("MustParseLocale: expected de-DE, got %s", locale.String())
 	}
 }
+
+func TestNewMoney(t *testing.T) {
+	tests := []struct {
+		name        string
+		amount      string
+		currency    string
+		wantErr     bool
+		wantString  string
+	}{
+		{"valid USD", "10.99", "USD", false, "10.99 USD"},
+		{"valid EUR", "100.00", "EUR", false, "100.00 EUR"},
+		{"valid JPY (no decimals)", "1000", "JPY", false, "1000 JPY"},
+		{"zero amount", "0.00", "USD", false, "0.00 USD"},
+		{"negative amount", "-50.25", "USD", false, "-50.25 USD"},
+		{"invalid currency", "10.99", "INVALID", true, ""},
+		{"invalid amount", "abc", "USD", true, ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			money, err := NewMoney(tt.amount, tt.currency)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewMoney() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && money.String() != tt.wantString {
+				t.Errorf("NewMoney().String() = %s, want %s", money.String(), tt.wantString)
+			}
+		})
+	}
+}
+
+func TestNewMoneyFromCents(t *testing.T) {
+	tests := []struct {
+		name       string
+		cents      int64
+		currency   string
+		wantErr    bool
+		wantString string
+	}{
+		{"valid USD cents", 1099, "USD", false, "10.99 USD"},
+		{"valid EUR cents", 10000, "EUR", false, "100.00 EUR"},
+		{"valid JPY (no decimals)", 1000, "JPY", false, "1000 JPY"},
+		{"zero cents", 0, "USD", false, "0.00 USD"},
+		{"negative cents", -5025, "USD", false, "-50.25 USD"},
+		{"invalid currency", 1099, "INVALID", true, ""},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			money, err := NewMoneyFromCents(tt.cents, tt.currency)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("NewMoneyFromCents() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && money.String() != tt.wantString {
+				t.Errorf("NewMoneyFromCents().String() = %s, want %s", money.String(), tt.wantString)
+			}
+		})
+	}
+}
+
+func TestIsValidCurrency(t *testing.T) {
+	tests := []struct {
+		code string
+		want bool
+	}{
+		{"USD", true},
+		{"EUR", true},
+		{"GBP", true},
+		{"JPY", true},
+		{"CHF", true},
+		{"INVALID", false},
+		{"usd", false}, // case sensitive
+		{"US", false},  // not a currency code
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.code, func(t *testing.T) {
+			if got := IsValidCurrency(tt.code); got != tt.want {
+				t.Errorf("IsValidCurrency(%q) = %v, want %v", tt.code, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestCurrencyDigits(t *testing.T) {
+	tests := []struct {
+		code      string
+		want      uint8
+		wantFound bool
+	}{
+		{"USD", 2, true},
+		{"EUR", 2, true},
+		{"JPY", 0, true},
+		{"INVALID", 0, false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.code, func(t *testing.T) {
+			got, found := CurrencyDigits(tt.code)
+			if got != tt.want || found != tt.wantFound {
+				t.Errorf("CurrencyDigits(%q) = (%d, %v), want (%d, %v)", tt.code, got, found, tt.want, tt.wantFound)
+			}
+		})
+	}
+}
+
+func TestCurrencySymbol(t *testing.T) {
+	tests := []struct {
+		code      string
+		locale    string
+		wantFound bool
+	}{
+		{"USD", "en-US", true},
+		{"EUR", "de-DE", true},
+		{"JPY", "ja-JP", true},
+		{"INVALID", "en-US", false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.code+"_"+tt.locale, func(t *testing.T) {
+			_, found := CurrencySymbol(tt.code, tt.locale)
+			if found != tt.wantFound {
+				t.Errorf("CurrencySymbol(%q, %q) found = %v, want %v", tt.code, tt.locale, found, tt.wantFound)
+			}
+		})
+	}
+}
+
+func TestCurrencySymbolForLocale(t *testing.T) {
+	tests := []struct {
+		code      string
+		locale    Locale
+		wantFound bool
+	}{
+		{"USD", LocaleEnUS, true},
+		{"EUR", LocaleDeDE, true},
+		{"JPY", LocaleJaJP, true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.code+"_"+tt.locale.String(), func(t *testing.T) {
+			_, found := CurrencySymbolForLocale(tt.code, tt.locale)
+			if found != tt.wantFound {
+				t.Errorf("CurrencySymbolForLocale(%q, %v) found = %v, want %v", tt.code, tt.locale, found, tt.wantFound)
+			}
+		})
+	}
+}
+
+func TestAllCurrencyCodes(t *testing.T) {
+	codes := AllCurrencyCodes()
+	if len(codes) == 0 {
+		t.Error("AllCurrencyCodes() returned empty slice")
+	}
+
+	// Verify some common currencies are present
+	foundUSD := false
+	foundEUR := false
+	foundJPY := false
+	for _, code := range codes {
+		switch code {
+		case "USD":
+			foundUSD = true
+		case "EUR":
+			foundEUR = true
+		case "JPY":
+			foundJPY = true
+		}
+	}
+	if !foundUSD {
+		t.Error("AllCurrencyCodes() missing USD")
+	}
+	if !foundEUR {
+		t.Error("AllCurrencyCodes() missing EUR")
+	}
+	if !foundJPY {
+		t.Error("AllCurrencyCodes() missing JPY")
+	}
+}
+
+func TestFormatMoney(t *testing.T) {
+	money, _ := NewMoney("10.99", "USD")
+
+	tests := []struct {
+		name     string
+		locale   string
+		contains string // locale-dependent formatting, just check currency code present
+	}{
+		{"en-US", "en-US", "USD"},
+		{"de-DE", "de-DE", "USD"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			formatted := FormatMoney(money, tt.locale)
+			if formatted == "" {
+				t.Error("FormatMoney() returned empty string")
+			}
+			// Verify it contains the amount
+			if formatted != "" && !containsAnyDigit(formatted) {
+				t.Errorf("FormatMoney() = %q, expected to contain digits", formatted)
+			}
+		})
+	}
+}
+
+func TestFormatMoneyForLocale(t *testing.T) {
+	money, _ := NewMoney("10.99", "USD")
+
+	tests := []struct {
+		name   string
+		locale Locale
+	}{
+		{"en-US", LocaleEnUS},
+		{"de-DE", LocaleDeDE},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			formatted := FormatMoneyForLocale(money, tt.locale)
+			if formatted == "" {
+				t.Error("FormatMoneyForLocale() returned empty string")
+			}
+		})
+	}
+}
+
+func TestNewMoneyFormatter(t *testing.T) {
+	formatter := NewMoneyFormatter("en-US")
+	if formatter == nil {
+		t.Error("NewMoneyFormatter() returned nil")
+	}
+
+	money, _ := NewMoney("10.99", "USD")
+	formatted := formatter.Format(money)
+	if formatted == "" {
+		t.Error("MoneyFormatter.Format() returned empty string")
+	}
+}
+
+func TestNewMoneyFormatterForLocale(t *testing.T) {
+	formatter := NewMoneyFormatterForLocale(LocaleEnUS)
+	if formatter == nil {
+		t.Error("NewMoneyFormatterForLocale() returned nil")
+	}
+
+	money, _ := NewMoney("10.99", "USD")
+	formatted := formatter.Format(money)
+	if formatted == "" {
+		t.Error("MoneyFormatter.Format() returned empty string")
+	}
+}
+
+// containsAnyDigit checks if string contains any digit
+func containsAnyDigit(s string) bool {
+	for _, r := range s {
+		if r >= '0' && r <= '9' {
+			return true
+		}
+	}
+	return false
+}
