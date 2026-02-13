@@ -10,27 +10,34 @@ go get github.com/larsartmann/go-composable-business-types
 
 ## Types
 
-| Type | Purpose |
-|------|---------|
-| `Id[T]` | Type-safe identifier wrapper - prevents mixing different entity IDs |
+| Type            | Purpose                                                             |
+| --------------- | ------------------------------------------------------------------- |
+| `Id[T]`         | Type-safe identifier wrapper - prevents mixing different entity IDs |
+| `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)            |
 | `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails |
-| `BoundedString` | String with validated length constraints |
-| `Email` | Email address string |
-| `URL` | URL string |
-| `Percentage` | 0-100 value with float conversion (clamps overflow to 100) |
-| `Cents` | Monetary amount in smallest unit (no float errors) |
-| `Timestamp` | Domain-wrapped time.Time |
-| `Duration` | Domain-wrapped time.Duration |
-| `Money` | ISO 4217 currency via `github.com/bojanz/currency` |
+| `DataPoint[T]`  | Self-contained data unit with complete audit trail                  |
+| `Bitemporal`    | Bitemporal tracking (validFrom, validUntil, recorded)               |
+| `Context`       | Execution context (environment, session, request, source)           |
+| `Reference[T]`  | Type-safe reference to another entity with relationship metadata    |
+| `Cause[T]`      | Causal chain tracking for building audit/lineage graphs             |
+| `BoundedString` | String with validated length constraints                            |
+| `Email`         | Email address string                                                |
+| `URL`           | URL string                                                          |
+| `Percentage`    | 0-100 value with float conversion (clamps overflow to 100)          |
+| `Cents`         | Monetary amount in smallest unit (no float errors)                  |
+| `Timestamp`     | Domain-wrapped time.Time                                            |
+| `Duration`      | Domain-wrapped time.Duration                                        |
+| `Money`         | ISO 4217 currency via `github.com/bojanz/currency`                  |
 
 ## Enums (generated)
 
-| Enum | Values |
-|------|--------|
-| `ActorKind` | User, Bot, System, Service |
-| `Locale` | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN |
-| `Priority` | Low, Medium, High, Critical |
-| `Status` | Draft, Active, Paused, Archived, Deleted |
+| Enum        | Values                                                 |
+| ----------- | ------------------------------------------------------ |
+| `ActorKind` | User, Bot, System, Service                             |
+| `Locale`    | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN |
+| `Priority`  | Low, Medium, High, Critical                            |
+| `Status`    | Draft, Active, Paused, Archived, Deleted               |
+| `Trigger`   | Manual, Scheduled, Webhook, Import, Migration, System, Correction |
 
 ## Usage
 
@@ -87,6 +94,107 @@ cbt.AllCurrencyCodes()         // all ISO 4217 codes
 // Percentage (clamped to 0-100)
 tax := cbt.NewPercentage(8)  // 8%
 fmt.Println(tax.Float64())   // 0.08
+```
+
+## DataPoint[T] - Complete Audit Trail
+
+`DataPoint[T]` is a self-contained unit of data with complete audit trail. Inspired by event sourcing, it preserves ALL relationships and metadata at the application layer, enabling full traceability without external systems.
+
+### Core Features
+
+- **NanoId**: Unique, URL-safe identifier (21 chars by default)
+- **Bitemporal tracking**: `validFrom`, `validUntil`, `recorded` timestamps
+- **Actor tracking**: Who caused this data point (User, Bot, Service, System)
+- **Trigger**: What caused this data point (Manual, Scheduled, Webhook, etc.)
+- **Context**: Execution environment, session, request, source
+- **References**: Type-safe references to related entities
+- **Causes**: Causal chain for building audit/lineage graphs
+- **Tags**: Additional metadata key-value pairs
+- **Version**: Optimistic concurrency support
+
+### Basic Usage
+
+```go
+type OrderState struct {
+    OrderId   string
+    Status    string
+    Total     int
+}
+
+// Create a DataPoint
+actor := cbt.UserActor(cbt.NewId("user-1"), "Alice")
+dp := cbt.NewDataPointNow(OrderState{
+    OrderId: "order-123",
+    Status:  "created",
+    Total:   9900,
+}, actor, "customer placed order")
+
+// Access fields
+fmt.Println(dp.Id())           // NanoId (unique)
+fmt.Println(dp.Payload())      // OrderState
+fmt.Println(dp.Actor().Name)   // "Alice"
+fmt.Println(dp.Trigger())      // TriggerManual
+fmt.Println(dp.Reason())       // "customer placed order"
+```
+
+### With Builder Methods
+
+```go
+dp := cbt.NewDataPointNow(payload, actor).
+    WithTrigger(cbt.TriggerWebhook).
+    WithReason("webhook received from payment provider").
+    WithContext(cbt.NewContext("payment-service").
+        WithEnvironment("production").
+        WithSession("sess-abc")).
+    WithVersion(3).
+    AddTag("correlation_id", "corr-123").
+    AddReference(cbt.NewReference("order-456", "parent")).
+    AddCause(cbt.NewCauseCommand(causeId, "approved"))
+```
+
+### Bitemporal Tracking
+
+```go
+// Create with explicit time range
+from := cbt.NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+until := cbt.NewTimestamp(time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC))
+recorded := cbt.Now()
+
+temporal := cbt.NewBitemporalWithRange(from, until, recorded)
+dp := cbt.NewDataPointNow(payload, actor).WithTemporal(temporal)
+
+// Check if valid at a point in time
+if dp.Temporal().IsValidAt(someTime) {
+    // DataPoint was valid at that time
+}
+```
+
+### References and Causal Chain
+
+```go
+// Reference to another entity
+ref := cbt.NewReferenceWithVersion("doc-123", "source", 5).
+    WithTag("department", "legal")
+
+// Cause tracking
+cause := cbt.NewCauseCommand(cbt.NewNanoId(), "created").
+    WithTrace([]cbt.NanoId{intermediateId})
+
+dp := cbt.NewDataPointNow(payload, actor).
+    AddReference(ref).
+    AddCause(cause)
+```
+
+### JSON Serialization
+
+```go
+// Full JSON support with round-trip
+data, _ := json.Marshal(dp)
+var parsed cbt.DataPoint[OrderState]
+json.Unmarshal(data, &parsed)
+
+// Fields are preserved: id, payload, actor, temporal, trigger,
+// reason, context, version, tags, references, causes
 ```
 
 ## Generate

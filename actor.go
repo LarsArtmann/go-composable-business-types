@@ -17,9 +17,9 @@ func NewActorChain[T comparable](first ActorEntry[T]) ActorChain[T] {
 	return ActorChain[T]{first}
 }
 
-func (c ActorChain[T]) Origin() ActorEntry[T]    { return c[0] }
-func (c ActorChain[T]) Current() ActorEntry[T]   { return c[len(c)-1] }
-func (c ActorChain[T]) IsEmpty() bool            { return len(c) == 0 }
+func (c ActorChain[T]) Origin() ActorEntry[T]                { return c[0] }
+func (c ActorChain[T]) Current() ActorEntry[T]               { return c[len(c)-1] }
+func (c ActorChain[T]) IsEmpty() bool                        { return len(c) == 0 }
 func (c ActorChain[T]) Append(e ActorEntry[T]) ActorChain[T] { return append(c, e) }
 
 // ByKind returns all actors of a given kind in the chain.
@@ -38,30 +38,32 @@ func (c ActorChain[T]) HasKind(kind ActorKind) bool {
 }
 
 // Constructor helpers
+
+// UserActor creates an actor entry for a human user.
 func UserActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
-	n := ""
-	if len(name) > 0 {
-		n = name[0]
-	}
-	return ActorEntry[T]{Kind: ActorKindUser, Id: id, Name: n}
+	return newActorEntry(ActorKindUser, id, name...)
 }
 
+// BotActor creates an actor entry for an automated bot.
 func BotActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
-	n := ""
-	if len(name) > 0 {
-		n = name[0]
-	}
-	return ActorEntry[T]{Kind: ActorKindBot, Id: id, Name: n}
+	return newActorEntry(ActorKindBot, id, name...)
 }
 
+// SystemActor creates an actor entry for system-initiated actions.
 func SystemActor[T comparable]() ActorEntry[T] {
 	return ActorEntry[T]{Kind: ActorKindSystem}
 }
 
+// ServiceActor creates an actor entry for a service-to-service call.
 func ServiceActor[T comparable](id Id[T], name ...string) ActorEntry[T] {
+	return newActorEntry(ActorKindService, id, name...)
+}
+
+// newActorEntry is a helper to create ActorEntry with optional name.
+func newActorEntry[T comparable](kind ActorKind, id Id[T], name ...string) ActorEntry[T] {
 	n := ""
 	if len(name) > 0 {
 		n = name[0]
 	}
-	return ActorEntry[T]{Kind: ActorKindService, Id: id, Name: n}
+	return ActorEntry[T]{Kind: kind, Id: id, Name: n}
 }

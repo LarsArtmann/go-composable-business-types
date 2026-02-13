@@ -5,13 +5,13 @@ import "time"
 // Email represents a validated email address.
 type Email string
 
-func NewEmail(v string) Email { return Email(v) }
+func NewEmail(v string) Email  { return Email(v) }
 func (e Email) String() string { return string(e) }
 
 // URL represents a validated URL.
 type URL string
 
-func NewURL(v string) URL { return URL(v) }
+func NewURL(v string) URL    { return URL(v) }
 func (u URL) String() string { return string(u) }
 
 // Percentage represents a value from 0-100.
@@ -28,8 +28,8 @@ func (p Percentage) Float64() float64 { return float64(p) / 100 }
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 
-func NewCents(v int64) Cents   { return Cents(v) }
-func (c Cents) Int64() int64   { return int64(c) }
+func NewCents(v int64) Cents     { return Cents(v) }
+func (c Cents) Int64() int64     { return int64(c) }
 func (c Cents) Float64() float64 { return float64(c) / 100 }
 
 // Timestamp wraps time.Time for domain clarity.

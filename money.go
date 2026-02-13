@@ -28,7 +28,7 @@ func CurrencyDigits(code string) (uint8, bool) {
 }
 
 // CurrencySymbol returns the symbol for a currency in the given locale.
-func CurrencySymbol(code string, locale string) (string, bool) {
+func CurrencySymbol(code, locale string) (string, bool) {
 	return currency.GetSymbol(code, currency.NewLocale(locale))
 }
 

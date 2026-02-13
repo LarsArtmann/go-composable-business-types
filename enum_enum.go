@@ -458,3 +458,137 @@ func (x *Status) UnmarshalText(text []byte) error {
 func (x *Status) AppendText(b []byte) ([]byte, error) {
 	return append(b, x.String()...), nil
 }
+
+const (
+	// TriggerManual is a Trigger of type Manual.
+	// Direct user action
+	TriggerManual Trigger = iota
+	// TriggerScheduled is a Trigger of type Scheduled.
+	// Time-based trigger (cron, delay)
+	TriggerScheduled
+	// TriggerWebhook is a Trigger of type Webhook.
+	// External system via webhook
+	TriggerWebhook
+	// TriggerImport is a Trigger of type Import.
+	// Bulk data import
+	TriggerImport
+	// TriggerMigration is a Trigger of type Migration.
+	// Data migration
+	TriggerMigration
+	// TriggerSystem is a Trigger of type System.
+	// Automatic system action
+	TriggerSystem
+	// TriggerCorrection is a Trigger of type Correction.
+	// Correction of previous data
+	TriggerCorrection
+)
+
+var ErrInvalidTrigger = fmt.Errorf("not a valid Trigger, try [%s]", strings.Join(_TriggerNames, ", "))
+
+const _TriggerName = "ManualScheduledWebhookImportMigrationSystemCorrection"
+
+var _TriggerNames = []string{
+	_TriggerName[0:6],
+	_TriggerName[6:15],
+	_TriggerName[15:22],
+	_TriggerName[22:28],
+	_TriggerName[28:37],
+	_TriggerName[37:43],
+	_TriggerName[43:53],
+}
+
+// TriggerNames returns a list of possible string values of Trigger.
+func TriggerNames() []string {
+	tmp := make([]string, len(_TriggerNames))
+	copy(tmp, _TriggerNames)
+	return tmp
+}
+
+// TriggerValues returns a list of the values for Trigger
+func TriggerValues() []Trigger {
+	return []Trigger{
+		TriggerManual,
+		TriggerScheduled,
+		TriggerWebhook,
+		TriggerImport,
+		TriggerMigration,
+		TriggerSystem,
+		TriggerCorrection,
+	}
+}
+
+var _TriggerMap = map[Trigger]string{
+	TriggerManual:     _TriggerName[0:6],
+	TriggerScheduled:  _TriggerName[6:15],
+	TriggerWebhook:    _TriggerName[15:22],
+	TriggerImport:     _TriggerName[22:28],
+	TriggerMigration:  _TriggerName[28:37],
+	TriggerSystem:     _TriggerName[37:43],
+	TriggerCorrection: _TriggerName[43:53],
+}
+
+// String implements the Stringer interface.
+func (x Trigger) String() string {
+	if str, ok := _TriggerMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("Trigger(%d)", x)
+}
+
+// IsValid provides a quick way to determine if the typed value is
+// part of the allowed enumerated values
+func (x Trigger) IsValid() bool {
+	_, ok := _TriggerMap[x]
+	return ok
+}
+
+var _TriggerValue = map[string]Trigger{
+	_TriggerName[0:6]:   TriggerManual,
+	_TriggerName[6:15]:  TriggerScheduled,
+	_TriggerName[15:22]: TriggerWebhook,
+	_TriggerName[22:28]: TriggerImport,
+	_TriggerName[28:37]: TriggerMigration,
+	_TriggerName[37:43]: TriggerSystem,
+	_TriggerName[43:53]: TriggerCorrection,
+}
+
+// ParseTrigger attempts to convert a string to a Trigger.
+func ParseTrigger(name string) (Trigger, error) {
+	if x, ok := _TriggerValue[name]; ok {
+		return x, nil
+	}
+	return Trigger(0), fmt.Errorf("%s is %w", name, ErrInvalidTrigger)
+}
+
+// MustParseTrigger converts a string to a Trigger, and panics if is not valid.
+func MustParseTrigger(name string) Trigger {
+	val, err := ParseTrigger(name)
+	if err != nil {
+		panic(err)
+	}
+	return val
+}
+
+// MarshalText implements the text marshaller method.
+func (x Trigger) MarshalText() ([]byte, error) {
+	return []byte(x.String()), nil
+}
+
+// UnmarshalText implements the text unmarshaller method.
+func (x *Trigger) UnmarshalText(text []byte) error {
+	name := string(text)
+	tmp, err := ParseTrigger(name)
+	if err != nil {
+		return err
+	}
+	*x = tmp
+	return nil
+}
+
+// AppendText appends the textual representation of itself to the end of b
+// (allocating a larger slice if necessary) and returns the updated slice.
+//
+// Implementations must not retain b, nor mutate any bytes within b[:len(b)].
+func (x *Trigger) AppendText(b []byte) ([]byte, error) {
+	return append(b, x.String()...), nil
+}

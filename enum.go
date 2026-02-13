@@ -17,3 +17,17 @@ type Priority uint8
 // Status represents common entity lifecycle status.
 // ENUM(Draft, Active, Paused, Archived, Deleted)
 type Status uint8
+
+// Trigger represents what caused a DataPoint to be created.
+// ENUM(
+//
+//	Manual,    // Direct user action
+//	Scheduled, // Time-based trigger (cron, delay)
+//	Webhook,   // External system via webhook
+//	Import,    // Bulk data import
+//	Migration, // Data migration
+//	System,    // Automatic system action
+//	Correction // Correction of previous data
+//
+// )
+type Trigger uint8
