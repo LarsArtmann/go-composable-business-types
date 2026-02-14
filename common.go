@@ -5,6 +5,7 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -50,6 +51,16 @@ func (e Email) String() string    { return string(e) }
 func (e Email) IsZero() bool      { return e == "" }
 func (e Email) LocalPart() string { s, _, _ := e.split(); return s }
 func (e Email) Domain() string    { _, d, _ := e.split(); return d }
+
+// Normalize returns an email with normalized case.
+// Per RFC 1035, domain names are case-insensitive, so the domain is lowercased.
+func (e Email) Normalize() Email {
+	local, domain, ok := e.split()
+	if !ok {
+		return e
+	}
+	return Email(local + "@" + strings.ToLower(domain))
+}
 
 // split returns local part, domain, and whether the split was successful.
 func (e Email) split() (local, domain string, ok bool) {
@@ -154,6 +165,15 @@ func NewPercentage(v uint8) Percentage {
 	return Percentage(v)
 }
 func (p Percentage) Float64() float64 { return float64(p) / 100 }
+
+// IsZero returns true if the percentage is 0.
+func (p Percentage) IsZero() bool { return p == 0 }
+
+// IsMin returns true if the percentage is 0 (minimum value).
+func (p Percentage) IsMin() bool { return p == 0 }
+
+// IsMax returns true if the percentage is 100 (maximum value).
+func (p Percentage) IsMax() bool { return p == 100 }
 
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64

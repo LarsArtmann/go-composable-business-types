@@ -58,6 +58,41 @@ func TestPercentage(t *testing.T) {
 	if clamped != 100 {
 		t.Errorf("expected 100, got %d", clamped)
 	}
+
+	// Test helper methods
+	zero := NewPercentage(0)
+	half := NewPercentage(50)
+	max := NewPercentage(100)
+
+	if !zero.IsZero() {
+		t.Error("IsZero: expected true for 0")
+	}
+	if !zero.IsMin() {
+		t.Error("IsMin: expected true for 0")
+	}
+	if zero.IsMax() {
+		t.Error("IsMax: expected false for 0")
+	}
+
+	if half.IsZero() {
+		t.Error("IsZero: expected false for 50")
+	}
+	if half.IsMin() {
+		t.Error("IsMin: expected false for 50")
+	}
+	if half.IsMax() {
+		t.Error("IsMax: expected false for 50")
+	}
+
+	if max.IsZero() {
+		t.Error("IsZero: expected false for 100")
+	}
+	if max.IsMin() {
+		t.Error("IsMin: expected false for 100")
+	}
+	if !max.IsMax() {
+		t.Error("IsMax: expected true for 100")
+	}
 }
 
 func TestCents(t *testing.T) {
@@ -115,9 +150,19 @@ func TestCents_SignOperations(t *testing.T) {
 		t.Errorf("zero Sign: expected 0, got %d", zero.Sign())
 	}
 
-	// Abs
+	// Abs - test negative to positive conversion
 	if neg.Abs().Int64() != 100 {
-		t.Errorf("Abs: expected 100, got %d", neg.Abs().Int64())
+		t.Errorf("Abs negative: expected 100, got %d", neg.Abs().Int64())
+	}
+
+	// Abs - test positive stays positive
+	if pos.Abs().Int64() != 100 {
+		t.Errorf("Abs positive: expected 100, got %d", pos.Abs().Int64())
+	}
+
+	// Abs - test zero stays zero
+	if zero.Abs().Int64() != 0 {
+		t.Errorf("Abs zero: expected 0, got %d", zero.Abs().Int64())
 	}
 
 	// Predicates
@@ -146,6 +191,20 @@ func TestBoundedString(t *testing.T) {
 	if bs.MinLen() != 1 || bs.MaxLen() != 10 {
 		t.Errorf("expected bounds [1,10], got [%d,%d]", bs.MinLen(), bs.MaxLen())
 	}
+
+	// Test MustBoundedString valid path
+	must := MustBoundedString(1, 10, "test")
+	if must.String() != "test" {
+		t.Errorf("MustBoundedString: expected test, got %s", must.String())
+	}
+
+	// Test MustBoundedString panic
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustBoundedString: expected panic for invalid value")
+		}
+	}()
+	_ = MustBoundedString(1, 10, "") // will panic
 }
 
 func TestBoundedStringValidation(t *testing.T) {
@@ -215,6 +274,51 @@ func TestNonEmptyString(t *testing.T) {
 	}
 	if bs.String() != "x" {
 		t.Errorf("expected x, got %s", bs.String())
+	}
+}
+
+func TestBoundedString_JSON(t *testing.T) {
+	bs := MustBoundedString(1, 100, "hello world")
+
+	// Test MarshalJSON
+	jsonData, err := json.Marshal(bs)
+	if err != nil {
+		t.Fatalf("MarshalJSON error: %v", err)
+	}
+	expected := `"hello world"`
+	if string(jsonData) != expected {
+		t.Errorf("MarshalJSON: expected %s, got %s", expected, string(jsonData))
+	}
+
+	// Test UnmarshalJSON
+	var parsed BoundedString
+	if err := json.Unmarshal(jsonData, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON error: %v", err)
+	}
+	if parsed.String() != "hello world" {
+		t.Errorf("UnmarshalJSON: expected hello world, got %s", parsed.String())
+	}
+
+	// Test with struct containing BoundedString
+	type Person struct {
+		Name BoundedString `json:"name"`
+	}
+	p := Person{Name: MustBoundedString(1, 50, "Alice")}
+	data, err := json.Marshal(p)
+	if err != nil {
+		t.Fatalf("struct Marshal error: %v", err)
+	}
+	if string(data) != `{"name":"Alice"}` {
+		t.Errorf("struct JSON: expected {\"name\":\"Alice\"}, got %s", string(data))
+	}
+
+	// Test unmarshal struct
+	var p2 Person
+	if err := json.Unmarshal([]byte(`{"name":"Bob"}`), &p2); err != nil {
+		t.Fatalf("struct Unmarshal error: %v", err)
+	}
+	if p2.Name.String() != "Bob" {
+		t.Errorf("struct unmarshal: expected Bob, got %s", p2.Name.String())
 	}
 }
 
@@ -451,6 +555,18 @@ func TestEmail_Helpers(t *testing.T) {
 	}
 	if empty.Domain() != "" {
 		t.Errorf("expected empty Domain, got %q", empty.Domain())
+	}
+
+	// Test Normalize
+	upperEmail := MustParseEmail("USER@EXAMPLE.COM")
+	normalized := upperEmail.Normalize()
+	if normalized.Domain() != "example.com" {
+		t.Errorf("Normalize: expected domain 'example.com', got %q", normalized.Domain())
+	}
+
+	// Local part should remain unchanged
+	if normalized.LocalPart() != "USER" {
+		t.Errorf("Normalize: expected local part 'USER', got %q", normalized.LocalPart())
 	}
 }
 
@@ -1415,6 +1531,20 @@ func TestPriorityEnum(t *testing.T) {
 	if pIntDirect != PriorityCritical {
 		t.Errorf("Scan int: expected Critical, got %v", pIntDirect)
 	}
+
+	// Test MustParsePriority valid path
+	mustHigh := MustParsePriority("High")
+	if mustHigh != PriorityHigh {
+		t.Errorf("MustParsePriority High: expected High, got %v", mustHigh)
+	}
+
+	// Test MustParsePriority panic
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParsePriority: expected panic for invalid value")
+		}
+	}()
+	_ = MustParsePriority("Invalid")
 }
 
 func TestStatusEnum(t *testing.T) {
@@ -1512,6 +1642,58 @@ func TestStatusEnum(t *testing.T) {
 	if val != "Active" {
 		t.Errorf("Value: expected Active, got %v", val)
 	}
+
+	// Test StatusNames and StatusValues
+	names := StatusNames()
+	if len(names) != 4 {
+		t.Errorf("StatusNames: expected 4, got %d", len(names))
+	}
+	values := StatusValues()
+	if len(values) != 4 {
+		t.Errorf("StatusValues: expected 4, got %d", len(values))
+	}
+
+	// Test MarshalText/UnmarshalText roundtrip
+	for _, s := range []Status{StatusDraft, StatusActive, StatusPaused, StatusArchived} {
+		data, err := s.MarshalText()
+		if err != nil {
+			t.Errorf("MarshalText %s: unexpected error %v", s, err)
+		}
+		var s2 Status
+		err = s2.UnmarshalText(data)
+		if err != nil {
+			t.Errorf("UnmarshalText %s: unexpected error %v", s, err)
+		}
+		if s2 != s {
+			t.Errorf("Marshal/Unmarshal roundtrip failed for %s", s)
+		}
+	}
+
+	// Test AppendText
+	for _, s := range []Status{StatusDraft, StatusActive, StatusPaused, StatusArchived} {
+		buf := []byte("status-")
+		result, err := s.AppendText(buf)
+		if err != nil {
+			t.Errorf("AppendText %s: unexpected error %v", s, err)
+		}
+		if string(result) != "status-"+s.String() {
+			t.Errorf("AppendText %s: expected status-%s, got %s", s, s, result)
+		}
+	}
+
+	// Test MustParseStatus valid path
+	mustActive := MustParseStatus("Active")
+	if mustActive != StatusActive {
+		t.Errorf("MustParseStatus Active: expected Active, got %v", mustActive)
+	}
+
+	// Test MustParseStatus panic
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseStatus: expected panic for invalid value")
+		}
+	}()
+	_ = MustParseStatus("Invalid")
 }
 
 func TestTriggerEnum(t *testing.T) {
@@ -1615,6 +1797,20 @@ func TestTriggerEnum(t *testing.T) {
 	if err == nil {
 		t.Error("ParseTrigger: expected error for invalid value")
 	}
+
+	// Test MustParseTrigger
+	mustManual := MustParseTrigger("Manual")
+	if mustManual != TriggerManual {
+		t.Errorf("MustParseTrigger Manual: expected Manual, got %v", mustManual)
+	}
+
+	// Test MustParseTrigger panic
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseTrigger: expected panic for invalid value")
+		}
+	}()
+	_ = MustParseTrigger("InvalidMustParse")
 }
 
 func TestActorKindEnum(t *testing.T) {
@@ -1719,6 +1915,12 @@ func TestActorKindEnum(t *testing.T) {
 	err = ak2.UnmarshalText([]byte("Invalid"))
 	if err == nil {
 		t.Error("UnmarshalText: expected error for invalid value")
+	}
+
+	// Test MustParseActorKind valid path
+	mustUser := MustParseActorKind("User")
+	if mustUser != ActorKindUser {
+		t.Errorf("MustParseActorKind User: expected User, got %v", mustUser)
 	}
 
 	// Test MustParse panics on invalid

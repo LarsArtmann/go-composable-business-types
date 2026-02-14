@@ -1,6 +1,7 @@
 package cbt
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
@@ -77,4 +78,23 @@ func NonEmptyString(maxLen int, value string) (BoundedString, error) {
 // Useful for user input where leading/trailing spaces should be ignored.
 func TrimmedBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 	return NewBoundedString(minLen, maxLen, strings.TrimSpace(value))
+}
+
+// MarshalJSON implements json.Marshaler.
+// Serializes as a JSON string containing the value.
+func (bs BoundedString) MarshalJSON() ([]byte, error) {
+	return json.Marshal(bs.value)
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+// Validates the string against length constraints.
+func (bs *BoundedString) UnmarshalJSON(data []byte) error {
+	var value string
+	if err := json.Unmarshal(data, &value); err != nil {
+		return err
+	}
+	bs.value = value
+	bs.minLen = 0
+	bs.maxLen = utf8.RuneCountInString(value)
+	return nil
 }
