@@ -1286,6 +1286,135 @@ func TestPriorityEnum(t *testing.T) {
 	if val != "High" {
 		t.Errorf("Value: expected High, got %v", val)
 	}
+
+	// Test remaining Scan branches (uint, float64, pointers)
+	intVal := 1
+	int64Val := int64(1)
+	uintVal := uint(1)
+	uint64Val := uint64(1)
+	float64Val := float64(1)
+	strVal := "Medium"
+
+	// Scan *int
+	var pInt Priority
+	if err := pInt.Scan(&intVal); err != nil {
+		t.Errorf("Scan *int: unexpected error %v", err)
+	}
+	if pInt != PriorityMedium {
+		t.Errorf("Scan *int: expected Medium, got %v", pInt)
+	}
+
+	// Scan *int64
+	var pInt64 Priority
+	if err := pInt64.Scan(&int64Val); err != nil {
+		t.Errorf("Scan *int64: unexpected error %v", err)
+	}
+	if pInt64 != PriorityMedium {
+		t.Errorf("Scan *int64: expected Medium, got %v", pInt64)
+	}
+
+	// Scan *uint
+	var pUint Priority
+	if err := pUint.Scan(&uintVal); err != nil {
+		t.Errorf("Scan *uint: unexpected error %v", err)
+	}
+	if pUint != PriorityMedium {
+		t.Errorf("Scan *uint: expected Medium, got %v", pUint)
+	}
+
+	// Scan *uint64
+	var pUint64 Priority
+	if err := pUint64.Scan(&uint64Val); err != nil {
+		t.Errorf("Scan *uint64: unexpected error %v", err)
+	}
+	if pUint64 != PriorityMedium {
+		t.Errorf("Scan *uint64: expected Medium, got %v", pUint64)
+	}
+
+	// Scan *float64
+	var pFloat64 Priority
+	if err := pFloat64.Scan(&float64Val); err != nil {
+		t.Errorf("Scan *float64: unexpected error %v", err)
+	}
+	if pFloat64 != PriorityMedium {
+		t.Errorf("Scan *float64: expected Medium, got %v", pFloat64)
+	}
+
+	// Scan *string
+	var pStr Priority
+	if err := pStr.Scan(&strVal); err != nil {
+		t.Errorf("Scan *string: unexpected error %v", err)
+	}
+	if pStr != PriorityMedium {
+		t.Errorf("Scan *string: expected Medium, got %v", pStr)
+	}
+
+	// Scan uint
+	var pUintDirect Priority
+	if err := pUintDirect.Scan(uint(2)); err != nil {
+		t.Errorf("Scan uint: unexpected error %v", err)
+	}
+	if pUintDirect != PriorityHigh {
+		t.Errorf("Scan uint: expected High, got %v", pUintDirect)
+	}
+
+	// Scan uint64
+	var pUint64Direct Priority
+	if err := pUint64Direct.Scan(uint64(3)); err != nil {
+		t.Errorf("Scan uint64: unexpected error %v", err)
+	}
+	if pUint64Direct != PriorityCritical {
+		t.Errorf("Scan uint64: expected Critical, got %v", pUint64Direct)
+	}
+
+	// Scan float64
+	var pFloat64Direct Priority
+	if err := pFloat64Direct.Scan(float64(0)); err != nil {
+		t.Errorf("Scan float64: unexpected error %v", err)
+	}
+	if pFloat64Direct != PriorityLow {
+		t.Errorf("Scan float64: expected Low, got %v", pFloat64Direct)
+	}
+
+	// Test Scan *Priority (pointer to same type)
+	pOrig := PriorityCritical
+	var pPtr Priority
+	if err := pPtr.Scan(&pOrig); err != nil {
+		t.Errorf("Scan *Priority: unexpected error %v", err)
+	}
+	if pPtr != PriorityCritical {
+		t.Errorf("Scan *Priority: expected Critical, got %v", pPtr)
+	}
+
+	// Test Scan nil pointer (*Priority) - should error
+	var pNil Priority
+	err = pNil.Scan((*Priority)(nil))
+	if err == nil {
+		t.Error("Scan *Priority(nil): expected error for nil pointer")
+	}
+
+	// Test Scan nil pointer (*int) - should error
+	var pNilInt Priority
+	err = pNilInt.Scan((*int)(nil))
+	if err == nil {
+		t.Error("Scan *int(nil): expected error for nil pointer")
+	}
+
+	// Test Scan nil pointer (*string) - should error
+	var pNilStr Priority
+	err = pNilStr.Scan((*string)(nil))
+	if err == nil {
+		t.Error("Scan *string(nil): expected error for nil pointer")
+	}
+
+	// Test Scan int
+	var pIntDirect Priority
+	if err := pIntDirect.Scan(3); err != nil {
+		t.Errorf("Scan int: unexpected error %v", err)
+	}
+	if pIntDirect != PriorityCritical {
+		t.Errorf("Scan int: expected Critical, got %v", pIntDirect)
+	}
 }
 
 func TestStatusEnum(t *testing.T) {
@@ -1310,6 +1439,79 @@ func TestStatusEnum(t *testing.T) {
 		}
 	}()
 	MustParseStatus("Invalid")
+
+	// Test Names and Values
+	if len(StatusNames()) != 5 {
+		t.Errorf("StatusNames: expected 5, got %d", len(StatusNames()))
+	}
+	if len(StatusValues()) != 5 {
+		t.Errorf("StatusValues: expected 5, got %d", len(StatusValues()))
+	}
+
+	// Test AppendText
+	s2 := StatusArchived
+	appended, err2 := s2.AppendText([]byte("prefix-"))
+	if err2 != nil || string(appended) != "prefix-Archived" {
+		t.Errorf("AppendText: expected prefix-Archived, got %s (err: %v)", appended, err2)
+	}
+
+	// Test Scan (database → Go)
+	var scanStatus Status
+
+	// Scan nil
+	if err := scanStatus.Scan(nil); err != nil {
+		t.Errorf("Scan nil: unexpected error %v", err)
+	}
+	if scanStatus != StatusDraft {
+		t.Errorf("Scan nil: expected Draft (0), got %v", scanStatus)
+	}
+
+	// Scan int64
+	if err := scanStatus.Scan(int64(3)); err != nil {
+		t.Errorf("Scan int64: unexpected error %v", err)
+	}
+	if scanStatus != StatusArchived {
+		t.Errorf("Scan int64: expected Archived, got %v", scanStatus)
+	}
+
+	// Scan string
+	if err := scanStatus.Scan("Deleted"); err != nil {
+		t.Errorf("Scan string: unexpected error %v", err)
+	}
+	if scanStatus != StatusDeleted {
+		t.Errorf("Scan string: expected Deleted, got %v", scanStatus)
+	}
+
+	// Scan []byte
+	if err := scanStatus.Scan([]byte("Active")); err != nil {
+		t.Errorf("Scan []byte: unexpected error %v", err)
+	}
+	if scanStatus != StatusActive {
+		t.Errorf("Scan []byte: expected Active, got %v", scanStatus)
+	}
+
+	// Scan Status directly
+	if err := scanStatus.Scan(StatusPaused); err != nil {
+		t.Errorf("Scan Status: unexpected error %v", err)
+	}
+	if scanStatus != StatusPaused {
+		t.Errorf("Scan Status: expected Paused, got %v", scanStatus)
+	}
+
+	// Scan invalid string
+	err = scanStatus.Scan("InvalidStatus")
+	if err == nil {
+		t.Error("Scan invalid: expected error for invalid string")
+	}
+
+	// Test Value (Go → database)
+	val, err := StatusActive.Value()
+	if err != nil {
+		t.Errorf("Value: unexpected error %v", err)
+	}
+	if val != "Active" {
+		t.Errorf("Value: expected Active, got %v", val)
+	}
 }
 
 func TestTriggerEnum(t *testing.T) {
@@ -1332,6 +1534,86 @@ func TestTriggerEnum(t *testing.T) {
 	_ = t2.UnmarshalText(data)
 	if t2 != TriggerManual {
 		t.Errorf("Marshal/Unmarshal: expected Manual, got %v", t2)
+	}
+
+	// Test IsValid
+	if !TriggerSystem.IsValid() {
+		t.Error("IsValid: expected System to be valid")
+	}
+	invalid := Trigger(99)
+	if invalid.IsValid() {
+		t.Error("IsValid: expected 99 to be invalid")
+	}
+
+	// Test AppendText
+	trig := TriggerMigration
+	appended, err := trig.AppendText([]byte("prefix-"))
+	if err != nil || string(appended) != "prefix-Migration" {
+		t.Errorf("AppendText: expected prefix-Migration, got %s (err: %v)", appended, err)
+	}
+
+	// Test Scan (database → Go)
+	var scanTrigger Trigger
+
+	// Scan nil
+	if err := scanTrigger.Scan(nil); err != nil {
+		t.Errorf("Scan nil: unexpected error %v", err)
+	}
+	if scanTrigger != TriggerManual {
+		t.Errorf("Scan nil: expected Manual (0), got %v", scanTrigger)
+	}
+
+	// Scan int64
+	if err := scanTrigger.Scan(int64(5)); err != nil {
+		t.Errorf("Scan int64: unexpected error %v", err)
+	}
+	if scanTrigger != TriggerSystem {
+		t.Errorf("Scan int64: expected System, got %v", scanTrigger)
+	}
+
+	// Scan string
+	if err := scanTrigger.Scan("Correction"); err != nil {
+		t.Errorf("Scan string: unexpected error %v", err)
+	}
+	if scanTrigger != TriggerCorrection {
+		t.Errorf("Scan string: expected Correction, got %v", scanTrigger)
+	}
+
+	// Scan []byte
+	if err := scanTrigger.Scan([]byte("Scheduled")); err != nil {
+		t.Errorf("Scan []byte: unexpected error %v", err)
+	}
+	if scanTrigger != TriggerScheduled {
+		t.Errorf("Scan []byte: expected Scheduled, got %v", scanTrigger)
+	}
+
+	// Scan Trigger directly
+	if err := scanTrigger.Scan(TriggerImport); err != nil {
+		t.Errorf("Scan Trigger: unexpected error %v", err)
+	}
+	if scanTrigger != TriggerImport {
+		t.Errorf("Scan Trigger: expected Import, got %v", scanTrigger)
+	}
+
+	// Scan invalid string
+	err = scanTrigger.Scan("InvalidTrigger")
+	if err == nil {
+		t.Error("Scan invalid: expected error for invalid string")
+	}
+
+	// Test Value (Go → database)
+	val, err := TriggerWebhook.Value()
+	if err != nil {
+		t.Errorf("Value: unexpected error %v", err)
+	}
+	if val != "Webhook" {
+		t.Errorf("Value: expected Webhook, got %v", val)
+	}
+
+	// Test Parse error path
+	_, err = ParseTrigger("Invalid")
+	if err == nil {
+		t.Error("ParseTrigger: expected error for invalid value")
 	}
 }
 
@@ -1358,4 +1640,92 @@ func TestActorKindEnum(t *testing.T) {
 	if invalid.String() != "ActorKind(99)" {
 		t.Errorf("String invalid: expected ActorKind(99), got %s", invalid.String())
 	}
+
+	// Test Names and Values
+	if len(ActorKindNames()) != 4 {
+		t.Errorf("ActorKindNames: expected 4, got %d", len(ActorKindNames()))
+	}
+	if len(ActorKindValues()) != 4 {
+		t.Errorf("ActorKindValues: expected 4, got %d", len(ActorKindValues()))
+	}
+
+	// Test AppendText
+	ak := ActorKindService
+	appended, err := ak.AppendText([]byte("prefix-"))
+	if err != nil || string(appended) != "prefix-Service" {
+		t.Errorf("AppendText: expected prefix-Service, got %s (err: %v)", appended, err)
+	}
+
+	// Test Scan (database → Go)
+	var scanActorKind ActorKind
+
+	// Scan nil
+	if err := scanActorKind.Scan(nil); err != nil {
+		t.Errorf("Scan nil: unexpected error %v", err)
+	}
+	if scanActorKind != ActorKindUser {
+		t.Errorf("Scan nil: expected User (0), got %v", scanActorKind)
+	}
+
+	// Scan int64
+	if err := scanActorKind.Scan(int64(2)); err != nil {
+		t.Errorf("Scan int64: unexpected error %v", err)
+	}
+	if scanActorKind != ActorKindSystem {
+		t.Errorf("Scan int64: expected System, got %v", scanActorKind)
+	}
+
+	// Scan string
+	if err := scanActorKind.Scan("Service"); err != nil {
+		t.Errorf("Scan string: unexpected error %v", err)
+	}
+	if scanActorKind != ActorKindService {
+		t.Errorf("Scan string: expected Service, got %v", scanActorKind)
+	}
+
+	// Scan []byte
+	if err := scanActorKind.Scan([]byte("Bot")); err != nil {
+		t.Errorf("Scan []byte: unexpected error %v", err)
+	}
+	if scanActorKind != ActorKindBot {
+		t.Errorf("Scan []byte: expected Bot, got %v", scanActorKind)
+	}
+
+	// Scan ActorKind directly
+	if err := scanActorKind.Scan(ActorKindBot); err != nil {
+		t.Errorf("Scan ActorKind: unexpected error %v", err)
+	}
+	if scanActorKind != ActorKindBot {
+		t.Errorf("Scan ActorKind: expected Bot, got %v", scanActorKind)
+	}
+
+	// Scan invalid string
+	err = scanActorKind.Scan("InvalidActorKind")
+	if err == nil {
+		t.Error("Scan invalid: expected error for invalid string")
+	}
+
+	// Test Value (Go → database)
+	val, err := ActorKindService.Value()
+	if err != nil {
+		t.Errorf("Value: unexpected error %v", err)
+	}
+	if val != "Service" {
+		t.Errorf("Value: expected Service, got %v", val)
+	}
+
+	// Test MarshalText/UnmarshalText error path
+	var ak2 ActorKind
+	err = ak2.UnmarshalText([]byte("Invalid"))
+	if err == nil {
+		t.Error("UnmarshalText: expected error for invalid value")
+	}
+
+	// Test MustParse panics on invalid
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("MustParseActorKind: expected panic for invalid value")
+		}
+	}()
+	MustParseActorKind("Invalid")
 }
