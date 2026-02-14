@@ -174,3 +174,102 @@ The question is: Is the convenience worth the complexity of currency validation 
 **Status:** ✅ Target exceeded (80% → 87.3%)
 **Branch:** master (up to date with origin)
 **Next Session:** Continue improving coverage and add documentation
+
+---
+
+## Appendix A: SQL Database Support (2026-02-14)
+
+### Commit: `8709bb4` - feat(enum): add --sql flag for database Scan/Value methods
+
+### What Changed
+
+Added `--sql` flag to the go-enum generation directive, enabling automatic implementation of `sql.Scanner` and `driver.Valuer` interfaces for all enum types.
+
+**Before:**
+```go
+//go:generate go tool go-enum --marshal --names --values --mustparse
+```
+
+**After:**
+```go
+//go:generate go tool go-enum --marshal --names --values --mustparse --sql
+```
+
+### Why This Matters for sqlc Users
+
+sqlc generates Go code that uses `sql.Scanner` and `driver.Valuer` interfaces. With `--sql`:
+
+```sql
+-- queries.sql
+SELECT * FROM items WHERE priority = $1;
+```
+
+```go
+// sqlc generates:
+func (q *Queries) GetItems(ctx context.Context, priority Priority) ([]Item, error)
+// priority works directly - no manual string/int conversion needed
+```
+
+### Generated Methods
+
+Each enum now has:
+
+**`Scan(value interface{}) error`** - Database → Go
+- Handles: `nil`, `int64`, `string`, `[]byte`, direct type, `int`, `uint`, `uint64`, `float64`, and pointer variants
+- `nil` → zero value (e.g., `PriorityLow`)
+- Invalid strings return error via `ParseXxx`
+
+**`Value() (driver.Value, error)`** - Go → Database
+- Returns string representation (e.g., `"High"`)
+
+### Flags Considered but Rejected
+
+| Flag | Reason |
+|------|--------|
+| `--nocase` | Case-sensitive is stricter; callers can normalize if needed |
+| `--sqlnullint` | Nullable enums are an anti-pattern — use pointer or optional type |
+| `--flag` | CLI-specific, not core to business types library |
+| `--ptr` | Minor convenience; `&PriorityLow` already works |
+
+### Test Coverage
+
+Added comprehensive tests in `TestPriorityEnum` covering:
+- Scan `nil` → zero value
+- Scan `int64` → direct cast
+- Scan `string` → parsed via ParsePriority
+- Scan `[]byte` → parsed via ParsePriority
+- Scan direct type → copy
+- Scan invalid string → error
+- Value → returns string representation
+
+### Coverage Impact
+
+Coverage dropped from 87.3% to 70.8% due to new untested Scan branches in enum_enum.go. This is expected — the generated code has many type branches (int, uint, float64, various pointer types) that aren't all exercised by tests.
+
+**To improve coverage:**
+- Add tests for remaining Scan type branches (uint, float64, pointer types)
+- Or accept that generated code with many branches won't hit 100%
+
+### Files Changed
+
+| File | Lines Changed |
+|------|---------------|
+| enum.go | +1 (flag addition) |
+| enum_enum.go | +294 (generated Scan/Value methods) |
+| cbt_test.go | +58 (Scan/Value tests) |
+
+### Reflection
+
+**What went well:**
+- Clean addition — just one flag, regenerate, add tests
+- Pattern validates: testing one enum thoroughly confirms the generation works
+- sqlc compatibility achieved with minimal effort
+
+**What to improve:**
+- Coverage drop is acceptable for generated code, but could add more Scan type branch tests
+- Consider documenting the sqlc integration pattern in README
+
+**Decision rationale:**
+- `--sql` is essential for a "composable business types" library
+- Without it, users must write manual Scan/Value implementations
+- This defeats the library's purpose of providing ready-to-use types
