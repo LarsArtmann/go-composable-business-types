@@ -1931,3 +1931,140 @@ func TestActorKindEnum(t *testing.T) {
 	}()
 	MustParseActorKind("Invalid")
 }
+
+// Benchmarks for performance profiling
+
+func BenchmarkID(b *testing.B) {
+	b.ReportAllocs()
+	payload := struct{ Name string }{Name: "test"}
+	actor := UserActor[string](NewID[struct{}, string]("user-1"))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = NewDataPointNow(payload, actor)
+	}
+}
+
+func BenchmarkNanoID(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = NewNanoId()
+	}
+}
+
+func BenchmarkNanoIDWithSize(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = NewNanoIdWithLength(16)
+	}
+}
+
+func BenchmarkEmailValidation(b *testing.B) {
+	b.ReportAllocs()
+	emails := []string{
+		"user@example.com",
+		"test+tag@domain.org",
+		"admin@mail.example.io",
+	}
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		for _, e := range emails {
+			_, _ = NewEmail(e)
+		}
+	}
+}
+
+func BenchmarkPercentage(b *testing.B) {
+	b.ReportAllocs()
+	v := Percentage(50)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = v.Float64()
+		_ = v.IsZero()
+		_ = v.IsMax()
+	}
+}
+
+func BenchmarkCents(b *testing.B) {
+	b.ReportAllocs()
+	a := Cents(1000)
+	val2 := Cents(500)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = a.Add(val2)
+		_ = a.Sub(val2)
+		_ = a.Mul(2)
+		_ = a.Div(2)
+		_ = a.Abs()
+	}
+}
+
+func BenchmarkTimestamp(b *testing.B) {
+	b.ReportAllocs()
+	ts := NewTimestamp(time.Now())
+	other := NewTimestamp(time.Now().Add(time.Hour))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = ts.Before(other.Time)
+		_ = ts.After(other.Time)
+		_ = ts.IsZero()
+	}
+}
+
+func BenchmarkBoundedString(b *testing.B) {
+	b.ReportAllocs()
+	s, _ := NewBoundedString(1, 10, "testvalue")
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = s.Len()
+		_ = s.IsEmpty()
+		_ = s.IsMinLength()
+		_ = s.IsMaxLength()
+	}
+}
+
+func BenchmarkDataPointJSON(b *testing.B) {
+	b.ReportAllocs()
+	payload := TestPayload{Value: "test", Count: 42}
+	actor := UserActor[string](NewID[struct{}, string]("user-1"))
+	dp := NewDataPointNow(payload, actor)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_, _ = dp.MarshalJSON()
+	}
+}
+
+func BenchmarkBitemporal(b *testing.B) {
+	b.ReportAllocs()
+	ts := NewTimestamp(time.Now())
+	bt := NewBitemporal(ts)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = bt.IsValidAt(ts)
+		_ = bt.IsCurrentlyValid()
+	}
+}
+
+func BenchmarkActorChain(b *testing.B) {
+	b.ReportAllocs()
+	actor := UserActor(NewID[struct{}, string]("user-1"))
+	chain := NewActorChain(actor).
+		Append(ServiceActor(NewID[struct{}, string]("service-1")))
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = chain.Origin()
+		_ = chain.Current()
+		_ = chain.IsEmpty()
+	}
+}
+
+func BenchmarkEnum(b *testing.B) {
+	b.ReportAllocs()
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		_ = StatusActive.String()
+		_ = StatusNames()
+		_ = MustParseStatus("Draft")
+	}
+}
