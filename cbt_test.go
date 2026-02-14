@@ -1228,6 +1228,64 @@ func TestPriorityEnum(t *testing.T) {
 	if err2 != nil || string(appended) != "prefix-Critical" {
 		t.Errorf("AppendText: expected prefix-Critical, got %s (err: %v)", appended, err2)
 	}
+
+	// Test Scan (database → Go)
+	var scanPriority Priority
+
+	// Scan nil
+	if err := scanPriority.Scan(nil); err != nil {
+		t.Errorf("Scan nil: unexpected error %v", err)
+	}
+	if scanPriority != PriorityLow {
+		t.Errorf("Scan nil: expected Low (0), got %v", scanPriority)
+	}
+
+	// Scan int64
+	if err := scanPriority.Scan(int64(2)); err != nil {
+		t.Errorf("Scan int64: unexpected error %v", err)
+	}
+	if scanPriority != PriorityHigh {
+		t.Errorf("Scan int64: expected High, got %v", scanPriority)
+	}
+
+	// Scan string
+	if err := scanPriority.Scan("Critical"); err != nil {
+		t.Errorf("Scan string: unexpected error %v", err)
+	}
+	if scanPriority != PriorityCritical {
+		t.Errorf("Scan string: expected Critical, got %v", scanPriority)
+	}
+
+	// Scan []byte
+	if err := scanPriority.Scan([]byte("Low")); err != nil {
+		t.Errorf("Scan []byte: unexpected error %v", err)
+	}
+	if scanPriority != PriorityLow {
+		t.Errorf("Scan []byte: expected Low, got %v", scanPriority)
+	}
+
+	// Scan Priority directly
+	if err := scanPriority.Scan(PriorityMedium); err != nil {
+		t.Errorf("Scan Priority: unexpected error %v", err)
+	}
+	if scanPriority != PriorityMedium {
+		t.Errorf("Scan Priority: expected Medium, got %v", scanPriority)
+	}
+
+	// Scan invalid string
+	err = scanPriority.Scan("InvalidPriority")
+	if err == nil {
+		t.Error("Scan invalid: expected error for invalid string")
+	}
+
+	// Test Value (Go → database)
+	val, err := PriorityHigh.Value()
+	if err != nil {
+		t.Errorf("Value: unexpected error %v", err)
+	}
+	if val != "High" {
+		t.Errorf("Value: expected High, got %v", val)
+	}
 }
 
 func TestStatusEnum(t *testing.T) {

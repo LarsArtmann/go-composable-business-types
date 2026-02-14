@@ -1,6 +1,6 @@
 package cbt
 
-//go:generate go tool go-enum --marshal --names --values --mustparse
+//go:generate go tool go-enum --marshal --names --values --mustparse --sql
 
 // ActorKind represents the type of actor performing an action.
 // ENUM(User, Bot, System, Service)

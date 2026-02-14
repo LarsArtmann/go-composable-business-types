@@ -6,6 +6,8 @@
 package cbt
 
 import (
+	"database/sql/driver"
+	"errors"
 	"fmt"
 	"strings"
 )
@@ -119,6 +121,79 @@ func (x *ActorKind) AppendText(b []byte) ([]byte, error) {
 	return append(b, x.String()...), nil
 }
 
+var errActorKindNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *ActorKind) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = ActorKind(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = ActorKind(v)
+	case string:
+		*x, err = ParseActorKind(v)
+	case []byte:
+		*x, err = ParseActorKind(string(v))
+	case ActorKind:
+		*x = v
+	case int:
+		*x = ActorKind(v)
+	case *ActorKind:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = ActorKind(v)
+	case uint64:
+		*x = ActorKind(v)
+	case *int:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *int64:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = ActorKind(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *uint:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *uint64:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *string:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x, err = ParseActorKind(*v)
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x ActorKind) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+
 const (
 	// PriorityLow is a Priority of type Low.
 	PriorityLow Priority = iota
@@ -226,6 +301,79 @@ func (x *Priority) UnmarshalText(text []byte) error {
 // Implementations must not retain b, nor mutate any bytes within b[:len(b)].
 func (x *Priority) AppendText(b []byte) ([]byte, error) {
 	return append(b, x.String()...), nil
+}
+
+var errPriorityNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *Priority) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Priority(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Priority(v)
+	case string:
+		*x, err = ParsePriority(v)
+	case []byte:
+		*x, err = ParsePriority(string(v))
+	case Priority:
+		*x = v
+	case int:
+		*x = Priority(v)
+	case *Priority:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Priority(v)
+	case uint64:
+		*x = Priority(v)
+	case *int:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *int64:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Priority(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *uint:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *uint64:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *string:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x, err = ParsePriority(*v)
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x Priority) Value() (driver.Value, error) {
+	return x.String(), nil
 }
 
 const (
@@ -341,6 +489,79 @@ func (x *Status) UnmarshalText(text []byte) error {
 // Implementations must not retain b, nor mutate any bytes within b[:len(b)].
 func (x *Status) AppendText(b []byte) ([]byte, error) {
 	return append(b, x.String()...), nil
+}
+
+var errStatusNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *Status) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Status(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Status(v)
+	case string:
+		*x, err = ParseStatus(v)
+	case []byte:
+		*x, err = ParseStatus(string(v))
+	case Status:
+		*x = v
+	case int:
+		*x = Status(v)
+	case *Status:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Status(v)
+	case uint64:
+		*x = Status(v)
+	case *int:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *int64:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Status(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *uint:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *uint64:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *string:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x, err = ParseStatus(*v)
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x Status) Value() (driver.Value, error) {
+	return x.String(), nil
 }
 
 const (
@@ -475,4 +696,77 @@ func (x *Trigger) UnmarshalText(text []byte) error {
 // Implementations must not retain b, nor mutate any bytes within b[:len(b)].
 func (x *Trigger) AppendText(b []byte) ([]byte, error) {
 	return append(b, x.String()...), nil
+}
+
+var errTriggerNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *Trigger) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Trigger(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Trigger(v)
+	case string:
+		*x, err = ParseTrigger(v)
+	case []byte:
+		*x, err = ParseTrigger(string(v))
+	case Trigger:
+		*x = v
+	case int:
+		*x = Trigger(v)
+	case *Trigger:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Trigger(v)
+	case uint64:
+		*x = Trigger(v)
+	case *int:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *int64:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Trigger(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *uint:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *uint64:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *string:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x, err = ParseTrigger(*v)
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x Trigger) Value() (driver.Value, error) {
+	return x.String(), nil
 }
