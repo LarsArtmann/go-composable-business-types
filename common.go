@@ -212,6 +212,21 @@ type Timestamp struct{ time.Time }
 func NewTimestamp(t time.Time) Timestamp { return Timestamp{Time: t} }
 func Now() Timestamp                     { return Timestamp{Time: time.Now()} }
 
+// Before returns true if this timestamp is before the given time.
+func (t Timestamp) Before(other time.Time) bool {
+	return t.Time.Before(other)
+}
+
+// After returns true if this timestamp is after the given time.
+func (t Timestamp) After(other time.Time) bool {
+	return t.Time.After(other)
+}
+
+// IsZero returns true if the timestamp is the zero time.
+func (t Timestamp) IsZero() bool {
+	return t.Time.IsZero()
+}
+
 // Duration wraps time.Duration for domain clarity.
 type Duration struct{ time.Duration }
 
