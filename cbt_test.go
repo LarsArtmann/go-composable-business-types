@@ -1112,15 +1112,15 @@ func TestBitemporal_IsCurrentlyValid(t *testing.T) {
 	}
 
 	// Fact with explicit end date in the future - should be valid
-	futureEnd := NewBitemporalWithRange(now, NewTimestamp(now.Time.Add(24*time.Hour)), now)
+	futureEnd := NewBitemporalWithRange(now, NewTimestamp(now.Add(24*time.Hour)), now)
 	if !futureEnd.IsCurrentlyValid() {
 		t.Error("fact ending in future should be currently valid")
 	}
 
 	// Fact that ended in the past - should not be valid
 	pastEnd := NewBitemporalWithRange(
-		NewTimestamp(now.Time.Add(-2*time.Hour)),
-		NewTimestamp(now.Time.Add(-1*time.Hour)),
+		NewTimestamp(now.Add(-2*time.Hour)),
+		NewTimestamp(now.Add(-1*time.Hour)),
 		now,
 	)
 	if pastEnd.IsCurrentlyValid() {
@@ -1132,7 +1132,7 @@ func TestBitemporal_WithValidUntil(t *testing.T) {
 	now := Now()
 	b := NewBitemporal(now)
 
-	endTime := NewTimestamp(now.Time.Add(24 * time.Hour))
+	endTime := NewTimestamp(now.Add(24 * time.Hour))
 	updated := b.WithValidUntil(endTime)
 
 	if updated.ValidUntil() != endTime {
