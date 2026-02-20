@@ -208,6 +208,17 @@ func (c Cents) IsZero() bool     { return c == 0 }
 func (c Cents) IsPositive() bool { return c > 0 }
 func (c Cents) IsNegative() bool { return c < 0 }
 
+// Compare returns -1 if c < other, 0 if equal, 1 if c > other.
+func (c Cents) Compare(other Cents) int {
+	if c < other {
+		return -1
+	}
+	if c > other {
+		return 1
+	}
+	return 0
+}
+
 // Timestamp wraps time.Time for domain clarity.
 type Timestamp struct{ time.Time }
 
@@ -229,10 +240,78 @@ func (t Timestamp) IsZero() bool {
 	return t.Time.IsZero()
 }
 
+// Compare returns -1 if t < other, 0 if equal, 1 if t > other.
+func (t Timestamp) Compare(other Timestamp) int {
+	return t.Time.Compare(other.Time)
+}
+
 // Duration wraps time.Duration for domain clarity.
 type Duration struct{ time.Duration }
 
 func NewDuration(d time.Duration) Duration { return Duration{Duration: d} }
+
+// IsZero returns true if the duration is zero.
+func (d Duration) IsZero() bool { return d.Duration == 0 }
+
+// Compare returns -1 if d < other, 0 if equal, 1 if d > other.
+func (d Duration) Compare(other Duration) int {
+	if d.Duration < other.Duration {
+		return -1
+	}
+	if d.Duration > other.Duration {
+		return 1
+	}
+	return 0
+}
+
+// Scan implements sql.Scanner for Duration.
+// Supports int64 (nanoseconds), float64, string (parseable duration), and []byte sources.
+func (d *Duration) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		d.Duration = 0
+		return nil
+	case int64:
+		d.Duration = time.Duration(v)
+		return nil
+	case float64:
+		d.Duration = time.Duration(int64(v))
+		return nil
+	case string:
+		if v == "" {
+			d.Duration = 0
+			return nil
+		}
+		parsed, err := time.ParseDuration(v)
+		if err != nil {
+			return errors.New("duration: cannot scan value")
+		}
+		d.Duration = parsed
+		return nil
+	case []byte:
+		if len(v) == 0 {
+			d.Duration = 0
+			return nil
+		}
+		parsed, err := time.ParseDuration(string(v))
+		if err != nil {
+			return errors.New("duration: cannot scan value")
+		}
+		d.Duration = parsed
+		return nil
+	default:
+		return errors.New("duration: cannot scan non-numeric/string value")
+	}
+}
+
+// Value implements driver.Valuer for Duration.
+// Returns nil for zero duration, otherwise nanoseconds as int64.
+func (d Duration) Value() (driver.Value, error) {
+	if d.Duration == 0 {
+		return nil, nil
+	}
+	return int64(d.Duration), nil
+}
 
 // Scan implements sql.Scanner for Email.
 // Supports string and []byte sources. Empty string/nil results in zero value.

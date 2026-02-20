@@ -1,6 +1,8 @@
 package cbt
 
 import (
+	"database/sql/driver"
+	"errors"
 	"fmt"
 
 	"golang.org/x/text/language"
@@ -80,4 +82,47 @@ func (l Locale) MarshalText() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler for JSON/XML deserialization.
 func (l *Locale) UnmarshalText(data []byte) error {
 	return l.tag.UnmarshalText(data)
+}
+
+// Scan implements sql.Scanner for Locale.
+// Supports string and []byte sources. Empty string/nil results in zero value.
+func (l *Locale) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		l.tag = language.Und
+		return nil
+	case string:
+		if v == "" {
+			l.tag = language.Und
+			return nil
+		}
+		parsed, err := ParseLocale(v)
+		if err != nil {
+			return err
+		}
+		*l = parsed
+		return nil
+	case []byte:
+		if len(v) == 0 {
+			l.tag = language.Und
+			return nil
+		}
+		parsed, err := ParseLocale(string(v))
+		if err != nil {
+			return err
+		}
+		*l = parsed
+		return nil
+	default:
+		return errors.New("locale: cannot scan non-string value")
+	}
+}
+
+// Value implements driver.Valuer for Locale.
+// Returns nil for empty/undefined locale, otherwise the BCP 47 string.
+func (l Locale) Value() (driver.Value, error) {
+	if l.IsZero() {
+		return nil, nil
+	}
+	return l.String(), nil
 }
