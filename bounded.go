@@ -1,6 +1,7 @@
 package cbt
 
 import (
+	"database/sql/driver"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -97,4 +98,35 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.minLen = 0
 	bs.maxLen = utf8.RuneCountInString(value)
 	return nil
+}
+
+// Scan implements sql.Scanner for database deserialization.
+// Supports string and []byte sources. Sets min=0, max=len(value).
+func (bs *BoundedString) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		*bs = BoundedString{}
+		return nil
+	case string:
+		bs.value = v
+		bs.minLen = 0
+		bs.maxLen = utf8.RuneCountInString(v)
+		return nil
+	case []byte:
+		bs.value = string(v)
+		bs.minLen = 0
+		bs.maxLen = len(v)
+		return nil
+	default:
+		return errors.New("boundedstring: cannot scan non-string/[]byte value")
+	}
+}
+
+// Value implements driver.Valuer for database serialization.
+// Returns nil for empty BoundedString, otherwise the string value.
+func (bs BoundedString) Value() (driver.Value, error) {
+	if bs.IsEmpty() {
+		return nil, nil
+	}
+	return bs.value, nil
 }

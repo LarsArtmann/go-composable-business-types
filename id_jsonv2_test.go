@@ -27,8 +27,8 @@ func TestBrandedID_JSONv2_Unmarshal(t *testing.T) {
 	if err := jsonv2.Unmarshal(data, &parsed); err != nil {
 		t.Fatalf("unmarshal error: %v", err)
 	}
-	if parsed.Value() != "user-v2-unmarshal" {
-		t.Errorf("expected user-v2-unmarshal, got %s", parsed.Value())
+	if parsed.Get() != "user-v2-unmarshal" {
+		t.Errorf("expected user-v2-unmarshal, got %s", parsed.Get())
 	}
 }
 
@@ -63,8 +63,8 @@ func TestBrandedID_JSONv2_EmptyString(t *testing.T) {
 	if err := jsonv2.Unmarshal(data, &uid); err != nil {
 		t.Fatalf("unmarshal error: %v", err)
 	}
-	if uid.Value() != "" {
-		t.Errorf("expected empty string, got %s", uid.Value())
+	if uid.Get() != "" {
+		t.Errorf("expected empty string, got %s", uid.Get())
 	}
 }
 
@@ -89,8 +89,8 @@ func TestBrandedID_JSONv2_Struct(t *testing.T) {
 	if err := jsonv2.Unmarshal(data, &parsed); err != nil {
 		t.Fatalf("unmarshal error: %v", err)
 	}
-	if parsed.ID.Value() != "user-struct" {
-		t.Errorf("expected user-struct, got %s", parsed.ID.Value())
+	if parsed.ID.Get() != "user-struct" {
+		t.Errorf("expected user-struct, got %s", parsed.ID.Get())
 	}
 }
 

@@ -1,8 +1,10 @@
 package cbt
 
 import (
+	"database/sql/driver"
 	"encoding"
 	"encoding/json"
+	"errors"
 	"fmt"
 )
 
@@ -20,8 +22,8 @@ type ID[B any, V comparable] struct{ value V }
 // NewID creates a new branded identifier.
 func NewID[B any, V comparable](v V) ID[B, V] { return ID[B, V]{value: v} }
 
-// Value returns the underlying value.
-func (id ID[B, V]) Value() V { return id.value }
+// Get returns the underlying value.
+func (id ID[B, V]) Get() V { return id.value }
 
 // IsZero returns true if the ID has its zero value.
 func (id ID[B, V]) IsZero() bool { var zero V; return id.value == zero }
@@ -93,6 +95,62 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	return fmt.Errorf("id: cannot unmarshal into %T", zero)
 }
 
+// Scan implements sql.Scanner for database deserialization.
+// Supports string, []byte, int64, and nil sources based on the underlying value type V.
+func (id *ID[B, V]) Scan(src any) error {
+	if src == nil {
+		var zero V
+		*id = ID[B, V]{value: zero}
+		return nil
+	}
+
+	var zero V
+	switch any(zero).(type) {
+	case string:
+		switch v := src.(type) {
+		case string:
+			*id = ID[B, V]{value: any(v).(V)}
+			return nil
+		case []byte:
+			*id = ID[B, V]{value: any(string(v)).(V)}
+			return nil
+		default:
+			return errors.New("id: cannot scan non-string value into string-based ID")
+		}
+	case int64:
+		switch v := src.(type) {
+		case int64:
+			*id = ID[B, V]{value: any(v).(V)}
+			return nil
+		case float64:
+			*id = ID[B, V]{value: any(int64(v)).(V)}
+			return nil
+		default:
+			return errors.New("id: cannot scan non-integer value into int64-based ID")
+		}
+	default:
+		return fmt.Errorf("id: unsupported value type %T for SQL scanning", zero)
+	}
+}
+
+// Value implements driver.Valuer for database serialization.
+// Returns nil for zero values, otherwise the underlying value.
+func (id ID[B, V]) Value() (driver.Value, error) {
+	if id.IsZero() {
+		return nil, nil
+	}
+
+	var zero V
+	switch any(zero).(type) {
+	case string:
+		return any(id.value).(string), nil
+	case int64:
+		return any(id.value).(int64), nil
+	default:
+		return nil, fmt.Errorf("id: unsupported value type %T for SQL value", zero)
+	}
+}
+
 // Compile-time interface assertions
 var (
 	_ fmt.Stringer             = ID[struct{}, string]{}
@@ -101,4 +159,6 @@ var (
 	_ json.Unmarshaler         = (*ID[struct{}, string])(nil)
 	_ encoding.TextMarshaler   = ID[struct{}, string]{}
 	_ encoding.TextUnmarshaler = (*ID[struct{}, string])(nil)
+	_ driver.Valuer            = ID[struct{}, string]{}
+	_ driver.Valuer            = ID[struct{}, int64]{}
 )

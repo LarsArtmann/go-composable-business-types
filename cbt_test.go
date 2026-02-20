@@ -8,8 +8,8 @@ import (
 
 func TestId(t *testing.T) {
 	id := NewID[struct{}, string]("user-123")
-	if id.Value() != "user-123" {
-		t.Errorf("expected user-123, got %s", id.Value())
+	if id.Get() != "user-123" {
+		t.Errorf("expected user-123, got %s", id.Get())
 	}
 	if id.IsZero() {
 		t.Error("expected non-zero id")
@@ -18,8 +18,8 @@ func TestId(t *testing.T) {
 
 func TestIdInt(t *testing.T) {
 	id := NewID[struct{}, int](42)
-	if id.Value() != 42 {
-		t.Errorf("expected 42, got %d", id.Value())
+	if id.Get() != 42 {
+		t.Errorf("expected 42, got %d", id.Get())
 	}
 }
 
@@ -336,8 +336,8 @@ type (
 
 func TestBrandedID_String(t *testing.T) {
 	uid := NewID[UserBrand, string]("user-123")
-	if uid.Value() != "user-123" {
-		t.Errorf("expected user-123, got %s", uid.Value())
+	if uid.Get() != "user-123" {
+		t.Errorf("expected user-123, got %s", uid.Get())
 	}
 	if uid.String() != "user-123" {
 		t.Errorf("expected String() = user-123, got %s", uid.String())
@@ -349,8 +349,8 @@ func TestBrandedID_String(t *testing.T) {
 
 func TestBrandedID_Int64(t *testing.T) {
 	oid := NewID[OrderBrand, int64](42)
-	if oid.Value() != 42 {
-		t.Errorf("expected 42, got %d", oid.Value())
+	if oid.Get() != 42 {
+		t.Errorf("expected 42, got %d", oid.Get())
 	}
 	if oid.String() != "42" {
 		t.Errorf("expected String() = 42, got %s", oid.String())
@@ -391,8 +391,8 @@ func TestBrandedID_JSON_String(t *testing.T) {
 	if err := json.Unmarshal(data, &parsed); err != nil {
 		t.Fatalf("unmarshal error: %v", err)
 	}
-	if parsed.Value() != "user-abc" {
-		t.Errorf("expected user-abc, got %s", parsed.Value())
+	if parsed.Get() != "user-abc" {
+		t.Errorf("expected user-abc, got %s", parsed.Get())
 	}
 }
 
@@ -415,16 +415,16 @@ func TestBrandedID_JSON_EmptyString(t *testing.T) {
 	if err := json.Unmarshal(data, &uid); err != nil {
 		t.Fatalf("unmarshal error: %v", err)
 	}
-	if uid.Value() != "" {
-		t.Errorf("expected empty string, got %s", uid.Value())
+	if uid.Get() != "" {
+		t.Errorf("expected empty string, got %s", uid.Get())
 	}
 }
 
 func TestBrandedID_UnbrandedID(t *testing.T) {
 	// Unbranded ID using struct{} as brand
 	id := NewID[struct{}, string]("test-id")
-	if id.Value() != "test-id" {
-		t.Errorf("expected test-id, got %s", id.Value())
+	if id.Get() != "test-id" {
+		t.Errorf("expected test-id, got %s", id.Get())
 	}
 
 	// Should be comparable
@@ -1229,8 +1229,8 @@ func TestID_UnmarshalText(t *testing.T) {
 	if err != nil {
 		t.Fatalf("UnmarshalText error: %v", err)
 	}
-	if uid.Value() != "user-abc" {
-		t.Errorf("UnmarshalText: expected user-abc, got %s", uid.Value())
+	if uid.Get() != "user-abc" {
+		t.Errorf("UnmarshalText: expected user-abc, got %s", uid.Get())
 	}
 
 	// Unmarshal empty text should give zero value

@@ -1,10 +1,12 @@
 package cbt
 
 import (
+	"database/sql/driver"
 	"errors"
 	"net/mail"
 	"net/url"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -231,3 +233,156 @@ func (t Timestamp) IsZero() bool {
 type Duration struct{ time.Duration }
 
 func NewDuration(d time.Duration) Duration { return Duration{Duration: d} }
+
+// Scan implements sql.Scanner for Email.
+// Supports string and []byte sources. Empty string/nil results in zero value.
+func (e *Email) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		*e = ""
+		return nil
+	case string:
+		if v == "" {
+			*e = ""
+			return nil
+		}
+		parsed, err := NewEmail(v)
+		if err != nil {
+			return err
+		}
+		*e = parsed
+		return nil
+	case []byte:
+		if len(v) == 0 {
+			*e = ""
+			return nil
+		}
+		parsed, err := NewEmail(string(v))
+		if err != nil {
+			return err
+		}
+		*e = parsed
+		return nil
+	default:
+		return ErrInvalidEmail
+	}
+}
+
+// Value implements driver.Valuer for Email.
+// Returns nil for empty Email, otherwise the string value.
+func (e Email) Value() (driver.Value, error) {
+	if e.IsZero() {
+		return nil, nil
+	}
+	return string(e), nil
+}
+
+// Scan implements sql.Scanner for URL.
+// Supports string and []byte sources. Empty string/nil results in zero value.
+func (u *URL) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		*u = ""
+		return nil
+	case string:
+		if v == "" {
+			*u = ""
+			return nil
+		}
+		parsed, err := NewURL(v)
+		if err != nil {
+			return err
+		}
+		*u = parsed
+		return nil
+	case []byte:
+		if len(v) == 0 {
+			*u = ""
+			return nil
+		}
+		parsed, err := NewURL(string(v))
+		if err != nil {
+			return err
+		}
+		*u = parsed
+		return nil
+	default:
+		return ErrInvalidURL
+	}
+}
+
+// Value implements driver.Valuer for URL.
+// Returns nil for empty URL, otherwise the string value.
+func (u URL) Value() (driver.Value, error) {
+	if u.IsZero() {
+		return nil, nil
+	}
+	return string(u), nil
+}
+
+// Scan implements sql.Scanner for Cents.
+// Supports int64, float64, and []byte sources.
+func (c *Cents) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		*c = 0
+		return nil
+	case int64:
+		*c = Cents(v)
+		return nil
+	case float64:
+		*c = Cents(int64(v))
+		return nil
+	case []byte:
+		val, err := strconv.ParseInt(string(v), 10, 64)
+		if err != nil {
+			return errors.New("cents: cannot scan value")
+		}
+		*c = Cents(val)
+		return nil
+	default:
+		return errors.New("cents: cannot scan non-numeric value")
+	}
+}
+
+// Value implements driver.Valuer for Cents.
+func (c Cents) Value() (driver.Value, error) {
+	return int64(c), nil
+}
+
+// Scan implements sql.Scanner for Timestamp.
+// Supports time.Time, string (RFC3339), and []byte sources.
+func (t *Timestamp) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		t.Time = time.Time{}
+		return nil
+	case time.Time:
+		t.Time = v
+		return nil
+	case string:
+		parsed, err := time.Parse(time.RFC3339Nano, v)
+		if err != nil {
+			return err
+		}
+		t.Time = parsed
+		return nil
+	case []byte:
+		parsed, err := time.Parse(time.RFC3339Nano, string(v))
+		if err != nil {
+			return err
+		}
+		t.Time = parsed
+		return nil
+	default:
+		return errors.New("timestamp: cannot scan value")
+	}
+}
+
+// Value implements driver.Valuer for Timestamp.
+func (t Timestamp) Value() (driver.Value, error) {
+	if t.Time.IsZero() {
+		return nil, nil
+	}
+	return t.Time, nil
+}

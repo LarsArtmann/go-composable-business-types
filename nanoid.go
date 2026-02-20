@@ -1,6 +1,7 @@
 package cbt
 
 import (
+	"database/sql/driver"
 	"errors"
 
 	"github.com/sixafter/nanoid"
@@ -104,4 +105,47 @@ func isNanoIdChar(r rune) bool {
 		(r >= 'a' && r <= 'z') ||
 		(r >= '0' && r <= '9') ||
 		r == '-' || r == '_'
+}
+
+// Scan implements sql.Scanner for database deserialization.
+// Supports string and []byte sources. Empty string/nil results in zero value.
+func (id *NanoId) Scan(src any) error {
+	switch v := src.(type) {
+	case nil:
+		*id = NanoId{}
+		return nil
+	case string:
+		if v == "" {
+			*id = NanoId{}
+			return nil
+		}
+		parsed, err := ParseNanoId(v)
+		if err != nil {
+			return err
+		}
+		*id = parsed
+		return nil
+	case []byte:
+		if len(v) == 0 {
+			*id = NanoId{}
+			return nil
+		}
+		parsed, err := ParseNanoId(string(v))
+		if err != nil {
+			return err
+		}
+		*id = parsed
+		return nil
+	default:
+		return errors.New("nanoid: cannot scan non-string/[]byte value")
+	}
+}
+
+// Value implements driver.Valuer for database serialization.
+// Returns nil for empty NanoId, otherwise the string value.
+func (id NanoId) Value() (driver.Value, error) {
+	if id.IsEmpty() {
+		return nil, nil
+	}
+	return id.value, nil
 }
