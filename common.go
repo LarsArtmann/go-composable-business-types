@@ -3,6 +3,7 @@ package cbt
 import (
 	"database/sql/driver"
 	"errors"
+	"fmt"
 	"net/mail"
 	"net/url"
 	"regexp"
@@ -168,6 +169,9 @@ func NewPercentage(v uint8) Percentage {
 }
 func (p Percentage) Float64() float64 { return float64(p) / 100 }
 
+// String returns the percentage as a human-readable string (e.g., "50%").
+func (p Percentage) String() string { return fmt.Sprintf("%d%%", p) }
+
 // IsZero returns true if the percentage is 0.
 func (p Percentage) IsZero() bool { return p == 0 }
 
@@ -204,6 +208,9 @@ func (c Cents) Sign() int {
 	}
 	return 0
 }
+// String returns the cents as a human-readable currency string (e.g., "$12.34").
+func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/100.0) }
+
 func (c Cents) IsZero() bool     { return c == 0 }
 func (c Cents) IsPositive() bool { return c > 0 }
 func (c Cents) IsNegative() bool { return c < 0 }
