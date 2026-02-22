@@ -35,6 +35,11 @@ func (c Context) Request() string { return c.request }
 // Source returns the source system/service name.
 func (c Context) Source() string { return c.source }
 
+// IsZero returns true if this is the zero value (all fields empty).
+func (c Context) IsZero() bool {
+	return c.source == "" && c.environment == "" && c.session == "" && c.request == "" && len(c.tags) == 0
+}
+
 // Tags returns a copy of the metadata tags.
 func (c Context) Tags() map[string]string {
 	if c.tags == nil {

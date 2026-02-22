@@ -67,3 +67,9 @@ func newActorEntry[T comparable](kind ActorKind, id ID[struct{}, T], name ...str
 	}
 	return ActorEntry[T]{Kind: kind, Id: id, Name: n}
 }
+
+// IsZero returns true if this is the zero value.
+func (e ActorEntry[T]) IsZero() bool {
+	var zeroId ID[struct{}, T]
+	return e.Id == zeroId && e.Name == ""
+}

@@ -53,6 +53,11 @@ func (c Cause[T]) Trace() []NanoId { return c.trace }
 // HasTrace returns true if there are intermediate causes.
 func (c Cause[T]) HasTrace() bool { return len(c.trace) > 0 }
 
+// IsZero returns true if this is the zero value (id is zero).
+func (c Cause[T]) IsZero() bool {
+	return c.id.IsZero()
+}
+
 // WithTrace returns a copy with the causal trace set.
 func (c Cause[T]) WithTrace(trace []NanoId) Cause[T] {
 	c.trace = make([]NanoId, len(trace))

@@ -59,6 +59,11 @@ func (b Bitemporal) Recorded() Timestamp { return b.recorded }
 // IsCorrection returns true if this is a correction of a previous record.
 func (b Bitemporal) IsCorrection() bool { return b.correction }
 
+// IsZero returns true if this is the zero value (all timestamps zero).
+func (b Bitemporal) IsZero() bool {
+	return b.validFrom.IsZero() && b.validUntil.IsZero() && b.recorded.IsZero()
+}
+
 // IsValidAt checks if this fact was valid at the given point in time.
 func (b Bitemporal) IsValidAt(t Timestamp) bool {
 	if t.Before(b.validFrom.Time) {

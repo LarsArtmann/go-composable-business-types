@@ -43,6 +43,12 @@ func (r Reference[T]) Relation() string { return r.relation }
 // Version returns the referenced entity's version (0 = any/latest).
 func (r Reference[T]) Version() int { return r.version }
 
+// IsZero returns true if this is the zero value (id is zero).
+func (r Reference[T]) IsZero() bool {
+	var zero T
+	return r.id == zero
+}
+
 // Tags returns a copy of the reference metadata tags.
 func (r Reference[T]) Tags() map[string]string {
 	if r.tags == nil {

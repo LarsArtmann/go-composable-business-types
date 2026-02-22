@@ -63,6 +63,11 @@ func NewDataPointNow[T comparable](
 // Id returns the unique identifier of this data point.
 func (dp DataPoint[T]) Id() NanoId { return dp.id }
 
+// IsZero returns true if this is the zero value (id is zero).
+func (dp DataPoint[T]) IsZero() bool {
+	return dp.id.IsZero()
+}
+
 // Payload returns the data contained in this data point.
 func (dp DataPoint[T]) Payload() T { return dp.payload }
 
