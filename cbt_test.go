@@ -28,7 +28,7 @@ func TestActor(t *testing.T) {
 		Append(ServiceActor(NewID[struct{}, string]("api-gateway"), "API Gateway")).
 		Append(ServiceActor(NewID[struct{}, string]("order-svc"), "Order Service"))
 
-	if chain.IsEmpty() {
+	if chain.IsZero() {
 		t.Error("expected non-empty chain")
 	}
 	if chain.Origin().Kind != ActorKindUser {
@@ -226,7 +226,7 @@ func TestBoundedStringValidation(t *testing.T) {
 
 func TestBoundedStringHelperMethods(t *testing.T) {
 	bs := MustBoundedString(2, 10, "test")
-	if bs.IsEmpty() {
+	if bs.IsZero() {
 		t.Error("expected non-empty")
 	}
 
@@ -2018,7 +2018,7 @@ func BenchmarkBoundedString(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		_ = s.Len()
-		_ = s.IsEmpty()
+		_ = s.IsZero()
 		_ = s.IsMinLength()
 		_ = s.IsMaxLength()
 	}
@@ -2055,7 +2055,7 @@ func BenchmarkActorChain(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		_ = chain.Origin()
 		_ = chain.Current()
-		_ = chain.IsEmpty()
+		_ = chain.IsZero()
 	}
 }
 

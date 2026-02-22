@@ -52,7 +52,7 @@ func (bs BoundedString) String() string    { return bs.value }
 func (bs BoundedString) Len() int          { return utf8.RuneCountInString(bs.value) }
 func (bs BoundedString) MinLen() int       { return bs.minLen }
 func (bs BoundedString) MaxLen() int       { return bs.maxLen }
-func (bs BoundedString) IsEmpty() bool     { return bs.value == "" }
+func (bs BoundedString) IsZero() bool      { return bs.value == "" }
 func (bs BoundedString) IsMinLength() bool { return bs.Len() == bs.minLen }
 func (bs BoundedString) IsMaxLength() bool { return bs.Len() == bs.maxLen }
 
@@ -125,7 +125,7 @@ func (bs *BoundedString) Scan(src any) error {
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty BoundedString, otherwise the string value.
 func (bs BoundedString) Value() (driver.Value, error) {
-	if bs.IsEmpty() {
+	if bs.IsZero() {
 		return nil, nil
 	}
 	return bs.value, nil

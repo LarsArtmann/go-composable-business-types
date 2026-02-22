@@ -70,15 +70,15 @@ func MustParseNanoId(s string) NanoId {
 // String returns the string representation of the NanoId.
 func (id NanoId) String() string { return id.value }
 
-// IsEmpty returns true if the NanoId has no value.
-func (id NanoId) IsEmpty() bool { return id.value == "" }
+// IsZero returns true if the NanoId has no value.
+func (id NanoId) IsZero() bool { return id.value == "" }
 
 // GoString implements fmt.GoStringer for debugging.
 func (id NanoId) GoString() string { return id.value }
 
 // MarshalText implements encoding.TextMarshaler for JSON serialization.
 func (id NanoId) MarshalText() ([]byte, error) {
-	if id.IsEmpty() {
+	if id.IsZero() {
 		return nil, nil
 	}
 	return []byte(id.value), nil
@@ -144,7 +144,7 @@ func (id *NanoId) Scan(src any) error {
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty NanoId, otherwise the string value.
 func (id NanoId) Value() (driver.Value, error) {
-	if id.IsEmpty() {
+	if id.IsZero() {
 		return nil, nil
 	}
 	return id.value, nil

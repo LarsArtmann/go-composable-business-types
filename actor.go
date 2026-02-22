@@ -19,7 +19,7 @@ func NewActorChain[T comparable](first ActorEntry[T]) ActorChain[T] {
 
 func (c ActorChain[T]) Origin() ActorEntry[T]                { return c[0] }
 func (c ActorChain[T]) Current() ActorEntry[T]               { return c[len(c)-1] }
-func (c ActorChain[T]) IsEmpty() bool                        { return len(c) == 0 }
+func (c ActorChain[T]) IsZero() bool                         { return len(c) == 0 }
 func (c ActorChain[T]) Append(e ActorEntry[T]) ActorChain[T] { return append(c, e) }
 
 // ByKind returns all actors of a given kind in the chain.

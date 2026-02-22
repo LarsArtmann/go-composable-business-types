@@ -18,7 +18,7 @@ func TestNanoId_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !id.IsEmpty() {
+		if !id.IsZero() {
 			t.Errorf("expected empty NanoId, got %v", id)
 		}
 	})
@@ -41,7 +41,7 @@ func TestNanoId_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !id.IsEmpty() {
+		if !id.IsZero() {
 			t.Errorf("expected empty NanoId, got %v", id)
 		}
 	})
@@ -64,7 +64,7 @@ func TestNanoId_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !id.IsEmpty() {
+		if !id.IsZero() {
 			t.Errorf("expected empty NanoId, got %v", id)
 		}
 	})
@@ -197,7 +197,7 @@ func TestEmail_Scan(t *testing.T) {
 
 func TestEmail_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
-	e := Email("")
+		e := Email("")
 		val, err := e.Value()
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
@@ -317,7 +317,7 @@ func TestURL_Scan(t *testing.T) {
 
 func TestURL_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
-	u := URL("")
+		u := URL("")
 		val, err := u.Value()
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
@@ -429,7 +429,7 @@ func TestCents_Value(t *testing.T) {
 	})
 
 	t.Run("zero returns int64(0)", func(t *testing.T) {
-	c := Cents(0)
+		c := Cents(0)
 		val, err := c.Value()
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
@@ -558,7 +558,7 @@ func TestBoundedString_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !bs.IsEmpty() {
+		if !bs.IsZero() {
 			t.Errorf("expected empty BoundedString, got %v", bs)
 		}
 	})
@@ -580,7 +580,7 @@ func TestBoundedString_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !bs.IsEmpty() {
+		if !bs.IsZero() {
 			t.Errorf("expected empty BoundedString, got %v", bs)
 		}
 	})
@@ -602,7 +602,7 @@ func TestBoundedString_Scan(t *testing.T) {
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
-		if !bs.IsEmpty() {
+		if !bs.IsZero() {
 			t.Errorf("expected empty BoundedString, got %v", bs)
 		}
 	})

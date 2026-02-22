@@ -11,7 +11,7 @@ import (
 
 func TestNanoId(t *testing.T) {
 	id := NewNanoId()
-	if id.IsEmpty() {
+	if id.IsZero() {
 		t.Error("expected non-empty NanoId")
 	}
 	if len(id.String()) != DefaultNanoIdLength {
@@ -114,7 +114,7 @@ func TestDataPoint(t *testing.T) {
 
 	dp := NewDataPoint(payload, actor, occurred, recorded, "test reason")
 
-	if dp.Id().IsEmpty() {
+	if dp.Id().IsZero() {
 		t.Error("expected non-empty DataPoint id")
 	}
 	if dp.Payload().Value != "test" {
