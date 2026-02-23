@@ -1,4 +1,5 @@
 # Session Status Report
+
 ## go-composable-business-types
 
 **Generated:** 2026-02-20 01:38 CET
@@ -14,6 +15,7 @@
 **Library remains stable and production-ready.** No functional changes since last report on 2026-02-15. All 16 type definitions, 5 enums, and supporting infrastructure verified working correctly. Build, tests, and benchmarks all pass cleanly.
 
 ### Session Activity
+
 - **Research**: Explored `nikoksr/konfetty` library patterns for potential inspiration
 - **Key learnings**: Fluent builder APIs, generics + reflection hybrid approach, hierarchical type resolution, zero-value preservation patterns
 
@@ -50,6 +52,7 @@ BenchmarkEnum-8               28336861       46.71 ns/op     80 B/op       1 all
 ```
 
 **Performance improvements since last report:**
+
 - NanoID: 170.8 → 109.1 ns/op (~36% faster)
 - Email validation: 2445 → 1657 ns/op (~32% faster)
 - DataPoint JSON: 4366 → 2957 ns/op (~32% faster)
@@ -59,45 +62,45 @@ BenchmarkEnum-8               28336861       46.71 ns/op     80 B/op       1 all
 
 ## Codebase Summary
 
-| Metric | Value |
-|--------|-------|
-| Go source files | 17 |
-| Total lines of code | 5,452 |
-| Test coverage | 80.1% |
-| Test count | 117+ |
-| Benchmarks | 12 |
-| Dependencies | 3 (go-enum, currency, nanoid) |
+| Metric              | Value                         |
+| ------------------- | ----------------------------- |
+| Go source files     | 17                            |
+| Total lines of code | 5,452                         |
+| Test coverage       | 80.1%                         |
+| Test count          | 117+                          |
+| Benchmarks          | 12                            |
+| Dependencies        | 3 (go-enum, currency, nanoid) |
 
 ### Core Types (16)
 
-| Type | Status | Purpose |
-|------|--------|---------|
-| `ID[B, V]` | ✅ | Phantom-typed identifiers |
-| `NanoId` | ✅ | FIPS-140 compliant unique IDs |
-| `DataPoint[T]` | ✅ | Self-contained data with lineage |
-| `ActorChain[T]` | ✅ | Audit trail tracking |
-| `BoundedString` | ✅ | Length-validated strings |
-| `Bitemporal` | ✅ | Valid-from/to temporal tracking |
-| `Context[T]` | ✅ | Execution context for tracing |
-| `Reference[T]` | ✅ | Type-safe cross-references |
-| `Cause[T]` | ✅ | Causal chain tracking |
-| `Money` | ✅ | ISO 4217 currency wrapper |
-| `Cents` | ✅ | Precise monetary amounts |
-| `Email` | ✅ | Validated email addresses |
-| `URL` | ✅ | Parsed URLs with helpers |
-| `Percentage` | ✅ | Clamped 0-100 values |
-| `Timestamp` | ✅ | Time with Before/After methods |
-| `Duration` | ✅ | Time duration utilities |
+| Type            | Status | Purpose                          |
+| --------------- | ------ | -------------------------------- |
+| `ID[B, V]`      | ✅     | Phantom-typed identifiers        |
+| `NanoId`        | ✅     | FIPS-140 compliant unique IDs    |
+| `DataPoint[T]`  | ✅     | Self-contained data with lineage |
+| `ActorChain[T]` | ✅     | Audit trail tracking             |
+| `BoundedString` | ✅     | Length-validated strings         |
+| `Bitemporal`    | ✅     | Valid-from/to temporal tracking  |
+| `Context[T]`    | ✅     | Execution context for tracing    |
+| `Reference[T]`  | ✅     | Type-safe cross-references       |
+| `Cause[T]`      | ✅     | Causal chain tracking            |
+| `Money`         | ✅     | ISO 4217 currency wrapper        |
+| `Cents`         | ✅     | Precise monetary amounts         |
+| `Email`         | ✅     | Validated email addresses        |
+| `URL`           | ✅     | Parsed URLs with helpers         |
+| `Percentage`    | ✅     | Clamped 0-100 values             |
+| `Timestamp`     | ✅     | Time with Before/After methods   |
+| `Duration`      | ✅     | Time duration utilities          |
 
 ### Enums (5)
 
-| Enum | Values | Generated |
-|------|--------|-----------|
-| `ActorKind` | User, Bot, System, Service | ✅ |
-| `Locale` | 8 locales (en_US, de_DE, etc.) | ✅ |
-| `Priority` | Low, Medium, High, Critical | ✅ |
-| `Status` | Draft, Active, Paused, Archived, Deleted | ✅ |
-| `Trigger` | Manual, Scheduled, Webhook, etc. | ✅ |
+| Enum        | Values                                   | Generated |
+| ----------- | ---------------------------------------- | --------- |
+| `ActorKind` | User, Bot, System, Service               | ✅        |
+| `Locale`    | 8 locales (en_US, de_DE, etc.)           | ✅        |
+| `Priority`  | Low, Medium, High, Critical              | ✅        |
+| `Status`    | Draft, Active, Paused, Archived, Deleted | ✅        |
+| `Trigger`   | Manual, Scheduled, Webhook, etc.         | ✅        |
 
 ---
 
@@ -105,14 +108,14 @@ BenchmarkEnum-8               28336861       46.71 ns/op     80 B/op       1 all
 
 ### Patterns Observed
 
-| Pattern | Description | Applicability |
-|---------|-------------|---------------|
-| **Fluent Builder API** | `With*` methods returning `*T` for chaining | Already used in this project |
-| **Generics + Reflection Hybrid** | Type-safe API, reflection internally | Matches our phantom type approach |
-| **Hierarchical Type Resolution** | Base defaults → specific overrides | Could enhance type hierarchies |
-| **Zero-Value Preservation** | Never overwrite existing non-zero values | Pattern to consider |
-| **Provider Interface** | `Provider[T]` for pluggable loading | Useful for extensibility |
-| **Circular Reference Protection** | `visited` map for recursive structures | Safety pattern to adopt |
+| Pattern                           | Description                                 | Applicability                     |
+| --------------------------------- | ------------------------------------------- | --------------------------------- |
+| **Fluent Builder API**            | `With*` methods returning `*T` for chaining | Already used in this project      |
+| **Generics + Reflection Hybrid**  | Type-safe API, reflection internally        | Matches our phantom type approach |
+| **Hierarchical Type Resolution**  | Base defaults → specific overrides          | Could enhance type hierarchies    |
+| **Zero-Value Preservation**       | Never overwrite existing non-zero values    | Pattern to consider               |
+| **Provider Interface**            | `Provider[T]` for pluggable loading         | Useful for extensibility          |
+| **Circular Reference Protection** | `visited` map for recursive structures      | Safety pattern to adopt           |
 
 ### Potential Enhancements
 
@@ -126,10 +129,10 @@ BenchmarkEnum-8               28336861       46.71 ns/op     80 B/op       1 all
 
 ### From Previous Reports
 
-| Issue | Severity | Status | Notes |
-|-------|----------|--------|-------|
-| Go version mismatch | 🟡 Medium | Unchanged | Local 1.26 vs CI 1.21-1.23 |
-| gopls infertypeargs warnings | 🟢 Low | Unchanged | 18 warnings in test files |
+| Issue                        | Severity  | Status    | Notes                      |
+| ---------------------------- | --------- | --------- | -------------------------- |
+| Go version mismatch          | 🟡 Medium | Unchanged | Local 1.26 vs CI 1.21-1.23 |
+| gopls infertypeargs warnings | 🟢 Low    | Unchanged | 18 warnings in test files  |
 
 ### Resolution Required
 
@@ -146,27 +149,27 @@ None - system is stable and production-ready.
 
 ### P1 (High Priority)
 
-| Task | Effort | Impact |
-|------|--------|--------|
-| Update CI Go versions to 1.24-1.26 | 15 min | Consistent testing |
-| Add godoc examples for ID, DataPoint, NanoId | 2-3 hrs | Discoverability |
+| Task                                         | Effort  | Impact             |
+| -------------------------------------------- | ------- | ------------------ |
+| Update CI Go versions to 1.24-1.26           | 15 min  | Consistent testing |
+| Add godoc examples for ID, DataPoint, NanoId | 2-3 hrs | Discoverability    |
 
 ### P2 (Medium Priority)
 
-| Task | Effort | Impact |
-|------|--------|--------|
+| Task                                                 | Effort  | Impact             |
+| ---------------------------------------------------- | ------- | ------------------ |
 | Property-based testing for Email, URL, BoundedString | 4-6 hrs | Edge case coverage |
-| Arithmetic methods for Money (Add, Sub) | 1 hr | Completeness |
-| Clean up gopls warnings in test files | 30 min | Code quality |
+| Arithmetic methods for Money (Add, Sub)              | 1 hr    | Completeness       |
+| Clean up gopls warnings in test files                | 30 min  | Code quality       |
 
 ### P3 (Low Priority)
 
-| Task | Effort | Impact |
-|------|--------|--------|
-| Codecov badge for README | 15 min | Visibility |
-| CI status badge for README | 15 min | Visibility |
-| Example application in `examples/` | 2-3 hrs | Documentation |
-| Benchmark JSON v1 vs v2 comparison | 1 hr | Performance validation |
+| Task                               | Effort  | Impact                 |
+| ---------------------------------- | ------- | ---------------------- |
+| Codecov badge for README           | 15 min  | Visibility             |
+| CI status badge for README         | 15 min  | Visibility             |
+| Example application in `examples/` | 2-3 hrs | Documentation          |
+| Benchmark JSON v1 vs v2 comparison | 1 hr    | Performance validation |
 
 ---
 
@@ -182,9 +185,9 @@ None - system is stable and production-ready.
 
 ### Risk Matrix
 
-| Risk | Level | Mitigation |
-|------|-------|------------|
-| Go version drift | 🟡 Low | Update CI matrix |
+| Risk               | Level      | Mitigation       |
+| ------------------ | ---------- | ---------------- |
+| Go version drift   | 🟡 Low     | Update CI matrix |
 | Test file warnings | 🟢 Minimal | Optional cleanup |
 
 ---
@@ -199,7 +202,7 @@ The konfetty research provided valuable patterns that could enhance future devel
 
 ---
 
-*Report generated by Crush CLI Agent*
-*Generated: 2026-02-20 01:38 CET*
-*Previous report: 2026-02-15 13:00 CET*
-*Based on 17 source files, 5,452 lines of code, 117+ tests*
+_Report generated by Crush CLI Agent_
+_Generated: 2026-02-20 01:38 CET_
+_Previous report: 2026-02-15 13:00 CET_
+_Based on 17 source files, 5,452 lines of code, 117+ tests_

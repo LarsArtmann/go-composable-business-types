@@ -299,13 +299,13 @@ Also added branded type `ID[B, V]` for compile-time ID separation.
 
 ### Critical (Do Immediately)
 
-| #   | Task                                     | File        | Effort |
-| --- | ---------------------------------------- | ----------- | ------ |
-| 1   | Add Email validation with proper error   | `common.go` | 30min  |
-| 2   | Add URL validation with proper error     | `common.go` | 20min  |
+| #   | Task                                     | File        | Effort  |
+| --- | ---------------------------------------- | ----------- | ------- |
+| 1   | Add Email validation with proper error   | `common.go` | 30min   |
+| 2   | Add URL validation with proper error     | `common.go` | 20min   |
 | 3   | ~~Fix `Id[T].GoString()` panic risk~~    | `id.go:10`  | ✅ DONE |
-| 4   | Extract `MinNanoIdLength = 8` constant   | `nanoid.go` | 5min   |
-| 5   | Extract `MaxNanoIdLength = 256` constant | `nanoid.go` | 5min   |
+| 4   | Extract `MinNanoIdLength = 8` constant   | `nanoid.go` | 5min    |
+| 5   | Extract `MaxNanoIdLength = 256` constant | `nanoid.go` | 5min    |
 
 ### High Priority (This Week)
 
@@ -339,13 +339,13 @@ Also added branded type `ID[B, V]` for compile-time ID separation.
 
 ### Nice to Have
 
-| #   | Task                                    | File           | Effort |
-| --- | --------------------------------------- | -------------- | ------ |
-| 21  | Add benchmark tests                     | `*_test.go`    | 2hr    |
+| #   | Task                                    | File           | Effort  |
+| --- | --------------------------------------- | -------------- | ------- |
+| 21  | Add benchmark tests                     | `*_test.go`    | 2hr     |
 | 22  | ~~Add `String()` method to `ID[B, V]`~~ | `id.go`        | ✅ DONE |
-| 23  | Consider adding `Version` type          | New file       | 1hr    |
-| 24  | Add `WithPayload` method to `DataPoint` | `datapoint.go` | 10min  |
-| 25  | Add SQL driver implementations          | `*sql.go`      | 4hr    |
+| 23  | Consider adding `Version` type          | New file       | 1hr     |
+| 24  | Add `WithPayload` method to `DataPoint` | `datapoint.go` | 10min   |
+| 25  | Add SQL driver implementations          | `*sql.go`      | 4hr     |
 
 ---
 

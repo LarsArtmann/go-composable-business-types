@@ -1,4 +1,5 @@
 # Session Status Report
+
 ## go-composable-business-types
 
 **Generated:** 2026-02-21 02:18 CET
@@ -17,21 +18,23 @@ The library is **production-ready**. All planned SQL interfaces are implemented 
 ## Completed Work (Since 2026-02-20)
 
 ### Latest Commit: `c23a7a5`
+
 ```
 feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interfaces
 ```
 
-| Feature | Status | Details |
-|---------|--------|---------|
-| Duration.IsZero() | ✅ | Consistent zero-checking |
-| Duration.Compare() | ✅ | Ordering comparisons |
-| Cents.Compare() | ✅ | Monetary comparisons |
-| Timestamp.Compare() | ✅ | Delegates to time.Time.Compare |
-| Duration SQL (Scan/Value) | ✅ | nil, int64, float64, string, []byte |
-| Locale SQL (Scan/Value) | ✅ | BCP 47 format |
-| Money SQL tests | ✅ | Verifies currency.Amount inheritance |
+| Feature                   | Status | Details                              |
+| ------------------------- | ------ | ------------------------------------ |
+| Duration.IsZero()         | ✅     | Consistent zero-checking             |
+| Duration.Compare()        | ✅     | Ordering comparisons                 |
+| Cents.Compare()           | ✅     | Monetary comparisons                 |
+| Timestamp.Compare()       | ✅     | Delegates to time.Time.Compare       |
+| Duration SQL (Scan/Value) | ✅     | nil, int64, float64, string, []byte  |
+| Locale SQL (Scan/Value)   | ✅     | BCP 47 format                        |
+| Money SQL tests           | ✅     | Verifies currency.Amount inheritance |
 
 ### Files Changed
+
 - `common.go` +79 lines (Compare methods)
 - `locale.go` +45 lines (SQL interfaces)
 - `sql_test.go` +1216 lines (comprehensive tests)
@@ -42,48 +45,49 @@ feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interf
 
 ### A) FULLY DONE ✅
 
-| Component | SQL Interfaces | Tests | Compare | IsZero |
-|-----------|---------------|-------|---------|--------|
-| NanoId | ✅ | ✅ | N/A | ✅ |
-| Email | ✅ | ✅ | N/A | ✅ |
-| URL | ✅ | ✅ | N/A | ✅ |
-| Cents | ✅ | ✅ | ✅ | ✅ |
-| Timestamp | ✅ | ✅ | ✅ | ✅ |
-| BoundedString | ✅ | ✅ | N/A | ✅ |
-| ID[B,V] | ✅ | ✅ | N/A | ✅ |
-| Duration | ✅ | ✅ | ✅ | ✅ |
-| Locale | ✅ | ✅ | N/A | ✅ |
-| Money (currency.Amount) | ✅ inherited | ✅ | N/A | ✅ |
-| Enums (ActorKind, Priority, etc.) | ✅ generated | ✅ | N/A | ✅ |
+| Component                         | SQL Interfaces | Tests | Compare | IsZero |
+| --------------------------------- | -------------- | ----- | ------- | ------ |
+| NanoId                            | ✅             | ✅    | N/A     | ✅     |
+| Email                             | ✅             | ✅    | N/A     | ✅     |
+| URL                               | ✅             | ✅    | N/A     | ✅     |
+| Cents                             | ✅             | ✅    | ✅      | ✅     |
+| Timestamp                         | ✅             | ✅    | ✅      | ✅     |
+| BoundedString                     | ✅             | ✅    | N/A     | ✅     |
+| ID[B,V]                           | ✅             | ✅    | N/A     | ✅     |
+| Duration                          | ✅             | ✅    | ✅      | ✅     |
+| Locale                            | ✅             | ✅    | N/A     | ✅     |
+| Money (currency.Amount)           | ✅ inherited   | ✅    | N/A     | ✅     |
+| Enums (ActorKind, Priority, etc.) | ✅ generated   | ✅    | N/A     | ✅     |
 
 ### B) NOT STARTED (Low Priority)
 
-| Task | Priority | Effort | Rationale |
-|------|----------|--------|-----------|
-| SQL for ActorEntry | P3 | 30m | Composite type, complex JSON |
-| SQL for Bitemporal | P3 | 30m | Composite type |
-| SQL for Reference[T] | P3 | 1h | Generic composite |
-| SQL for Cause[T] | P3 | 1h | Generic composite |
-| SQL for Context | P3 | 30m | Map-based |
-| SQL for DataPoint[T] | P3 | 2h | Full aggregate |
-| Validator interface | P3 | 2h | Nice-to-have |
-| Provider[T] interface | P3 | 2h | Lazy loading pattern |
+| Task                  | Priority | Effort | Rationale                    |
+| --------------------- | -------- | ------ | ---------------------------- |
+| SQL for ActorEntry    | P3       | 30m    | Composite type, complex JSON |
+| SQL for Bitemporal    | P3       | 30m    | Composite type               |
+| SQL for Reference[T]  | P3       | 1h     | Generic composite            |
+| SQL for Cause[T]      | P3       | 1h     | Generic composite            |
+| SQL for Context       | P3       | 30m    | Map-based                    |
+| SQL for DataPoint[T]  | P3       | 2h     | Full aggregate               |
+| Validator interface   | P3       | 2h     | Nice-to-have                 |
+| Provider[T] interface | P3       | 2h     | Lazy loading pattern         |
 
 ---
 
 ## Coverage Analysis
 
-| Metric | Current | Target | Status |
-|--------|---------|--------|--------|
-| Coverage | 83.9% | 80%+ | ✅ PASS |
-| Tests passing | All | All | ✅ PASS |
-| Race conditions | None | None | ✅ PASS |
+| Metric          | Current | Target | Status  |
+| --------------- | ------- | ------ | ------- |
+| Coverage        | 83.9%   | 80%+   | ✅ PASS |
+| Tests passing   | All     | All    | ✅ PASS |
+| Race conditions | None    | None   | ✅ PASS |
 
 ---
 
 ## Architecture Quality
 
 ### Strengths
+
 1. **Strong typing** - Phantom types for IDs, branded types throughout
 2. **Functional patterns** - Immutable `With*` methods return copies
 3. **SQL support** - All primitives implement Scanner/Valuer
@@ -91,6 +95,7 @@ feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interf
 5. **FIPS-140 NanoId** - High-security ID generation
 
 ### Design Decisions
+
 1. **Money = currency.Amount** - Kept as type alias (bojanz/currency handles SQL)
 2. **Compare returns int** - Standard Go pattern (-1, 0, +1)
 3. **Value() returns nil for zero** - NULL-safe database interactions
@@ -99,12 +104,12 @@ feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interf
 
 ## Remaining Work (Optional Enhancements)
 
-| # | Task | Impact | Effort | Ratio |
-|---|------|--------|--------|-------|
-| 1 | SQL for composite types | LOW | 5h+ | ⭐ |
-| 2 | Validator interface | MEDIUM | 2h | ⭐⭐ |
-| 3 | DataPoint builder | MEDIUM | 3h | ⭐⭐ |
-| 4 | Provider[T] pattern | LOW | 2h | ⭐ |
+| #   | Task                    | Impact | Effort | Ratio |
+| --- | ----------------------- | ------ | ------ | ----- |
+| 1   | SQL for composite types | LOW    | 5h+    | ⭐    |
+| 2   | Validator interface     | MEDIUM | 2h     | ⭐⭐  |
+| 3   | DataPoint builder       | MEDIUM | 3h     | ⭐⭐  |
+| 4   | Provider[T] pattern     | LOW    | 2h     | ⭐    |
 
 **Recommendation:** Library is production-ready. Above tasks are optional enhancements.
 
@@ -134,15 +139,15 @@ golangci-lint run --fix
 
 ## Git History (Last 5 Commits)
 
-| Commit | Description |
-|--------|-------------|
-| c23a7a5 | feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interfaces |
-| 54ded58 | feat(sql): add Scanner/Valuer interfaces to all domain types |
-| f145449 | docs(status): add improvement analysis with konfetty-derived patterns |
-| 4e1af07 | docs(status): add session status report with konfetty research findings |
+| Commit  | Description                                                                           |
+| ------- | ------------------------------------------------------------------------------------- |
+| c23a7a5 | feat(types): add Compare methods, Duration SQL interfaces, and Locale SQL interfaces  |
+| 54ded58 | feat(sql): add Scanner/Valuer interfaces to all domain types                          |
+| f145449 | docs(status): add improvement analysis with konfetty-derived patterns                 |
+| 4e1af07 | docs(status): add session status report with konfetty research findings               |
 | 002af5a | chore(docs, ci, test): update project documentation, CI configuration, and test fixes |
 
 ---
 
-*Report generated by Crush CLI Agent*
-*Generated: 2026-02-21 02:18 CET*
+_Report generated by Crush CLI Agent_
+_Generated: 2026-02-21 02:18 CET_

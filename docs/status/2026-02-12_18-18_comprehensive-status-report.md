@@ -92,11 +92,11 @@
 
 ### D2. POTENTIAL ISSUES (Not Bugs, But Concerns)
 
-| Concern                                 | Location       | Risk                                                     |
-| --------------------------------------- | -------------- | -------------------------------------------------------- |
-| `enum_enum.go` is 460 lines             | Generated file | Acceptable (generated), but could split enum definitions |
-| ~~`Id[T].GoString()` panics on non-string~~ | `id.go:10`     | ✅ FIXED with `ID[B, V]` using `fmt.Sprintf`            |
-| No actual email/URL validation          | `common.go`    | Types exist but accept any string                        |
+| Concern                                     | Location       | Risk                                                     |
+| ------------------------------------------- | -------------- | -------------------------------------------------------- |
+| `enum_enum.go` is 460 lines                 | Generated file | Acceptable (generated), but could split enum definitions |
+| ~~`Id[T].GoString()` panics on non-string~~ | `id.go:10`     | ✅ FIXED with `ID[B, V]` using `fmt.Sprintf`             |
+| No actual email/URL validation              | `common.go`    | Types exist but accept any string                        |
 
 ---
 

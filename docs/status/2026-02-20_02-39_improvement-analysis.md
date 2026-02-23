@@ -1,4 +1,5 @@
 # Improvement Analysis Report
+
 ## go-composable-business-types
 
 **Generated:** 2026-02-20 02:39 CET
@@ -10,10 +11,12 @@
 ## Executive Summary
 
 Comprehensive analysis identified **8 improvement areas** derived from:
+
 1. Current codebase gaps (missing SQL interfaces, weak Money type)
 2. konfetty library learnings (validator pattern, builder pattern, zero-value preservation)
 
 **Top 3 Recommendations:**
+
 1. Add SQL interfaces to all types (NanoId, Email, URL, Cents, BoundedString, Timestamp, ID)
 2. Strengthen Money type from alias to wrapper with currency safety
 3. Add standard Validator interface for pipeline validation
@@ -22,14 +25,14 @@ Comprehensive analysis identified **8 improvement areas** derived from:
 
 ## Current State
 
-| Metric | Value |
-|--------|-------|
-| Test coverage | 80.1% |
+| Metric        | Value                   |
+| ------------- | ----------------------- |
+| Test coverage | 80.1%                   |
 | Tests passing | 117+ with race detector |
-| Core types | 16 |
-| Enums | 5 (with SQL support) |
-| Lines of code | 5,452 |
-| Status | Production ready |
+| Core types    | 16                      |
+| Enums         | 5 (with SQL support)    |
+| Lines of code | 5,452                   |
+| Status        | Production ready        |
 
 ### Current Strengths
 
@@ -48,18 +51,19 @@ Comprehensive analysis identified **8 improvement areas** derived from:
 
 **Problem:** Most types cannot be persisted to databases.
 
-| Type | Has SQL Scanner | Has SQL Valuer | Impact |
-|------|-----------------|----------------|--------|
-| `NanoId` | ❌ | ❌ | Cannot store IDs in DB |
-| `Email` | ❌ | ❌ | Cannot store emails in DB |
-| `URL` | ❌ | ❌ | Cannot store URLs in DB |
-| `Cents` | ❌ | ❌ | Cannot store money in DB |
-| `BoundedString` | ❌ | ❌ | Cannot store validated strings in DB |
-| `Timestamp` | ❌ | ❌ | Cannot store timestamps in DB |
-| `ID[B,V]` | ❌ | ❌ | Cannot store branded IDs in DB |
-| Enums | ✅ | ✅ | Already implemented |
+| Type            | Has SQL Scanner | Has SQL Valuer | Impact                               |
+| --------------- | --------------- | -------------- | ------------------------------------ |
+| `NanoId`        | ❌              | ❌             | Cannot store IDs in DB               |
+| `Email`         | ❌              | ❌             | Cannot store emails in DB            |
+| `URL`           | ❌              | ❌             | Cannot store URLs in DB              |
+| `Cents`         | ❌              | ❌             | Cannot store money in DB             |
+| `BoundedString` | ❌              | ❌             | Cannot store validated strings in DB |
+| `Timestamp`     | ❌              | ❌             | Cannot store timestamps in DB        |
+| `ID[B,V]`       | ❌              | ❌             | Cannot store branded IDs in DB       |
+| Enums           | ✅              | ✅             | Already implemented                  |
 
 **Solution:**
+
 ```go
 // Example for NanoId
 func (id *NanoId) Scan(src any) error {
@@ -99,11 +103,13 @@ type Money = currency.Amount  // Alias - no type safety
 ```
 
 **Issues:**
+
 - Can mix with raw `currency.Amount` from any source
 - No compile-time currency safety (USD vs EUR)
 - Arithmetic returns raw `currency.Amount`, not `Money`
 
 **Solution:**
+
 ```go
 type Money struct {
     amount currency.Amount
@@ -134,6 +140,7 @@ func (m Money) SameCurrency(other Money) bool {
 **Problem:** No standard validation contract across types.
 
 **Solution:**
+
 ```go
 // Validator is implemented by types that can validate themselves.
 type Validator interface {
@@ -176,6 +183,7 @@ func (bs BoundedString) Validate() error {
 **Problem:** `NewDataPoint` has many parameters, constructor is verbose.
 
 **Current:**
+
 ```go
 dp := NewDataPoint(payload, actor, now, now, "reason").
     WithTrigger(TriggerWebhook).
@@ -184,6 +192,7 @@ dp := NewDataPoint(payload, actor, now, now, "reason").
 ```
 
 **Solution:**
+
 ```go
 dp, err := NewDataPointBuilder[OrderState]().
     WithPayload(order).
@@ -210,6 +219,7 @@ dp, err := NewDataPointBuilder[OrderState]().
 **Problem:** No standard way to compare/order types.
 
 **Solution:**
+
 ```go
 type Comparer[T any] interface {
     Compare(other T) int  // -1, 0, 1
@@ -244,6 +254,7 @@ func SortCents(cents []Cents) {
 **Problem:** No way to merge defaults while preserving user values.
 
 **Solution:**
+
 ```go
 // MergeDefaults merges non-zero values from defaults into target.
 // Zero values in target are filled from defaults.
@@ -254,6 +265,7 @@ func MergeDefaults[T any](target, defaults T) T {
 ```
 
 **Use Case:**
+
 ```go
 defaultConfig := Config{Timeout: 30, Retries: 3}
 userConfig := Config{Timeout: 0, Retries: 5}  // Timeout not specified
@@ -271,6 +283,7 @@ result := MergeDefaults(userConfig, defaultConfig)
 **Problem:** No lazy-loading pattern for expensive resources.
 
 **Solution:**
+
 ```go
 type Provider[T any] interface {
     Load() (T, error)
@@ -315,6 +328,7 @@ func (p *CachedProvider[T]) Load() (T, error) {
 **Problem:** Recursive DataPoint structures could cause infinite loops.
 
 **Solution:**
+
 ```go
 func (dp DataPoint[T]) equalsVisited(other DataPoint[T], visited map[uintptr]bool) bool {
     addr := reflect.ValueOf(dp).Pointer()
@@ -332,14 +346,14 @@ func (dp DataPoint[T]) equalsVisited(other DataPoint[T], visited map[uintptr]boo
 
 ## konfetty Patterns Applicable
 
-| Pattern | konfetty Implementation | Applicability Here |
-|---------|------------------------|-------------------|
-| Fluent Builder API | `WithDefaults().WithTransformer().Build()` | Already using `With*` pattern ✅ |
-| Generics + Reflection | Type-safe API, reflection internally | Already using phantom types ✅ |
-| Validator Interface | `Validator` interface for pipeline | Add to all types |
-| Zero-Value Preservation | Only overwrite zero values | Add merge functionality |
-| Provider Interface | `Provider[T]` for lazy loading | Add for expensive resources |
-| Circular Reference Protection | `visited` map tracking | Add for recursive structures |
+| Pattern                       | konfetty Implementation                    | Applicability Here               |
+| ----------------------------- | ------------------------------------------ | -------------------------------- |
+| Fluent Builder API            | `WithDefaults().WithTransformer().Build()` | Already using `With*` pattern ✅ |
+| Generics + Reflection         | Type-safe API, reflection internally       | Already using phantom types ✅   |
+| Validator Interface           | `Validator` interface for pipeline         | Add to all types                 |
+| Zero-Value Preservation       | Only overwrite zero values                 | Add merge functionality          |
+| Provider Interface            | `Provider[T]` for lazy loading             | Add for expensive resources      |
+| Circular Reference Protection | `visited` map tracking                     | Add for recursive structures     |
 
 ---
 
@@ -347,36 +361,36 @@ func (dp DataPoint[T]) equalsVisited(other DataPoint[T], visited map[uintptr]boo
 
 ### Phase 1: Critical (Do First)
 
-| Task | Effort | Files Changed | Impact |
-|------|--------|---------------|--------|
-| SQL interfaces for all types | 2h | nanoid.go, common.go, bounded.go, id.go | HIGH |
-| Stronger Money wrapper | 2h | money.go | HIGH |
+| Task                         | Effort | Files Changed                           | Impact |
+| ---------------------------- | ------ | --------------------------------------- | ------ |
+| SQL interfaces for all types | 2h     | nanoid.go, common.go, bounded.go, id.go | HIGH   |
+| Stronger Money wrapper       | 2h     | money.go                                | HIGH   |
 
 ### Phase 2: Important
 
-| Task | Effort | Files Changed | Impact |
-|------|--------|---------------|--------|
-| Validator interface | 2h | New validator.go, all types | MEDIUM |
-| DataPoint builder | 3h | datapoint.go | MEDIUM |
-| Comparison interface | 1h | common.go, timestamp | MEDIUM |
+| Task                 | Effort | Files Changed               | Impact |
+| -------------------- | ------ | --------------------------- | ------ |
+| Validator interface  | 2h     | New validator.go, all types | MEDIUM |
+| DataPoint builder    | 3h     | datapoint.go                | MEDIUM |
+| Comparison interface | 1h     | common.go, timestamp        | MEDIUM |
 
 ### Phase 3: Nice to Have
 
-| Task | Effort | Files Changed | Impact |
-|------|--------|---------------|--------|
-| Merge/defaults | 3h | New merge.go | LOW |
-| Provider interface | 2h | New provider.go | LOW |
-| Circular reference protection | 2h | datapoint.go | LOW |
+| Task                          | Effort | Files Changed   | Impact |
+| ----------------------------- | ------ | --------------- | ------ |
+| Merge/defaults                | 3h     | New merge.go    | LOW    |
+| Provider interface            | 2h     | New provider.go | LOW    |
+| Circular reference protection | 2h     | datapoint.go    | LOW    |
 
 ---
 
 ## Estimated Total Effort
 
-| Phase | Effort | Value Delivered |
-|-------|--------|-----------------|
-| Phase 1 | 4 hours | 60% of improvement value |
-| Phase 2 | 6 hours | 30% of improvement value |
-| Phase 3 | 7 hours | 10% of improvement value |
+| Phase     | Effort       | Value Delivered                     |
+| --------- | ------------ | ----------------------------------- |
+| Phase 1   | 4 hours      | 60% of improvement value            |
+| Phase 2   | 6 hours      | 30% of improvement value            |
+| Phase 3   | 7 hours      | 10% of improvement value            |
 | **Total** | **17 hours** | **100% of identified improvements** |
 
 ---
@@ -391,11 +405,11 @@ func (dp DataPoint[T]) equalsVisited(other DataPoint[T], visited map[uintptr]boo
 
 ## Risk Assessment
 
-| Risk | Likelihood | Mitigation |
-|------|------------|------------|
-| SQL interface edge cases | Medium | Comprehensive tests for null/empty values |
-| Money wrapper breaking changes | Low | Keep `currency.Amount` accessible via method |
-| Builder pattern complexity | Low | Keep existing constructors, add builder as option |
+| Risk                           | Likelihood | Mitigation                                        |
+| ------------------------------ | ---------- | ------------------------------------------------- |
+| SQL interface edge cases       | Medium     | Comprehensive tests for null/empty values         |
+| Money wrapper breaking changes | Low        | Keep `currency.Amount` accessible via method      |
+| Builder pattern complexity     | Low        | Keep existing constructors, add builder as option |
 
 ---
 
@@ -412,7 +426,7 @@ The go-composable-business-types library is production-ready with solid foundati
 
 ---
 
-*Report generated by Crush CLI Agent*
-*Generated: 2026-02-20 02:39 CET*
-*Analysis based on 17 source files, 5,452 lines of code*
-*Patterns derived from nikoksr/konfetty research*
+_Report generated by Crush CLI Agent_
+_Generated: 2026-02-20 02:39 CET_
+_Analysis based on 17 source files, 5,452 lines of code_
+_Patterns derived from nikoksr/konfetty research_

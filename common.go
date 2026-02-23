@@ -181,6 +181,17 @@ func (p Percentage) IsMin() bool { return p == 0 }
 // IsMax returns true if the percentage is 100 (maximum value).
 func (p Percentage) IsMax() bool { return p == 100 }
 
+// Compare returns -1 if p < other, 0 if equal, 1 if p > other.
+func (p Percentage) Compare(other Percentage) int {
+	if p < other {
+		return -1
+	}
+	if p > other {
+		return 1
+	}
+	return 0
+}
+
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 

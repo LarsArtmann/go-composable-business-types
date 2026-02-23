@@ -1,4 +1,5 @@
 # Comprehensive Status Report
+
 ## go-composable-business-types
 
 **Generated:** 2026-02-20 03:21 CET
@@ -19,57 +20,57 @@ SQL `Scanner` and `Valuer` interfaces were successfully added to all core primit
 
 ### A) FULLY DONE ✅
 
-| Task | Files Changed | Tests | Notes |
-|------|---------------|-------|-------|
-| SQL interfaces for NanoId | nanoid.go | ❌ MISSING | Scan/Value implemented |
-| SQL interfaces for Email | common.go | ❌ MISSING | Scan/Value implemented with validation |
-| SQL interfaces for URL | common.go | ❌ MISSING | Scan/Value implemented with validation |
-| SQL interfaces for Cents | common.go | ❌ MISSING | Scan/Value implemented |
-| SQL interfaces for Timestamp | common.go | ❌ MISSING | Scan/Value implemented |
-| SQL interfaces for BoundedString | bounded.go | ❌ MISSING | Scan/Value implemented |
-| SQL interfaces for ID[B,V] | id.go | ❌ MISSING | Scan/Value implemented, breaking change |
+| Task                             | Files Changed | Tests      | Notes                                   |
+| -------------------------------- | ------------- | ---------- | --------------------------------------- |
+| SQL interfaces for NanoId        | nanoid.go     | ❌ MISSING | Scan/Value implemented                  |
+| SQL interfaces for Email         | common.go     | ❌ MISSING | Scan/Value implemented with validation  |
+| SQL interfaces for URL           | common.go     | ❌ MISSING | Scan/Value implemented with validation  |
+| SQL interfaces for Cents         | common.go     | ❌ MISSING | Scan/Value implemented                  |
+| SQL interfaces for Timestamp     | common.go     | ❌ MISSING | Scan/Value implemented                  |
+| SQL interfaces for BoundedString | bounded.go    | ❌ MISSING | Scan/Value implemented                  |
+| SQL interfaces for ID[B,V]       | id.go         | ❌ MISSING | Scan/Value implemented, breaking change |
 
 **BREAKING CHANGE:** `ID[B,V].Value()` renamed to `ID[B,V].Get()` to avoid collision with `driver.Valuer.Value()` signature.
 
 ### B) PARTIALLY DONE ⚠️
 
-| Task | Status | Blocker |
-|------|--------|---------|
-| Enum SQL interfaces | ✅ Done with tests | Only enums have SQL tests |
-| Test file updates | ✅ cbt_test.go, id_jsonv2_test.go updated | New SQL code has no tests |
+| Task                | Status                                    | Blocker                   |
+| ------------------- | ----------------------------------------- | ------------------------- |
+| Enum SQL interfaces | ✅ Done with tests                        | Only enums have SQL tests |
+| Test file updates   | ✅ cbt_test.go, id_jsonv2_test.go updated | New SQL code has no tests |
 
 ### C) NOT STARTED ❌
 
-| Task | Priority | Effort | Impact |
-|------|----------|--------|--------|
-| SQL tests for new interfaces | P0 - CRITICAL | 2h | HIGH - Coverage dropped |
-| SQL interfaces for Locale | P2 | 30m | MEDIUM |
-| SQL interfaces for Duration | P2 | 30m | LOW |
-| SQL interfaces for ActorEntry/ActorChain | P3 | 1h | LOW |
-| SQL interfaces for Bitemporal | P3 | 30m | LOW |
-| SQL interfaces for Reference[T] | P3 | 1h | LOW |
-| SQL interfaces for Cause[T] | P3 | 1h | LOW |
-| SQL interfaces for Context | P3 | 30m | LOW |
-| SQL interfaces for DataPoint[T] | P3 | 2h | LOW |
-| Stronger Money wrapper (not alias) | P1 | 2h | HIGH |
-| Validator interface | P2 | 2h | MEDIUM |
-| Comparison interface (Cents, Timestamp) | P2 | 1h | MEDIUM |
+| Task                                     | Priority      | Effort | Impact                  |
+| ---------------------------------------- | ------------- | ------ | ----------------------- |
+| SQL tests for new interfaces             | P0 - CRITICAL | 2h     | HIGH - Coverage dropped |
+| SQL interfaces for Locale                | P2            | 30m    | MEDIUM                  |
+| SQL interfaces for Duration              | P2            | 30m    | LOW                     |
+| SQL interfaces for ActorEntry/ActorChain | P3            | 1h     | LOW                     |
+| SQL interfaces for Bitemporal            | P3            | 30m    | LOW                     |
+| SQL interfaces for Reference[T]          | P3            | 1h     | LOW                     |
+| SQL interfaces for Cause[T]              | P3            | 1h     | LOW                     |
+| SQL interfaces for Context               | P3            | 30m    | LOW                     |
+| SQL interfaces for DataPoint[T]          | P3            | 2h     | LOW                     |
+| Stronger Money wrapper (not alias)       | P1            | 2h     | HIGH                    |
+| Validator interface                      | P2            | 2h     | MEDIUM                  |
+| Comparison interface (Cents, Timestamp)  | P2            | 1h     | MEDIUM                  |
 
 ### D) TOTALLY FUCKED UP 💥
 
-| Issue | Severity | Cause |
-|-------|----------|-------|
-| Test coverage regression | HIGH | New SQL code has zero tests |
-| `id_jsonv2_test.go` gopls warning | LOW | Build tag not recognized by gopls (cosmetic) |
+| Issue                             | Severity | Cause                                        |
+| --------------------------------- | -------- | -------------------------------------------- |
+| Test coverage regression          | HIGH     | New SQL code has zero tests                  |
+| `id_jsonv2_test.go` gopls warning | LOW      | Build tag not recognized by gopls (cosmetic) |
 
 ---
 
 ## Coverage Analysis
 
-| Metric | Before | After | Delta |
-|--------|--------|-------|-------|
-| Test coverage | 80.1% | 66.5% | **-13.6%** |
-| Tests passing | 117+ | 117+ | No change |
+| Metric        | Before | After | Delta      |
+| ------------- | ------ | ----- | ---------- |
+| Test coverage | 80.1%  | 66.5% | **-13.6%** |
+| Tests passing | 117+   | 117+  | No change  |
 
 **Root Cause:** Added ~250 lines of new code (SQL interfaces) without corresponding tests. Previous coverage was driven by enum SQL tests; new type SQL code is completely untested.
 
@@ -109,33 +110,33 @@ SQL `Scanner` and `Valuer` interfaces were successfully added to all core primit
 
 ## Top 25 Things to Get Done Next
 
-| # | Task | Priority | Effort | Impact | Risk |
-|---|------|----------|--------|--------|------|
-| 1 | Add SQL tests for NanoId | P0 | 30m | HIGH | LOW |
-| 2 | Add SQL tests for Email | P0 | 30m | HIGH | LOW |
-| 3 | Add SQL tests for URL | P0 | 30m | HIGH | LOW |
-| 4 | Add SQL tests for Cents | P0 | 30m | HIGH | LOW |
-| 5 | Add SQL tests for Timestamp | P0 | 30m | HIGH | LOW |
-| 6 | Add SQL tests for BoundedString | P0 | 20m | HIGH | LOW |
-| 7 | Add SQL tests for ID[B,V] | P0 | 30m | HIGH | LOW |
-| 8 | Commit SQL interfaces with tests | P0 | 10m | HIGH | NONE |
-| 9 | Strengthen Money type (wrapper, not alias) | P1 | 2h | HIGH | MEDIUM |
-| 10 | Add SQL interfaces for Money | P1 | 1h | HIGH | LOW |
-| 11 | Add Validator interface | P2 | 2h | MEDIUM | LOW |
-| 12 | Add Cents.Compare() method | P2 | 15m | MEDIUM | NONE |
-| 13 | Add Timestamp.Compare() method | P2 | 15m | MEDIUM | NONE |
-| 14 | Add SQL interfaces for Locale | P2 | 30m | MEDIUM | LOW |
-| 15 | Add SQL interfaces for Duration | P2 | 30m | LOW | LOW |
-| 16 | Add Duration.Compare() method | P2 | 15m | LOW | NONE |
-| 17 | Add IsZero() to Duration | P2 | 10m | LOW | NONE |
-| 18 | Add SQL interfaces for Bitemporal | P3 | 30m | LOW | LOW |
-| 19 | Add SQL interfaces for Context | P3 | 30m | LOW | LOW |
-| 20 | Add SQL interfaces for Reference[T] | P3 | 1h | LOW | MEDIUM |
-| 21 | Add SQL interfaces for Cause[T] | P3 | 1h | LOW | MEDIUM |
-| 22 | Add SQL interfaces for ActorEntry | P3 | 30m | LOW | LOW |
-| 23 | Add DataPoint builder pattern | P3 | 3h | MEDIUM | LOW |
-| 24 | Add MergeDefaults function | P3 | 3h | LOW | MEDIUM |
-| 25 | Add Provider[T] interface | P3 | 2h | LOW | LOW |
+| #   | Task                                       | Priority | Effort | Impact | Risk   |
+| --- | ------------------------------------------ | -------- | ------ | ------ | ------ |
+| 1   | Add SQL tests for NanoId                   | P0       | 30m    | HIGH   | LOW    |
+| 2   | Add SQL tests for Email                    | P0       | 30m    | HIGH   | LOW    |
+| 3   | Add SQL tests for URL                      | P0       | 30m    | HIGH   | LOW    |
+| 4   | Add SQL tests for Cents                    | P0       | 30m    | HIGH   | LOW    |
+| 5   | Add SQL tests for Timestamp                | P0       | 30m    | HIGH   | LOW    |
+| 6   | Add SQL tests for BoundedString            | P0       | 20m    | HIGH   | LOW    |
+| 7   | Add SQL tests for ID[B,V]                  | P0       | 30m    | HIGH   | LOW    |
+| 8   | Commit SQL interfaces with tests           | P0       | 10m    | HIGH   | NONE   |
+| 9   | Strengthen Money type (wrapper, not alias) | P1       | 2h     | HIGH   | MEDIUM |
+| 10  | Add SQL interfaces for Money               | P1       | 1h     | HIGH   | LOW    |
+| 11  | Add Validator interface                    | P2       | 2h     | MEDIUM | LOW    |
+| 12  | Add Cents.Compare() method                 | P2       | 15m    | MEDIUM | NONE   |
+| 13  | Add Timestamp.Compare() method             | P2       | 15m    | MEDIUM | NONE   |
+| 14  | Add SQL interfaces for Locale              | P2       | 30m    | MEDIUM | LOW    |
+| 15  | Add SQL interfaces for Duration            | P2       | 30m    | LOW    | LOW    |
+| 16  | Add Duration.Compare() method              | P2       | 15m    | LOW    | NONE   |
+| 17  | Add IsZero() to Duration                   | P2       | 10m    | LOW    | NONE   |
+| 18  | Add SQL interfaces for Bitemporal          | P3       | 30m    | LOW    | LOW    |
+| 19  | Add SQL interfaces for Context             | P3       | 30m    | LOW    | LOW    |
+| 20  | Add SQL interfaces for Reference[T]        | P3       | 1h     | LOW    | MEDIUM |
+| 21  | Add SQL interfaces for Cause[T]            | P3       | 1h     | LOW    | MEDIUM |
+| 22  | Add SQL interfaces for ActorEntry          | P3       | 30m    | LOW    | LOW    |
+| 23  | Add DataPoint builder pattern              | P3       | 3h     | MEDIUM | LOW    |
+| 24  | Add MergeDefaults function                 | P3       | 3h     | LOW    | MEDIUM |
+| 25  | Add Provider[T] interface                  | P3       | 2h     | LOW    | LOW    |
 
 ---
 
@@ -157,12 +158,12 @@ SQL `Scanner` and `Valuer` interfaces were successfully added to all core primit
 
 ### Library Usage
 
-| Library | Usage | Status |
-|---------|-------|--------|
-| github.com/bojanz/currency | Money handling | ✅ Good (but weak type) |
-| github.com/sixafter/nanoid | ID generation | ✅ Good (FIPS-140) |
-| golang.org/x/text/language | Locale handling | ✅ Good |
-| github.com/abice/go-enum | Enum generation | ✅ Good (with --sql) |
+| Library                    | Usage           | Status                  |
+| -------------------------- | --------------- | ----------------------- |
+| github.com/bojanz/currency | Money handling  | ✅ Good (but weak type) |
+| github.com/sixafter/nanoid | ID generation   | ✅ Good (FIPS-140)      |
+| golang.org/x/text/language | Locale handling | ✅ Good                 |
+| github.com/abice/go-enum   | Enum generation | ✅ Good (with --sql)    |
 
 **Recommendation:** Consider wrapping `currency.Amount` in a proper `Money` struct for type safety.
 
@@ -183,7 +184,7 @@ func TestTYPE_Scan(t *testing.T) {
             t.Error("expected zero value after nil scan")
         }
     })
-    
+
     t.Run("string", func(t *testing.T) {
         var x TYPE
         if err := x.Scan("valid-value"); err != nil {
@@ -191,7 +192,7 @@ func TestTYPE_Scan(t *testing.T) {
         }
         // assert value
     })
-    
+
     t.Run("[]byte", func(t *testing.T) {
         var x TYPE
         if err := x.Scan([]byte("valid-value")); err != nil {
@@ -199,7 +200,7 @@ func TestTYPE_Scan(t *testing.T) {
         }
         // assert value
     })
-    
+
     t.Run("invalid", func(t *testing.T) {
         var x TYPE
         err := x.Scan(123) // invalid type
@@ -220,7 +221,7 @@ func TestTYPE_Value(t *testing.T) {
             t.Error("expected nil for zero value")
         }
     })
-    
+
     t.Run("non-zero", func(t *testing.T) {
         x := NewTYPE("valid")
         v, err := x.Value()
@@ -239,11 +240,13 @@ func TestTYPE_Value(t *testing.T) {
 **Should I add SQL tests for the new interfaces before committing, or commit the SQL interfaces now and add tests in a follow-up commit?**
 
 Arguments for tests first:
+
 - Coverage regression is significant (-13.6%)
 - Untested code is a risk
 - Clean git history with complete features
 
 Arguments for commit now:
+
 - SQL interfaces are functional and tested manually
 - Smaller commits are easier to review
 - Tests can be added incrementally
@@ -262,6 +265,7 @@ modified:   nanoid.go
 ```
 
 **Changes:**
+
 - ~250 lines added (SQL interfaces)
 - 8 lines changed (Value() → Get() in tests)
 
@@ -276,5 +280,5 @@ modified:   nanoid.go
 
 ---
 
-*Report generated by Crush CLI Agent*
-*Generated: 2026-02-20 03:21 CET*
+_Report generated by Crush CLI Agent_
+_Generated: 2026-02-20 03:21 CET_

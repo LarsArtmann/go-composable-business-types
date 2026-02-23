@@ -44,8 +44,8 @@ The DataPoint[T] implementation is **COMPLETE** - all 3 phases delivered with fu
 | Type                    | File         | Lines | Description                              |
 | ----------------------- | ------------ | ----- | ---------------------------------------- |
 | `NanoId`                | `nanoid.go`  | 122   | URL-safe crypto random ID (21 chars)     |
-| `ID[B, V]`             | `id.go`      | 75    | Branded type-safe identifier             |
-| `Id[T]`                | `id.go`      | -     | Alias for `ID[struct{}, T]`              |
+| `ID[B, V]`              | `id.go`      | 75    | Branded type-safe identifier             |
+| `Id[T]`                 | `id.go`      | -     | Alias for `ID[struct{}, T]`              |
 | `ActorChain[T]`         | `actor.go`   | 69    | Ordered chain of actors for audit trails |
 | `ActorEntry[T]`         | `actor.go`   | -     | Single actor with Kind, Id, Name         |
 | `BoundedString`         | `bounded.go` | 80    | Length-validated string with min/max     |

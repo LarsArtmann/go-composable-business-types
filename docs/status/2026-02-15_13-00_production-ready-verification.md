@@ -1,4 +1,5 @@
 # Comprehensive Status Report
+
 ## go-composable-business-types
 
 **Generated:** 2026-02-15 13:00 CET (Updated from previous 2026-02-14 23:23 report)
@@ -14,6 +15,7 @@
 **No functional regressions detected** since last status report. All 16 type definitions, 5 enums, and supporting infrastructure remain **production-ready** with comprehensive tests, benchmarks, and CI/CD pipeline. Library achieved stable state with **zero breaking changes**.
 
 ### Key Changes Since Last Report
+
 - **Disk space issue identified** (CRITICAL) - blocks JSON v2 testing
 - **Go version mismatch confirmed** (local 1.26 vs CI 1.21-1.23)
 - **All functionality verified** working correctly
@@ -25,46 +27,46 @@
 
 ### Core Types Verification (All Working)
 
-| Type | Lines | Status | Performance | Notes |
-|------|-------|--------|-------------|-------|
-| `ID[B, V]` | 104 | ✅ PASS | 279.2 ns/op | Branded, type-safe identifier |
-| `DataPoint[T]` | 281 | ✅ PASS | 4,366 ns/op | Complete audit trail functionality |
-| `NanoId` | 107 | ✅ PASS | 138.5-170.8 ns/op | FIPS-140 compliant generation |
-| `ActorChain[T]` | 69 | ✅ PASS | 0.48 ns/op | Audit trail operations |
-| `BoundedString` | 100 | ✅ PASS | 18.68 ns/op | Length validation working |
-| `Bitemporal` | 113 | ✅ PASS | 84.98 ns/op | Temporal tracking verified |
-| `Context` | 136 | ✅ PASS | - | Execution context functionality |
-| `Reference[T]` | 113 | ✅ PASS | - | Type-safe references working |
-| `Cause[T]` | 119 | ✅ PASS | - | Causal chain tracking working |
-| `Money` | 68 | ✅ PASS | - | ISO 4217 currency operations |
-| `Cents` | (common.go) | ✅ PASS | 0.46 ns/op | Zero allocation, precise math |
-| `Email` | (common.go) | ✅ PASS | 2,445 ns/op | Validation working |
-| `URL` | (common.go) | ✅ PASS | - | URL parsing and helpers |
-| `Percentage` | (common.go) | ✅ PASS | 0.47 ns/op | Clamped 0-100 values |
-| `Timestamp` | (common.go) | ✅ PASS | 3.74 ns/op | Before/After/IsZero methods |
-| `Duration` | (common.go) | ✅ PASS | - | Time duration utilities |
+| Type            | Lines       | Status  | Performance       | Notes                              |
+| --------------- | ----------- | ------- | ----------------- | ---------------------------------- |
+| `ID[B, V]`      | 104         | ✅ PASS | 279.2 ns/op       | Branded, type-safe identifier      |
+| `DataPoint[T]`  | 281         | ✅ PASS | 4,366 ns/op       | Complete audit trail functionality |
+| `NanoId`        | 107         | ✅ PASS | 138.5-170.8 ns/op | FIPS-140 compliant generation      |
+| `ActorChain[T]` | 69          | ✅ PASS | 0.48 ns/op        | Audit trail operations             |
+| `BoundedString` | 100         | ✅ PASS | 18.68 ns/op       | Length validation working          |
+| `Bitemporal`    | 113         | ✅ PASS | 84.98 ns/op       | Temporal tracking verified         |
+| `Context`       | 136         | ✅ PASS | -                 | Execution context functionality    |
+| `Reference[T]`  | 113         | ✅ PASS | -                 | Type-safe references working       |
+| `Cause[T]`      | 119         | ✅ PASS | -                 | Causal chain tracking working      |
+| `Money`         | 68          | ✅ PASS | -                 | ISO 4217 currency operations       |
+| `Cents`         | (common.go) | ✅ PASS | 0.46 ns/op        | Zero allocation, precise math      |
+| `Email`         | (common.go) | ✅ PASS | 2,445 ns/op       | Validation working                 |
+| `URL`           | (common.go) | ✅ PASS | -                 | URL parsing and helpers            |
+| `Percentage`    | (common.go) | ✅ PASS | 0.47 ns/op        | Clamped 0-100 values               |
+| `Timestamp`     | (common.go) | ✅ PASS | 3.74 ns/op        | Before/After/IsZero methods        |
+| `Duration`      | (common.go) | ✅ PASS | -                 | Time duration utilities            |
 
 ### Enums Verification (All Working)
 
-| Enum | Values | Status | SQL Support | Generated |
-|------|--------|--------|-------------|-----------|
-| `ActorKind` | User, Bot, System, Service | ✅ PASS | ✅ Scan/Value | Generated |
-| `Locale` | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN | ✅ PASS | ✅ Scan/Value | Generated |
-| `Priority` | Low, Medium, High, Critical | ✅ PASS | ✅ Scan/Value | Generated |
-| `Status` | Draft, Active, Paused, Archived, Deleted | ✅ PASS | ✅ Scan/Value | Generated |
-| `Trigger` | Manual, Scheduled, Webhook, Import, Migration, System, Correction | ✅ PASS | ✅ Scan/Value | Generated |
+| Enum        | Values                                                            | Status  | SQL Support   | Generated |
+| ----------- | ----------------------------------------------------------------- | ------- | ------------- | --------- |
+| `ActorKind` | User, Bot, System, Service                                        | ✅ PASS | ✅ Scan/Value | Generated |
+| `Locale`    | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN            | ✅ PASS | ✅ Scan/Value | Generated |
+| `Priority`  | Low, Medium, High, Critical                                       | ✅ PASS | ✅ Scan/Value | Generated |
+| `Status`    | Draft, Active, Paused, Archived, Deleted                          | ✅ PASS | ✅ Scan/Value | Generated |
+| `Trigger`   | Manual, Scheduled, Webhook, Import, Migration, System, Correction | ✅ PASS | ✅ Scan/Value | Generated |
 
 ### Infrastructure Verification (All Working)
 
-| Component | Status | Details | Last Verified |
-|----------|--------|---------|---------------|
-| Test Suite | ✅ COMPLETE | 117+ tests, race detector | 2026-02-15 |
-| Coverage | ✅ COMPLETE | 80.1% (meets threshold) | 2026-02-15 |
-| Benchmarks | ✅ COMPLETE | 12 benchmarks, 0.47-4.366 µs | 2026-02-15 |
-| CI/CD Pipeline | ✅ COMPLETE | GitHub Actions with matrix testing | 2026-02-15 |
-| Build Automation | ✅ COMPLETE | Justfile: generate, test, bench, lint | 2026-02-15 |
-| JSON v2 Support | ⚠️ LIMITED | Cannot test due to disk space | 2026-02-15 |
-| Architecture Docs | ✅ COMPLETE | D2 diagrams with SVG/PNG output | 2026-02-15 |
+| Component         | Status      | Details                               | Last Verified |
+| ----------------- | ----------- | ------------------------------------- | ------------- |
+| Test Suite        | ✅ COMPLETE | 117+ tests, race detector             | 2026-02-15    |
+| Coverage          | ✅ COMPLETE | 80.1% (meets threshold)               | 2026-02-15    |
+| Benchmarks        | ✅ COMPLETE | 12 benchmarks, 0.47-4.366 µs          | 2026-02-15    |
+| CI/CD Pipeline    | ✅ COMPLETE | GitHub Actions with matrix testing    | 2026-02-15    |
+| Build Automation  | ✅ COMPLETE | Justfile: generate, test, bench, lint | 2026-02-15    |
+| JSON v2 Support   | ⚠️ LIMITED  | Cannot test due to disk space         | 2026-02-15    |
+| Architecture Docs | ✅ COMPLETE | D2 diagrams with SVG/PNG output       | 2026-02-15    |
 
 ---
 
@@ -72,25 +74,25 @@
 
 ### 🚨 CRITICAL (BLOCKING)
 
-| Issue | Impact | Status | Resolution |
-|-------|--------|--------|------------|
-| **Disk space exhausted** | ❌ Blocks JSON v2 testing, potential system instability | ACTIVE | Requires immediate user action |
-| **Filesystem**: /dev/disk3s1s1 229G 228G 700M 100% | | | |
+| Issue                                              | Impact                                                  | Status | Resolution                     |
+| -------------------------------------------------- | ------------------------------------------------------- | ------ | ------------------------------ |
+| **Disk space exhausted**                           | ❌ Blocks JSON v2 testing, potential system instability | ACTIVE | Requires immediate user action |
+| **Filesystem**: /dev/disk3s1s1 229G 228G 700M 100% |                                                         |        |                                |
 
 ### 🟡 MEDIUM (NON-BLOCKING)
 
-| Issue | Impact | Status | Resolution |
-|-------|--------|--------|------------|
-| **Go version mismatch** | 📊 Inconsistent testing environments | ACTIVE | Update CI matrix to 1.24-1.26 |
-| **Local**: go1.26.0 | 🔄 CI matrix: ['1.21', '1.22', '1.23'] | | |
-| **Missing**: 1.24, 1.25, 1.26 coverage/bench data** | 📊 Reduced coverage accuracy | WAITING | Update CI after disk fix |
+| Issue                                                 | Impact                                 | Status  | Resolution                    |
+| ----------------------------------------------------- | -------------------------------------- | ------- | ----------------------------- |
+| **Go version mismatch**                               | 📊 Inconsistent testing environments   | ACTIVE  | Update CI matrix to 1.24-1.26 |
+| **Local**: go1.26.0                                   | 🔄 CI matrix: ['1.21', '1.22', '1.23'] |         |                               |
+| **Missing**: 1.24, 1.25, 1.26 coverage/bench data\*\* | 📊 Reduced coverage accuracy           | WAITING | Update CI after disk fix      |
 
 ### 🟢 LOW (NON-BLOCKING)
 
-| Issue | Impact | Status | Resolution |
-|-------|--------|--------|------------|
-| **gopls warnings** | 🔍 18 `infertypeargs` warnings | ACTIVE | Cleanup test files |
-| **Location**: cbt_test.go only | | | |
+| Issue                          | Impact                         | Status | Resolution         |
+| ------------------------------ | ------------------------------ | ------ | ------------------ |
+| **gopls warnings**             | 🔍 18 `infertypeargs` warnings | ACTIVE | Cleanup test files |
+| **Location**: cbt_test.go only |                                |        |                    |
 
 ---
 
@@ -142,10 +144,10 @@ BenchmarkEnum-8               20937490      76.83 ns/op     80 B/op       1 allo
 
 ```yaml
 Jobs:
-  test:          ✅ Multi-Go versions (1.21, 1.22, 1.23) - PASS
-  lint:          ✅ golangci-lint v1.58 - PASS (0 issues)
-  generate:      ✅ go generate + no changes verification - PASS
-  benchmark:     ✅ Benchmarks + artifact upload - PASS
+  test: ✅ Multi-Go versions (1.21, 1.22, 1.23) - PASS
+  lint: ✅ golangci-lint v1.58 - PASS (0 issues)
+  generate: ✅ go generate + no changes verification - PASS
+  benchmark: ✅ Benchmarks + artifact upload - PASS
 ```
 
 ### Coverage & Artifacts
@@ -218,11 +220,11 @@ Jobs:
 
 ### Risk Assessment
 
-| Risk Level | Items | Mitigation |
-|------------|-------|-------------|
-| 🟢 LOW | Version mismatch, gopls warnings | Cleanups planned |
-| 🟡 MEDIUM | Inconsistent test coverage | Update CI matrix |
-| 🚨 HIGH | Disk space exhaustion | Immediate action required |
+| Risk Level | Items                            | Mitigation                |
+| ---------- | -------------------------------- | ------------------------- |
+| 🟢 LOW     | Version mismatch, gopls warnings | Cleanups planned          |
+| 🟡 MEDIUM  | Inconsistent test coverage       | Update CI matrix          |
+| 🚨 HIGH    | Disk space exhaustion            | Immediate action required |
 
 ---
 
@@ -240,7 +242,7 @@ The library is **ready for production deployment** with the understanding that J
 
 ---
 
-*Report generated by Crush CLI Agent*
-*Generated: 2026-02-15 13:00 CET*
-*Previous report: 2026-02-14 23:23 CET*
-*Based on 17 source files, 5452 lines of code, 117+ tests*
+_Report generated by Crush CLI Agent_
+_Generated: 2026-02-15 13:00 CET_
+_Previous report: 2026-02-14 23:23 CET_
+_Based on 17 source files, 5452 lines of code, 117+ tests_
