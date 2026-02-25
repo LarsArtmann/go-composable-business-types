@@ -15,10 +15,10 @@ This session resumed from an interrupted context and continued implementing inte
 
 ## Commits This Session
 
-| Commit | Message |
-|--------|---------|
-| `feedec7` | fix: rename IsEmpty to IsZero for API consistency |
-| `823c524` | feat: add IsZero() to composite types |
+| Commit    | Message                                            |
+| --------- | -------------------------------------------------- |
+| `feedec7` | fix: rename IsEmpty to IsZero for API consistency  |
+| `823c524` | feat: add IsZero() to composite types              |
 | `c8052f5` | feat: add String() methods to Percentage and Cents |
 
 ---
@@ -29,92 +29,93 @@ This session resumed from an interrupted context and continued implementing inte
 
 All types now implement `IsZero() bool` for zero-value checking:
 
-| Type | File | Line |
-|------|------|------|
-| ActorChain[T] | actor.go | 22 |
-| ActorEntry[T] | actor.go | 72 |
-| BoundedString | bounded.go | 55 |
-| Email | common.go | 54 |
-| URL | common.go | 124 |
-| Percentage | common.go | 176 |
-| Cents | common.go | 225 |
-| Timestamp | common.go | 257 |
-| Duration | common.go | 272 |
-| DataPoint[T] | datapoint.go | 67 |
-| Cause[T] | datapoint_cause.go | 57 |
-| Context | datapoint_context.go | 39 |
-| Reference[T] | datapoint_ref.go | 47 |
-| Bitemporal | datapoint_temporal.go | 63 |
-| ID[B, V] | id.go | 29 |
-| Locale | locale.go | 60 |
-| NanoId | nanoid.go | 74 |
+| Type          | File                  | Line |
+| ------------- | --------------------- | ---- |
+| ActorChain[T] | actor.go              | 22   |
+| ActorEntry[T] | actor.go              | 72   |
+| BoundedString | bounded.go            | 55   |
+| Email         | common.go             | 54   |
+| URL           | common.go             | 124  |
+| Percentage    | common.go             | 176  |
+| Cents         | common.go             | 225  |
+| Timestamp     | common.go             | 257  |
+| Duration      | common.go             | 272  |
+| DataPoint[T]  | datapoint.go          | 67   |
+| Cause[T]      | datapoint_cause.go    | 57   |
+| Context       | datapoint_context.go  | 39   |
+| Reference[T]  | datapoint_ref.go      | 47   |
+| Bitemporal    | datapoint_temporal.go | 63   |
+| ID[B, V]      | id.go                 | 29   |
+| Locale        | locale.go             | 60   |
+| NanoId        | nanoid.go             | 74   |
 
 **Total: 17 types with IsZero()**
 
 ### String() Method Implementations
 
-| Type | File | Format |
-|------|------|--------|
-| BoundedString | bounded.go:51 | Raw value |
-| Email | common.go:53 | Raw string |
-| URL | common.go:121 | Raw string |
-| Percentage | common.go:173 | `"50%"` |
-| Cents | common.go:223 | `"$12.34"` |
-| ID[B, V] | id.go:32 | Value via fmt |
-| Locale | locale.go:55 | ISO code |
-| NanoId | nanoid.go:71 | Raw value |
+| Type          | File          | Format        |
+| ------------- | ------------- | ------------- |
+| BoundedString | bounded.go:51 | Raw value     |
+| Email         | common.go:53  | Raw string    |
+| URL           | common.go:121 | Raw string    |
+| Percentage    | common.go:173 | `"50%"`       |
+| Cents         | common.go:223 | `"$12.34"`    |
+| ID[B, V]      | id.go:32      | Value via fmt |
+| Locale        | locale.go:55  | ISO code      |
+| NanoId        | nanoid.go:71  | Raw value     |
 
 **Total: 8 types with String()**
 
 ### Compare() Method Implementations
 
-| Type | File | Line |
-|------|------|------|
-| Percentage | common.go | 185 |
-| Cents | common.go | 230 |
-| Timestamp | common.go | 262 |
-| Duration | common.go | 275 |
+| Type       | File      | Line |
+| ---------- | --------- | ---- |
+| Percentage | common.go | 185  |
+| Cents      | common.go | 230  |
+| Timestamp  | common.go | 262  |
+| Duration   | common.go | 275  |
 
 **Total: 4 types with Compare()**
 
 ### SQL Scanner/Valuer Implementations
 
-| Type | Scan() | Value() |
-|------|--------|---------|
+| Type          | Scan()         | Value()        |
+| ------------- | -------------- | -------------- |
 | BoundedString | bounded.go:105 | bounded.go:127 |
-| Duration | common.go:287 | common.go:327 |
-| Email | common.go:336 | common.go:370 |
-| URL | common.go:379 | common.go:413 |
-| Cents | common.go:422 | common.go:446 |
-| Timestamp | common.go:452 | common.go:480 |
-| ID[B, V] | id.go:100 | id.go:138 |
-| Locale | locale.go:89 | locale.go:123 |
-| NanoId | nanoid.go:112 | nanoid.go:146 |
+| Duration      | common.go:287  | common.go:327  |
+| Email         | common.go:336  | common.go:370  |
+| URL           | common.go:379  | common.go:413  |
+| Cents         | common.go:422  | common.go:446  |
+| Timestamp     | common.go:452  | common.go:480  |
+| ID[B, V]      | id.go:100      | id.go:138      |
+| Locale        | locale.go:89   | locale.go:123  |
+| NanoId        | nanoid.go:112  | nanoid.go:146  |
 
 **Total: 9 types with SQL interfaces**
 
 ### JSON Marshal/Unmarshal
 
 All core types implement `json.Marshaler` and `json.Unmarshaler`:
+
 - BoundedString, DataPoint[T], Cause[T], Context, Reference[T], Bitemporal, ID[B, V]
 
 ### TextMarshaler Implementations
 
-| Type | File | Line |
-|------|------|------|
-| ID[B, V] | id.go | 71 |
-| Locale | locale.go | 78 |
-| NanoId | nanoid.go | 80 |
+| Type     | File      | Line |
+| -------- | --------- | ---- |
+| ID[B, V] | id.go     | 71   |
+| Locale   | locale.go | 78   |
+| NanoId   | nanoid.go | 80   |
 
 ---
 
 ## B) ⏳ PARTIALLY DONE
 
-| Task | Status | Notes |
-|------|--------|-------|
-| `Compare()` on Percentage | **Added but uncommitted** | common.go:185, needs commit |
-| `GoString()` implementations | 2/10 done | Only ID & NanoId have it |
-| `TextMarshaler` | 3/10 done | Email, URL, Percentage, Cents, Timestamp, Duration, BoundedString missing |
+| Task                         | Status                    | Notes                                                                     |
+| ---------------------------- | ------------------------- | ------------------------------------------------------------------------- |
+| `Compare()` on Percentage    | **Added but uncommitted** | common.go:185, needs commit                                               |
+| `GoString()` implementations | 2/10 done                 | Only ID & NanoId have it                                                  |
+| `TextMarshaler`              | 3/10 done                 | Email, URL, Percentage, Cents, Timestamp, Duration, BoundedString missing |
 
 ---
 
@@ -122,45 +123,45 @@ All core types implement `json.Marshaler` and `json.Unmarshaler`:
 
 ### GoString() - Missing on 8 types
 
-| Type | Priority | Effort |
-|------|----------|--------|
-| Email | Medium | 1 line |
-| URL | Medium | 1 line |
-| Percentage | Medium | 1 line |
-| Cents | Medium | 1 line |
-| Timestamp | Medium | 1 line |
-| Duration | Medium | 1 line |
-| BoundedString | Medium | 1 line |
-| ActorChain[T] | Low | 3-5 lines |
+| Type          | Priority | Effort    |
+| ------------- | -------- | --------- |
+| Email         | Medium   | 1 line    |
+| URL           | Medium   | 1 line    |
+| Percentage    | Medium   | 1 line    |
+| Cents         | Medium   | 1 line    |
+| Timestamp     | Medium   | 1 line    |
+| Duration      | Medium   | 1 line    |
+| BoundedString | Medium   | 1 line    |
+| ActorChain[T] | Low      | 3-5 lines |
 
 ### TextMarshaler - Missing on 7 types
 
-| Type | Priority | Effort |
-|------|----------|--------|
-| Email | Medium | ~10 lines |
-| URL | Medium | ~10 lines |
-| Percentage | Medium | ~10 lines |
-| Cents | Medium | ~10 lines |
-| Timestamp | Medium | ~10 lines |
-| Duration | Medium | ~10 lines |
-| BoundedString | Medium | ~10 lines |
+| Type          | Priority | Effort    |
+| ------------- | -------- | --------- |
+| Email         | Medium   | ~10 lines |
+| URL           | Medium   | ~10 lines |
+| Percentage    | Medium   | ~10 lines |
+| Cents         | Medium   | ~10 lines |
+| Timestamp     | Medium   | ~10 lines |
+| Duration      | Medium   | ~10 lines |
+| BoundedString | Medium   | ~10 lines |
 
 ### Compare() - Missing on 2 types
 
-| Type | Priority | Effort |
-|------|----------|--------|
-| ActorChain[T] | Low | ~5 lines (lexicographic) |
-| BoundedString | Low | ~5 lines |
+| Type          | Priority | Effort                   |
+| ------------- | -------- | ------------------------ |
+| ActorChain[T] | Low      | ~5 lines (lexicographic) |
+| BoundedString | Low      | ~5 lines                 |
 
 ### SQL on Composite Types - Not Started
 
-| Type | Complexity | Effort |
-|------|------------|--------|
-| Context | Struct with 5 fields | Medium |
-| Bitemporal | Struct with 3 timestamps | Medium |
-| Reference[T] | Generic with ID | Medium |
-| Cause[T] | Generic with ID | Medium |
-| DataPoint[T] | Complex composite | High |
+| Type         | Complexity               | Effort |
+| ------------ | ------------------------ | ------ |
+| Context      | Struct with 5 fields     | Medium |
+| Bitemporal   | Struct with 3 timestamps | Medium |
+| Reference[T] | Generic with ID          | Medium |
+| Cause[T]     | Generic with ID          | Medium |
+| DataPoint[T] | Complex composite        | High   |
 
 ---
 
@@ -182,20 +183,21 @@ The pre-commit hook fails on `architecture.png` (binary file). Workaround: use `
 ### Uncommitted Files
 
 18 files currently uncommitted:
+
 - `common.go` - Contains Percentage.Compare() addition
-- Various docs/status/*.md files
+- Various docs/status/\*.md files
 - .github/workflows/ci.yml
 
 ---
 
 ## E) 📈 IMPROVEMENT OPPORTUNITIES
 
-| Area | Current | Target | Gap |
-|------|---------|--------|-----|
-| Test Coverage | 82.5% | 90%+ | +7.5% |
-| GoString() | 2/10 types | 10/10 | 8 types |
-| TextMarshaler | 3/10 types | 10/10 | 7 types |
-| SQL on composites | 0/5 types | 5/5 | 5 types |
+| Area              | Current    | Target | Gap     |
+| ----------------- | ---------- | ------ | ------- |
+| Test Coverage     | 82.5%      | 90%+   | +7.5%   |
+| GoString()        | 2/10 types | 10/10  | 8 types |
+| TextMarshaler     | 3/10 types | 10/10  | 7 types |
+| SQL on composites | 0/5 types  | 5/5    | 5 types |
 
 ---
 
@@ -245,7 +247,7 @@ The pre-commit hook fails on `architecture.png` (binary file). Workaround: use `
 
 ## G) ❓ OPEN QUESTIONS
 
-1. **What to do with uncommitted docs/status/*.md files?**
+1. **What to do with uncommitted docs/status/\*.md files?**
    - Option A: Commit all (preserve history)
    - Option B: Delete (keep repo clean)
    - Option C: Move to separate wiki/notes repo
@@ -313,4 +315,4 @@ git commit --no-verify -m "message"
 
 ---
 
-*Report generated: 2026-02-23 19:56*
+_Report generated: 2026-02-23 19:56_

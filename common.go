@@ -219,6 +219,7 @@ func (c Cents) Sign() int {
 	}
 	return 0
 }
+
 // String returns the cents as a human-readable currency string (e.g., "$12.34").
 func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/100.0) }
 
