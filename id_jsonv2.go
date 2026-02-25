@@ -25,8 +25,7 @@ func (id *ID[B, V]) UnmarshalJSONFrom(dec *jsontext.Decoder) error {
 	}
 
 	if string(val) == "null" {
-		var zero V
-		*id = ID[B, V]{value: zero}
+		id.reset()
 		return nil
 	}
 

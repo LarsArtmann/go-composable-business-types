@@ -29,12 +29,7 @@ func NewBitemporal(recorded Timestamp) Bitemporal {
 // NewBitemporalWithRange creates a Bitemporal with explicit valid time range.
 // If validUntil is zero, the fact is valid indefinitely.
 func NewBitemporalWithRange(validFrom, validUntil, recorded Timestamp) Bitemporal {
-	return Bitemporal{
-		validFrom:  validFrom,
-		validUntil: validUntil,
-		recorded:   recorded,
-		correction: false,
-	}
+	return NewCorrection(validFrom, validUntil, recorded).withCorrection(false)
 }
 
 // NewCorrection creates a Bitemporal that marks this as a correction.
@@ -45,6 +40,12 @@ func NewCorrection(validFrom, validUntil, recorded Timestamp) Bitemporal {
 		recorded:   recorded,
 		correction: true,
 	}
+}
+
+// withCorrection returns a copy with the correction flag set.
+func (b Bitemporal) withCorrection(c bool) Bitemporal {
+	b.correction = c
+	return b
 }
 
 // ValidFrom returns when this fact became true in the real world.

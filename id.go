@@ -28,6 +28,12 @@ func (id ID[B, V]) Get() V { return id.value }
 // IsZero returns true if the ID has its zero value.
 func (id ID[B, V]) IsZero() bool { var zero V; return id.value == zero }
 
+// reset sets the ID to its zero value.
+func (id *ID[B, V]) reset() {
+	var zero V
+	*id = ID[B, V]{value: zero}
+}
+
 // String returns a string representation of the value.
 func (id ID[B, V]) String() string { return fmt.Sprintf("%v", id.value) }
 
@@ -46,8 +52,7 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler for JSON deserialization.
 func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
-		var zero V
-		*id = ID[B, V]{value: zero}
+		id.reset()
 		return nil
 	}
 
@@ -79,8 +84,7 @@ func (id ID[B, V]) MarshalText() ([]byte, error) {
 // Note: This only works for string-based IDs. For other types, implement a custom unmarshaler.
 func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	if len(data) == 0 {
-		var zero V
-		*id = ID[B, V]{value: zero}
+		id.reset()
 		return nil
 	}
 
@@ -99,8 +103,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 // Supports string, []byte, int64, and nil sources based on the underlying value type V.
 func (id *ID[B, V]) Scan(src any) error {
 	if src == nil {
-		var zero V
-		*id = ID[B, V]{value: zero}
+		id.reset()
 		return nil
 	}
 

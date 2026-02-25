@@ -71,26 +71,17 @@ func TestNanoId_Scan(t *testing.T) {
 
 	t.Run("invalid type", func(t *testing.T) {
 		var id NanoId
-		err := id.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, id.Scan(123), "invalid type")
 	})
 
 	t.Run("too short", func(t *testing.T) {
 		var id NanoId
-		err := id.Scan("short")
-		if err == nil {
-			t.Error("expected error for too short NanoId")
-		}
+		assertError(t, id.Scan("short"), "too short NanoId")
 	})
 
 	t.Run("invalid characters", func(t *testing.T) {
 		var id NanoId
-		err := id.Scan("invalid!@#$%^&*()")
-		if err == nil {
-			t.Error("expected error for invalid characters")
-		}
+		assertError(t, id.Scan("invalid!@#$%^&*()"), "invalid characters")
 	})
 }
 
@@ -98,23 +89,15 @@ func TestNanoId_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		id := NanoId{}
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns string", func(t *testing.T) {
 		id := NewNanoId()
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != id.String() {
-			t.Errorf("expected %v, got %v", id.String(), val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), id.String())
 	})
 }
 
@@ -125,73 +108,42 @@ func TestNanoId_Value(t *testing.T) {
 func TestEmail_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var e Email
-		err := e.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !e.IsZero() {
-			t.Errorf("expected zero Email, got %v", e)
-		}
+		assertNoError(t, e.Scan(nil))
+		assertZero(t, e)
 	})
 
 	t.Run("string valid", func(t *testing.T) {
 		var e Email
-		err := e.Scan("test@example.com")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if e.String() != "test@example.com" {
-			t.Errorf("expected test@example.com, got %v", e)
-		}
+		assertNoError(t, e.Scan("test@example.com"))
+		assertStringEquals(t, e.String(), "test@example.com")
 	})
 
 	t.Run("string empty", func(t *testing.T) {
 		var e Email
-		err := e.Scan("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !e.IsZero() {
-			t.Errorf("expected zero Email, got %v", e)
-		}
+		assertNoError(t, e.Scan(""))
+		assertZero(t, e)
 	})
 
 	t.Run("[]byte valid", func(t *testing.T) {
 		var e Email
-		err := e.Scan([]byte("test@example.com"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if e.String() != "test@example.com" {
-			t.Errorf("expected test@example.com, got %v", e)
-		}
+		assertNoError(t, e.Scan([]byte("test@example.com")))
+		assertStringEquals(t, e.String(), "test@example.com")
 	})
 
 	t.Run("[]byte empty", func(t *testing.T) {
 		var e Email
-		err := e.Scan([]byte{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !e.IsZero() {
-			t.Errorf("expected zero Email, got %v", e)
-		}
+		assertNoError(t, e.Scan([]byte{}))
+		assertZero(t, e)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var e Email
-		err := e.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, e.Scan(123), "invalid type")
 	})
 
 	t.Run("invalid email", func(t *testing.T) {
 		var e Email
-		err := e.Scan("not-an-email")
-		if err == nil {
-			t.Error("expected error for invalid email")
-		}
+		assertError(t, e.Scan("not-an-email"), "invalid email")
 	})
 }
 
@@ -199,23 +151,15 @@ func TestEmail_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		e := Email("")
 		val, err := e.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns string", func(t *testing.T) {
 		e := MustParseEmail("test@example.com")
 		val, err := e.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != "test@example.com" {
-			t.Errorf("expected test@example.com, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), "test@example.com")
 	})
 }
 
@@ -226,92 +170,53 @@ func TestEmail_Value(t *testing.T) {
 func TestURL_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var u URL
-		err := u.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !u.IsZero() {
-			t.Errorf("expected zero URL, got %v", u)
-		}
+		assertNoError(t, u.Scan(nil))
+		assertZero(t, u)
 	})
 
 	t.Run("string valid http", func(t *testing.T) {
 		var u URL
-		err := u.Scan("http://example.com")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if u.String() != "http://example.com" {
-			t.Errorf("expected http://example.com, got %v", u)
-		}
+		assertNoError(t, u.Scan("http://example.com"))
+		assertStringEquals(t, u.String(), "http://example.com")
 	})
 
 	t.Run("string valid https", func(t *testing.T) {
 		var u URL
-		err := u.Scan("https://example.com/path")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if u.String() != "https://example.com/path" {
-			t.Errorf("expected https://example.com/path, got %v", u)
-		}
+		assertNoError(t, u.Scan("https://example.com/path"))
+		assertStringEquals(t, u.String(), "https://example.com/path")
 	})
 
 	t.Run("string empty", func(t *testing.T) {
 		var u URL
-		err := u.Scan("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !u.IsZero() {
-			t.Errorf("expected zero URL, got %v", u)
-		}
+		assertNoError(t, u.Scan(""))
+		assertZero(t, u)
 	})
 
 	t.Run("[]byte valid", func(t *testing.T) {
 		var u URL
-		err := u.Scan([]byte("https://example.com"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if u.String() != "https://example.com" {
-			t.Errorf("expected https://example.com, got %v", u)
-		}
+		assertNoError(t, u.Scan([]byte("https://example.com")))
+		assertStringEquals(t, u.String(), "https://example.com")
 	})
 
 	t.Run("[]byte empty", func(t *testing.T) {
 		var u URL
-		err := u.Scan([]byte{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !u.IsZero() {
-			t.Errorf("expected zero URL, got %v", u)
-		}
+		assertNoError(t, u.Scan([]byte{}))
+		assertZero(t, u)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var u URL
-		err := u.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, u.Scan(123), "invalid type")
 	})
 
 	t.Run("invalid URL no scheme", func(t *testing.T) {
 		var u URL
-		err := u.Scan("example.com")
-		if err == nil {
-			t.Error("expected error for URL without scheme")
-		}
+		assertError(t, u.Scan("example.com"), "URL without scheme")
 	})
 
 	t.Run("invalid URL ftp scheme", func(t *testing.T) {
 		var u URL
-		err := u.Scan("ftp://example.com")
-		if err == nil {
-			t.Error("expected error for non-http(s) scheme")
-		}
+		assertError(t, u.Scan("ftp://example.com"), "non-http(s) scheme")
 	})
 }
 
@@ -319,23 +224,15 @@ func TestURL_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		u := URL("")
 		val, err := u.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns string", func(t *testing.T) {
 		u := MustParseURL("https://example.com")
 		val, err := u.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != "https://example.com" {
-			t.Errorf("expected https://example.com, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), "https://example.com")
 	})
 }
 
@@ -346,73 +243,42 @@ func TestURL_Value(t *testing.T) {
 func TestCents_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var c Cents
-		err := c.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !c.IsZero() {
-			t.Errorf("expected zero Cents, got %v", c)
-		}
+		assertNoError(t, c.Scan(nil))
+		assertZero(t, c)
 	})
 
 	t.Run("int64", func(t *testing.T) {
 		var c Cents
-		err := c.Scan(int64(12345))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if c.Int64() != 12345 {
-			t.Errorf("expected 12345, got %v", c.Int64())
-		}
+		assertNoError(t, c.Scan(int64(12345)))
+		assertEqual(t, c.Int64(), int64(12345))
 	})
 
 	t.Run("float64", func(t *testing.T) {
 		var c Cents
-		err := c.Scan(float64(12345.67))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if c.Int64() != 12345 {
-			t.Errorf("expected 12345, got %v", c.Int64())
-		}
+		assertNoError(t, c.Scan(float64(12345.67)))
+		assertEqual(t, c.Int64(), int64(12345))
 	})
 
 	t.Run("[]byte valid", func(t *testing.T) {
 		var c Cents
-		err := c.Scan([]byte("999"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if c.Int64() != 999 {
-			t.Errorf("expected 999, got %v", c.Int64())
-		}
+		assertNoError(t, c.Scan([]byte("999")))
+		assertEqual(t, c.Int64(), int64(999))
 	})
 
 	t.Run("[]byte invalid", func(t *testing.T) {
 		var c Cents
-		err := c.Scan([]byte("not-a-number"))
-		if err == nil {
-			t.Error("expected error for invalid number")
-		}
+		assertError(t, c.Scan([]byte("not-a-number")), "invalid number")
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var c Cents
-		err := c.Scan("string")
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, c.Scan("string"), "invalid type")
 	})
 
 	t.Run("negative value", func(t *testing.T) {
 		var c Cents
-		err := c.Scan(int64(-500))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if c.Int64() != -500 {
-			t.Errorf("expected -500, got %v", c.Int64())
-		}
+		assertNoError(t, c.Scan(int64(-500)))
+		assertEqual(t, c.Int64(), int64(-500))
 	})
 }
 
@@ -420,23 +286,15 @@ func TestCents_Value(t *testing.T) {
 	t.Run("returns int64", func(t *testing.T) {
 		c := NewCents(12345)
 		val, err := c.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != int64(12345) {
-			t.Errorf("expected 12345, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(int64), int64(12345))
 	})
 
 	t.Run("zero returns int64(0)", func(t *testing.T) {
 		c := Cents(0)
 		val, err := c.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != int64(0) {
-			t.Errorf("expected 0, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(int64), int64(0))
 	})
 }
 
@@ -447,22 +305,14 @@ func TestCents_Value(t *testing.T) {
 func TestTimestamp_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var ts Timestamp
-		err := ts.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !ts.IsZero() {
-			t.Errorf("expected zero Timestamp, got %v", ts)
-		}
+		assertNoError(t, ts.Scan(nil))
+		assertZero(t, ts)
 	})
 
 	t.Run("time.Time", func(t *testing.T) {
 		var ts Timestamp
 		now := time.Now()
-		err := ts.Scan(now)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		assertNoError(t, ts.Scan(now))
 		if !ts.Time.Equal(now) {
 			t.Errorf("expected %v, got %v", now, ts.Time)
 		}
@@ -472,11 +322,7 @@ func TestTimestamp_Scan(t *testing.T) {
 		var ts Timestamp
 		now := time.Now().UTC()
 		timeStr := now.Format(time.RFC3339Nano)
-		err := ts.Scan(timeStr)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		// Parse with RFC3339Nano for comparison since we used that in Scan
+		assertNoError(t, ts.Scan(timeStr))
 		expected, _ := time.Parse(time.RFC3339Nano, timeStr)
 		if !ts.Time.Equal(expected) {
 			t.Errorf("expected %v, got %v", expected, ts.Time)
@@ -487,10 +333,7 @@ func TestTimestamp_Scan(t *testing.T) {
 		var ts Timestamp
 		now := time.Now().UTC()
 		timeStr := now.Format(time.RFC3339Nano)
-		err := ts.Scan([]byte(timeStr))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		assertNoError(t, ts.Scan([]byte(timeStr)))
 		expected, _ := time.Parse(time.RFC3339Nano, timeStr)
 		if !ts.Time.Equal(expected) {
 			t.Errorf("expected %v, got %v", expected, ts.Time)
@@ -499,26 +342,17 @@ func TestTimestamp_Scan(t *testing.T) {
 
 	t.Run("string invalid format", func(t *testing.T) {
 		var ts Timestamp
-		err := ts.Scan("not-a-time")
-		if err == nil {
-			t.Error("expected error for invalid time format")
-		}
+		assertError(t, ts.Scan("not-a-time"), "invalid time format")
 	})
 
 	t.Run("[]byte invalid format", func(t *testing.T) {
 		var ts Timestamp
-		err := ts.Scan([]byte("not-a-time"))
-		if err == nil {
-			t.Error("expected error for invalid time format")
-		}
+		assertError(t, ts.Scan([]byte("not-a-time")), "invalid time format")
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var ts Timestamp
-		err := ts.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, ts.Scan(123), "invalid type")
 	})
 }
 
@@ -526,21 +360,15 @@ func TestTimestamp_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		ts := Timestamp{}
 		val, err := ts.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns time.Time", func(t *testing.T) {
 		now := time.Now()
 		ts := NewTimestamp(now)
 		val, err := ts.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+		assertNoError(t, err)
 		if tm, ok := val.(time.Time); !ok || !tm.Equal(now) {
 			t.Errorf("expected %v, got %v", now, val)
 		}
@@ -554,76 +382,44 @@ func TestTimestamp_Value(t *testing.T) {
 func TestBoundedString_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !bs.IsZero() {
-			t.Errorf("expected empty BoundedString, got %v", bs)
-		}
+		assertNoError(t, bs.Scan(nil))
+		assertZero(t, bs)
 	})
 
 	t.Run("string", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan("hello world")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if bs.String() != "hello world" {
-			t.Errorf("expected 'hello world', got %v", bs.String())
-		}
+		assertNoError(t, bs.Scan("hello world"))
+		assertStringEquals(t, bs.String(), "hello world")
 	})
 
 	t.Run("string empty", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !bs.IsZero() {
-			t.Errorf("expected empty BoundedString, got %v", bs)
-		}
+		assertNoError(t, bs.Scan(""))
+		assertZero(t, bs)
 	})
 
 	t.Run("[]byte", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan([]byte("hello"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if bs.String() != "hello" {
-			t.Errorf("expected 'hello', got %v", bs.String())
-		}
+		assertNoError(t, bs.Scan([]byte("hello")))
+		assertStringEquals(t, bs.String(), "hello")
 	})
 
 	t.Run("[]byte empty", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan([]byte{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !bs.IsZero() {
-			t.Errorf("expected empty BoundedString, got %v", bs)
-		}
+		assertNoError(t, bs.Scan([]byte{}))
+		assertZero(t, bs)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var bs BoundedString
-		err := bs.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, bs.Scan(123), "invalid type")
 	})
 
 	t.Run("sets bounds correctly", func(t *testing.T) {
 		var bs BoundedString
 		_ = bs.Scan("hello")
-		if bs.MinLen() != 0 {
-			t.Errorf("expected min 0, got %d", bs.MinLen())
-		}
-		if bs.MaxLen() != 5 {
-			t.Errorf("expected max 5, got %d", bs.MaxLen())
-		}
+		assertEqual(t, bs.MinLen(), 0)
+		assertEqual(t, bs.MaxLen(), 5)
 	})
 }
 
@@ -631,23 +427,15 @@ func TestBoundedString_Value(t *testing.T) {
 	t.Run("empty returns nil", func(t *testing.T) {
 		bs := BoundedString{}
 		val, err := bs.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-empty returns string", func(t *testing.T) {
 		bs := MustBoundedString(0, 100, "hello")
 		val, err := bs.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != "hello" {
-			t.Errorf("expected 'hello', got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), "hello")
 	})
 }
 
@@ -660,43 +448,25 @@ type testBrand struct{}
 func TestID_Scan_StringBrand(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var id ID[testBrand, string]
-		err := id.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !id.IsZero() {
-			t.Errorf("expected zero ID, got %v", id)
-		}
+		assertNoError(t, id.Scan(nil))
+		assertZero(t, id)
 	})
 
 	t.Run("string", func(t *testing.T) {
 		var id ID[testBrand, string]
-		err := id.Scan("user-123")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if id.Get() != "user-123" {
-			t.Errorf("expected 'user-123', got %v", id.Get())
-		}
+		assertNoError(t, id.Scan("user-123"))
+		assertEqual(t, id.Get(), "user-123")
 	})
 
 	t.Run("[]byte", func(t *testing.T) {
 		var id ID[testBrand, string]
-		err := id.Scan([]byte("user-456"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if id.Get() != "user-456" {
-			t.Errorf("expected 'user-456', got %v", id.Get())
-		}
+		assertNoError(t, id.Scan([]byte("user-456")))
+		assertEqual(t, id.Get(), "user-456")
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var id ID[testBrand, string]
-		err := id.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, id.Scan(123), "invalid type")
 	})
 }
 
@@ -705,43 +475,25 @@ func TestID_Scan_Int64Brand(t *testing.T) {
 
 	t.Run("nil", func(t *testing.T) {
 		var id ID[intBrand, int64]
-		err := id.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !id.IsZero() {
-			t.Errorf("expected zero ID, got %v", id)
-		}
+		assertNoError(t, id.Scan(nil))
+		assertZero(t, id)
 	})
 
 	t.Run("int64", func(t *testing.T) {
 		var id ID[intBrand, int64]
-		err := id.Scan(int64(12345))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if id.Get() != int64(12345) {
-			t.Errorf("expected 12345, got %v", id.Get())
-		}
+		assertNoError(t, id.Scan(int64(12345)))
+		assertEqual(t, id.Get(), int64(12345))
 	})
 
 	t.Run("float64", func(t *testing.T) {
 		var id ID[intBrand, int64]
-		err := id.Scan(float64(12345.67))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if id.Get() != int64(12345) {
-			t.Errorf("expected 12345, got %v", id.Get())
-		}
+		assertNoError(t, id.Scan(float64(12345.67)))
+		assertEqual(t, id.Get(), int64(12345))
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var id ID[intBrand, int64]
-		err := id.Scan("string")
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, id.Scan("string"), "invalid type")
 	})
 }
 
@@ -749,23 +501,15 @@ func TestID_Value_StringBrand(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		id := ID[testBrand, string]{}
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns string", func(t *testing.T) {
 		id := NewID[testBrand, string]("user-123")
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != "user-123" {
-			t.Errorf("expected 'user-123', got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), "user-123")
 	})
 }
 
@@ -775,23 +519,15 @@ func TestID_Value_Int64Brand(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		id := ID[intBrand, int64]{}
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns int64", func(t *testing.T) {
 		id := NewID[intBrand, int64](int64(12345))
 		val, err := id.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != int64(12345) {
-			t.Errorf("expected 12345, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(int64), int64(12345))
 	})
 }
 
@@ -832,73 +568,42 @@ func TestSQL_Interfaces(t *testing.T) {
 func TestLocale_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var l Locale
-		err := l.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !l.IsZero() {
-			t.Errorf("expected zero Locale, got %v", l)
-		}
+		assertNoError(t, l.Scan(nil))
+		assertZero(t, l)
 	})
 
 	t.Run("string valid", func(t *testing.T) {
 		var l Locale
-		err := l.Scan("en-US")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if l.String() != "en-US" {
-			t.Errorf("expected en-US, got %v", l)
-		}
+		assertNoError(t, l.Scan("en-US"))
+		assertStringEquals(t, l.String(), "en-US")
 	})
 
 	t.Run("string empty", func(t *testing.T) {
 		var l Locale
-		err := l.Scan("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !l.IsZero() {
-			t.Errorf("expected zero Locale, got %v", l)
-		}
+		assertNoError(t, l.Scan(""))
+		assertZero(t, l)
 	})
 
 	t.Run("[]byte valid", func(t *testing.T) {
 		var l Locale
-		err := l.Scan([]byte("de-DE"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if l.String() != "de-DE" {
-			t.Errorf("expected de-DE, got %v", l)
-		}
+		assertNoError(t, l.Scan([]byte("de-DE")))
+		assertStringEquals(t, l.String(), "de-DE")
 	})
 
 	t.Run("[]byte empty", func(t *testing.T) {
 		var l Locale
-		err := l.Scan([]byte{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !l.IsZero() {
-			t.Errorf("expected zero Locale, got %v", l)
-		}
+		assertNoError(t, l.Scan([]byte{}))
+		assertZero(t, l)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var l Locale
-		err := l.Scan(123)
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, l.Scan(123), "invalid type")
 	})
 
 	t.Run("invalid locale string", func(t *testing.T) {
 		var l Locale
-		err := l.Scan("invalid-locale-format-!!!")
-		if err == nil {
-			t.Error("expected error for invalid locale")
-		}
+		assertError(t, l.Scan("invalid-locale-format-!!!"), "invalid locale")
 	})
 }
 
@@ -906,23 +611,15 @@ func TestLocale_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		l := Locale{}
 		val, err := l.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns string", func(t *testing.T) {
 		l := MustParseLocale("en-US")
 		val, err := l.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != "en-US" {
-			t.Errorf("expected en-US, got %v", val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(string), "en-US")
 	})
 }
 
@@ -933,95 +630,54 @@ func TestLocale_Value(t *testing.T) {
 func TestDuration_Scan(t *testing.T) {
 	t.Run("nil", func(t *testing.T) {
 		var d Duration
-		err := d.Scan(nil)
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !d.IsZero() {
-			t.Errorf("expected zero Duration, got %v", d)
-		}
+		assertNoError(t, d.Scan(nil))
+		assertZero(t, d)
 	})
 
 	t.Run("int64 nanoseconds", func(t *testing.T) {
 		var d Duration
-		err := d.Scan(int64(5 * time.Second))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if d.Duration != 5*time.Second {
-			t.Errorf("expected 5s, got %v", d)
-		}
+		assertNoError(t, d.Scan(int64(5*time.Second)))
+		assertEqual(t, d.Duration, 5*time.Second)
 	})
 
 	t.Run("float64 nanoseconds", func(t *testing.T) {
 		var d Duration
-		err := d.Scan(float64(3 * time.Second))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if d.Duration != 3*time.Second {
-			t.Errorf("expected 3s, got %v", d)
-		}
+		assertNoError(t, d.Scan(float64(3*time.Second)))
+		assertEqual(t, d.Duration, 3*time.Second)
 	})
 
 	t.Run("string valid", func(t *testing.T) {
 		var d Duration
-		err := d.Scan("1h30m")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if d.Duration != 90*time.Minute {
-			t.Errorf("expected 1h30m, got %v", d)
-		}
+		assertNoError(t, d.Scan("1h30m"))
+		assertEqual(t, d.Duration, 90*time.Minute)
 	})
 
 	t.Run("string empty", func(t *testing.T) {
 		var d Duration
-		err := d.Scan("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !d.IsZero() {
-			t.Errorf("expected zero Duration, got %v", d)
-		}
+		assertNoError(t, d.Scan(""))
+		assertZero(t, d)
 	})
 
 	t.Run("[]byte valid", func(t *testing.T) {
 		var d Duration
-		err := d.Scan([]byte("500ms"))
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if d.Duration != 500*time.Millisecond {
-			t.Errorf("expected 500ms, got %v", d)
-		}
+		assertNoError(t, d.Scan([]byte("500ms")))
+		assertEqual(t, d.Duration, 500*time.Millisecond)
 	})
 
 	t.Run("[]byte empty", func(t *testing.T) {
 		var d Duration
-		err := d.Scan([]byte{})
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if !d.IsZero() {
-			t.Errorf("expected zero Duration, got %v", d)
-		}
+		assertNoError(t, d.Scan([]byte{}))
+		assertZero(t, d)
 	})
 
 	t.Run("invalid type", func(t *testing.T) {
 		var d Duration
-		err := d.Scan("invalid")
-		if err == nil {
-			t.Error("expected error for invalid duration string")
-		}
+		assertError(t, d.Scan("invalid"), "invalid duration string")
 	})
 
 	t.Run("invalid source type", func(t *testing.T) {
 		var d Duration
-		err := d.Scan([]int{1, 2, 3})
-		if err == nil {
-			t.Error("expected error for invalid type")
-		}
+		assertError(t, d.Scan([]int{1, 2, 3}), "invalid type")
 	})
 }
 
@@ -1029,23 +685,15 @@ func TestDuration_Value(t *testing.T) {
 	t.Run("zero returns nil", func(t *testing.T) {
 		d := Duration{}
 		val, err := d.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != nil {
-			t.Errorf("expected nil, got %v", val)
-		}
+		assertNoError(t, err)
+		assertNil(t, val)
 	})
 
 	t.Run("non-zero returns int64 nanoseconds", func(t *testing.T) {
 		d := NewDuration(5 * time.Second)
 		val, err := d.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-		if val != int64(5*time.Second) {
-			t.Errorf("expected %d, got %v", int64(5*time.Second), val)
-		}
+		assertNoError(t, err)
+		assertEqual(t, val.(int64), int64(5*time.Second))
 	})
 }
 

@@ -1169,15 +1169,9 @@ func TestContext_WithTags(t *testing.T) {
 	})
 
 	tags := updated.Tags()
-	if tags["key1"] != "value1" {
-		t.Errorf("WithTags: expected key1=value1, got %s", tags["key1"])
-	}
-	if tags["key2"] != "value2" {
-		t.Errorf("WithTags: expected key2=value2, got %s", tags["key2"])
-	}
-	if tags["key3"] != "value3" {
-		t.Errorf("WithTags: expected key3=value3, got %s", tags["key3"])
-	}
+	assertTag(t, tags, "key1", "value1")
+	assertTag(t, tags, "key2", "value2")
+	assertTag(t, tags, "key3", "value3")
 
 	// Original should be unchanged
 	originalTags := ctx.Tags()

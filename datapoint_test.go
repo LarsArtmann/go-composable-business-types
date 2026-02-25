@@ -11,19 +11,13 @@ import (
 
 func TestNanoId(t *testing.T) {
 	id := NewNanoId()
-	if id.IsZero() {
-		t.Error("expected non-empty NanoId")
-	}
-	if len(id.String()) != DefaultNanoIdLength {
-		t.Errorf("expected length %d, got %d", DefaultNanoIdLength, len(id.String()))
-	}
+	assertNotZero(t, id)
+	assertEqual(t, len(id.String()), DefaultNanoIdLength)
 }
 
 func TestNanoIdWithLength(t *testing.T) {
 	id := NewNanoIdWithLength(10)
-	if len(id.String()) != 10 {
-		t.Errorf("expected length 10, got %d", len(id.String()))
-	}
+	assertEqual(t, len(id.String()), 10)
 }
 
 func TestNanoIdUniqueness(t *testing.T) {
@@ -82,9 +76,7 @@ func TestNanoIdJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if original.String() != parsed.String() {
-		t.Errorf("expected %s, got %s", original.String(), parsed.String())
-	}
+	assertEqual(t, original.String(), parsed.String())
 }
 
 func TestNanoIdJSONEmpty(t *testing.T) {
@@ -94,9 +86,7 @@ func TestNanoIdJSONEmpty(t *testing.T) {
 		t.Fatalf("marshal error: %v", err)
 	}
 	// Empty NanoId marshals to empty string (via MarshalText returning nil, nil)
-	if string(data) != `""` {
-		t.Errorf("expected empty string for empty NanoId, got %s", string(data))
-	}
+	assertJSONEquals(t, data, `""`)
 }
 
 // === DataPoint Tests ===
@@ -114,21 +104,11 @@ func TestDataPoint(t *testing.T) {
 
 	dp := NewDataPoint(payload, actor, occurred, recorded, "test reason")
 
-	if dp.Id().IsZero() {
-		t.Error("expected non-empty DataPoint id")
-	}
-	if dp.Payload().Value != "test" {
-		t.Errorf("expected payload value 'test', got %s", dp.Payload().Value)
-	}
-	if dp.Payload().Count != 42 {
-		t.Errorf("expected payload count 42, got %d", dp.Payload().Count)
-	}
-	if dp.Actor().Name != "Alice" {
-		t.Errorf("expected actor name 'Alice', got %s", dp.Actor().Name)
-	}
-	if dp.Reason() != "test reason" {
-		t.Errorf("expected reason 'test reason', got %s", dp.Reason())
-	}
+	assertNotZero(t, dp.Id())
+	assertEqual(t, dp.Payload().Value, "test")
+	assertEqual(t, dp.Payload().Count, 42)
+	assertEqual(t, dp.Actor().Name, "Alice")
+	assertEqual(t, dp.Reason(), "test reason")
 }
 
 func TestDataPointNow(t *testing.T) {
@@ -140,14 +120,10 @@ func TestDataPointNow(t *testing.T) {
 	after := time.Now().UTC()
 
 	// Recorded should be between before and after
-	if dp.Recorded().Before(before) || dp.Recorded().After(after) {
-		t.Error("recorded time not in expected range")
-	}
+	assertTrue(t, !dp.Recorded().Before(before) && !dp.Recorded().After(after), "recorded time not in expected range")
 
 	// Occurred equals recorded for NewDataPointNow
-	if !dp.Occurred().Equal(dp.Recorded().Time) {
-		t.Error("occurred should equal recorded for NewDataPointNow")
-	}
+	assertTrue(t, dp.Occurred().Equal(dp.Recorded().Time), "occurred should equal recorded for NewDataPointNow")
 }
 
 func TestDataPointWithoutReason(t *testing.T) {
@@ -158,9 +134,7 @@ func TestDataPointWithoutReason(t *testing.T) {
 
 	dp := NewDataPoint(payload, actor, occurred, recorded)
 
-	if dp.Reason() != "" {
-		t.Errorf("expected empty reason, got %s", dp.Reason())
-	}
+	assertEqual(t, dp.Reason(), "")
 }
 
 func TestDataPointWithReason(t *testing.T) {
@@ -171,9 +145,7 @@ func TestDataPointWithReason(t *testing.T) {
 
 	dp := NewDataPoint(payload, actor, occurred, recorded).WithReason("updated reason")
 
-	if dp.Reason() != "updated reason" {
-		t.Errorf("expected 'updated reason', got %s", dp.Reason())
-	}
+	assertEqual(t, dp.Reason(), "updated reason")
 }
 
 func TestDataPointJSON(t *testing.T) {
@@ -194,21 +166,11 @@ func TestDataPointJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if original.Id().String() != parsed.Id().String() {
-		t.Errorf("id mismatch: %s vs %s", original.Id().String(), parsed.Id().String())
-	}
-	if original.Payload().Value != parsed.Payload().Value {
-		t.Errorf("payload value mismatch")
-	}
-	if original.Payload().Count != parsed.Payload().Count {
-		t.Errorf("payload count mismatch")
-	}
-	if original.Actor().Name != parsed.Actor().Name {
-		t.Errorf("actor name mismatch")
-	}
-	if original.Reason() != parsed.Reason() {
-		t.Errorf("reason mismatch")
-	}
+	assertEqual(t, original.Id().String(), parsed.Id().String())
+	assertEqual(t, original.Payload().Value, parsed.Payload().Value)
+	assertEqual(t, original.Payload().Count, parsed.Payload().Count)
+	assertEqual(t, original.Actor().Name, parsed.Actor().Name)
+	assertEqual(t, original.Reason(), parsed.Reason())
 }
 
 func TestDataPointJSONRoundTrip(t *testing.T) {
@@ -224,9 +186,7 @@ func TestDataPointJSONRoundTrip(t *testing.T) {
 	}
 
 	data2, _ := json.Marshal(dp2)
-	if string(data) != string(data2) {
-		t.Errorf("round trip failed:\n%s\nvs\n%s", string(data), string(data2))
-	}
+	assertJSONEquals(t, data, string(data2))
 }
 
 func TestDataPointJSONWithoutReason(t *testing.T) {
@@ -240,24 +200,18 @@ func TestDataPointJSONWithoutReason(t *testing.T) {
 	}
 
 	// Reason should be omitted when empty
-	if strings.Contains(string(data), `"reason":""`) {
-		t.Error("empty reason should be omitted from JSON")
-	}
+	assertFalse(t, strings.Contains(string(data), `"reason":""`), "empty reason should be omitted from JSON")
 }
 
 func TestDataPointGenericTypes(t *testing.T) {
 	t.Run("string payload", func(t *testing.T) {
 		dp := NewDataPointNow("hello", SystemActor[string]())
-		if dp.Payload() != "hello" {
-			t.Errorf("expected 'hello', got %s", dp.Payload())
-		}
+		assertEqual(t, dp.Payload(), "hello")
 	})
 
 	t.Run("int payload", func(t *testing.T) {
 		dp := NewDataPointNow(42, SystemActor[string]())
-		if dp.Payload() != 42 {
-			t.Errorf("expected 42, got %d", dp.Payload())
-		}
+		assertEqual(t, dp.Payload(), 42)
 	})
 
 	t.Run("struct payload", func(t *testing.T) {
@@ -266,9 +220,7 @@ func TestDataPointGenericTypes(t *testing.T) {
 			Y int
 		}
 		dp := NewDataPointNow(SimpleStruct{X: 1, Y: 2}, SystemActor[string]())
-		if dp.Payload().X != 1 || dp.Payload().Y != 2 {
-			t.Errorf("expected {1,2}, got %+v", dp.Payload())
-		}
+		assertTrue(t, dp.Payload().X == 1 && dp.Payload().Y == 2, "expected {1,2}")
 	})
 }
 
@@ -278,18 +230,10 @@ func TestBitemporal(t *testing.T) {
 	now := Now()
 	b := NewBitemporal(now)
 
-	if b.ValidFrom().IsZero() {
-		t.Error("valid from should not be zero")
-	}
-	if !b.ValidUntil().IsZero() {
-		t.Error("valid until should be zero (indefinite)")
-	}
-	if b.Recorded().IsZero() {
-		t.Error("recorded should not be zero")
-	}
-	if b.IsCorrection() {
-		t.Error("should not be a correction")
-	}
+	assertNotZero(t, b.ValidFrom())
+	assertZero(t, b.ValidUntil())
+	assertNotZero(t, b.Recorded())
+	assertFalse(t, b.IsCorrection(), "should not be a correction")
 }
 
 func TestBitemporalWithRange(t *testing.T) {
@@ -299,12 +243,8 @@ func TestBitemporalWithRange(t *testing.T) {
 
 	b := NewBitemporalWithRange(from, until, recorded)
 
-	if !b.ValidFrom().Equal(from.Time) {
-		t.Error("valid from mismatch")
-	}
-	if !b.ValidUntil().Equal(until.Time) {
-		t.Error("valid until mismatch")
-	}
+	assertTrue(t, b.ValidFrom().Equal(from.Time), "valid from mismatch")
+	assertTrue(t, b.ValidUntil().Equal(until.Time), "valid until mismatch")
 }
 
 func TestBitemporalIsValidAt(t *testing.T) {
@@ -316,21 +256,15 @@ func TestBitemporalIsValidAt(t *testing.T) {
 
 	// Before valid range
 	before := NewTimestamp(time.Date(2023, 12, 31, 23, 59, 59, 0, time.UTC))
-	if b.IsValidAt(before) {
-		t.Error("should not be valid before validFrom")
-	}
+	assertFalse(t, b.IsValidAt(before), "should not be valid before validFrom")
 
 	// During valid range
 	during := NewTimestamp(time.Date(2024, 6, 15, 12, 0, 0, 0, time.UTC))
-	if !b.IsValidAt(during) {
-		t.Error("should be valid during range")
-	}
+	assertTrue(t, b.IsValidAt(during), "should be valid during range")
 
 	// After valid range
 	after := NewTimestamp(time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC))
-	if b.IsValidAt(after) {
-		t.Error("should not be valid after validUntil")
-	}
+	assertFalse(t, b.IsValidAt(after), "should not be valid after validUntil")
 }
 
 func TestBitemporalIndefinite(t *testing.T) {
@@ -339,18 +273,13 @@ func TestBitemporalIndefinite(t *testing.T) {
 
 	// Should be valid for any time after from
 	future := NewTimestamp(time.Date(2030, 1, 1, 0, 0, 0, 0, time.UTC))
-	if !b.IsValidAt(future) {
-		t.Error("indefinite validity should extend to future")
-	}
+	assertTrue(t, b.IsValidAt(future), "indefinite validity should extend to future")
 }
 
 func TestBitemporalCorrection(t *testing.T) {
 	from := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
 	b := NewCorrection(from, Timestamp{}, Now())
-
-	if !b.IsCorrection() {
-		t.Error("should be marked as correction")
-	}
+	assertTrue(t, b.IsCorrection(), "should be marked as correction")
 }
 
 func TestBitemporalJSON(t *testing.T) {
@@ -370,22 +299,15 @@ func TestBitemporalJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if !parsed.ValidFrom().Equal(original.ValidFrom().Time) {
-		t.Error("validFrom mismatch")
-	}
-	if !parsed.ValidUntil().Equal(original.ValidUntil().Time) {
-		t.Error("validUntil mismatch")
-	}
+	assertTrue(t, parsed.ValidFrom().Equal(original.ValidFrom().Time), "validFrom mismatch")
+	assertTrue(t, parsed.ValidUntil().Equal(original.ValidUntil().Time), "validUntil mismatch")
 }
 
 // === Context Tests ===
 
 func TestContext(t *testing.T) {
 	ctx := NewContext("order-service")
-
-	if ctx.Source() != "order-service" {
-		t.Errorf("expected 'order-service', got %s", ctx.Source())
-	}
+	assertEqual(t, ctx.Source(), "order-service")
 }
 
 func TestContextWithFields(t *testing.T) {
@@ -396,25 +318,15 @@ func TestContextWithFields(t *testing.T) {
 		WithTag("version", "1.0.0").
 		WithTag("region", "us-east-1")
 
-	if ctx.Environment() != "production" {
-		t.Error("environment mismatch")
-	}
-	if ctx.Session() != "sess-123" {
-		t.Error("session mismatch")
-	}
-	if ctx.Request() != "req-456" {
-		t.Error("request mismatch")
-	}
+	assertEqual(t, ctx.Environment(), "production")
+	assertEqual(t, ctx.Session(), "sess-123")
+	assertEqual(t, ctx.Request(), "req-456")
 
 	v, ok := ctx.Tag("version")
-	if !ok || v != "1.0.0" {
-		t.Error("tag version mismatch")
-	}
+	assertTrue(t, ok && v == "1.0.0", "tag version mismatch")
 
 	tags := ctx.Tags()
-	if len(tags) != 2 {
-		t.Errorf("expected 2 tags, got %d", len(tags))
-	}
+	assertEqual(t, len(tags), 2)
 }
 
 func TestContextJSON(t *testing.T) {
@@ -433,36 +345,26 @@ func TestContextJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if parsed.Source() != "api-gateway" {
-		t.Error("source mismatch")
-	}
-	if parsed.Environment() != "staging" {
-		t.Error("environment mismatch")
-	}
+	assertEqual(t, parsed.Source(), "api-gateway")
+	assertEqual(t, parsed.Environment(), "staging")
 }
 
 // === Trigger Tests ===
 
 func TestTrigger(t *testing.T) {
 	// Test enum generation works
-	if TriggerManual.String() != "Manual" {
-		t.Errorf("expected 'Manual', got %s", TriggerManual.String())
-	}
+	assertEqual(t, TriggerManual.String(), "Manual")
 
 	// Test parsing
 	trigger, err := ParseTrigger("Webhook")
 	if err != nil {
 		t.Fatalf("parse error: %v", err)
 	}
-	if trigger != TriggerWebhook {
-		t.Errorf("expected TriggerWebhook, got %v", trigger)
-	}
+	assertEqual(t, trigger, TriggerWebhook)
 
 	// Test invalid parse
 	_, err = ParseTrigger("Invalid")
-	if err == nil {
-		t.Error("expected error for invalid trigger")
-	}
+	assertError(t, err, "invalid trigger")
 }
 
 // === DataPoint with Phase 2 fields ===
@@ -473,9 +375,7 @@ func TestDataPointWithTrigger(t *testing.T) {
 
 	dp := NewDataPointNow(payload, actor).WithTrigger(TriggerWebhook)
 
-	if dp.Trigger() != TriggerWebhook {
-		t.Errorf("expected TriggerWebhook, got %v", dp.Trigger())
-	}
+	assertEqual(t, dp.Trigger(), TriggerWebhook)
 }
 
 func TestDataPointWithContext(t *testing.T) {
@@ -485,9 +385,7 @@ func TestDataPointWithContext(t *testing.T) {
 
 	dp := NewDataPointNow(payload, actor).WithContext(ctx)
 
-	if dp.Context().Source() != "test-service" {
-		t.Error("context source mismatch")
-	}
+	assertEqual(t, dp.Context().Source(), "test-service")
 }
 
 func TestDataPointWithTemporal(t *testing.T) {
@@ -501,12 +399,8 @@ func TestDataPointWithTemporal(t *testing.T) {
 
 	dp := NewDataPointNow(payload, actor).WithTemporal(temporal)
 
-	if !dp.Temporal().ValidFrom().Equal(from.Time) {
-		t.Error("temporal validFrom mismatch")
-	}
-	if !dp.Temporal().ValidUntil().Equal(until.Time) {
-		t.Error("temporal validUntil mismatch")
-	}
+	assertTrue(t, dp.Temporal().ValidFrom().Equal(from.Time), "temporal validFrom mismatch")
+	assertTrue(t, dp.Temporal().ValidUntil().Equal(until.Time), "temporal validUntil mismatch")
 }
 
 func TestDataPointTemporalBackwardCompat(t *testing.T) {
@@ -518,12 +412,8 @@ func TestDataPointTemporalBackwardCompat(t *testing.T) {
 
 	dp := NewDataPoint(payload, actor, occurred, recorded)
 
-	if !dp.Occurred().Equal(occurred.Time) {
-		t.Error("Occurred() should equal passed occurred time")
-	}
-	if !dp.Recorded().Equal(recorded.Time) {
-		t.Error("Recorded() should equal passed recorded time")
-	}
+	assertTrue(t, dp.Occurred().Equal(occurred.Time), "Occurred() should equal passed occurred time")
+	assertTrue(t, dp.Recorded().Equal(recorded.Time), "Recorded() should equal passed recorded time")
 }
 
 // === Reference Tests ===
@@ -531,23 +421,14 @@ func TestDataPointTemporalBackwardCompat(t *testing.T) {
 func TestReference(t *testing.T) {
 	ref := NewReference("order-123", "parent")
 
-	if ref.Id() != "order-123" {
-		t.Errorf("expected 'order-123', got %s", ref.Id())
-	}
-	if ref.Relation() != "parent" {
-		t.Errorf("expected 'parent', got %s", ref.Relation())
-	}
-	if ref.Version() != 0 {
-		t.Errorf("expected version 0, got %d", ref.Version())
-	}
+	assertEqual(t, ref.Id(), "order-123")
+	assertEqual(t, ref.Relation(), "parent")
+	assertEqual(t, ref.Version(), 0)
 }
 
 func TestReferenceWithVersion(t *testing.T) {
 	ref := NewReferenceWithVersion("doc-456", "source", 5)
-
-	if ref.Version() != 5 {
-		t.Errorf("expected version 5, got %d", ref.Version())
-	}
+	assertEqual(t, ref.Version(), 5)
 }
 
 func TestReferenceTags(t *testing.T) {
@@ -555,19 +436,13 @@ func TestReferenceTags(t *testing.T) {
 		WithTag("department", "engineering").
 		WithTag("level", "senior")
 
-	if ref.Tags()["department"] != "engineering" {
-		t.Error("tag department mismatch")
-	}
+	assertTag(t, ref.Tags(), "department", "engineering")
 
 	v, ok := ref.Tag("level")
-	if !ok || v != "senior" {
-		t.Error("tag level mismatch")
-	}
+	assertTrue(t, ok && v == "senior", "tag level mismatch")
 
 	_, ok = ref.Tag("nonexistent")
-	if ok {
-		t.Error("nonexistent tag should return false")
-	}
+	assertFalse(t, ok, "nonexistent tag should return false")
 }
 
 func TestReferenceJSON(t *testing.T) {
@@ -584,18 +459,10 @@ func TestReferenceJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if parsed.Id() != "entity-1" {
-		t.Error("id mismatch")
-	}
-	if parsed.Relation() != "reference" {
-		t.Error("relation mismatch")
-	}
-	if parsed.Version() != 3 {
-		t.Error("version mismatch")
-	}
-	if parsed.Tags()["key"] != "value" {
-		t.Error("tag mismatch")
-	}
+	assertEqual(t, parsed.Id(), "entity-1")
+	assertEqual(t, parsed.Relation(), "reference")
+	assertEqual(t, parsed.Version(), 3)
+	assertTag(t, parsed.Tags(), "key", "value")
 }
 
 // === Cause Tests ===
@@ -604,54 +471,34 @@ func TestCause(t *testing.T) {
 	id := NewNanoId()
 	cause := NewCause(id, "command", "created")
 
-	if cause.Id().String() != id.String() {
-		t.Error("id mismatch")
-	}
-	if cause.Kind() != "command" {
-		t.Errorf("expected 'command', got %s", cause.Kind())
-	}
-	if cause.Effect() != "created" {
-		t.Errorf("expected 'created', got %s", cause.Effect())
-	}
-	if cause.HasTrace() {
-		t.Error("should not have trace")
-	}
+	assertEqual(t, cause.Id().String(), id.String())
+	assertEqual(t, cause.Kind(), "command")
+	assertEqual(t, cause.Effect(), "created")
+	assertFalse(t, cause.HasTrace(), "should not have trace")
 }
 
 func TestCauseDirect(t *testing.T) {
 	id := NewNanoId()
 	cause := NewCauseDirect(id)
 
-	if cause.Kind() != "direct" {
-		t.Errorf("expected 'direct', got %s", cause.Kind())
-	}
-	if cause.Effect() != "caused" {
-		t.Errorf("expected 'caused', got %s", cause.Effect())
-	}
+	assertEqual(t, cause.Kind(), "direct")
+	assertEqual(t, cause.Effect(), "caused")
 }
 
 func TestCauseCommand(t *testing.T) {
 	id := NewNanoId()
 	cause := NewCauseCommand(id, "approved")
 
-	if cause.Kind() != "command" {
-		t.Error("kind should be command")
-	}
-	if cause.Effect() != "approved" {
-		t.Error("effect mismatch")
-	}
+	assertEqual(t, cause.Kind(), "command")
+	assertEqual(t, cause.Effect(), "approved")
 }
 
 func TestCauseEvent(t *testing.T) {
 	id := NewNanoId()
 	cause := NewCauseEvent(id, "triggered")
 
-	if cause.Kind() != "event" {
-		t.Error("kind should be event")
-	}
-	if cause.Effect() != "triggered" {
-		t.Error("effect mismatch")
-	}
+	assertEqual(t, cause.Kind(), "event")
+	assertEqual(t, cause.Effect(), "triggered")
 }
 
 func TestCauseWithTrace(t *testing.T) {
@@ -662,12 +509,8 @@ func TestCauseWithTrace(t *testing.T) {
 	cause := NewCauseDirect(id1).
 		WithTrace([]NanoId{id2, id3})
 
-	if !cause.HasTrace() {
-		t.Error("should have trace")
-	}
-	if len(cause.Trace()) != 2 {
-		t.Errorf("expected 2 trace items, got %d", len(cause.Trace()))
-	}
+	assertTrue(t, cause.HasTrace(), "should have trace")
+	assertEqual(t, len(cause.Trace()), 2)
 }
 
 func TestCauseAppendTrace(t *testing.T) {
@@ -676,12 +519,8 @@ func TestCauseAppendTrace(t *testing.T) {
 
 	cause := NewCauseDirect(id1).AppendTrace(id2)
 
-	if !cause.HasTrace() {
-		t.Error("should have trace")
-	}
-	if cause.Trace()[0].String() != id2.String() {
-		t.Error("trace item mismatch")
-	}
+	assertTrue(t, cause.HasTrace(), "should have trace")
+	assertEqual(t, cause.Trace()[0].String(), id2.String())
 }
 
 func TestCauseJSON(t *testing.T) {
@@ -701,18 +540,10 @@ func TestCauseJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if parsed.Id().String() != id.String() {
-		t.Error("id mismatch")
-	}
-	if parsed.Kind() != "command" {
-		t.Error("kind mismatch")
-	}
-	if parsed.Effect() != "executed" {
-		t.Error("effect mismatch")
-	}
-	if !parsed.HasTrace() {
-		t.Error("should have trace")
-	}
+	assertEqual(t, parsed.Id().String(), id.String())
+	assertEqual(t, parsed.Kind(), "command")
+	assertEqual(t, parsed.Effect(), "executed")
+	assertTrue(t, parsed.HasTrace(), "should have trace")
 }
 
 // === DataPoint Phase 3 Tests ===
@@ -721,9 +552,7 @@ func TestDataPointWithVersion(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "versioned", Count: 1}, SystemActor[string]()).
 		WithVersion(5)
 
-	if dp.Version() != 5 {
-		t.Errorf("expected version 5, got %d", dp.Version())
-	}
+	assertEqual(t, dp.Version(), 5)
 }
 
 func TestDataPointWithTags(t *testing.T) {
@@ -731,12 +560,8 @@ func TestDataPointWithTags(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "tagged", Count: 1}, SystemActor[string]()).
 		WithTags(tags)
 
-	if dp.Tags()["env"] != "prod" {
-		t.Error("tag env mismatch")
-	}
-	if dp.Tags()["region"] != "us-east-1" {
-		t.Error("tag region mismatch")
-	}
+	assertTag(t, dp.Tags(), "env", "prod")
+	assertTag(t, dp.Tags(), "region", "us-east-1")
 }
 
 func TestDataPointAddTag(t *testing.T) {
@@ -744,17 +569,11 @@ func TestDataPointAddTag(t *testing.T) {
 		AddTag("key1", "value1").
 		AddTag("key2", "value2")
 
-	if dp.Tags()["key1"] != "value1" {
-		t.Error("tag key1 mismatch")
-	}
-	if dp.Tags()["key2"] != "value2" {
-		t.Error("tag key2 mismatch")
-	}
+	assertTag(t, dp.Tags(), "key1", "value1")
+	assertTag(t, dp.Tags(), "key2", "value2")
 
 	v, ok := dp.Tag("key1")
-	if !ok || v != "value1" {
-		t.Error("Tag() method failed")
-	}
+	assertTrue(t, ok && v == "value1", "Tag() method failed")
 }
 
 func TestDataPointWithReferences(t *testing.T) {
@@ -764,12 +583,8 @@ func TestDataPointWithReferences(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "refs", Count: 1}, SystemActor[string]()).
 		WithReferences([]Reference[string]{ref1, ref2})
 
-	if len(dp.References()) != 2 {
-		t.Errorf("expected 2 references, got %d", len(dp.References()))
-	}
-	if dp.References()[0].Id() != "order-1" {
-		t.Error("first reference id mismatch")
-	}
+	assertEqual(t, len(dp.References()), 2)
+	assertEqual(t, dp.References()[0].Id(), "order-1")
 }
 
 func TestDataPointAddReference(t *testing.T) {
@@ -778,12 +593,8 @@ func TestDataPointAddReference(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "add-ref", Count: 1}, SystemActor[string]()).
 		AddReference(ref)
 
-	if len(dp.References()) != 1 {
-		t.Errorf("expected 1 reference, got %d", len(dp.References()))
-	}
-	if dp.References()[0].Id() != "product-123" {
-		t.Error("reference id mismatch")
-	}
+	assertEqual(t, len(dp.References()), 1)
+	assertEqual(t, dp.References()[0].Id(), "product-123")
 }
 
 func TestDataPointWithCauses(t *testing.T) {
@@ -793,9 +604,7 @@ func TestDataPointWithCauses(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "causes", Count: 1}, SystemActor[string]()).
 		WithCauses([]Cause[string]{cause1, cause2})
 
-	if len(dp.Causes()) != 2 {
-		t.Errorf("expected 2 causes, got %d", len(dp.Causes()))
-	}
+	assertEqual(t, len(dp.Causes()), 2)
 }
 
 func TestDataPointAddCause(t *testing.T) {
@@ -804,9 +613,7 @@ func TestDataPointAddCause(t *testing.T) {
 	dp := NewDataPointNow(TestPayload{Value: "add-cause", Count: 1}, SystemActor[string]()).
 		AddCause(cause)
 
-	if len(dp.Causes()) != 1 {
-		t.Errorf("expected 1 cause, got %d", len(dp.Causes()))
-	}
+	assertEqual(t, len(dp.Causes()), 1)
 }
 
 func TestDataPointFullJSON(t *testing.T) {
@@ -831,30 +638,14 @@ func TestDataPointFullJSON(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if parsed.Version() != 3 {
-		t.Errorf("version mismatch: %d", parsed.Version())
-	}
-	if parsed.Tags()["env"] != "test" {
-		t.Error("tag env mismatch")
-	}
-	if len(parsed.References()) != 1 {
-		t.Error("references count mismatch")
-	}
-	if parsed.References()[0].Id() != "doc-1" {
-		t.Error("reference id mismatch")
-	}
-	if parsed.References()[0].Version() != 2 {
-		t.Error("reference version mismatch")
-	}
-	if len(parsed.Causes()) != 1 {
-		t.Error("causes count mismatch")
-	}
-	if parsed.Causes()[0].Kind() != "command" {
-		t.Error("cause kind mismatch")
-	}
-	if !parsed.Causes()[0].HasTrace() {
-		t.Error("cause should have trace")
-	}
+	assertEqual(t, parsed.Version(), 3)
+	assertTag(t, parsed.Tags(), "env", "test")
+	assertEqual(t, len(parsed.References()), 1)
+	assertEqual(t, parsed.References()[0].Id(), "doc-1")
+	assertEqual(t, parsed.References()[0].Version(), 2)
+	assertEqual(t, len(parsed.Causes()), 1)
+	assertEqual(t, parsed.Causes()[0].Kind(), "command")
+	assertTrue(t, parsed.Causes()[0].HasTrace(), "cause should have trace")
 }
 
 func TestDataPointFullRoundTrip(t *testing.T) {
@@ -884,7 +675,5 @@ func TestDataPointFullRoundTrip(t *testing.T) {
 		t.Fatalf("second marshal error: %v", err)
 	}
 
-	if string(data) != string(data2) {
-		t.Errorf("round trip failed:\n%s\nvs\n%s", string(data), string(data2))
-	}
+	assertJSONEquals(t, data, string(data2))
 }
