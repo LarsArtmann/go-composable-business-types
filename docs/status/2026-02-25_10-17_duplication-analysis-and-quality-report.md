@@ -18,22 +18,22 @@ A Go library providing strongly typed, composable base values for business appli
 
 ### Core Types
 
-| Type | Purpose | File |
-|------|---------|------|
-| `ID[B, V]` | Phantom-typed identifiers | `id.go` |
-| `NanoId` | FIPS-140 compatible IDs | `nanoid.go` |
-| `Email` | Validated email addresses | `common.go` |
-| `URL` | HTTP/HTTPS URLs only | `common.go` |
-| `Money` | Currency wrapper (bojanz/currency) | `money.go` |
-| `Cents` | Integer-based currency | `common.go` |
-| `Percentage` | Type-safe percentage values | `common.go` |
-| `Timestamp` | Time wrapper | `common.go` |
-| `Duration` | Duration wrapper | `common.go` |
-| `BoundedString` | Length-validated strings | `bounded.go` |
-| `Locale` | BCP 47 locale codes | `enum.go` |
-| `DataPoint[T]` | Self-contained data with audit trail | `datapoint.go` |
-| `ActorChain[T]` | Audit trail tracking | `actor.go` |
-| `Bitemporal` | Bi-temporal tracking | `datapoint_temporal.go` |
+| Type            | Purpose                              | File                    |
+| --------------- | ------------------------------------ | ----------------------- |
+| `ID[B, V]`      | Phantom-typed identifiers            | `id.go`                 |
+| `NanoId`        | FIPS-140 compatible IDs              | `nanoid.go`             |
+| `Email`         | Validated email addresses            | `common.go`             |
+| `URL`           | HTTP/HTTPS URLs only                 | `common.go`             |
+| `Money`         | Currency wrapper (bojanz/currency)   | `money.go`              |
+| `Cents`         | Integer-based currency               | `common.go`             |
+| `Percentage`    | Type-safe percentage values          | `common.go`             |
+| `Timestamp`     | Time wrapper                         | `common.go`             |
+| `Duration`      | Duration wrapper                     | `common.go`             |
+| `BoundedString` | Length-validated strings             | `bounded.go`            |
+| `Locale`        | BCP 47 locale codes                  | `enum.go`               |
+| `DataPoint[T]`  | Self-contained data with audit trail | `datapoint.go`          |
+| `ActorChain[T]` | Audit trail tracking                 | `actor.go`              |
+| `Bitemporal`    | Bi-temporal tracking                 | `datapoint_temporal.go` |
 
 ---
 
@@ -51,12 +51,12 @@ c8052f5 feat: add String() methods to Percentage and Cents
 
 ### Statistics
 
-| Metric | Value |
-|--------|-------|
-| Clone Groups | 38 |
-| Production Code Duplications | 2 |
-| Test Code Duplications | 36 |
-| Threshold | 15 tokens |
+| Metric                       | Value     |
+| ---------------------------- | --------- |
+| Clone Groups                 | 38        |
+| Production Code Duplications | 2         |
+| Test Code Duplications       | 36        |
+| Threshold                    | 15 tokens |
 
 ---
 
@@ -71,6 +71,7 @@ c8052f5 feat: add String() methods to Percentage and Cents
 **Occurrences:** 4
 
 **Pattern:**
+
 ```go
 {
     var zero V
@@ -80,6 +81,7 @@ c8052f5 feat: add String() methods to Percentage and Cents
 ```
 
 **Recommendation:** Extract to private helper method:
+
 ```go
 func (id *ID[B, V]) reset() {
     var zero V
@@ -100,6 +102,7 @@ func (id *ID[B, V]) reset() {
 **Difference:** Only `correction: false` vs `correction: true`
 
 **Recommendation:** Have `NewBitemporal` call `NewBitemporalCorrection` with `false`:
+
 ```go
 func NewBitemporal(validFrom, validUntil, recorded time.Time) Bitemporal {
     return NewBitemporalCorrection(validFrom, validUntil, recorded, false)
@@ -112,14 +115,14 @@ func NewBitemporal(validFrom, validUntil, recorded time.Time) Bitemporal {
 
 ### Test Code Patterns (Lower Priority)
 
-| Pattern | Groups | Occurrences | Recommendation |
-|---------|--------|-------------|----------------|
-| Invalid type Scan tests | #6 | 12 | Table-driven tests |
-| ID[string] vs ID[int64] tests | #2, #3 | 4 | Generic test helpers |
-| URL Scan (http/https) | #1 | 2 | Table-driven tests |
-| Tag assertions | #31, #33, #36 | 10 | Helper function `assertTag(t, tags, key, expected)` |
-| JSON string comparisons | #37 | 9 | Helper function `assertJSONEquals(t, data, expected)` |
-| `.String()` comparisons | #38 | 7 | Helper function `assertStringEquals(t, got, expected)` |
+| Pattern                       | Groups        | Occurrences | Recommendation                                         |
+| ----------------------------- | ------------- | ----------- | ------------------------------------------------------ |
+| Invalid type Scan tests       | #6            | 12          | Table-driven tests                                     |
+| ID[string] vs ID[int64] tests | #2, #3        | 4           | Generic test helpers                                   |
+| URL Scan (http/https)         | #1            | 2           | Table-driven tests                                     |
+| Tag assertions                | #31, #33, #36 | 10          | Helper function `assertTag(t, tags, key, expected)`    |
+| JSON string comparisons       | #37           | 9           | Helper function `assertJSONEquals(t, data, expected)`  |
+| `.String()` comparisons       | #38           | 7           | Helper function `assertStringEquals(t, got, expected)` |
 
 ---
 
@@ -135,14 +138,14 @@ golangci-lint run     # PASS (configured)
 
 ### Architecture Quality
 
-| Aspect | Status | Notes |
-|--------|--------|-------|
-| Phantom Types | Excellent | Strong type safety via generics |
-| Immutability | Excellent | `With*` methods return copies |
-| JSON Serialization | Excellent | Custom MarshalJSON/UnmarshalJSON |
-| Error Handling | Excellent | Constructors return errors; `Must*` panics |
-| SQL Integration | Excellent | Scanner/Valuer interfaces |
-| Test Coverage | Good | Comprehensive tests across all types |
+| Aspect             | Status    | Notes                                      |
+| ------------------ | --------- | ------------------------------------------ |
+| Phantom Types      | Excellent | Strong type safety via generics            |
+| Immutability       | Excellent | `With*` methods return copies              |
+| JSON Serialization | Excellent | Custom MarshalJSON/UnmarshalJSON           |
+| Error Handling     | Excellent | Constructors return errors; `Must*` panics |
+| SQL Integration    | Excellent | Scanner/Valuer interfaces                  |
+| Test Coverage      | Good      | Comprehensive tests across all types       |
 
 ---
 
@@ -168,11 +171,11 @@ golangci-lint run     # PASS (configured)
 
 ## Technical Debt Summary
 
-| Category | Items | Priority | Effort |
-|----------|-------|----------|--------|
-| Production duplication | 2 | Medium | 10 min |
-| Test duplication | 36 patterns | Low | 2-4 hours |
-| Missing helpers | 3 assertion types | Low | 30 min |
+| Category               | Items             | Priority | Effort    |
+| ---------------------- | ----------------- | -------- | --------- |
+| Production duplication | 2                 | Medium   | 10 min    |
+| Test duplication       | 36 patterns       | Low      | 2-4 hours |
+| Missing helpers        | 3 assertion types | Low      | 30 min    |
 
 ---
 
@@ -184,4 +187,4 @@ The codebase is well-structured with strong type safety patterns. The identified
 
 ---
 
-*Generated by Crush AI Assistant*
+_Generated by Crush AI Assistant_
