@@ -3,7 +3,7 @@
 
 // Built By: go install
 
-package cbt
+package enums
 
 import (
 	"database/sql/driver"

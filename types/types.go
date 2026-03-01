@@ -1,4 +1,4 @@
-package cbt
+package types
 
 import (
 	"database/sql/driver"

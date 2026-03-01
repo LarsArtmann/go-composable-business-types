@@ -1,11 +1,16 @@
-package cbt
+package actor
 
-import "slices"
+import (
+	"slices"
+
+	"github.com/larsartmann/go-composable-business-types/enums"
+	"github.com/larsartmann/go-composable-business-types/id"
+)
 
 // ActorEntry represents a single actor in an actor chain.
 type ActorEntry[T comparable] struct {
-	Kind ActorKind
-	Id   ID[struct{}, T]
+	Kind enums.ActorKind
+	Id   id.ID[struct{}, T]
 	Name string // optional human-readable name
 }
 
@@ -23,12 +28,12 @@ func (c ActorChain[T]) IsZero() bool                         { return len(c) == 
 func (c ActorChain[T]) Append(e ActorEntry[T]) ActorChain[T] { return append(c, e) }
 
 // ByKind returns all actors of a given kind in the chain.
-func (c ActorChain[T]) ByKind(kind ActorKind) []ActorEntry[T] {
+func (c ActorChain[T]) ByKind(kind enums.ActorKind) []ActorEntry[T] {
 	return slices.DeleteFunc(slices.Clone(c), func(e ActorEntry[T]) bool { return e.Kind != kind })
 }
 
 // HasKind checks if any actor in chain is of given kind.
-func (c ActorChain[T]) HasKind(kind ActorKind) bool {
+func (c ActorChain[T]) HasKind(kind enums.ActorKind) bool {
 	for _, e := range c {
 		if e.Kind == kind {
 			return true
@@ -40,27 +45,27 @@ func (c ActorChain[T]) HasKind(kind ActorKind) bool {
 // Constructor helpers
 
 // UserActor creates an actor entry for a human user.
-func UserActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(ActorKindUser, id, name...)
+func UserActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
+	return newActorEntry(enums.ActorKindUser, id, name...)
 }
 
 // BotActor creates an actor entry for an automated bot.
-func BotActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(ActorKindBot, id, name...)
+func BotActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
+	return newActorEntry(enums.ActorKindBot, id, name...)
 }
 
 // SystemActor creates an actor entry for system-initiated actions.
 func SystemActor[T comparable]() ActorEntry[T] {
-	return ActorEntry[T]{Kind: ActorKindSystem}
+	return ActorEntry[T]{Kind: enums.ActorKindSystem}
 }
 
 // ServiceActor creates an actor entry for a service-to-service call.
-func ServiceActor[T comparable](id ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(ActorKindService, id, name...)
+func ServiceActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
+	return newActorEntry(enums.ActorKindService, id, name...)
 }
 
 // newActorEntry is a helper to create ActorEntry with optional name.
-func newActorEntry[T comparable](kind ActorKind, id ID[struct{}, T], name ...string) ActorEntry[T] {
+func newActorEntry[T comparable](kind enums.ActorKind, id id.ID[struct{}, T], name ...string) ActorEntry[T] {
 	n := ""
 	if len(name) > 0 {
 		n = name[0]
@@ -70,6 +75,6 @@ func newActorEntry[T comparable](kind ActorKind, id ID[struct{}, T], name ...str
 
 // IsZero returns true if this is the zero value.
 func (e ActorEntry[T]) IsZero() bool {
-	var zeroId ID[struct{}, T]
-	return e.Id == zeroId && e.Name == ""
+	var zeroID id.ID[struct{}, T]
+	return e.Id == zeroID && e.Name == ""
 }

@@ -1,4 +1,4 @@
-package cbt
+package locale
 
 import (
 	"database/sql/driver"

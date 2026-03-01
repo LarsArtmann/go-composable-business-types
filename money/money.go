@@ -1,7 +1,8 @@
-package cbt
+package money
 
 import (
 	"github.com/bojanz/currency"
+	"github.com/larsartmann/go-composable-business-types/locale"
 )
 
 // Money wraps currency.Amount for domain clarity and type safety.
@@ -33,8 +34,8 @@ func CurrencySymbol(code, locale string) (string, bool) {
 }
 
 // CurrencySymbolForLocale returns the symbol for a currency using the Locale type.
-func CurrencySymbolForLocale(code string, locale Locale) (string, bool) {
-	return currency.GetSymbol(code, currency.NewLocale(locale.String()))
+func CurrencySymbolForLocale(code string, loc locale.Locale) (string, bool) {
+	return currency.GetSymbol(code, currency.NewLocale(loc.String()))
 }
 
 // AllCurrencyCodes returns all valid ISO 4217 currency codes.
@@ -49,8 +50,8 @@ func FormatMoney(money Money, locale string) string {
 }
 
 // FormatMoneyForLocale formats a monetary amount using the Locale type.
-func FormatMoneyForLocale(money Money, locale Locale) string {
-	formatter := currency.NewFormatter(currency.NewLocale(locale.String()))
+func FormatMoneyForLocale(money Money, loc locale.Locale) string {
+	formatter := currency.NewFormatter(currency.NewLocale(loc.String()))
 	return formatter.Format(money)
 }
 
@@ -63,6 +64,6 @@ func NewMoneyFormatter(locale string) *MoneyFormatter {
 }
 
 // NewMoneyFormatterForLocale creates a money formatter using the Locale type.
-func NewMoneyFormatterForLocale(locale Locale) *MoneyFormatter {
-	return currency.NewFormatter(currency.NewLocale(locale.String()))
+func NewMoneyFormatterForLocale(loc locale.Locale) *MoneyFormatter {
+	return currency.NewFormatter(currency.NewLocale(loc.String()))
 }

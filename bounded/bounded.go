@@ -1,4 +1,4 @@
-package cbt
+package bounded
 
 import (
 	"database/sql/driver"

@@ -1,4 +1,4 @@
-package cbt
+package enums
 
 //go:generate go tool go-enum --marshal --names --values --mustparse --sql
 

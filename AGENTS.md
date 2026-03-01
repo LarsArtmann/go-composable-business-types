@@ -31,19 +31,62 @@ golangci-lint run --fix
 - `github.com/bojanz/currency` - ISO 4217 currency handling
 - `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
 
-## Project Structure
+## Package Structure (Go 1.26 Selective Imports)
+
+This library uses a single Go module with subpackages for selective imports:
 
 ```
 .
-├── actor.go            # ActorChain[T], ActorEntry[T] - audit trail tracking
-├── bounded.go          # BoundedString - length-validated strings
-├── common.go           # Email, URL, Percentage, Cents, Timestamp, Duration
-├── datapoint.go        # DataPoint[T] - self-contained data with audit trail
-├── datapoint_*.go      # DataPoint supporting types (Cause, Context, Reference, Temporal)
-├── enum.go             # ActorKind, Locale, Priority, Status, Trigger enums
-├── enum_enum.go        # Generated enum code (do not edit)
-├── money.go            # Money wrapper around bojanz/currency
-└── nanoid.go           # NanoId type
+├── actor/              # ActorChain[T], ActorEntry[T] - audit trail tracking
+├── bounded/            # BoundedString - length-validated strings
+├── enums/              # ActorKind, Priority, Status, Trigger enums
+│   └── enum_enum.go    # Generated enum code (do not edit)
+├── id/                 # ID[B,V] - branded/phantom type identifiers
+├── locale/             # Locale - BCP 47 language tags
+├── money/              # Money - ISO 4217 currency wrapper
+├── nanoid/             # NanoId - URL-safe unique identifiers
+├── temporal/           # Bitemporal - valid/recorded time tracking
+├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
+└── cbt.go              # Root package (imports all subpackages)
+```
+
+### Selective Import Examples
+
+```go
+// Import just what you need
+import "github.com/larsartmann/go-composable-business-types/nanoid"
+import "github.com/larsartmann/go-composable-business-types/types"
+
+func main() {
+    id := nanoid.NewNanoId()
+    email, _ := types.NewEmail("test@example.com")
+}
+```
+
+```go
+// Import generic types with type parameters
+import (
+    "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-composable-business-types/actor"
+)
+
+type UserBrand struct{}
+type UserID = id.ID[UserBrand, string]
+
+func main() {
+    userID := id.NewID[UserBrand, string]("user-123")
+    actorEntry := actor.UserActor(userID, "John Doe")
+}
+```
+
+```go
+// Import enums
+import "github.com/larsartmann/go-composable-business-types/enums"
+
+func main() {
+    kind := enums.ActorKindUser
+    trigger := enums.TriggerManual
+}
 ```
 
 ## Code Conventions
@@ -55,5 +98,6 @@ golangci-lint run --fix
 
 ## Notes
 
-- `enum_enum.go` is auto-generated - do not edit manually
-- Run `go generate ./...` after modifying `enum.go`
+- `enums/enum_enum.go` is auto-generated - do not edit manually
+- Run `go generate ./...` after modifying `enums/enums.go`
+- Generic types (ID, ActorEntry, ActorChain) must be imported from subpackages
