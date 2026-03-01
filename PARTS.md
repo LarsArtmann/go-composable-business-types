@@ -31,18 +31,18 @@ type OrderID = ID[OrderBrand, int64]
 
 **Alternatives:**
 
-| Library | URL | Features | Trade-offs |
-|---------|-----|----------|------------|
-| Custom phantom types | N/A | Simple, zero deps | Must implement yourself |
-| `github.com/google/uuid` | https://github.com/google/uuid | RFC 4122 UUIDs | No branding, just UUID type |
-| `github.com/oklog/ulid` | https://github.com/oklog/ulid | Sortable IDs | No branding, just ULID type |
-| `github.com/rs/xid` | https://github.com/rs/xid | Globally unique, sortable | No branding |
+| Library                  | URL                            | Features                  | Trade-offs                  |
+| ------------------------ | ------------------------------ | ------------------------- | --------------------------- |
+| Custom phantom types     | N/A                            | Simple, zero deps         | Must implement yourself     |
+| `github.com/google/uuid` | https://github.com/google/uuid | RFC 4122 UUIDs            | No branding, just UUID type |
+| `github.com/oklog/ulid`  | https://github.com/oklog/ulid  | Sortable IDs              | No branding, just ULID type |
+| `github.com/rs/xid`      | https://github.com/rs/xid      | Globally unique, sortable | No branding                 |
 
 **Verdict: KEEP AS-IS**
 
 - No popular library provides phantom branding in Go
 - The pattern is simple (one generic struct + ~150 lines for serialization)
-- Value comes from the *pattern*, not from complex implementation
+- Value comes from the _pattern_, not from complex implementation
 
 **Potential Standalone Library?** **Maybe** - Could be published as `github.com/larsartmann/go-branded-id` but limited value since it's so simple.
 
@@ -58,11 +58,11 @@ type OrderID = ID[OrderBrand, int64]
 
 **Alternatives:**
 
-| Library | Stars | Features | Trade-offs |
-|---------|-------|----------|------------|
-| `sixafter/nanoid` | ~100 | FIPS-140, high-perf, URL-safe | Current choice |
-| `matoous/go-nanoid` | ~800 | Simple, popular | Not FIPS-140 |
-| `aidarkhanov/nanoid-go` | ~150 | Minimal | Less maintained |
+| Library                 | Stars | Features                      | Trade-offs      |
+| ----------------------- | ----- | ----------------------------- | --------------- |
+| `sixafter/nanoid`       | ~100  | FIPS-140, high-perf, URL-safe | Current choice  |
+| `matoous/go-nanoid`     | ~800  | Simple, popular               | Not FIPS-140    |
+| `aidarkhanov/nanoid-go` | ~150  | Minimal                       | Less maintained |
 
 **Verdict: KEEP AS-IS**
 
@@ -91,13 +91,13 @@ type Bitemporal struct {
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| **None exist for Go** | - | - |
-| `looplab/eventhorizon` | Full CQRS/ES framework | Overkill, infrastructure required |
-| `ThreeDotsLabs/watermill` | Event streaming | Different use case |
-| Database-level (PostgreSQL temporal_tables) | SQL AS OF queries | DB-specific, not portable |
-| `temporalio/sdk-go` | Workflow engine | Full workflow engine, not just temporal data |
+| Library                                     | Features               | Trade-offs                                   |
+| ------------------------------------------- | ---------------------- | -------------------------------------------- |
+| **None exist for Go**                       | -                      | -                                            |
+| `looplab/eventhorizon`                      | Full CQRS/ES framework | Overkill, infrastructure required            |
+| `ThreeDotsLabs/watermill`                   | Event streaming        | Different use case                           |
+| Database-level (PostgreSQL temporal_tables) | SQL AS OF queries      | DB-specific, not portable                    |
+| `temporalio/sdk-go`                         | Workflow engine        | Full workflow engine, not just temporal data |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -106,6 +106,7 @@ type Bitemporal struct {
 - Simple, portable, database-agnostic
 
 **Potential Standalone Library?** **YES** - Strong candidate for extraction. Could be `github.com/larsartmann/go-bitemporal` with:
+
 - Core `Bitemporal` struct
 - SQL query helpers for AS OF queries
 - Repository patterns for common temporal queries
@@ -118,6 +119,7 @@ type Bitemporal struct {
 **Location:** `datapoint.go`, `datapoint_*.go`
 
 **Description:** Self-contained data unit with complete audit trail. Combines:
+
 - NanoId for uniqueness
 - Bitemporal for time tracking
 - ActorEntry for who caused it
@@ -130,11 +132,11 @@ type Bitemporal struct {
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| `looplab/eventhorizon` | Full CQRS/ES | Heavy, requires infrastructure |
-| `ThreeDotsLabs/watermill` | Event streaming | Different abstraction level |
-| Custom event sourcing | Flexible | Build from scratch |
+| Library                   | Features        | Trade-offs                     |
+| ------------------------- | --------------- | ------------------------------ |
+| `looplab/eventhorizon`    | Full CQRS/ES    | Heavy, requires infrastructure |
+| `ThreeDotsLabs/watermill` | Event streaming | Different abstraction level    |
+| Custom event sourcing     | Flexible        | Build from scratch             |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -163,11 +165,11 @@ type ActorChain[T] []ActorEntry[T]
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
+| Library              | Features            | Trade-offs                               |
+| -------------------- | ------------------- | ---------------------------------------- |
 | OpenTelemetry traces | Distributed tracing | Infrastructure required, different scope |
-| Custom audit logs | Flexible | No structured chain |
-| **No equivalent** | - | - |
+| Custom audit logs    | Flexible            | No structured chain                      |
+| **No equivalent**    | -                   | -                                        |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -197,11 +199,11 @@ type Context struct {
 
 **Alternatives:**
 
-| Approach | Features | Trade-offs |
-|----------|----------|------------|
-| `context.Context` values | Standard library | Unstructured, no type safety |
-| OpenTelemetry baggage | Distributed | Infrastructure required |
-| Structured logging fields | Common | Tied to logging |
+| Approach                  | Features         | Trade-offs                   |
+| ------------------------- | ---------------- | ---------------------------- |
+| `context.Context` values  | Standard library | Unstructured, no type safety |
+| OpenTelemetry baggage     | Distributed      | Infrastructure required      |
+| Structured logging fields | Common           | Tied to logging              |
 
 **Verdict: KEEP AS-IS**
 
@@ -217,16 +219,17 @@ type Context struct {
 **Location:** `datapoint_ref.go`, `datapoint_cause.go`
 
 **Description:**
+
 - `Reference[T]`: Type-safe reference to another entity with relationship metadata
 - `Cause[T]`: Causal chain tracking for building audit/lineage graphs
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| Foreign keys in DB | Referential integrity | DB-specific, not portable |
-| GraphQL connections | Graph traversal | Different domain |
-| **No Go equivalent** | - | - |
+| Library              | Features              | Trade-offs                |
+| -------------------- | --------------------- | ------------------------- |
+| Foreign keys in DB   | Referential integrity | DB-specific, not portable |
+| GraphQL connections  | Graph traversal       | Different domain          |
+| **No Go equivalent** | -                     | -                         |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -250,11 +253,11 @@ var NewProductName = cbt.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
+| Library                              | Features              | Trade-offs             |
+| ------------------------------------ | --------------------- | ---------------------- |
 | `github.com/go-playground/validator` | Struct tag validation | Runtime, not type-safe |
-| `github.com/asaskevich/govalidator` | String validators | Not type-safe |
-| Custom types | Type-safe | Build yourself |
+| `github.com/asaskevich/govalidator`  | String validators     | Not type-safe          |
+| Custom types                         | Type-safe             | Build yourself         |
 
 **Verdict: KEEP AS-IS**
 
@@ -274,11 +277,11 @@ var NewProductName = cbt.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| `net/mail` (stdlib) | RFC 5322 parsing | No validation wrapper |
-| `github.com/go-playground/validator` | Tag-based | Runtime validation |
-| `github.com/asaskevich/govalidator` | `IsEmail()` | Not type-safe |
+| Library                              | Features         | Trade-offs            |
+| ------------------------------------ | ---------------- | --------------------- |
+| `net/mail` (stdlib)                  | RFC 5322 parsing | No validation wrapper |
+| `github.com/go-playground/validator` | Tag-based        | Runtime validation    |
+| `github.com/asaskevich/govalidator`  | `IsEmail()`      | Not type-safe         |
 
 **Verdict: KEEP AS-IS**
 
@@ -298,10 +301,10 @@ var NewProductName = cbt.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
+| Library            | Features    | Trade-offs            |
+| ------------------ | ----------- | --------------------- |
 | `net/url` (stdlib) | URL parsing | No validation wrapper |
-| Custom validation | Flexible | Build yourself |
+| Custom validation  | Flexible    | Build yourself        |
 
 **Verdict: KEEP AS-IS**
 
@@ -322,11 +325,11 @@ var NewProductName = cbt.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Library | Stars | Features | Trade-offs |
-|---------|-------|----------|------------|
-| `bojanz/currency` | ~400 | ISO 4217, 370+ locales, formatting | **Current choice** |
-| `Rhymond/go-money` | ~1.6k | Money arithmetic, currency | Different API, less locale support |
-| `shopspring/decimal` | ~6k | High-precision decimal | Not currency-specific |
+| Library              | Stars | Features                           | Trade-offs                         |
+| -------------------- | ----- | ---------------------------------- | ---------------------------------- |
+| `bojanz/currency`    | ~400  | ISO 4217, 370+ locales, formatting | **Current choice**                 |
+| `Rhymond/go-money`   | ~1.6k | Money arithmetic, currency         | Different API, less locale support |
+| `shopspring/decimal` | ~6k   | High-precision decimal             | Not currency-specific              |
 
 **Verdict: KEEP AS-IS**
 
@@ -352,11 +355,11 @@ func (c Cents) Float64() float64 // Returns dollars (e.g., 1099 → 10.99)
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| `shopspring/decimal` | High precision | Heavier, more complex |
-| `bojanz/currency` | Full currency | Heavier for simple cases |
-| `int64` directly | Zero deps | No type safety, no methods |
+| Library              | Features       | Trade-offs                 |
+| -------------------- | -------------- | -------------------------- |
+| `shopspring/decimal` | High precision | Heavier, more complex      |
+| `bojanz/currency`    | Full currency  | Heavier for simple cases   |
+| `int64` directly     | Zero deps      | No type safety, no methods |
 
 **Verdict: KEEP AS-IS**
 
@@ -418,12 +421,12 @@ type Duration struct{ time.Duration }
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| `abice/go-enum` | Code gen, SQL, JSON | **Current choice** |
-| `alvaroloes/enumer` | Similar features | Less maintained |
-| `go-enum/enum` | Different approach | Less popular |
-| Hand-written | Full control | Boilerplate |
+| Library             | Features            | Trade-offs         |
+| ------------------- | ------------------- | ------------------ |
+| `abice/go-enum`     | Code gen, SQL, JSON | **Current choice** |
+| `alvaroloes/enumer` | Similar features    | Less maintained    |
+| `go-enum/enum`      | Different approach  | Less popular       |
+| Hand-written        | Full control        | Boilerplate        |
 
 **Verdict: KEEP AS-IS**
 
@@ -455,10 +458,10 @@ type Duration struct{ time.Duration }
 
 ### Strong Candidates for Standalone Libraries
 
-| Component | Proposed Library | Rationale |
-|-----------|------------------|-----------|
-| **Bitemporal** | `go-bitemporal` | No Go equivalent, genuinely useful standalone |
-| **DataPoint + Bitemporal + ActorChain** | `go-event-audit` | Novel composition, "event sourcing light" |
+| Component                               | Proposed Library | Rationale                                     |
+| --------------------------------------- | ---------------- | --------------------------------------------- |
+| **Bitemporal**                          | `go-bitemporal`  | No Go equivalent, genuinely useful standalone |
+| **DataPoint + Bitemporal + ActorChain** | `go-event-audit` | Novel composition, "event sourcing light"     |
 
 ### Consider Combining
 
@@ -476,6 +479,7 @@ github.com/larsartmann/go-event-audit
 ```
 
 **Benefits:**
+
 - Coherent "audit trail" package
 - Bitemporal works standalone
 - DataPoint combines everything for full power
@@ -484,38 +488,38 @@ github.com/larsartmann/go-event-audit
 
 ## Keep in Current Form
 
-| Component | Reason |
-|-----------|--------|
-| `ID[B, V]` | Simple pattern, no library value |
-| `NanoId` | Thin wrapper around excellent lib |
-| `BoundedString` | Could extract but works well here |
-| `Email`, `URL` | Thin wrappers |
-| `Money` | Already wraps best-in-class |
-| `Cents`, `Percentage` | Too simple |
-| `Timestamp`, `Duration` | Too simple |
-| `Locale` | Thin wrapper |
-| Enums | Domain-specific |
+| Component               | Reason                            |
+| ----------------------- | --------------------------------- |
+| `ID[B, V]`              | Simple pattern, no library value  |
+| `NanoId`                | Thin wrapper around excellent lib |
+| `BoundedString`         | Could extract but works well here |
+| `Email`, `URL`          | Thin wrappers                     |
+| `Money`                 | Already wraps best-in-class       |
+| `Cents`, `Percentage`   | Too simple                        |
+| `Timestamp`, `Duration` | Too simple                        |
+| `Locale`                | Thin wrapper                      |
+| Enums                   | Domain-specific                   |
 
 ---
 
 ## Summary Matrix
 
-| Component | Lines | Unique Value | Extract? | Reason |
-|-----------|-------|--------------|----------|--------|
-| `ID[B,V]` | ~160 | Medium | Maybe | Pattern is simple but useful |
-| `NanoId` | ~150 | Low | No | Thin wrapper |
-| **`Bitemporal`** | ~120 | **High** | **Yes** | No Go equivalent |
-| **`DataPoint[T]`** | ~290 | **High** | **Yes** | Novel composition |
-| **`ActorChain`** | ~75 | **High** | **Yes** | Novel pattern |
-| `Context` | ~140 | Medium | No | Works with DataPoint |
-| `Reference`, `Cause` | ~240 | Medium | No | Works with DataPoint |
-| `BoundedString` | ~130 | Medium | Maybe | Useful standalone |
-| `Email`, `URL` | ~180 | Low | No | Thin wrappers |
-| `Money` | ~70 | Low | No | Already wraps lib |
-| `Cents`, `Percentage` | ~80 | Low | No | Too simple |
-| `Timestamp`, `Duration` | ~100 | Low | No | Too simple |
-| `Locale` | ~130 | Low | No | Thin wrapper |
-| Enums | ~30 | Low | No | Domain-specific |
+| Component               | Lines | Unique Value | Extract? | Reason                       |
+| ----------------------- | ----- | ------------ | -------- | ---------------------------- |
+| `ID[B,V]`               | ~160  | Medium       | Maybe    | Pattern is simple but useful |
+| `NanoId`                | ~150  | Low          | No       | Thin wrapper                 |
+| **`Bitemporal`**        | ~120  | **High**     | **Yes**  | No Go equivalent             |
+| **`DataPoint[T]`**      | ~290  | **High**     | **Yes**  | Novel composition            |
+| **`ActorChain`**        | ~75   | **High**     | **Yes**  | Novel pattern                |
+| `Context`               | ~140  | Medium       | No       | Works with DataPoint         |
+| `Reference`, `Cause`    | ~240  | Medium       | No       | Works with DataPoint         |
+| `BoundedString`         | ~130  | Medium       | Maybe    | Useful standalone            |
+| `Email`, `URL`          | ~180  | Low          | No       | Thin wrappers                |
+| `Money`                 | ~70   | Low          | No       | Already wraps lib            |
+| `Cents`, `Percentage`   | ~80   | Low          | No       | Too simple                   |
+| `Timestamp`, `Duration` | ~100  | Low          | No       | Too simple                   |
+| `Locale`                | ~130  | Low          | No       | Thin wrapper                 |
+| Enums                   | ~30   | Low          | No       | Domain-specific              |
 
 ---
 
@@ -524,9 +528,10 @@ github.com/larsartmann/go-event-audit
 1. **Keep the library as-is** - The composition is valuable
 2. **If extraction is desired**, create a single focused library:
    - `github.com/larsartmann/go-bitemporal` - Just the Bitemporal struct + helpers
-3. **Document the patterns** - The real value is in the *design patterns*, not the code itself
+3. **Document the patterns** - The real value is in the _design patterns_, not the code itself
 
 The current monolithic approach works well because:
+
 - All types work together (DataPoint depends on Bitemporal, ActorEntry, etc.)
 - Single import for all business types
 - Consistent patterns (`IsZero()`, `With*` methods, SQL interfaces)
