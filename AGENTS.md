@@ -39,6 +39,11 @@ This library uses a single Go module with subpackages for selective imports:
 .
 ├── actor/              # ActorChain[T], ActorEntry[T] - audit trail tracking
 ├── bounded/            # BoundedString - length-validated strings
+├── datapoint/          # DataPoint[T] - self-contained data with audit trail
+│   ├── datapoint.go    # DataPoint[T] main type
+│   ├── context.go      # Execution context
+│   ├── reference.go    # Reference[T] entity references
+│   └── cause.go        # Cause[T] causal relationships
 ├── enums/              # ActorKind, Priority, Status, Trigger enums
 │   └── enum_enum.go    # Generated enum code (do not edit)
 ├── id/                 # ID[B,V] - branded/phantom type identifiers
@@ -86,6 +91,31 @@ import "github.com/larsartmann/go-composable-business-types/enums"
 func main() {
     kind := enums.ActorKindUser
     trigger := enums.TriggerManual
+}
+```
+
+```go
+// Import DataPoint for complete audit trails
+import (
+    "github.com/larsartmann/go-composable-business-types/datapoint"
+    "github.com/larsartmann/go-composable-business-types/actor"
+    "github.com/larsartmann/go-composable-business-types/enums"
+    "github.com/larsartmann/go-composable-business-types/id"
+)
+
+func main() {
+    userID := id.NewID[struct{}, string]("user-123")
+    actorEntry := actor.UserActor(userID, "John Doe")
+    
+    // Create a DataPoint with complete audit trail
+    dp := datapoint.NewDataPoint("order-123", actorEntry).
+        WithTrigger(enums.TriggerWebhook).
+        WithReason("Customer checkout").
+        WithTag("priority", "high")
+    
+    // Add references and causes
+    ref := datapoint.NewReference("customer-456", "customer")
+    dp = dp.WithReference(ref)
 }
 ```
 
