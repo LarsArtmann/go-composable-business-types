@@ -1,0 +1,281 @@
+package datapoint
+
+import (
+	"encoding/json"
+	"testing"
+
+	"github.com/larsartmann/go-composable-business-types/actor"
+	"github.com/larsartmann/go-composable-business-types/enums"
+	"github.com/larsartmann/go-composable-business-types/id"
+	"github.com/larsartmann/go-composable-business-types/nanoid"
+)
+
+func TestNewDataPoint(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID, "Test User")
+	dp := NewDataPoint("test payload", actorEntry)
+
+	if dp.IsZero() {
+		t.Error("DataPoint should not be zero")
+	}
+	if dp.Id().IsZero() {
+		t.Error("DataPoint should have an ID")
+	}
+	if dp.Payload() != "test payload" {
+		t.Errorf("expected payload 'test payload', got %v", dp.Payload())
+	}
+	if dp.Actor().Name != "Test User" {
+		t.Errorf("expected actor name 'Test User', got %s", dp.Actor().Name)
+	}
+	if dp.Version() != 1 {
+		t.Errorf("expected version 1, got %d", dp.Version())
+	}
+	if dp.Trigger() != enums.TriggerManual {
+		t.Errorf("expected trigger Manual, got %v", dp.Trigger())
+	}
+}
+
+func TestDataPointWithMethods(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	// Test WithTrigger
+	dp2 := dp.WithTrigger(enums.TriggerSystem)
+	if dp2.Trigger() != enums.TriggerSystem {
+		t.Error("WithTrigger failed")
+	}
+	// Original should be unchanged
+	if dp.Trigger() != enums.TriggerManual {
+		t.Error("original DataPoint should be unchanged")
+	}
+
+	// Test WithReason
+	dp3 := dp.WithReason("test reason")
+	if dp3.Reason() != "test reason" {
+		t.Errorf("expected reason 'test reason', got %s", dp3.Reason())
+	}
+
+	// Test WithVersion
+	dp4 := dp.WithVersion(5)
+	if dp4.Version() != 5 {
+		t.Errorf("expected version 5, got %d", dp4.Version())
+	}
+
+	// Test WithTag
+	dp5 := dp.WithTag("key", "value")
+	if dp5.Tag("key") != "value" {
+		t.Errorf("expected tag 'value', got %s", dp5.Tag("key"))
+	}
+
+	// Test WithTags
+	dp6 := dp.WithTags(map[string]string{"a": "1", "b": "2"})
+	if dp6.Tag("a") != "1" || dp6.Tag("b") != "2" {
+		t.Error("WithTags failed")
+	}
+}
+
+func TestDataPointWithReference(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	ref := NewReference("ref-id", "parent")
+	dp2 := dp.WithReference(ref)
+
+	refs := dp2.References()
+	if len(refs) != 1 {
+		t.Errorf("expected 1 reference, got %d", len(refs))
+	}
+	if refs[0].Relation() != "parent" {
+		t.Errorf("expected relation 'parent', got %s", refs[0].Relation())
+	}
+}
+
+func TestDataPointWithCause(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	causeID := nanoid.NewNanoId()
+	cause := NewCauseDirect[string](causeID)
+	dp2 := dp.WithCause(cause)
+
+	causes := dp2.Causes()
+	if len(causes) != 1 {
+		t.Errorf("expected 1 cause, got %d", len(causes))
+	}
+	if causes[0].Kind() != "direct" {
+		t.Errorf("expected kind 'direct', got %s", causes[0].Kind())
+	}
+}
+
+func TestDataPointWithContext(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	ctx := NewContext().
+		WithEnvironment("production").
+		WithSource("test-service").
+		WithTag("region", "us-east-1")
+
+	dp2 := dp.WithContext(ctx)
+	if dp2.Context().Environment() != "production" {
+		t.Errorf("expected environment 'production', got %s", dp2.Context().Environment())
+	}
+	if dp2.Context().Source() != "test-service" {
+		t.Errorf("expected source 'test-service', got %s", dp2.Context().Source())
+	}
+	if dp2.Context().Tag("region") != "us-east-1" {
+		t.Error("context tag not set correctly")
+	}
+}
+
+func TestDataPointJSON(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID, "Test User")
+	dp := NewDataPoint("test payload", actorEntry).
+		WithReason("test reason").
+		WithTag("key", "value")
+
+	data, err := json.Marshal(dp)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	// Verify JSON contains expected fields
+	var raw map[string]interface{}
+	if err := json.Unmarshal(data, &raw); err != nil {
+		t.Fatalf("Unmarshal to map failed: %v", err)
+	}
+
+	if _, ok := raw["id"]; !ok {
+		t.Error("JSON should contain 'id'")
+	}
+	if _, ok := raw["payload"]; !ok {
+		t.Error("JSON should contain 'payload'")
+	}
+	if _, ok := raw["actor"]; !ok {
+		t.Error("JSON should contain 'actor'")
+	}
+}
+
+func TestDataPointUnmarshalJSON(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID, "Test User")
+	original := NewDataPoint("test payload", actorEntry).
+		WithReason("test reason").
+		WithVersion(42)
+
+	data, err := json.Marshal(original)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	var parsed DataPoint[string]
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON failed: %v", err)
+	}
+
+	if parsed.Payload() != "test payload" {
+		t.Errorf("expected payload 'test payload', got %v", parsed.Payload())
+	}
+	if parsed.Reason() != "test reason" {
+		t.Errorf("expected reason 'test reason', got %s", parsed.Reason())
+	}
+	if parsed.Version() != 42 {
+		t.Errorf("expected version 42, got %d", parsed.Version())
+	}
+	if parsed.Id().IsZero() {
+		t.Error("parsed DataPoint should have an ID")
+	}
+}
+
+func TestDataPointIsZero(t *testing.T) {
+	var zero DataPoint[string]
+	if !zero.IsZero() {
+		t.Error("zero DataPoint should be zero")
+	}
+
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+	if dp.IsZero() {
+		t.Error("non-zero DataPoint should not be zero")
+	}
+}
+
+func TestDataPointIntPayload(t *testing.T) {
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint(42, actorEntry)
+
+	if dp.Payload() != 42 {
+		t.Errorf("expected payload 42, got %d", dp.Payload())
+	}
+
+	// Test JSON round-trip
+	data, err := json.Marshal(dp)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	var parsed DataPoint[int]
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON failed: %v", err)
+	}
+
+	if parsed.Payload() != 42 {
+		t.Errorf("expected payload 42 after unmarshal, got %d", parsed.Payload())
+	}
+}
+
+func TestDataPointComplexChain(t *testing.T) {
+	// Create a complex DataPoint with all fields set
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID, "John Doe")
+
+	ctx := NewContext().
+		WithEnvironment("production").
+		WithSession("session-abc").
+		WithRequest("req-xyz").
+		WithSource("order-service")
+
+	ref := NewReference("order-456", "parent-order").
+		WithVersion(3).
+		WithTag("type", "subscription")
+
+	causeID := nanoid.NewNanoId()
+	cause := NewCauseCommand[string](causeID, "create-order")
+
+	dp := NewDataPoint("widget-order", actorEntry).
+		WithTrigger(enums.TriggerWebhook).
+		WithReason("Customer checkout").
+		WithContext(ctx).
+		WithVersion(2).
+		WithTag("priority", "high").
+		WithTag("channel", "web").
+		WithReference(ref).
+		WithCause(cause)
+
+	// Verify all fields
+	if dp.Trigger() != enums.TriggerWebhook {
+		t.Error("trigger mismatch")
+	}
+	if dp.Reason() != "Customer checkout" {
+		t.Error("reason mismatch")
+	}
+	if dp.Context().Environment() != "production" {
+		t.Error("environment mismatch")
+	}
+	if len(dp.References()) != 1 {
+		t.Errorf("expected 1 reference, got %d", len(dp.References()))
+	}
+	if len(dp.Causes()) != 1 {
+		t.Errorf("expected 1 cause, got %d", len(dp.Causes()))
+	}
+	if dp.Tag("priority") != "high" {
+		t.Error("tag mismatch")
+	}
+}
