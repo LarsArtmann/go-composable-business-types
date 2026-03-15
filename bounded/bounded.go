@@ -92,7 +92,7 @@ func (bs BoundedString) MarshalJSON() ([]byte, error) {
 func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	var value string
 	if err := json.Unmarshal(data, &value); err != nil {
-		return err
+		return fmt.Errorf("boundedstring: unmarshal JSON: %w", err)
 	}
 	bs.value = value
 	bs.minLen = 0
@@ -118,7 +118,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.maxLen = len(v)
 		return nil
 	default:
-		return errors.New("boundedstring: cannot scan non-string/[]byte value")
+		return fmt.Errorf("boundedstring: cannot scan non-string/[]byte value (got %T)", src)
 	}
 }
 
