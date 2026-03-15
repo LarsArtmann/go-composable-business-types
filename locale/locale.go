@@ -2,7 +2,6 @@ package locale
 
 import (
 	"database/sql/driver"
-	"errors"
 	"fmt"
 
 	"golang.org/x/text/language"
@@ -31,7 +30,7 @@ var (
 func ParseLocale(s string) (Locale, error) {
 	tag, err := language.Parse(s)
 	if err != nil {
-		return Locale{}, fmt.Errorf("parse locale: %w", err)
+		return Locale{}, fmt.Errorf("parse locale %q: %w", s, err)
 	}
 	return Locale{tag: tag}, nil
 }
@@ -98,7 +97,7 @@ func (l *Locale) Scan(src any) error {
 		}
 		parsed, err := ParseLocale(v)
 		if err != nil {
-			return err
+			return fmt.Errorf("scan locale: %w", err)
 		}
 		*l = parsed
 		return nil
@@ -109,12 +108,12 @@ func (l *Locale) Scan(src any) error {
 		}
 		parsed, err := ParseLocale(string(v))
 		if err != nil {
-			return err
+			return fmt.Errorf("scan locale: %w", err)
 		}
 		*l = parsed
 		return nil
 	default:
-		return errors.New("locale: cannot scan non-string value")
+		return fmt.Errorf("locale: cannot scan non-string value (got %T)", src)
 	}
 }
 
