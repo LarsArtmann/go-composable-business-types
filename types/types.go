@@ -303,7 +303,7 @@ func (d *Duration) Scan(src any) error {
 		}
 		parsed, err := time.ParseDuration(v)
 		if err != nil {
-			return errors.New("duration: cannot scan value")
+			return fmt.Errorf("duration: cannot parse %q: %w", v, err)
 		}
 		d.Duration = parsed
 		return nil
@@ -314,12 +314,12 @@ func (d *Duration) Scan(src any) error {
 		}
 		parsed, err := time.ParseDuration(string(v))
 		if err != nil {
-			return errors.New("duration: cannot scan value")
+			return fmt.Errorf("duration: cannot parse %q: %w", string(v), err)
 		}
 		d.Duration = parsed
 		return nil
 	default:
-		return errors.New("duration: cannot scan non-numeric/string value")
+		return fmt.Errorf("duration: cannot scan non-numeric/string value (got %T)", src)
 	}
 }
 
@@ -346,7 +346,7 @@ func (e *Email) Scan(src any) error {
 		}
 		parsed, err := NewEmail(v)
 		if err != nil {
-			return err
+			return fmt.Errorf("email: invalid value %q: %w", v, err)
 		}
 		*e = parsed
 		return nil
@@ -357,12 +357,12 @@ func (e *Email) Scan(src any) error {
 		}
 		parsed, err := NewEmail(string(v))
 		if err != nil {
-			return err
+			return fmt.Errorf("email: invalid value %q: %w", string(v), err)
 		}
 		*e = parsed
 		return nil
 	default:
-		return ErrInvalidEmail
+		return fmt.Errorf("email: cannot scan value (got %T)", src)
 	}
 }
 
@@ -389,7 +389,7 @@ func (u *URL) Scan(src any) error {
 		}
 		parsed, err := NewURL(v)
 		if err != nil {
-			return err
+			return fmt.Errorf("url: invalid value %q: %w", v, err)
 		}
 		*u = parsed
 		return nil
@@ -400,12 +400,12 @@ func (u *URL) Scan(src any) error {
 		}
 		parsed, err := NewURL(string(v))
 		if err != nil {
-			return err
+			return fmt.Errorf("url: invalid value %q: %w", string(v), err)
 		}
 		*u = parsed
 		return nil
 	default:
-		return ErrInvalidURL
+		return fmt.Errorf("url: cannot scan value (got %T)", src)
 	}
 }
 
@@ -434,12 +434,12 @@ func (c *Cents) Scan(src any) error {
 	case []byte:
 		val, err := strconv.ParseInt(string(v), 10, 64)
 		if err != nil {
-			return errors.New("cents: cannot scan value")
+			return fmt.Errorf("cents: cannot parse %q: %w", string(v), err)
 		}
 		*c = Cents(val)
 		return nil
 	default:
-		return errors.New("cents: cannot scan non-numeric value")
+		return fmt.Errorf("cents: cannot scan non-numeric value (got %T)", src)
 	}
 }
 
@@ -461,19 +461,19 @@ func (t *Timestamp) Scan(src any) error {
 	case string:
 		parsed, err := time.Parse(time.RFC3339Nano, v)
 		if err != nil {
-			return err
+			return fmt.Errorf("timestamp: cannot parse %q: %w", v, err)
 		}
 		t.Time = parsed
 		return nil
 	case []byte:
 		parsed, err := time.Parse(time.RFC3339Nano, string(v))
 		if err != nil {
-			return err
+			return fmt.Errorf("timestamp: cannot parse %q: %w", string(v), err)
 		}
 		t.Time = parsed
 		return nil
 	default:
-		return errors.New("timestamp: cannot scan value")
+		return fmt.Errorf("timestamp: cannot scan value (got %T)", src)
 	}
 }
 
