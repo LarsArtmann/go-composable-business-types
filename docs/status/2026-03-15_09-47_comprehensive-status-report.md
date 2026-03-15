@@ -8,25 +8,26 @@
 
 ## a) FULLY DONE ✓
 
-| Component | Status | Notes |
-|-----------|--------|-------|
-| Core library structure | ✓ Complete | 10 packages, selective imports |
-| ID[B,V] branded phantom types | ✓ Complete | Full numeric + string support |
-| NanoId | ✓ Complete | FIPS-140 compatible, 8-256 chars |
-| ActorChain[T] / ActorEntry[T] | ✓ Complete | Full audit trail |
-| Bitemporal | ✓ Complete | Valid/recorded time tracking |
-| DataPoint[T] | ✓ Complete | Self-contained with Context, Reference, Cause |
-| Money | ✓ Complete | ISO 4217 via bojanz/currency |
-| Locale | ✓ Complete | BCP 47 language tags |
-| BoundedString | ✓ Complete | Length-validated strings |
-| Value types (Email, URL, etc.) | ✓ Complete | types package |
-| Enums (4 types) | ✓ Complete | go-enum generated |
-| Architecture diagram | ✓ Complete | D2 → SVG, 311 lines |
-| All tests passing | ✓ Complete | Race-safe |
-| Linter clean | ✓ Complete | 0 issues |
-| Documentation | ✓ Complete | README, AGENTS.md, status reports |
+| Component                      | Status     | Notes                                         |
+| ------------------------------ | ---------- | --------------------------------------------- |
+| Core library structure         | ✓ Complete | 10 packages, selective imports                |
+| ID[B,V] branded phantom types  | ✓ Complete | Full numeric + string support                 |
+| NanoId                         | ✓ Complete | FIPS-140 compatible, 8-256 chars              |
+| ActorChain[T] / ActorEntry[T]  | ✓ Complete | Full audit trail                              |
+| Bitemporal                     | ✓ Complete | Valid/recorded time tracking                  |
+| DataPoint[T]                   | ✓ Complete | Self-contained with Context, Reference, Cause |
+| Money                          | ✓ Complete | ISO 4217 via bojanz/currency                  |
+| Locale                         | ✓ Complete | BCP 47 language tags                          |
+| BoundedString                  | ✓ Complete | Length-validated strings                      |
+| Value types (Email, URL, etc.) | ✓ Complete | types package                                 |
+| Enums (4 types)                | ✓ Complete | go-enum generated                             |
+| Architecture diagram           | ✓ Complete | D2 → SVG, 311 lines                           |
+| All tests passing              | ✓ Complete | Race-safe                                     |
+| Linter clean                   | ✓ Complete | 0 issues                                      |
+| Documentation                  | ✓ Complete | README, AGENTS.md, status reports             |
 
 **Recent Commits (10):**
+
 ```
 b335da3 refactor(architecture): simplify and modernize architecture diagram
 98db835 docs: add comprehensive status report for 2026-03-15
@@ -44,11 +45,11 @@ ac859aa fix(locale): improve error messages with context
 
 ## b) PARTIALLY DONE ⚠️
 
-| Component | Progress | Blocker |
-|-----------|----------|---------|
-| Test coverage | 54.1% avg | Several packages under 50% |
-| examples/ documentation | Basic | No test files, minimal examples |
-| architecture.png in git | Tracked | BuildFlow warns about binary |
+| Component               | Progress  | Blocker                         |
+| ----------------------- | --------- | ------------------------------- |
+| Test coverage           | 54.1% avg | Several packages under 50%      |
+| examples/ documentation | Basic     | No test files, minimal examples |
+| architecture.png in git | Tracked   | BuildFlow warns about binary    |
 
 **Coverage by Package:**
 | Package | Coverage | Status |
@@ -68,26 +69,27 @@ ac859aa fix(locale): improve error messages with context
 
 ## c) NOT STARTED ○
 
-| Item | Priority | Effort |
-|------|----------|--------|
-| Database serialization interfaces | Medium | 2-3 days |
-| SQL scanner/valuer implementations | Medium | 1-2 days |
-| Protobuf/gRPC integration | Low | 2-3 days |
-| OpenAPI schema generation | Low | 1-2 days |
-| Benchmark suite expansion | Low | 1 day |
-| CI/CD pipeline improvements | Low | 1 day |
-| Performance profiling | Low | 1 day |
-| Fuzzing corpus expansion | Low | Ongoing |
+| Item                               | Priority | Effort   |
+| ---------------------------------- | -------- | -------- |
+| Database serialization interfaces  | Medium   | 2-3 days |
+| SQL scanner/valuer implementations | Medium   | 1-2 days |
+| Protobuf/gRPC integration          | Low      | 2-3 days |
+| OpenAPI schema generation          | Low      | 1-2 days |
+| Benchmark suite expansion          | Low      | 1 day    |
+| CI/CD pipeline improvements        | Low      | 1 day    |
+| Performance profiling              | Low      | 1 day    |
+| Fuzzing corpus expansion           | Low      | Ongoing  |
 
 ---
 
 ## d) TOTALLY FUCKED UP! 💥
 
-| Issue | Severity | Status |
-|-------|----------|--------|
-| None currently | — | — |
+| Issue          | Severity | Status |
+| -------------- | -------- | ------ |
+| None currently | —        | —      |
 
 **Previously Fixed:**
+
 - ✓ Fuzz test UTF-8 edge case (fixed 2026-03-15)
 - ✓ Go build cache corruption (fixed 2026-03-15)
 - ✓ Stray test binary in repo (removed 2026-03-15)
@@ -97,6 +99,7 @@ ac859aa fix(locale): improve error messages with context
 ## e) WHAT WE SHOULD IMPROVE
 
 ### High Priority
+
 1. **Test coverage** — 5 packages below 50%
 2. **File size violations** — 4 files exceed 350-line limit:
    - `id/id_test.go` (1231 lines) — **252% over limit**
@@ -105,11 +108,13 @@ ac859aa fix(locale): improve error messages with context
    - `types/types.go` (486 lines) — **39% over limit**
 
 ### Medium Priority
+
 3. **Examples package** — No tests, minimal documentation
 4. **architecture.png** — Binary tracked in git (BuildFlow warning)
 5. **Disk space** — Only 1.9GB free (BuildFlow warning)
 
 ### Low Priority
+
 6. **Enum coverage** — Only 6.8% (auto-generated, low risk)
 7. **Locale coverage** — 28.9%
 8. **Types coverage** — 25.9%
@@ -119,12 +124,14 @@ ac859aa fix(locale): improve error messages with context
 ## f) TOP #25 THINGS TO DO NEXT
 
 ### Immediate (1-2 hours)
+
 1. Push commits to origin (`git push`)
 2. Remove `architecture.png` from git tracking (keep `.svg`)
 3. Split `id/id_test.go` into focused test files
 4. Add tests to `examples/` packages
 
 ### Short-term (1-3 days)
+
 5. Split `id/id.go` into smaller files (id_string.go, id_numeric.go, etc.)
 6. Split `types/types.go` into focused files
 7. Increase `bounded` test coverage to 80%+
@@ -135,6 +142,7 @@ ac859aa fix(locale): improve error messages with context
 12. Add database integration examples
 
 ### Medium-term (1-2 weeks)
+
 13. Add JSON schema generation for types
 14. Create comprehensive example applications
 15. Add performance benchmarks for all types
@@ -147,6 +155,7 @@ ac859aa fix(locale): improve error messages with context
 22. Add GoDoc examples
 
 ### Long-term (Ongoing)
+
 23. Monitor and improve test coverage
 24. Review and update dependencies monthly
 25. Collect user feedback for improvements
@@ -158,6 +167,7 @@ ac859aa fix(locale): improve error messages with context
 **Should the large files (`id/id.go` - 799 lines, `id/id_test.go` - 1231 lines) be split into smaller files to comply with the 250-line limit?**
 
 **Context:**
+
 - `id/id.go` contains comprehensive numeric ID types (int8, int16, int32, int64, uint8, uint16, uint32, uint64, float32, float64, string) with full CRUD operations
 - `id/id_test.go` has extensive table-driven tests and fuzz tests
 - `enums/enums_enum.go` is auto-generated (not editable)
@@ -175,14 +185,14 @@ ac859aa fix(locale): improve error messages with context
 
 ## Project Metrics
 
-| Metric | Value |
-|--------|-------|
-| Total Go code | 6,088 lines |
-| Test files | 10 |
-| Packages | 10 |
-| Average coverage | 54.1% |
-| Linter issues | 0 |
-| Tests passing | ✓ All |
+| Metric           | Value       |
+| ---------------- | ----------- |
+| Total Go code    | 6,088 lines |
+| Test files       | 10          |
+| Packages         | 10          |
+| Average coverage | 54.1%       |
+| Linter issues    | 0           |
+| Tests passing    | ✓ All       |
 
 ---
 

@@ -375,73 +375,39 @@ func TestIDUnmarshalJSON(t *testing.T) {
 	})
 }
 
+func testJSONRoundTrip[B any, V comparable](t *testing.T, value V) {
+	t.Helper()
+	original := NewID[B, V](value)
+	data, err := json.Marshal(original)
+	if err != nil {
+		t.Fatalf("Marshal failed: %v", err)
+	}
+
+	var restored ID[B, V]
+	err = json.Unmarshal(data, &restored)
+	if err != nil {
+		t.Fatalf("Unmarshal failed: %v", err)
+	}
+	if restored.Get() != original.Get() {
+		t.Errorf("expected %v, got %v", original.Get(), restored.Get())
+	}
+}
+
 func TestIDJSONRoundTrip(t *testing.T) {
 	t.Run("string ID", func(t *testing.T) {
-		original := NewID[StringBrand]("test-id")
-		data, err := json.Marshal(original)
-		if err != nil {
-			t.Fatalf("Marshal failed: %v", err)
-		}
-
-		var restored ID[StringBrand, string]
-		err = json.Unmarshal(data, &restored)
-		if err != nil {
-			t.Fatalf("Unmarshal failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %s, got %s", original.Get(), restored.Get())
-		}
+		testJSONRoundTrip[StringBrand, string](t, "test-id")
 	})
 
 	t.Run("int64 ID", func(t *testing.T) {
-		original := NewID[Int64Brand, int64](42)
-		data, err := json.Marshal(original)
-		if err != nil {
-			t.Fatalf("Marshal failed: %v", err)
-		}
-
-		var restored ID[Int64Brand, int64]
-		err = json.Unmarshal(data, &restored)
-		if err != nil {
-			t.Fatalf("Unmarshal failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testJSONRoundTrip[Int64Brand, int64](t, 42)
 	})
 
 	t.Run("int32 ID", func(t *testing.T) {
-		original := NewID[Int32Brand, int32](42)
-		data, err := json.Marshal(original)
-		if err != nil {
-			t.Fatalf("Marshal failed: %v", err)
-		}
-
-		var restored ID[Int32Brand, int32]
-		err = json.Unmarshal(data, &restored)
-		if err != nil {
-			t.Fatalf("Unmarshal failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testJSONRoundTrip[Int32Brand, int32](t, 42)
 	})
 
 	t.Run("uint64 ID", func(t *testing.T) {
-		original := NewID[Uint64Brand, uint64](42)
-		data, err := json.Marshal(original)
-		if err != nil {
-			t.Fatalf("Marshal failed: %v", err)
-		}
-
-		var restored ID[Uint64Brand, uint64]
-		err = json.Unmarshal(data, &restored)
-		if err != nil {
-			t.Fatalf("Unmarshal failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testJSONRoundTrip[Uint64Brand, uint64](t, 42)
 	})
 }
 
@@ -482,14 +448,7 @@ func TestIDText(t *testing.T) {
 	})
 
 	t.Run("unmarshal valid string", func(t *testing.T) {
-		var id ID[StringBrand, string]
-		err := id.UnmarshalText([]byte("test-id"))
-		if err != nil {
-			t.Fatalf("UnmarshalText failed: %v", err)
-		}
-		if id.Get() != "test-id" {
-			t.Errorf("expected test-id, got %s", id.Get())
-		}
+		testUnmarshalTextRoundTrip[StringBrand, string](t, "test-id", "test-id")
 	})
 
 	t.Run("unmarshal empty", func(t *testing.T) {
@@ -504,97 +463,61 @@ func TestIDText(t *testing.T) {
 	})
 
 	t.Run("unmarshal int64", func(t *testing.T) {
-		var id ID[Int64Brand, int64]
-		err := id.UnmarshalText([]byte("42"))
-		if err != nil {
-			t.Fatalf("UnmarshalText failed: %v", err)
-		}
-		if id.Get() != 42 {
-			t.Errorf("expected 42, got %d", id.Get())
-		}
+		testUnmarshalTextRoundTrip[Int64Brand, int64](t, "42", 42)
 	})
 
 	t.Run("unmarshal uint64", func(t *testing.T) {
-		var id ID[Uint64Brand, uint64]
-		err := id.UnmarshalText([]byte("42"))
-		if err != nil {
-			t.Fatalf("UnmarshalText failed: %v", err)
-		}
-		if id.Get() != 42 {
-			t.Errorf("expected 42, got %d", id.Get())
-		}
+		testUnmarshalTextRoundTrip[Uint64Brand, uint64](t, "42", 42)
 	})
+}
+
+func testUnmarshalTextRoundTrip[B any, V comparable](t *testing.T, input string, expected V) {
+	t.Helper()
+	var id ID[B, V]
+	err := id.UnmarshalText([]byte(input))
+	if err != nil {
+		t.Fatalf("UnmarshalText failed: %v", err)
+	}
+	if id.Get() != expected {
+		t.Errorf("expected %v, got %v", expected, id.Get())
+	}
 }
 
 // Binary encoding tests
 
+func testBinaryRoundTrip[B any, V comparable](t *testing.T, value V) {
+	t.Helper()
+	original := NewID[B, V](value)
+	data, err := original.MarshalBinary()
+	if err != nil {
+		t.Fatalf("MarshalBinary failed: %v", err)
+	}
+
+	var restored ID[B, V]
+	err = restored.UnmarshalBinary(data)
+	if err != nil {
+		t.Fatalf("UnmarshalBinary failed: %v", err)
+	}
+	if restored.Get() != original.Get() {
+		t.Errorf("expected %v, got %v", original.Get(), restored.Get())
+	}
+}
+
 func TestIDBinary(t *testing.T) {
 	t.Run("string ID", func(t *testing.T) {
-		original := NewID[StringBrand]("test-id")
-		data, err := original.MarshalBinary()
-		if err != nil {
-			t.Fatalf("MarshalBinary failed: %v", err)
-		}
-
-		var restored ID[StringBrand, string]
-		err = restored.UnmarshalBinary(data)
-		if err != nil {
-			t.Fatalf("UnmarshalBinary failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %s, got %s", original.Get(), restored.Get())
-		}
+		testBinaryRoundTrip[StringBrand, string](t, "test-id")
 	})
 
 	t.Run("int64 ID", func(t *testing.T) {
-		original := NewID[Int64Brand, int64](42)
-		data, err := original.MarshalBinary()
-		if err != nil {
-			t.Fatalf("MarshalBinary failed: %v", err)
-		}
-
-		var restored ID[Int64Brand, int64]
-		err = restored.UnmarshalBinary(data)
-		if err != nil {
-			t.Fatalf("UnmarshalBinary failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testBinaryRoundTrip[Int64Brand, int64](t, 42)
 	})
 
 	t.Run("int32 ID", func(t *testing.T) {
-		original := NewID[Int32Brand, int32](42)
-		data, err := original.MarshalBinary()
-		if err != nil {
-			t.Fatalf("MarshalBinary failed: %v", err)
-		}
-
-		var restored ID[Int32Brand, int32]
-		err = restored.UnmarshalBinary(data)
-		if err != nil {
-			t.Fatalf("UnmarshalBinary failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testBinaryRoundTrip[Int32Brand, int32](t, 42)
 	})
 
 	t.Run("uint64 ID", func(t *testing.T) {
-		original := NewID[Uint64Brand, uint64](42)
-		data, err := original.MarshalBinary()
-		if err != nil {
-			t.Fatalf("MarshalBinary failed: %v", err)
-		}
-
-		var restored ID[Uint64Brand, uint64]
-		err = restored.UnmarshalBinary(data)
-		if err != nil {
-			t.Fatalf("UnmarshalBinary failed: %v", err)
-		}
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		testBinaryRoundTrip[Uint64Brand, uint64](t, 42)
 	})
 
 	t.Run("zero ID", func(t *testing.T) {
@@ -666,14 +589,7 @@ func TestIDGob(t *testing.T) {
 
 func TestIDScan(t *testing.T) {
 	t.Run("string ID from string", func(t *testing.T) {
-		var id ID[StringBrand, string]
-		err := id.Scan("test-id")
-		if err != nil {
-			t.Fatalf("Scan failed: %v", err)
-		}
-		if id.Get() != "test-id" {
-			t.Errorf("expected test-id, got %s", id.Get())
-		}
+		testScanRoundTrip[StringBrand, string](t, "test-id", "test-id")
 	})
 
 	t.Run("string ID from []byte", func(t *testing.T) {
@@ -707,14 +623,7 @@ func TestIDScan(t *testing.T) {
 	})
 
 	t.Run("int64 ID from int64", func(t *testing.T) {
-		var id ID[Int64Brand, int64]
-		err := id.Scan(int64(42))
-		if err != nil {
-			t.Fatalf("Scan failed: %v", err)
-		}
-		if id.Get() != 42 {
-			t.Errorf("expected 42, got %d", id.Get())
-		}
+		testScanRoundTrip[Int64Brand, int64](t, int64(42), int64(42))
 	})
 
 	t.Run("int64 ID from int", func(t *testing.T) {
@@ -759,26 +668,24 @@ func TestIDScan(t *testing.T) {
 	})
 
 	t.Run("int32 ID from int64", func(t *testing.T) {
-		var id ID[Int32Brand, int32]
-		err := id.Scan(int64(42))
-		if err != nil {
-			t.Fatalf("Scan failed: %v", err)
-		}
-		if id.Get() != 42 {
-			t.Errorf("expected 42, got %d", id.Get())
-		}
+		testScanRoundTrip[Int32Brand, int32](t, int64(42), int32(42))
 	})
 
 	t.Run("uint64 ID from int64", func(t *testing.T) {
-		var id ID[Uint64Brand, uint64]
-		err := id.Scan(int64(42))
-		if err != nil {
-			t.Fatalf("Scan failed: %v", err)
-		}
-		if id.Get() != 42 {
-			t.Errorf("expected 42, got %d", id.Get())
-		}
+		testScanRoundTrip[Uint64Brand, uint64](t, int64(42), uint64(42))
 	})
+}
+
+func testScanRoundTrip[B any, V comparable](t *testing.T, input any, expected V) {
+	t.Helper()
+	var id ID[B, V]
+	err := id.Scan(input)
+	if err != nil {
+		t.Fatalf("Scan failed: %v", err)
+	}
+	if id.Get() != expected {
+		t.Errorf("expected %v, got %v", expected, id.Get())
+	}
 }
 
 func TestIDValue(t *testing.T) {

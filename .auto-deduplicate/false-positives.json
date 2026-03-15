@@ -1,0 +1,16 @@
+[
+  {
+    "fingerprint": "e3dbaef09fd4dad61947fb4d5ab95798dc295e4969ef6491d515a94e1b4be318",
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
+    "reason": "These test different types (string, int64, int32, uint64) with different expected values - intentionally distinct",
+    "marked_at": "2026-03-15T11:53:36.184938+01:00",
+    "marked_by": "auto-deduplicate"
+  },
+  {
+    "fingerprint": "df955619de77923632b2e2f0434b1ba852d8d5c1a14eab2ab4c6d3970050683e",
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
+    "reason": "These are table-driven test cases with different types that intentionally test different behavior (int64, int32, uint64)",
+    "marked_at": "2026-03-15T11:53:36.186836+01:00",
+    "marked_by": "auto-deduplicate"
+  }
+]
