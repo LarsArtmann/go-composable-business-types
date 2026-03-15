@@ -15,17 +15,17 @@ This project contains **9 packages** with **14 distinct types** that fall into t
 
 ### Quick Reference
 
-| Package | Types | Unique Value | Extract? | Recommendation |
-|---------|-------|--------------|----------|----------------|
-| `id/` | `ID[B,V]` | Medium | Maybe | Pattern is simple but useful |
-| `nanoid/` | `NanoId` | Low | No | Thin wrapper around `sixafter/nanoid` |
-| `temporal/` | `Bitemporal` | **High** | **Yes** | **No Go equivalent exists** |
-| `actor/` | `ActorChain[T]`, `ActorEntry[T]` | **High** | **Yes** | Novel audit trail pattern |
-| `bounded/` | `BoundedString` | Medium | Maybe | Useful standalone, consider extending |
-| `types/` | `Email`, `URL`, `Cents`, `Percentage`, `Timestamp`, `Duration` | Low | No | Thin wrappers, keep together |
-| `money/` | `Money` | Low | No | Direct alias to `bojanz/currency` |
-| `locale/` | `Locale` | Low | No | Thin wrapper around `x/text/language` |
-| `enums/` | `ActorKind`, `Priority`, `Status`, `Trigger` | Low | No | Domain-specific, generated |
+| Package     | Types                                                          | Unique Value | Extract? | Recommendation                        |
+| ----------- | -------------------------------------------------------------- | ------------ | -------- | ------------------------------------- |
+| `id/`       | `ID[B,V]`                                                      | Medium       | Maybe    | Pattern is simple but useful          |
+| `nanoid/`   | `NanoId`                                                       | Low          | No       | Thin wrapper around `sixafter/nanoid` |
+| `temporal/` | `Bitemporal`                                                   | **High**     | **Yes**  | **No Go equivalent exists**           |
+| `actor/`    | `ActorChain[T]`, `ActorEntry[T]`                               | **High**     | **Yes**  | Novel audit trail pattern             |
+| `bounded/`  | `BoundedString`                                                | Medium       | Maybe    | Useful standalone, consider extending |
+| `types/`    | `Email`, `URL`, `Cents`, `Percentage`, `Timestamp`, `Duration` | Low          | No       | Thin wrappers, keep together          |
+| `money/`    | `Money`                                                        | Low          | No       | Direct alias to `bojanz/currency`     |
+| `locale/`   | `Locale`                                                       | Low          | No       | Thin wrapper around `x/text/language` |
+| `enums/`    | `ActorKind`, `Priority`, `Status`, `Trigger`                   | Low          | No       | Domain-specific, generated            |
 
 ---
 
@@ -44,6 +44,7 @@ type OrderID = ID[OrderBrand, int64]
 ```
 
 **Features:**
+
 - Zero-cost abstraction at runtime
 - Full JSON serialization (null for zero, string for values)
 - SQL Scanner/Valuer for database integration
@@ -52,13 +53,13 @@ type OrderID = ID[OrderBrand, int64]
 
 **Alternatives:**
 
-| Library | Stars | Features | Trade-offs |
-|---------|-------|----------|------------|
-| Custom phantom types | N/A | Simple, zero deps | Must implement yourself |
-| `google/uuid` | 5k+ | RFC 4122 UUIDs | No branding, just UUID type |
-| `oklog/ulid` | 3k+ | Sortable IDs | No branding, just ULID type |
-| `rs/xid` | 4k+ | Globally unique, sortable | No branding |
-| `gofrs/uuid` | 1k+ | UUID with more features | No branding |
+| Library              | Stars | Features                  | Trade-offs                  |
+| -------------------- | ----- | ------------------------- | --------------------------- |
+| Custom phantom types | N/A   | Simple, zero deps         | Must implement yourself     |
+| `google/uuid`        | 5k+   | RFC 4122 UUIDs            | No branding, just UUID type |
+| `oklog/ulid`         | 3k+   | Sortable IDs              | No branding, just ULID type |
+| `rs/xid`             | 4k+   | Globally unique, sortable | No branding                 |
+| `gofrs/uuid`         | 1k+   | UUID with more features   | No branding                 |
 
 **Verdict: KEEP AS-IS**
 
@@ -79,6 +80,7 @@ type OrderID = ID[OrderBrand, int64]
 **Current Dependency:** `github.com/sixafter/nanoid` (FIPS-140 compatible, high-performance)
 
 **Features:**
+
 - Validation (8-256 character range)
 - URL-safe alphabet enforcement
 - SQL Scanner/Valuer
@@ -87,11 +89,11 @@ type OrderID = ID[OrderBrand, int64]
 
 **Alternatives:**
 
-| Library | Stars | Features | Trade-offs |
-|---------|-------|----------|------------|
-| `sixafter/nanoid` | ~100 | FIPS-140, high-perf | **Current choice** |
-| `matoous/go-nanoid` | ~800 | Simple, popular | Not FIPS-140 |
-| `aidarkhanov/nanoid-go` | ~150 | Minimal | Less maintained |
+| Library                 | Stars | Features            | Trade-offs         |
+| ----------------------- | ----- | ------------------- | ------------------ |
+| `sixafter/nanoid`       | ~100  | FIPS-140, high-perf | **Current choice** |
+| `matoous/go-nanoid`     | ~800  | Simple, popular     | Not FIPS-140       |
+| `aidarkhanov/nanoid-go` | ~150  | Minimal             | Less maintained    |
 
 **Verdict: KEEP AS-IS**
 
@@ -119,6 +121,7 @@ type Bitemporal struct {
 ```
 
 **Features:**
+
 - Point-in-time validity checking (`IsValidAt`, `IsCurrentlyValid`)
 - Immutable `With*` methods for functional updates
 - Full JSON serialization
@@ -126,13 +129,13 @@ type Bitemporal struct {
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
-| **None exist for Go** | - | - |
-| `looplab/eventhorizon` | Full CQRS/ES framework | Overkill, requires infrastructure |
-| `ThreeDotsLabs/watermill` | Event streaming | Different use case |
-| PostgreSQL `temporal_tables` | SQL AS OF queries | DB-specific, not portable |
-| `temporalio/sdk-go` | Workflow engine | Full workflow engine, not just temporal data |
+| Library                      | Features               | Trade-offs                                   |
+| ---------------------------- | ---------------------- | -------------------------------------------- |
+| **None exist for Go**        | -                      | -                                            |
+| `looplab/eventhorizon`       | Full CQRS/ES framework | Overkill, requires infrastructure            |
+| `ThreeDotsLabs/watermill`    | Event streaming        | Different use case                           |
+| PostgreSQL `temporal_tables` | SQL AS OF queries      | DB-specific, not portable                    |
+| `temporalio/sdk-go`          | Workflow engine        | Full workflow engine, not just temporal data |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -144,6 +147,7 @@ type Bitemporal struct {
 **Potential Standalone Library?** **YES - STRONG CANDIDATE**
 
 Could be `github.com/larsartmann/go-bitemporal` with:
+
 - Core `Bitemporal` struct
 - SQL query helpers for AS OF queries
 - Repository patterns for common temporal queries
@@ -167,6 +171,7 @@ type ActorChain[T] []ActorEntry[T]
 ```
 
 **Features:**
+
 - Generic over ID type (string, int64, UUID, etc.)
 - Origin/Current accessors
 - Kind filtering (`ByKind`, `HasKind`)
@@ -174,11 +179,11 @@ type ActorChain[T] []ActorEntry[T]
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
+| Library              | Features            | Trade-offs                               |
+| -------------------- | ------------------- | ---------------------------------------- |
 | OpenTelemetry traces | Distributed tracing | Infrastructure required, different scope |
-| Custom audit logs | Flexible | No structured chain |
-| **No equivalent** | - | - |
+| Custom audit logs    | Flexible            | No structured chain                      |
+| **No equivalent**    | -                   | -                                        |
 
 **Verdict: KEEP AS-IS - UNIQUE VALUE**
 
@@ -203,6 +208,7 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 ```
 
 **Features:**
+
 - Min/max length validation at construction
 - Factory pattern (`BoundedStringOf`) for domain types
 - Convenience constructors (`NonEmptyString`, `TrimmedBoundedString`)
@@ -211,11 +217,11 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Library | Features | Trade-offs |
-|---------|----------|------------|
+| Library                   | Features              | Trade-offs             |
+| ------------------------- | --------------------- | ---------------------- |
 | `go-playground/validator` | Struct tag validation | Runtime, not type-safe |
-| `asaskevich/govalidator` | String validators | Not type-safe |
-| Custom types | Type-safe | Build yourself |
+| `asaskevich/govalidator`  | String validators     | Not type-safe          |
+| Custom types              | Type-safe             | Build yourself         |
 
 **Verdict: KEEP AS-IS**
 
@@ -224,6 +230,7 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 - SQL interfaces built-in
 
 **Potential Standalone Library?** **Maybe** - Could be `github.com/larsartmann/go-bounded-types` with:
+
 - `BoundedString`
 - `BoundedInt[T]` (min/max)
 - `BoundedFloat[T]` (min/max)
@@ -236,6 +243,7 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 **Location:** `types/types.go` (~486 lines)
 
 **Types:**
+
 - `Email` - RFC 5322 validated email
 - `URL` - http/https validated URL
 - `Percentage` - 0-100 clamped value
@@ -244,6 +252,7 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 - `Duration` - Domain wrapper for `time.Duration`
 
 **Features per type:**
+
 - SQL Scanner/Valuer for all types
 - JSON marshaling where appropriate
 - Domain-specific methods (`Email.LocalPart()`, `Email.Domain()`, `Cents.Add()`, etc.)
@@ -251,14 +260,14 @@ var NewProductName = bounded.BoundedStringOf(1, 200) // Factory pattern
 
 **Alternatives:**
 
-| Type | Library | Features | Trade-offs |
-|------|---------|----------|------------|
-| Email | `net/mail` (stdlib) | RFC 5322 parsing | No validation wrapper |
-| Email | `go-playground/validator` | Tag-based | Runtime validation |
-| URL | `net/url` (stdlib) | URL parsing | No validation wrapper |
-| Money | `bojanz/currency` (used) | ISO 4217, locales | Heavier |
-| Money | `shopspring/decimal` | High precision | Not currency-specific |
-| Money | `Rhymond/go-money` | Money arithmetic | Different API |
+| Type  | Library                   | Features          | Trade-offs            |
+| ----- | ------------------------- | ----------------- | --------------------- |
+| Email | `net/mail` (stdlib)       | RFC 5322 parsing  | No validation wrapper |
+| Email | `go-playground/validator` | Tag-based         | Runtime validation    |
+| URL   | `net/url` (stdlib)        | URL parsing       | No validation wrapper |
+| Money | `bojanz/currency` (used)  | ISO 4217, locales | Heavier               |
+| Money | `shopspring/decimal`      | High precision    | Not currency-specific |
+| Money | `Rhymond/go-money`        | Money arithmetic  | Different API         |
 
 **Verdict: KEEP AS-IS**
 
@@ -284,6 +293,7 @@ type Money = currency.Amount  // Direct alias
 ```
 
 **Features:**
+
 - Convenience constructors (`NewMoney`, `NewMoneyFromCents`)
 - Currency validation helpers
 - Locale-aware formatting
@@ -291,11 +301,11 @@ type Money = currency.Amount  // Direct alias
 
 **Alternatives:**
 
-| Library | Stars | Features | Trade-offs |
-|---------|-------|----------|------------|
-| `bojanz/currency` | ~400 | ISO 4217, 370+ locales | **Current choice** |
-| `Rhymond/go-money` | ~1.6k | Money arithmetic | Different API, less locale support |
-| `shopspring/decimal` | ~6k | High-precision decimal | Not currency-specific |
+| Library              | Stars | Features               | Trade-offs                         |
+| -------------------- | ----- | ---------------------- | ---------------------------------- |
+| `bojanz/currency`    | ~400  | ISO 4217, 370+ locales | **Current choice**                 |
+| `Rhymond/go-money`   | ~1.6k | Money arithmetic       | Different API, less locale support |
+| `shopspring/decimal` | ~6k   | High-precision decimal | Not currency-specific              |
 
 **Verdict: KEEP AS-IS**
 
@@ -314,6 +324,7 @@ type Money = currency.Amount  // Direct alias
 **Description:** BCP 47 language tag wrapper around `golang.org/x/text/language`.
 
 **Features:**
+
 - Common locale constants (`LocaleEnUS`, `LocaleDeDE`, etc.)
 - Hyphen and underscore format support
 - Base language and region extraction
@@ -334,6 +345,7 @@ type Money = currency.Amount  // Direct alias
 **Location:** `enums/enums.go` (~29 lines + generated)
 
 **Types:**
+
 - `ActorKind` - User, Bot, System, Service
 - `Priority` - Low, Medium, High, Critical
 - `Status` - Draft, Active, Paused, Archived, Deleted
@@ -355,10 +367,10 @@ type Money = currency.Amount  // Direct alias
 
 ### Strong Candidates for Standalone Libraries
 
-| Component | Proposed Library | Rationale | Lines |
-|-----------|------------------|-----------|-------|
-| **Bitemporal** | `go-bitemporal` | No Go equivalent, genuinely useful standalone | ~120 |
-| **ActorChain** | `go-actor-chain` | Novel pattern for audit trails | ~80 |
+| Component      | Proposed Library | Rationale                                     | Lines |
+| -------------- | ---------------- | --------------------------------------------- | ----- |
+| **Bitemporal** | `go-bitemporal`  | No Go equivalent, genuinely useful standalone | ~120  |
+| **ActorChain** | `go-actor-chain` | Novel pattern for audit trails                | ~80   |
 
 ### Consider Combining
 
@@ -373,6 +385,7 @@ github.com/larsartmann/go-event-audit
 ```
 
 **Benefits:**
+
 - Coherent "audit trail" package
 - Bitemporal works standalone
 - ActorChain provides call chain tracking
@@ -382,17 +395,17 @@ github.com/larsartmann/go-event-audit
 
 ## Keep in Current Form
 
-| Component | Reason |
-|-----------|--------|
-| `ID[B,V]` | Simple pattern, no library value |
-| `NanoId` | Thin wrapper around excellent lib |
-| `BoundedString` | Could extract but works well here |
-| `Email`, `URL` | Thin wrappers |
-| `Money` | Direct alias to best-in-class |
-| `Cents`, `Percentage` | Too simple |
-| `Timestamp`, `Duration` | Too simple |
-| `Locale` | Thin wrapper |
-| Enums | Domain-specific |
+| Component               | Reason                            |
+| ----------------------- | --------------------------------- |
+| `ID[B,V]`               | Simple pattern, no library value  |
+| `NanoId`                | Thin wrapper around excellent lib |
+| `BoundedString`         | Could extract but works well here |
+| `Email`, `URL`          | Thin wrappers                     |
+| `Money`                 | Direct alias to best-in-class     |
+| `Cents`, `Percentage`   | Too simple                        |
+| `Timestamp`, `Duration` | Too simple                        |
+| `Locale`                | Thin wrapper                      |
+| Enums                   | Domain-specific                   |
 
 ---
 
@@ -400,30 +413,30 @@ github.com/larsartmann/go-event-audit
 
 This library follows the principles from HOW_TO_GOLANG.md:
 
-| Principle | Status | Notes |
-|-----------|--------|-------|
-| Type Safety First | ✅ | All types prevent invalid states |
-| Errors as Values | ✅ | Constructors return errors, `Must*` variants panic |
-| Generated over Handwritten | ✅ | Uses `go-enum` for enum generation |
-| Best-in-class dependencies | ✅ | `sixafter/nanoid`, `bojanz/currency`, `x/text/language` |
-| No magic strings/numbers | ✅ | Constants and typed values throughout |
-| Small, focused functions | ✅ | Most functions under 10 lines |
+| Principle                  | Status | Notes                                                   |
+| -------------------------- | ------ | ------------------------------------------------------- |
+| Type Safety First          | ✅     | All types prevent invalid states                        |
+| Errors as Values           | ✅     | Constructors return errors, `Must*` variants panic      |
+| Generated over Handwritten | ✅     | Uses `go-enum` for enum generation                      |
+| Best-in-class dependencies | ✅     | `sixafter/nanoid`, `bojanz/currency`, `x/text/language` |
+| No magic strings/numbers   | ✅     | Constants and typed values throughout                   |
+| Small, focused functions   | ✅     | Most functions under 10 lines                           |
 
 ---
 
 ## Summary Matrix
 
-| Package | Type | Lines | Unique Value | Extract? | Reason |
-|---------|------|-------|--------------|----------|--------|
-| `id/` | `ID[B,V]` | ~167 | Medium | Maybe | Pattern is simple but useful |
-| `nanoid/` | `NanoId` | ~151 | Low | No | Thin wrapper |
-| `temporal/` | `Bitemporal` | ~121 | **High** | **Yes** | **No Go equivalent** |
-| `actor/` | `ActorChain` | ~80 | **High** | **Yes** | Novel pattern |
-| `bounded/` | `BoundedString` | ~132 | Medium | Maybe | Useful standalone |
-| `types/` | Email, URL, etc. | ~486 | Low | No | Thin wrappers |
-| `money/` | `Money` | ~69 | Low | No | Direct alias |
-| `locale/` | `Locale` | ~128 | Low | No | Thin wrapper |
-| `enums/` | Various | ~29+gen | Low | No | Domain-specific |
+| Package     | Type             | Lines   | Unique Value | Extract? | Reason                       |
+| ----------- | ---------------- | ------- | ------------ | -------- | ---------------------------- |
+| `id/`       | `ID[B,V]`        | ~167    | Medium       | Maybe    | Pattern is simple but useful |
+| `nanoid/`   | `NanoId`         | ~151    | Low          | No       | Thin wrapper                 |
+| `temporal/` | `Bitemporal`     | ~121    | **High**     | **Yes**  | **No Go equivalent**         |
+| `actor/`    | `ActorChain`     | ~80     | **High**     | **Yes**  | Novel pattern                |
+| `bounded/`  | `BoundedString`  | ~132    | Medium       | Maybe    | Useful standalone            |
+| `types/`    | Email, URL, etc. | ~486    | Low          | No       | Thin wrappers                |
+| `money/`    | `Money`          | ~69     | Low          | No       | Direct alias                 |
+| `locale/`   | `Locale`         | ~128    | Low          | No       | Thin wrapper                 |
+| `enums/`    | Various          | ~29+gen | Low          | No       | Domain-specific              |
 
 ---
 
@@ -436,6 +449,7 @@ This library follows the principles from HOW_TO_GOLANG.md:
 3. **Document the patterns** - The real value is in the _design patterns_, not just the code
 
 The current modular approach works well because:
+
 - All types work together (ActorChain uses ID and enums)
 - Selective imports allow importing only what's needed
 - Consistent patterns (`IsZero()`, `With*` methods, SQL interfaces)

@@ -145,7 +145,7 @@ func TestDataPointJSON(t *testing.T) {
 	}
 
 	// Verify JSON contains expected fields
-	var raw map[string]interface{}
+	var raw map[string]any
 	if err := json.Unmarshal(data, &raw); err != nil {
 		t.Fatalf("Unmarshal to map failed: %v", err)
 	}

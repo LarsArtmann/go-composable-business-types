@@ -71,7 +71,7 @@ func (e Email) split() (local, domain string, ok bool) {
 		return "", "", false
 	}
 	idx := -1
-	for i := 0; i < len(e); i++ {
+	for i := range len(e) {
 		if e[i] == '@' {
 			idx = i
 			break

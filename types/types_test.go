@@ -20,15 +20,15 @@ func TestNewPercentage(t *testing.T) {
 func TestPercentageHelpers(t *testing.T) {
 	zero := NewPercentage(0)
 	half := NewPercentage(50)
-	max := NewPercentage(100)
+	full := NewPercentage(100)
 
-	if !zero.IsZero() || !zero.IsMin() || zero.IsMax() {
+	if !zero.IsZero() || !zero.IsMin() || full.IsMax() {
 		t.Error("percentage 0 helpers failed")
 	}
-	if half.IsZero() || half.IsMin() || half.IsMax() {
+	if half.IsZero() || half.IsMin() || full.IsMax() {
 		t.Error("percentage 50 helpers failed")
 	}
-	if max.IsZero() || max.IsMin() || !max.IsMax() {
+	if full.IsZero() || full.IsMin() || !full.IsMax() {
 		t.Error("percentage 100 helpers failed")
 	}
 }

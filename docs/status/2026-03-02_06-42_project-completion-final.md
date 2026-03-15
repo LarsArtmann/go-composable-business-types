@@ -18,22 +18,23 @@ The `go-composable-business-types` library has been **successfully refactored** 
 
 ### 1. Package Structure (10 Packages)
 
-| Package | Path | Types | Description | Dependencies |
-|---------|------|-------|-------------|--------------|
-| `id` | `/id` | `ID[B,V]` | Branded/phantom type identifiers | None |
-| `nanoid` | `/nanoid` | `NanoId` | URL-safe unique identifiers | `sixafter/nanoid` |
-| `types` | `/types` | `Email`, `URL`, `Cents`, `Percentage`, `Timestamp`, `Duration` | Common domain types | None |
-| `enums` | `/enums` | `ActorKind`, `Priority`, `Status`, `Trigger` | Generated enums | None |
-| `bounded` | `/bounded` | `BoundedString` | Length-validated strings | None |
-| `locale` | `/locale` | `Locale` | BCP 47 language tags | `x/text/language` |
-| `temporal` | `/temporal` | `Bitemporal` | Valid/recorded time tracking | `types` |
-| `actor` | `/actor` | `ActorChain[T]`, `ActorEntry[T]` | Audit trail actors | `id`, `enums` |
-| `money` | `/money` | `Money` | ISO 4217 currency | `locale`, `bojanz/currency` |
-| `datapoint` | `/datapoint` | `DataPoint[T]`, `Context`, `Reference[T]`, `Cause[T]` | Complete audit trail | `nanoid`, `actor`, `temporal`, `enums`, `types` |
+| Package     | Path         | Types                                                          | Description                      | Dependencies                                    |
+| ----------- | ------------ | -------------------------------------------------------------- | -------------------------------- | ----------------------------------------------- |
+| `id`        | `/id`        | `ID[B,V]`                                                      | Branded/phantom type identifiers | None                                            |
+| `nanoid`    | `/nanoid`    | `NanoId`                                                       | URL-safe unique identifiers      | `sixafter/nanoid`                               |
+| `types`     | `/types`     | `Email`, `URL`, `Cents`, `Percentage`, `Timestamp`, `Duration` | Common domain types              | None                                            |
+| `enums`     | `/enums`     | `ActorKind`, `Priority`, `Status`, `Trigger`                   | Generated enums                  | None                                            |
+| `bounded`   | `/bounded`   | `BoundedString`                                                | Length-validated strings         | None                                            |
+| `locale`    | `/locale`    | `Locale`                                                       | BCP 47 language tags             | `x/text/language`                               |
+| `temporal`  | `/temporal`  | `Bitemporal`                                                   | Valid/recorded time tracking     | `types`                                         |
+| `actor`     | `/actor`     | `ActorChain[T]`, `ActorEntry[T]`                               | Audit trail actors               | `id`, `enums`                                   |
+| `money`     | `/money`     | `Money`                                                        | ISO 4217 currency                | `locale`, `bojanz/currency`                     |
+| `datapoint` | `/datapoint` | `DataPoint[T]`, `Context`, `Reference[T]`, `Cause[T]`          | Complete audit trail             | `nanoid`, `actor`, `temporal`, `enums`, `types` |
 
 ### 2. Cross-Package Dependencies
 
 All dependencies properly wired:
+
 - `temporal` → `types.Timestamp`
 - `actor` → `id.ID`, `enums.ActorKind`
 - `money` → `locale.Locale`
@@ -41,18 +42,18 @@ All dependencies properly wired:
 
 ### 3. Test Coverage (10 Test Files)
 
-| Package | Test File | Tests |
-|---------|-----------|-------|
-| `id` | `id/id_test.go` | ID branded identifiers |
-| `nanoid` | `nanoid/nanoid_test.go` | NanoId validation |
-| `types` | `types/types_test.go` | Email, URL, Cents, Percentage, Timestamp, Duration |
-| `enums` | `enums/enums_test.go` | ActorKind, Priority, Status, Trigger |
-| `bounded` | `bounded/bounded_test.go` | BoundedString |
-| `locale` | `locale/locale_test.go` | BCP 47 parsing |
-| `temporal` | `temporal/temporal_test.go` | Bitemporal tracking |
-| `actor` | `actor/actor_test.go` | Actor chains |
-| `money` | `money/money_test.go` | ISO 4217 currency |
-| `datapoint` | `datapoint/datapoint_test.go` | Complete audit trail |
+| Package     | Test File                     | Tests                                              |
+| ----------- | ----------------------------- | -------------------------------------------------- |
+| `id`        | `id/id_test.go`               | ID branded identifiers                             |
+| `nanoid`    | `nanoid/nanoid_test.go`       | NanoId validation                                  |
+| `types`     | `types/types_test.go`         | Email, URL, Cents, Percentage, Timestamp, Duration |
+| `enums`     | `enums/enums_test.go`         | ActorKind, Priority, Status, Trigger               |
+| `bounded`   | `bounded/bounded_test.go`     | BoundedString                                      |
+| `locale`    | `locale/locale_test.go`       | BCP 47 parsing                                     |
+| `temporal`  | `temporal/temporal_test.go`   | Bitemporal tracking                                |
+| `actor`     | `actor/actor_test.go`         | Actor chains                                       |
+| `money`     | `money/money_test.go`         | ISO 4217 currency                                  |
+| `datapoint` | `datapoint/datapoint_test.go` | Complete audit trail                               |
 
 **Total Lines of Test Code:** ~1,500 lines
 
@@ -85,10 +86,12 @@ $ go test -race ./...
 ## B) PARTIALLY DONE ⚠️
 
 ### 1. CI/CD Workflow
+
 - **Status:** `.github/workflows/ci.yml` exists but may need updates
 - **Action Required:** Verify CI tests all subpackages
 
 ### 2. Usage Examples
+
 - **Status:** No `examples/` directory
 - **Action:** Consider adding usage examples
 
@@ -109,16 +112,19 @@ Nothing broken. All tests pass.
 ## E) WHAT WE SHOULD IMPROVE! 🚀
 
 ### 1. Short Term
+
 - [ ] Add CI badge to README
 - [ ] Create usage examples in `examples/` directory
 - [ ] Tag v0.2.0 release
 
 ### 2. Medium Term
+
 - [ ] Add benchmarks for DataPoint operations
 - [ ] Create integration tests
 - [ ] Add fuzz tests for parsers
 
 ### 3. Long Term
+
 - [ ] Consider extracting `temporal` to standalone library
 - [ ] Consider extracting `actor` to standalone library
 
@@ -162,6 +168,7 @@ Dependencies: 3 external (bojanz/currency, sixafter/nanoid, x/text)
 ## Usage Examples
 
 ### Selective Import
+
 ```go
 import (
     "github.com/larsartmann/go-composable-business-types/nanoid"
@@ -175,6 +182,7 @@ func main() {
 ```
 
 ### DataPoint with Audit Trail
+
 ```go
 import (
     "github.com/larsartmann/go-composable-business-types/datapoint"
@@ -186,12 +194,12 @@ import (
 func main() {
     userID := id.NewID[struct{}, string]("user-123")
     actorEntry := actor.UserActor(userID, "John Doe")
-    
+
     dp := datapoint.NewDataPoint("order-123", actorEntry).
         WithTrigger(enums.TriggerWebhook).
         WithReason("Customer checkout").
         WithTag("priority", "high")
-    
+
     ref := datapoint.NewReference("customer-456", "customer")
     dp = dp.WithReference(ref)
 }
@@ -240,5 +248,5 @@ All 10 packages are fully functional with comprehensive test coverage.
 
 ---
 
-*Report Generated: 2026-03-02 06:42*  
-*Status: COMPLETE*
+_Report Generated: 2026-03-02 06:42_  
+_Status: COMPLETE_

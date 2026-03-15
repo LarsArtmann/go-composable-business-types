@@ -106,13 +106,13 @@ import (
 func main() {
     userID := id.NewID[struct{}, string]("user-123")
     actorEntry := actor.UserActor(userID, "John Doe")
-    
+
     // Create a DataPoint with complete audit trail
     dp := datapoint.NewDataPoint("order-123", actorEntry).
         WithTrigger(enums.TriggerWebhook).
         WithReason("Customer checkout").
         WithTag("priority", "high")
-    
+
     // Add references and causes
     ref := datapoint.NewReference("customer-456", "customer")
     dp = dp.WithReference(ref)

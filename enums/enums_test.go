@@ -1,6 +1,7 @@
 package enums
 
 import (
+	"slices"
 	"testing"
 )
 
@@ -114,14 +115,7 @@ func TestEnumNames(t *testing.T) {
 	}
 
 	// Check specific names exist
-	hasUser := false
-	for _, name := range akNames {
-		if name == "User" {
-			hasUser = true
-			break
-		}
-	}
-	if !hasUser {
+	if !slices.Contains(akNames, "User") {
 		t.Error("ActorKindNames should include 'User'")
 	}
 }

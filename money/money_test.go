@@ -1,6 +1,7 @@
 package money
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/locale"
@@ -90,13 +91,7 @@ func TestAllCurrencyCodes(t *testing.T) {
 	}
 
 	// Check for common currencies
-	hasUSD := false
-	for _, code := range codes {
-		if code == "USD" {
-			hasUSD = true
-			break
-		}
-	}
+	hasUSD := slices.Contains(codes, "USD")
 	if !hasUSD {
 		t.Error("should have USD in currency codes")
 	}

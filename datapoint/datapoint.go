@@ -175,17 +175,17 @@ func (d DataPoint[T]) WithTemporal(t temporal.Bitemporal) DataPoint[T] {
 
 // jsonDataPoint is the JSON representation of DataPoint.
 type jsonDataPoint[T comparable] struct {
-	ID         string              `json:"id"`
-	Payload    T                   `json:"payload"`
+	ID         string                   `json:"id"`
+	Payload    T                        `json:"payload"`
 	Actor      actor.ActorEntry[string] `json:"actor"`
 	Temporal   temporal.Bitemporal      `json:"temporal"`
 	Trigger    enums.Trigger            `json:"trigger"`
-	Reason     string              `json:"reason,omitempty"`
-	Context    Context             `json:"context"`
-	Version    int                 `json:"version"`
-	Tags       map[string]string   `json:"tags,omitempty"`
-	References []Reference[string] `json:"references,omitempty"`
-	Causes     []Cause[string]     `json:"causes,omitempty"`
+	Reason     string                   `json:"reason,omitempty"`
+	Context    Context                  `json:"context"`
+	Version    int                      `json:"version"`
+	Tags       map[string]string        `json:"tags,omitempty"`
+	References []Reference[string]      `json:"references,omitempty"`
+	Causes     []Cause[string]          `json:"causes,omitempty"`
 }
 
 // MarshalJSON implements json.Marshaler.

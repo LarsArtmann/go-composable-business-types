@@ -89,12 +89,9 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	}
 
 	var zero V
-	switch any(zero).(type) {
-	case string:
-		if v, ok := any(string(data)).(V); ok {
-			*id = ID[B, V]{value: v}
-			return nil
-		}
+	if _, ok := any(string(data)).(V); ok {
+		*id = ID[B, V]{value: any(string(data)).(V)}
+		return nil
 	}
 	return fmt.Errorf("id: cannot unmarshal into %T", zero)
 }

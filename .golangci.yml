@@ -1,122 +1,142 @@
 version: "2"
 run:
   timeout: 5m
-  go: ""
-  build-tags: []
-  allow-parallel-runners: false
-  allow-serial-runners: false
   issues-exit-code: 1
   tests: true
 output:
   formats: {}
 linters:
+  settings:
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/larsartmann/go-composable-business-types
+            - golang.org/x/text
+            - github.com/bojanz/currency
+            - github.com/sixafter/nanoid
+          list-mode: lax
+    cyclop:
+      max-complexity: 15
+    funlen:
+      lines: 80
+      statements: 50
+    gocyclo:
+      min-complexity: 15
+    gocognit:
+      min-complexity: 30
   enable:
-    - err113
-    - fatcontext
-    - nonamedreturns
-    - unused
-    - misspell
-    - gochecksumtype
-    - interfacebloat
-    - tagalign
-    - perfsprint
-    - gomodguard
-    - nosprintfhostport
-    - funcorder
-    - gochecknoinits
-    - contextcheck
-    - containedctx
-    - gochecknoglobals
-    - varnamelen
-    - goconst
-    - dupword
-    - revive
-    - goprintffuncname
-    - ineffassign
-    - sqlclosecheck
-    - depguard
-    - canonicalheader
-    - errorlint
-    - godot
-    - unparam
-    - iface
-    - modernize
-    - makezero
-    - mnd
-    - testableexamples
-    - godoclint
-    - arangolint
-    - gocyclo
-    - decorder
-    - bidichk
-    - cyclop
-    - promlinter
-    - mirror
-    - govet
-    - forcetypeassert
-    - goheader
-    - gocognit
-    - forbidigo
-    - protogetter
-    - unconvert
-    - tparallel
-    - copyloopvar
-    - grouper
-    - nilnesserr
-    - exptostd
-    - thelper
-    - tagliatelle
-    - godox
-    - wsl_v5
-    - asciicheck
-    - gosmopolitan
-    - inamedparam
-    - zerologlint
-    - gomoddirectives
+    # Bug detection
     - errcheck
-    - dogsled
-    - gocheckcompilerdirectives
-    - paralleltest
-    - exhaustive
-    - unqueryvet
-    - reassign
+    - govet
+    - staticcheck
+    - ineffassign
+    - unused
+    - bodyclose
+    - durationcheck
+    - nilnesserr
+    - sqlclosecheck
     - wastedassign
-    - exhaustruct
-    - nilnil
-    - nlreturn
-    - intrange
-    - predeclared
-    - nolintlint
+    - copyloopvar
+    - unconvert
+    - unparam
+    - mirror
+
+    # Code quality
+    - gocritic
+    - misspell
+    - bidichk
+    - containedctx
+    - contextcheck
+    - decorder
+    - dogsled
+    - dupl
+    - dupword
+    - exhaustive
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - gomoddirectives
+    - gomodguard
+    - iotamixing
+    - nakedret
+    - nestif
     - prealloc
-    - usestdlibvars
+    - predeclared
     - rowserrcheck
     - testifylint
-    - ireturn
-    - staticcheck
-    - bodyclose
-    - wrapcheck
-    - embeddedstructfieldcheck
-    - gocritic
-    - durationcheck
-    - importas
-    - noinlineerr
     - usetesting
-    - dupl
-    - nakedret
+
+    # Dependencies
+    - depguard
+
+    # Modern Go
+    - intrange
+    - exptostd
+    - modernize
+  disable:
+    # Too opinionated for library code
+    - exhaustruct
     - testpackage
-    - asasalint
-    - iotamixing
-    - whitespace
-    - spancheck
-    - maintidx
-    - errname
-    - nestif
+    - varnamelen
+    - wsl_v5
+    - forbidigo
+    - paralleltest
+    - revive
+    - nlreturn
+    - mnd
+    - nilnil
+    - wrapcheck
+    - err113
+    - forcetypeassert
+    - ireturn
     - recvcheck
+    - noinlineerr
+    - tagliatelle
+    - gochecknoglobals
+    - godot
+    - funcorder
+    - inamedparam
+    - canonicalheader
+    - interfacebloat
+    - godox
+    - godoclint
+    - arangolint
+    - promlinter
+    - protogetter
+    - spancheck
+    - zerologlint
+    - gosmopolitan
+    - asciicheck
+    - tparallel
+    - thelper
+    - grouper
+    - reassign
+    - unqueryvet
+    - embeddedstructfieldcheck
+    - perfsprint
+    - tagalign
+    - makezero
+    - goheader
+    - fatcontext
+    - nonamedreturns
+    - goprintffuncname
+    - errname
+    - maintidx
+    - whitespace
+    - asasalint
+    - importas
+    - nolintlint
+    - errorlint
+    - cyclop
+    - gocyclo
+    - gocognit
     - funlen
-    - ginkgolinter
 formatters:
   enable:
-    - golines
+    - gofmt
+    - goimports
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10
