@@ -2,6 +2,7 @@ package temporal
 
 import (
 	"encoding/json"
+	"fmt"
 	"time"
 
 	"github.com/larsartmann/go-composable-business-types/types"
@@ -111,7 +112,7 @@ func (b Bitemporal) MarshalJSON() ([]byte, error) {
 func (b *Bitemporal) UnmarshalJSON(data []byte) error {
 	var raw jsonBitemporal
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("unmarshal bitemporal: invalid JSON: %w", err)
 	}
 	b.validFrom = types.NewTimestamp(raw.ValidFrom)
 	b.validUntil = types.NewTimestamp(raw.ValidUntil)

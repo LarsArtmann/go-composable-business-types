@@ -2,6 +2,7 @@ package datapoint
 
 import (
 	"encoding/json"
+	"fmt"
 	"maps"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
@@ -209,13 +210,13 @@ func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
 func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonDataPoint[T]
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("unmarshal datapoint: invalid JSON: %w", err)
 	}
 
 	// Parse ID
 	id, err := nanoid.ParseNanoId(raw.ID)
 	if err != nil {
-		return err
+		return fmt.Errorf("unmarshal datapoint: parse id %q: %w", raw.ID, err)
 	}
 	d.id = id
 

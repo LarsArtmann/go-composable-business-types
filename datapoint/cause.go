@@ -2,6 +2,7 @@ package datapoint
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/nanoid"
 )
@@ -108,7 +109,7 @@ func (c Cause[T]) MarshalJSON() ([]byte, error) {
 func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonCause
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("unmarshal cause: invalid JSON: %w", err)
 	}
 	c.kind = raw.Kind
 	c.effect = raw.Effect
@@ -116,7 +117,7 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	// Parse ID
 	id, err := nanoid.ParseNanoId(raw.ID)
 	if err != nil {
-		return err
+		return fmt.Errorf("unmarshal cause: parse id %q: %w", raw.ID, err)
 	}
 	c.id = id
 
@@ -125,7 +126,7 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	for i, t := range raw.Trace {
 		parsed, err := nanoid.ParseNanoId(t)
 		if err != nil {
-			return err
+			return fmt.Errorf("unmarshal cause: parse trace[%d] %q: %w", i, t, err)
 		}
 		c.trace[i] = parsed
 	}

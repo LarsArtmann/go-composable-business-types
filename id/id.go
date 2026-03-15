@@ -1,10 +1,10 @@
 package id
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"encoding"
 	"encoding/json"
-	"errors"
 	"fmt"
 )
 
@@ -67,7 +67,7 @@ func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 		*id = ID[B, V]{value: any(s).(V)}
 		return nil
 	default:
-		return fmt.Errorf("id: cannot unmarshal string into %T (only string-based IDs supported)", zero)
+		return fmt.Errorf("id: cannot unmarshal string %q into %T (only string-based IDs supported)", s, zero)
 	}
 }
 
@@ -80,7 +80,7 @@ func (id ID[B, V]) MarshalText() ([]byte, error) {
 	return []byte(id.String()), nil
 }
 
-// UnmarshalText implements encoding.TextUnmarshaler for JSON deserialization.
+// UnmarshalText implements encoding.TextUnmarshaler for text-based decoding (e.g., XML, TOML).
 // Note: This only works for string-based IDs. For other types, implement a custom unmarshaler.
 func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	if len(data) == 0 {
@@ -89,11 +89,13 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	}
 
 	var zero V
-	if _, ok := any(string(data)).(V); ok {
+	switch any(zero).(type) {
+	case string:
 		*id = ID[B, V]{value: any(string(data)).(V)}
 		return nil
+	default:
+		return fmt.Errorf("id: cannot unmarshal text into %T (only string-based IDs supported)", zero)
 	}
-	return fmt.Errorf("id: cannot unmarshal into %T", zero)
 }
 
 // Scan implements sql.Scanner for database deserialization.
@@ -115,21 +117,24 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(string(v)).(V)}
 			return nil
 		default:
-			return errors.New("id: cannot scan non-string value into string-based ID")
+			return fmt.Errorf("id: cannot scan non-string value %T into string-based ID", src)
 		}
 	case int64:
 		switch v := src.(type) {
 		case int64:
 			*id = ID[B, V]{value: any(v).(V)}
 			return nil
+		case int:
+			*id = ID[B, V]{value: any(int64(v)).(V)}
+			return nil
 		case float64:
 			*id = ID[B, V]{value: any(int64(v)).(V)}
 			return nil
 		default:
-			return errors.New("id: cannot scan non-integer value into int64-based ID")
+			return fmt.Errorf("id: cannot scan non-integer value %T into int64-based ID", src)
 		}
 	default:
-		return fmt.Errorf("id: unsupported value type %T for SQL scanning", zero)
+		return fmt.Errorf("id: unsupported source type %T for SQL scanning (target: %T)", src, zero)
 	}
 }
 
@@ -159,6 +164,8 @@ var (
 	_ json.Unmarshaler         = (*ID[struct{}, string])(nil)
 	_ encoding.TextMarshaler   = ID[struct{}, string]{}
 	_ encoding.TextUnmarshaler = (*ID[struct{}, string])(nil)
+	_ sql.Scanner              = (*ID[struct{}, string])(nil)
+	_ sql.Scanner              = (*ID[struct{}, int64])(nil)
 	_ driver.Valuer            = ID[struct{}, string]{}
 	_ driver.Valuer            = ID[struct{}, int64]{}
 )

@@ -2,6 +2,7 @@ package datapoint
 
 import (
 	"encoding/json"
+	"fmt"
 	"maps"
 )
 
@@ -97,7 +98,7 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonReference
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("unmarshal reference: invalid JSON: %w", err)
 	}
 	r.relation = raw.Relation
 	r.version = raw.Version
@@ -112,7 +113,7 @@ func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 		// For other types, the ID type must support text unmarshaling
 		if u, ok := any(&r.id).(interface{ UnmarshalText([]byte) error }); ok {
 			if err := u.UnmarshalText([]byte(raw.ID)); err != nil {
-				return err
+				return fmt.Errorf("unmarshal reference: unmarshal id %q: %w", raw.ID, err)
 			}
 		}
 	}

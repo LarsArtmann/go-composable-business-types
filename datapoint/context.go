@@ -2,6 +2,7 @@ package datapoint
 
 import (
 	"encoding/json"
+	"fmt"
 	"maps"
 )
 
@@ -123,7 +124,7 @@ func (c Context) MarshalJSON() ([]byte, error) {
 func (c *Context) UnmarshalJSON(data []byte) error {
 	var raw jsonContext
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return err
+		return fmt.Errorf("unmarshal context: invalid JSON: %w", err)
 	}
 	c.environment = raw.Environment
 	c.session = raw.Session

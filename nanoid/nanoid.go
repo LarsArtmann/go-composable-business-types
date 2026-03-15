@@ -3,6 +3,7 @@ package nanoid
 import (
 	"database/sql/driver"
 	"errors"
+	"fmt"
 
 	"github.com/sixafter/nanoid"
 )
@@ -121,7 +122,7 @@ func (id *NanoId) Scan(src any) error {
 		}
 		parsed, err := ParseNanoId(v)
 		if err != nil {
-			return err
+			return fmt.Errorf("nanoid: scan string %q: %w", v, err)
 		}
 		*id = parsed
 		return nil
@@ -132,12 +133,12 @@ func (id *NanoId) Scan(src any) error {
 		}
 		parsed, err := ParseNanoId(string(v))
 		if err != nil {
-			return err
+			return fmt.Errorf("nanoid: scan []byte %q: %w", string(v), err)
 		}
 		*id = parsed
 		return nil
 	default:
-		return errors.New("nanoid: cannot scan non-string/[]byte value")
+		return fmt.Errorf("nanoid: cannot scan non-string/[]byte value (got %T)", src)
 	}
 }
 
