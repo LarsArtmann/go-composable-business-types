@@ -12,7 +12,7 @@ linters:
         main:
           allow:
             - $gostd
-            - github.com/larsartmann/go-composable-business-types/**  # Allow all subpackages
+            - github.com/larsartmann/go-composable-business-types/** # Allow all subpackages
             - golang.org/x/text
             - github.com/bojanz/currency
             - github.com/sixafter/nanoid
