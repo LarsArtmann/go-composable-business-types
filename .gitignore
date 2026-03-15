@@ -1,1 +1,8 @@
+# Architecture diagrams (keep source .d2)
 architecture.png
+
+# Go build artifacts
+test
+*.test
+*.out
+coverage.out

@@ -21,6 +21,7 @@ Fixed a fuzz test edge case (invalid UTF-8 in JSON round-trip) and completed com
 **Root Cause:** JSON strings must be valid UTF-8. Go's `json.Marshal` replaces invalid bytes with Unicode replacement characters (U+FFFD), making exact round-trip impossible.
 
 **Fix:** Added UTF-8 validation check to skip invalid strings:
+
 ```go
 if !utf8.ValidString(orig) {
     t.Skip("skipping invalid UTF-8 string")
@@ -28,6 +29,7 @@ if !utf8.ValidString(orig) {
 ```
 
 **Files Changed:**
+
 - `id/id_test.go` - Added `unicode/utf8` import, added skip check
 
 ### 2. Build & Test Status
@@ -51,10 +53,10 @@ enums               6.8%     PASS
 
 ### 3. Recent Commits (This Session)
 
-| Commit | Description |
-|--------|-------------|
-| `3c727da` | refactor(id): use Go 1.22+ integer range syntax in benchmarks |
-| `0a3b485` | fix(id): address errcheck warnings and fix syntax errors in tests |
+| Commit    | Description                                                           |
+| --------- | --------------------------------------------------------------------- |
+| `3c727da` | refactor(id): use Go 1.22+ integer range syntax in benchmarks         |
+| `0a3b485` | fix(id): address errcheck warnings and fix syntax errors in tests     |
 | `4c693f3` | feat(id): add comprehensive numeric ID type support and serialization |
 
 ---
@@ -63,13 +65,13 @@ enums               6.8%     PASS
 
 ### 1. File Size Compliance (250-line limit)
 
-| File | Lines | Status |
-|------|-------|--------|
-| `id/id.go` | 799 | VIOLATES - needs split |
-| `id/id_test.go` | 1231 | Test file (exempt) |
-| `enums/enums_enum.go` | 772 | AUTO-GENERATED (exempt) |
-| `types/types.go` | 486 | VIOLATES - needs split |
-| `datapoint/datapoint_test.go` | 281 | Test file (borderline) |
+| File                          | Lines | Status                  |
+| ----------------------------- | ----- | ----------------------- |
+| `id/id.go`                    | 799   | VIOLATES - needs split  |
+| `id/id_test.go`               | 1231  | Test file (exempt)      |
+| `enums/enums_enum.go`         | 772   | AUTO-GENERATED (exempt) |
+| `types/types.go`              | 486   | VIOLATES - needs split  |
+| `datapoint/datapoint_test.go` | 281   | Test file (borderline)  |
 
 ### 2. Test Coverage
 
@@ -106,6 +108,7 @@ Nothing broken. All tests pass, linter clean.
 ### 1. Code Organization (HOW_TO_GOLANG.md Compliance)
 
 **id.go Split Proposal (799 → ~100 lines each):**
+
 ```
 id/
 ├── id.go              (~100 lines) - core type, NewID, Get, IsZero, Reset
@@ -118,6 +121,7 @@ id/
 ```
 
 **types.go Split Proposal (486 → ~80 lines each):**
+
 ```
 types/
 ├── types.go           (~50 lines)  - package docs
@@ -131,14 +135,15 @@ types/
 
 ### 2. Test Coverage Gaps
 
-| Package | Current | Target | Gap |
-|---------|---------|--------|-----|
-| enums | 6.8% | 80% | 73.2% |
-| types | 25.9% | 80% | 54.1% |
-| locale | 28.9% | 80% | 51.1% |
-| id | 41.9% | 80% | 38.1% |
+| Package | Current | Target | Gap   |
+| ------- | ------- | ------ | ----- |
+| enums   | 6.8%    | 80%    | 73.2% |
+| types   | 25.9%   | 80%    | 54.1% |
+| locale  | 28.9%   | 80%    | 51.1% |
+| id      | 41.9%   | 80%    | 38.1% |
 
 **Specific Gaps in ID Package:**
+
 - Numeric type branches: int8, int16, uint, uint8, uint16, uint32, float32, float64
 - Functions: Compare (28%), String (38.5%), MarshalJSON (46.7%)
 
@@ -152,35 +157,36 @@ types/
 
 ## F) TOP #25 THINGS TO GET DONE NEXT
 
-| # | Task | Impact | Effort | Priority |
-|---|------|--------|--------|----------|
-| 1 | Split `id/id.go` (799→<250 lines) | HIGH | 2hr | P1 |
-| 2 | Split `types/types.go` (486→<250 lines) | HIGH | 1hr | P1 |
-| 3 | Add tests for ID numeric types (int8-uint64, floats) | MEDIUM | 2hr | P2 |
-| 4 | Add tests for types package (Email, URL, etc.) | MEDIUM | 1hr | P2 |
-| 5 | Add tests for enums SQL interfaces | MEDIUM | 30min | P2 |
-| 6 | Add tests for locale edge cases | MEDIUM | 30min | P2 |
-| 7 | Update README.md with import examples | LOW | 30min | P3 |
-| 8 | Add CI badge to README | LOW | 10min | P3 |
-| 9 | Create `examples/basic/main.go` | LOW | 20min | P3 |
-| 10 | Create `examples/datapoint/main.go` | LOW | 20min | P3 |
-| 11 | Add godoc examples for ID type | LOW | 30min | P3 |
-| 12 | Add godoc examples for DataPoint | LOW | 30min | P3 |
-| 13 | Create CHANGELOG.md | LOW | 20min | P3 |
-| 14 | Tag v0.2.0 release | HIGH | 5min | P2 |
-| 15 | Add benchmarks for DataPoint operations | LOW | 1hr | P4 |
-| 16 | Add fuzz tests for Email parser | MEDIUM | 30min | P3 |
-| 17 | Add fuzz tests for URL parser | MEDIUM | 30min | P3 |
-| 18 | Add fuzz tests for Locale parser | MEDIUM | 30min | P3 |
-| 19 | Consider encoding/json/v2 migration | MEDIUM | 2hr | P4 |
-| 20 | Add integration tests | LOW | 2hr | P4 |
-| 21 | Verify CI workflow tests all subpackages | LOW | 15min | P3 |
-| 22 | Add pre-commit hooks | LOW | 30min | P4 |
-| 23 | Document design decisions in PARTS.md | LOW | 1hr | P4 |
-| 24 | Add architecture decision records (ADRs) | LOW | 2hr | P4 |
-| 25 | Set up Go module proxy caching | LOW | 15min | P4 |
+| #   | Task                                                 | Impact | Effort | Priority |
+| --- | ---------------------------------------------------- | ------ | ------ | -------- |
+| 1   | Split `id/id.go` (799→<250 lines)                    | HIGH   | 2hr    | P1       |
+| 2   | Split `types/types.go` (486→<250 lines)              | HIGH   | 1hr    | P1       |
+| 3   | Add tests for ID numeric types (int8-uint64, floats) | MEDIUM | 2hr    | P2       |
+| 4   | Add tests for types package (Email, URL, etc.)       | MEDIUM | 1hr    | P2       |
+| 5   | Add tests for enums SQL interfaces                   | MEDIUM | 30min  | P2       |
+| 6   | Add tests for locale edge cases                      | MEDIUM | 30min  | P2       |
+| 7   | Update README.md with import examples                | LOW    | 30min  | P3       |
+| 8   | Add CI badge to README                               | LOW    | 10min  | P3       |
+| 9   | Create `examples/basic/main.go`                      | LOW    | 20min  | P3       |
+| 10  | Create `examples/datapoint/main.go`                  | LOW    | 20min  | P3       |
+| 11  | Add godoc examples for ID type                       | LOW    | 30min  | P3       |
+| 12  | Add godoc examples for DataPoint                     | LOW    | 30min  | P3       |
+| 13  | Create CHANGELOG.md                                  | LOW    | 20min  | P3       |
+| 14  | Tag v0.2.0 release                                   | HIGH   | 5min   | P2       |
+| 15  | Add benchmarks for DataPoint operations              | LOW    | 1hr    | P4       |
+| 16  | Add fuzz tests for Email parser                      | MEDIUM | 30min  | P3       |
+| 17  | Add fuzz tests for URL parser                        | MEDIUM | 30min  | P3       |
+| 18  | Add fuzz tests for Locale parser                     | MEDIUM | 30min  | P3       |
+| 19  | Consider encoding/json/v2 migration                  | MEDIUM | 2hr    | P4       |
+| 20  | Add integration tests                                | LOW    | 2hr    | P4       |
+| 21  | Verify CI workflow tests all subpackages             | LOW    | 15min  | P3       |
+| 22  | Add pre-commit hooks                                 | LOW    | 30min  | P4       |
+| 23  | Document design decisions in PARTS.md                | LOW    | 1hr    | P4       |
+| 24  | Add architecture decision records (ADRs)             | LOW    | 2hr    | P4       |
+| 25  | Set up Go module proxy caching                       | LOW    | 15min  | P4       |
 
 **Sorted by Impact/Effort:**
+
 1. Tag v0.2.0 release (HIGH/5min)
 2. Split types/types.go (HIGH/1hr)
 3. Split id/id.go (HIGH/2hr)
@@ -194,6 +200,7 @@ types/
 **Can we use `encoding/json/v2` (Go 1.26+) to improve JSON performance?**
 
 Go 1.26 introduced `encoding/json/v2` with:
+
 - 2-3x faster marshaling/unmarshaling
 - Better error messages
 - Option to preserve field order
@@ -256,18 +263,21 @@ GOTOOLCHAIN=local go test -bench=. -benchmem ./id/...
 ## Reflection: What Did We Forget? What Could Be Better?
 
 ### What We Forgot
+
 1. **UTF-8 validation in fuzz tests** - Fixed this session
 2. **File size limits** - `id.go` and `types.go` violate 250-line rule
 3. **Test coverage for numeric branches** - Many type switch branches untested
 4. **Documentation examples** - No godoc examples
 
 ### What Could Be Better
+
 1. **Code generation** - Compare(), String(), MarshalBinary() use repetitive type switches - consider code generation
 2. **Error messages** - Some errors lack context (e.g., which type failed)
 3. **Benchmarks** - Only ID package has benchmarks, others don't
 4. **Fuzz tests** - Only ID has fuzz tests, Email/URL/Locale parsers need them
 
 ### What We Could Still Improve
+
 1. **Use existing libraries better:**
    - `github.com/google/uuid` for UUID type (if needed)
    - `github.com/go-playground/validator` for struct validation
@@ -288,6 +298,7 @@ GOTOOLCHAIN=local go test -bench=. -benchmem ./id/...
 ## Conclusion
 
 Project is in good shape. All tests pass, linter is clean. Key priorities:
+
 1. Split large files (id.go, types.go) to comply with 250-line limit
 2. Improve test coverage for numeric types and parsers
 3. Tag v0.2.0 release

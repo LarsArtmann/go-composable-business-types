@@ -38,7 +38,6 @@ go get github.com/larsartmann/go-composable-business-types
 | Enum        | Values                                                            |
 | ----------- | ----------------------------------------------------------------- |
 | `ActorKind` | User, Bot, System, Service                                        |
-| `Locale`    | en_US, en_GB, de_DE, fr_FR, es_ES, it_IT, ja_JP, zh_CN            |
 | `Priority`  | Low, Medium, High, Critical                                       |
 | `Status`    | Draft, Active, Paused, Archived, Deleted                          |
 | `Trigger`   | Manual, Scheduled, Webhook, Import, Migration, System, Correction |
@@ -46,63 +45,70 @@ go get github.com/larsartmann/go-composable-business-types
 ## Usage
 
 ```go
-import cbt "github.com/larsartmann/go-composable-business-types"
+// Selective imports - import only what you need
+import (
+    "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-composable-business-types/actor"
+    "github.com/larsartmann/go-composable-business-types/bounded"
+    "github.com/larsartmann/go-composable-business-types/money"
+    "github.com/larsartmann/go-composable-business-types/types"
+)
 
 // Branded IDs - can't mix UserId with OrderId at compile time
 type UserBrand struct{}
 type OrderBrand struct{}
-type UserID = cbt.ID[UserBrand, string]
-type OrderID = cbt.ID[OrderBrand, int64]
+type UserID = id.ID[UserBrand, string]
+type OrderID = id.ID[OrderBrand, int64]
 
-userId := cbt.NewID[UserBrand, string]("user-123")
-orderId := cbt.NewID[OrderBrand, int64](42)
+userId := id.NewID[UserBrand, string]("user-123")
+orderId := id.NewID[OrderBrand, int64](42)
 
 // Unbranded ID (when you don't need type separation)
-type SessionID = cbt.ID[struct{}, string]
-sessionId := cbt.NewID[struct{}, string]("sess-abc")
+type SessionID = id.ID[struct{}, string]
+sessionId := id.NewID[struct{}, string]("sess-abc")
 
 // Actor chain for audit trails and authorization
-chain := cbt.NewActorChain(cbt.UserActor(cbt.NewID[struct{}, string]("user-1"), "Alice")).
-    Append(cbt.ServiceActor(cbt.NewID[struct{}, string]("api-gateway"), "API Gateway")).
-    Append(cbt.ServiceActor(cbt.NewID[struct{}, string]("order-svc"), "Order Service"))
+chain := actor.NewActorChain(actor.UserActor(id.NewID[struct{}, string]("user-1"), "Alice")).
+    Append(actor.ServiceActor(id.NewID[struct{}, string]("api-gateway"), "API Gateway")).
+    Append(actor.ServiceActor(id.NewID[struct{}, string]("order-svc"), "Order Service"))
 
 origin := chain.Origin()   // User Alice
 current := chain.Current() // Order Service
 
 // BoundedString - validated string lengths
-name, err := cbt.NewBoundedString(1, 100, "John Doe")
+name, err := bounded.NewBoundedString(1, 100, "John Doe")
 if err != nil {
     // handle validation error
 }
 
 // Factory for domain-specific bounded strings
-var NewProductName = cbt.BoundedStringOf(1, 200)
+var NewProductName = bounded.BoundedStringOf(1, 200)
 product, err := NewProductName("Widget")
 
 // NonEmpty convenience (min=1)
-title, err := cbt.NonEmptyString(50, "  trimmed input  ")
+title, err := bounded.NonEmptyString(50, "  trimmed input  ")
 
 // Trimmed input
-clean, err := cbt.TrimmedBoundedString(1, 50, "  hello  ") // "hello"
+clean, err := bounded.TrimmedBoundedString(1, 50, "  hello  ") // "hello"
 
 // Money without float errors (via bojanz/currency)
-price := cbt.NewCents(1099) // $10.99
+price := types.NewCents(1099) // $10.99
 fmt.Println(price.Float64()) // 10.99
 
 // ISO 4217 Money with full currency support
-money, err := cbt.NewMoney("99.99", "USD")
-money, err := cbt.NewMoneyFromCents(1099, "EUR") // €10.99
+usd, err := money.NewMoney("99.99", "USD")
+eur, err := money.NewMoneyFromCents(1099, "EUR") // €10.99
 
 // Format for locale
-formatted := cbt.FormatMoney(money, "de_DE") // "99,99 €"
+formatted := money.FormatMoney(usd, "de_DE") // "99,99 €"
 
 // Currency utilities
-cbt.IsValidCurrency("USD")     // true
-cbt.CurrencyDigits("JPY")      // 0 (no decimal places)
-cbt.AllCurrencyCodes()         // all ISO 4217 codes
+money.IsValidCurrency("USD")     // true
+digits, _ := money.CurrencyDigits("JPY") // 0 (no decimal places)
+codes := money.AllCurrencyCodes()         // all ISO 4217 codes
 
 // Percentage (clamped to 0-100)
-tax := cbt.NewPercentage(8)  // 8%
+tax := types.NewPercentage(8)  // 8%
 fmt.Println(tax.Float64())   // 0.08
 ```
 
@@ -125,6 +131,13 @@ fmt.Println(tax.Float64())   // 0.08
 ### Basic Usage
 
 ```go
+import (
+    "github.com/larsartmann/go-composable-business-types/actor"
+    "github.com/larsartmann/go-composable-business-types/datapoint"
+    "github.com/larsartmann/go-composable-business-types/enums"
+    "github.com/larsartmann/go-composable-business-types/id"
+)
+
 type OrderState struct {
     OrderId   string
     Status    string
@@ -132,12 +145,12 @@ type OrderState struct {
 }
 
 // Create a DataPoint
-actor := cbt.UserActor(cbt.NewID[struct{}, string]("user-1"), "Alice")
-dp := cbt.NewDataPointNow(OrderState{
+actorEntry := actor.UserActor(id.NewID[struct{}, string]("user-1"), "Alice")
+dp := datapoint.NewDataPoint(OrderState{
     OrderId: "order-123",
     Status:  "created",
     Total:   9900,
-}, actor, "customer placed order")
+}, actorEntry).WithReason("customer placed order")
 
 // Access fields
 fmt.Println(dp.Id())           // NanoId (unique)
@@ -150,28 +163,43 @@ fmt.Println(dp.Reason())       // "customer placed order"
 ### With Builder Methods
 
 ```go
-dp := cbt.NewDataPointNow(payload, actor).
-    WithTrigger(cbt.TriggerWebhook).
+import (
+    "github.com/larsartmann/go-composable-business-types/datapoint"
+    "github.com/larsartmann/go-composable-business-types/enums"
+    "github.com/larsartmann/go-composable-business-types/nanoid"
+)
+
+dp := datapoint.NewDataPoint(payload, actorEntry).
+    WithTrigger(enums.TriggerWebhook).
     WithReason("webhook received from payment provider").
-    WithContext(cbt.NewContext("payment-service").
+    WithContext(datapoint.NewContext().
         WithEnvironment("production").
+        WithSource("payment-service").
         WithSession("sess-abc")).
     WithVersion(3).
-    AddTag("correlation_id", "corr-123").
-    AddReference(cbt.NewReference("order-456", "parent")).
-    AddCause(cbt.NewCauseCommand(causeId, "approved"))
+    WithTag("correlation_id", "corr-123").
+    WithReference(datapoint.NewReference("order-456", "parent")).
+    WithCause(datapoint.NewCauseCommand[string](nanoid.NewNanoId(), "approved"))
 ```
 
 ### Bitemporal Tracking
 
 ```go
-// Create with explicit time range
-from := cbt.NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
-until := cbt.NewTimestamp(time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC))
-recorded := cbt.Now()
+import (
+    "time"
 
-temporal := cbt.NewBitemporalWithRange(from, until, recorded)
-dp := cbt.NewDataPointNow(payload, actor).WithTemporal(temporal)
+    "github.com/larsartmann/go-composable-business-types/datapoint"
+    "github.com/larsartmann/go-composable-business-types/temporal"
+    "github.com/larsartmann/go-composable-business-types/types"
+)
+
+// Create with explicit time range
+from := types.NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+until := types.NewTimestamp(time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC))
+recorded := types.Now()
+
+temp := temporal.NewBitemporalWithRange(from, until, recorded)
+dp := datapoint.NewDataPoint(payload, actorEntry).WithTemporal(temp)
 
 // Check if valid at a point in time
 if dp.Temporal().IsValidAt(someTime) {
@@ -182,25 +210,34 @@ if dp.Temporal().IsValidAt(someTime) {
 ### References and Causal Chain
 
 ```go
+import (
+    "github.com/larsartmann/go-composable-business-types/datapoint"
+    "github.com/larsartmann/go-composable-business-types/nanoid"
+)
+
 // Reference to another entity
-ref := cbt.NewReferenceWithVersion("doc-123", "source", 5).
+ref := datapoint.NewReference("doc-123", "source").
+    WithVersion(5).
     WithTag("department", "legal")
 
-// Cause tracking
-cause := cbt.NewCauseCommand(cbt.NewNanoId(), "created").
-    WithTrace([]cbt.NanoId{intermediateId})
+// Cause tracking (event-triggered)
+causeID := nanoid.NewNanoId()
+trace := []nanoid.NanoId{intermediateId}
+cause := datapoint.NewCauseEvent[string](causeID, "created", trace...)
 
-dp := cbt.NewDataPointNow(payload, actor).
-    AddReference(ref).
-    AddCause(cause)
+dp := datapoint.NewDataPoint(payload, actorEntry).
+    WithReference(ref).
+    WithCause(cause)
 ```
 
 ### JSON Serialization
 
 ```go
+import "encoding/json"
+
 // Full JSON support with round-trip
 data, _ := json.Marshal(dp)
-var parsed cbt.DataPoint[OrderState]
+var parsed datapoint.DataPoint[OrderState]
 json.Unmarshal(data, &parsed)
 
 // Fields are preserved: id, payload, actor, temporal, trigger,
@@ -219,19 +256,6 @@ go generate ./...
 
 - `github.com/abice/go-enum` - Enum code generation
 - `github.com/bojanz/currency` - ISO 4217 currency handling with 370+ locales
-
-## encoding/json/v2 Support
-
-This library supports Go's experimental `encoding/json/v2` for improved performance. The `ID[B, V]` type implements both v1 and v2 marshaler interfaces.
-
-**Enable json/v2 (Go 1.26+):**
-
-```bash
-GOEXPERIMENT=jsonv2 go build ./...
-GOEXPERIMENT=jsonv2 go test ./...
-```
-
-When `GOEXPERIMENT=jsonv2` is enabled, types will use the streaming v2 interfaces (`MarshalJSONTo`/`UnmarshalJSONFrom`) for better performance. Without the experiment, the standard v1 interfaces work as expected.
 
 ## License
 

@@ -1,9 +1,12 @@
-# CBT (Composable Business Types) Architecture Diagram
-# A Go library of strongly typed, composable base values for business applications
+# CBT (Composable Business Types) Architecture
+# Go 1.26 | Selective Imports
+# 
+# Direction: right
 
-direction: right
+# ============================================
+# STYLES
+# ============================================
 
-# Styles
 classes: {
   core: {
     style: {
@@ -12,6 +15,14 @@ classes: {
       stroke-width: 2
       border-radius: 8
       shadow: true
+    }
+  }
+  generic: {
+    style: {
+      fill: "#fff8e1"
+      stroke: "#f57c00"
+      border-radius: 8
+      double-border: true
     }
   }
   enum: {
@@ -36,81 +47,87 @@ classes: {
       border-radius: 8
     }
   }
-  primitive: {
-    style: {
-      fill: "#fafafa"
-      stroke: "#616161"
-      border-radius: 4
-    }
-  }
 }
 
 # ============================================
-# CORE DOMAIN TYPES
+# PACKAGES (Selective Imports)
+# ============================================
+
+packages: {
+  pk_id: {class: core; label: "**id**\nID[B, V]"}
+  pk_nanoid: {class: core; label: "**nanoid**\nNanoId"}
+  pk_bounded: {class: value; label: "**bounded**\nBoundedString"}
+  pk_types: {class: value; label: "**types**\nEmail, URL\nCents\nPercentage\nTimestamp\nDuration"}
+  pk_enums: {class: enum; label: "**enums**\nActorKind\nPriority\nStatus\nTrigger"}
+  pk_locale: {class: value; label: "**locale**\nLocale"}
+  pk_temporal: {class: core; label: "**temporal**\nBitemporal"}
+  pk_actor: {class: core; label: "**actor**\nActorChain[T]\nActorEntry[T]"}
+  pk_money: {class: value; label: "**money**\nMoney"}
+  pk_datapoint: {class: core; label: "**datapoint**\nDataPoint[T]\nContext\nReference[T]\nCause[T]"}
+}
+
+# Package dependencies
+pk_datapoint -> pk_nanoid: uses
+pk_datapoint -> pk_actor: uses
+pk_datapoint -> pk_temporal: uses
+pk_datapoint -> pk_enums: uses
+pk_datapoint -> pk_types: uses
+pk_actor -> pk_enums: uses
+pk_actor -> pk_id: uses
+pk_temporal -> pk_types: uses
+pk_money -> pk_locale: uses
+
+# ============================================
+# CORE TYPES
 # ============================================
 
 datapoint: {
   class: core
   label: |md
-    **DataPoint**\[T comparable\]
-    ---
-    Self-contained unit of data
-    with complete audit trail
-    ---
+    **DataPoint[T]**
+    Self-contained data unit with audit trail
+    
     • id: NanoId
     • payload: T
-    • actor: ActorEntry\[string\]
+    • actor: ActorEntry
     • temporal: Bitemporal
     • trigger: Trigger
-    • reason: string
     • context: Context
-    • version: int
-    • tags: map\[string\]string
-    • references: []Reference\[string\]
-    • causes: []Cause\[string\]
-  |
-}
-
-# ============================================
-# ACTOR CHAIN
-# ============================================
-
-actor_chain: {
-  class: core
-  label: |md
-    **ActorChain**\[T comparable\]
-    ---
-    Ordered chain of actors
-    from original to current
-    ---
-    []ActorEntry\[T\]
+    • references: []Reference
+    • causes: []Cause
   |
 }
 
 actor_entry: {
   class: core
   label: |md
-    **ActorEntry**\[T comparable\]
-    ---
-    Single actor in a chain
-    ---
-    • kind: ActorKind
-    • id: Id\[T\]
-    • name: string
+    **ActorEntry[T]**
+    Actor in a chain
+    
+    • Kind: ActorKind
+    • Id: ID[T]
+    • Name: string
   |
 }
 
-# ============================================
-# TEMPORAL TYPES
-# ============================================
+actor_chain: {
+  class: core
+  label: |md
+    **ActorChain[T]**
+    Ordered actor history
+    
+    []ActorEntry[T]
+    • Origin() - first actor
+    • Current() - last actor
+  |
+}
 
 bitemporal: {
   class: core
   label: |md
     **Bitemporal**
-    ---
     Valid time + Transaction time
-    ---
+    
     • validFrom: Timestamp
     • validUntil: Timestamp
     • recorded: Timestamp
@@ -118,71 +135,40 @@ bitemporal: {
   |
 }
 
-timestamp: {
-  class: value
-  label: |md
-    **Timestamp**
-    ---
-    Domain wrapper around
-    time.Time
-  |
-}
-
-duration: {
-  class: value
-  label: |md
-    **Duration**
-    ---
-    Domain wrapper around
-    time.Duration
-  |
-}
-
-# ============================================
-# CONTEXT & REFERENCES
-# ============================================
-
 context: {
   class: core
   label: |md
     **Context**
-    ---
-    Execution context metadata
-    ---
+    Execution metadata
+    
     • environment: string
     • session: string
     • request: string
     • source: string
-    • tags: map\[string\]string
   |
 }
 
 reference: {
   class: core
   label: |md
-    **Reference**\[T comparable\]
-    ---
-    Type-safe entity reference
-    ---
+    **Reference[T]**
+    Entity reference
+    
     • id: T
     • relation: string
     • version: int
-    • tags: map\[string\]string
   |
 }
 
 cause: {
   class: core
   label: |md
-    **Cause**\[T comparable\]
-    ---
-    Causal relationship between
-    data points
-    ---
+    **Cause[T]**
+    Causal relationship
+    
     • id: NanoId
     • kind: string
     • effect: string
-    • trace: []NanoId
   |
 }
 
@@ -194,34 +180,26 @@ nanoid: {
   class: core
   label: |md
     **NanoId**
-    ---
-    URL-safe unique identifier
-    (default 21 chars, 126 bits)
-    ---
-    Length: 8-256 chars
-    FIPS-140 compatible
+    URL-safe unique ID
+    
+    • Length: 8-256 chars
+    • Default: 21 chars (126 bits)
+    • FIPS-140 compatible
   |
 }
 
-id_generic: {
-  class: core
+id: {
+  class: generic
   label: |md
-    **ID**\[B any, V comparable\]
-    ---
-    Branded, strongly-typed ID
-    prevents mixing entity IDs
-    ---
-    • value: V
-  |
-}
-
-id_compat: {
-  class: core
-  label: |md
-    **Id**\[T comparable\]
-    ---
-    Unbranded ID alias
-    for backwards compatibility
+    **ID[B, V]**
+    Branded phantom type ID
+    
+    Prevents mixing entity IDs at compile time
+    
+    ```go
+    type UserBrand struct{}
+    type UserID = ID[UserBrand, string]
+    ```
   |
 }
 
@@ -229,159 +207,56 @@ id_compat: {
 # VALUE TYPES
 # ============================================
 
-bounded_string: {
-  class: value
-  label: |md
-    **BoundedString**
-    ---
-    Length-constrained string
-    validated at construction
-    ---
-    • value: string
-    • minLen: int
-    • maxLen: int
-  |
-}
-
-email: {
-  class: value
-  label: |md
-    **Email**
-    ---
-    Validated email address
-  |
-}
-
-url: {
-  class: value
-  label: |md
-    **URL**
-    ---
-    Validated URL
-  |
-}
-
-percentage: {
-  class: value
-  label: |md
-    **Percentage**
-    ---
-    Value 0-100 (uint8)
-  |
-}
-
-cents: {
-  class: value
-  label: |md
-    **Cents**
-    ---
-    Monetary amount in smallest
-    currency unit (int64)
-  |
-}
-
-money: {
-  class: value
-  label: |md
-    **Money**
-    ---
-    Alias for currency.Amount
-    ISO 4217 compliant
-  |
-}
+email: {class: value; label: "**Email**\nRFC 5322 validated"}
+url: {class: value; label: "**URL**\nParsed URL"}
+percentage: {class: value; label: "**Percentage**\n0-100 (uint8)"}
+cents: {class: value; label: "**Cents**\nMonetary (int64)"}
+money: {class: value; label: "**Money**\nISO 4217 currency"}
+bounded_string: {class: value; label: "**BoundedString**\nLength-constrained"}
+locale: {class: value; label: "**Locale**\nBCP 47 language tag"}
+timestamp: {class: value; label: "**Timestamp**\ntime.Time wrapper"}
+duration: {class: value; label: "**Duration**\ntime.Duration wrapper"}
 
 # ============================================
-# ENUMERATIONS
+# ENUMS
 # ============================================
 
-actor_kind: {
-  class: enum
-  label: |md
-    **ActorKind**
-    ---
-    • User
-    • Bot
-    • System
-    • Service
-  |
-}
-
-locale: {
-  class: enum
-  label: |md
-    **Locale**
-    ---
-    • en_US, en_GB
-    • de_DE, fr_FR
-    • es_ES, it_IT
-    • ja_JP, zh_CN
-  |
-}
-
-priority: {
-  class: enum
-  label: |md
-    **Priority**
-    ---
-    • Low
-    • Medium
-    • High
-    • Critical
-  |
-}
-
-status: {
-  class: enum
-  label: |md
-    **Status**
-    ---
-    • Draft
-    • Active
-    • Paused
-    • Archived
-    • Deleted
-  |
-}
-
-trigger: {
-  class: enum
-  label: |md
-    **Trigger**
-    ---
-    • Manual
-    • Scheduled
-    • Webhook
-    • Import
-    • Migration
-    • System
-    • Correction
-  |
-}
+actor_kind: {class: enum; label: "**ActorKind**\nUser\nBot\nSystem\nService"}
+priority: {class: enum; label: "**Priority**\nLow\nMedium\nHigh\nCritical"}
+status: {class: enum; label: "**Status**\nDraft\nActive\nPaused\nArchived\nDeleted"}
+trigger: {class: enum; label: "**Trigger**\nManual\nScheduled\nWebhook\nImport\nMigration\nSystem\nCorrection"}
 
 # ============================================
 # EXTERNAL DEPENDENCIES
 # ============================================
 
-external_currency: {
+ext_currency: {
   class: external
   label: |md
-    **github.com/bojanz/currency**
-    ---
-    ISO 4217 currency handling
-    • currency.Amount
-    • currency.Formatter
-    • currency.Locale
+    **bojanz/currency**
+    ISO 4217 handling
+    
+    currency.Amount
+    currency.Formatter
   |
 }
 
-external_nanoid: {
+ext_nanoid: {
   class: external
   label: |md
-    **github.com/sixafter/nanoid**
-    ---
+    **sixafter/nanoid**
     FIPS-140 compatible
-    high-performance NanoID
-    generation
+    High-performance
+  |
+}
+
+ext_language: {
+  class: external
+  label: |md
+    **x/text/language**
+    BCP 47 language tags
+    
+    language.Tag
   |
 }
 
@@ -391,115 +266,46 @@ external_nanoid: {
 
 # DataPoint composition
 datapoint -> nanoid: id
-
-# DataPoint contains ActorEntry
 datapoint -> actor_entry: actor
-actor_entry -> actor_kind: kind
-actor_entry -> id_compat: id
-
-# ActorChain
-datapoint -> actor_chain: via actor
-actor_chain -> actor_entry: "[]elements"
-
-# Temporal
 datapoint -> bitemporal: temporal
+datapoint -> trigger: trigger
+datapoint -> context: context
+datapoint -> reference: "references[]"
+datapoint -> cause: "causes[]"
+
+# Actor chain
+actor_chain -> actor_entry: contains
+actor_entry -> actor_kind: kind
+actor_entry -> id: id
+
+# Bitemporal
 bitemporal -> timestamp: validFrom
 bitemporal -> timestamp: validUntil
 bitemporal -> timestamp: recorded
 
-# Context & Metadata
-datapoint -> context: context
-datapoint -> trigger: trigger
+# Money
+money -> ext_currency: wraps
+money -> locale: locale
+cents -> money: converts to
 
-# References & Causality
-datapoint -> reference: "references[]"
-datapoint -> cause: "causes[]"
-cause -> nanoid: id
-cause -> nanoid: "trace[]"
+# Locale
+locale -> ext_language: wraps
 
-# ID relationships
-id_compat -> id_generic: alias
-
-# External dependencies
-money -> external_currency: wraps
-nanoid -> external_nanoid: uses
-
-# Value type conversions
-cents -> money: "converts via\nNewMoneyFromCents"
-
-# Time primitives (both wrap Go stdlib)
-timestamp_primitive: {
-  class: primitive
-  label: |md
-    **time.Time**
-    (Go stdlib)
-  |
-}
-
-duration_primitive: {
-  class: primitive
-  label: |md
-    **time.Duration**
-    (Go stdlib)
-  |
-}
-
-# Time wraps primitives
-timestamp -> timestamp_primitive: wraps
-duration -> duration_primitive: wraps
-
-# Enums used by
-actor_kind -> actor_entry: used by
-trigger -> datapoint: used by
+# NanoId
+nanoid -> ext_nanoid: uses
 
 # ============================================
-# LAYOUT GROUPS
+# GROUPS
 # ============================================
 
-Core Types: {
-  datapoint
-  actor_chain
-  actor_entry
-  bitemporal
-  context
-  reference
-  cause
-}
+Packages: {packages}
 
-Identifiers: {
-  nanoid
-  id_generic
-  id_compat
-}
+Core: {datapoint; actor_chain; actor_entry; bitemporal; context; reference; cause}
 
-Value Types: {
-  bounded_string
-  email
-  url
-  percentage
-  cents
-  money
-}
+Identifiers: {nanoid; id}
 
-Temporal: {
-  timestamp
-  duration
-}
+Values: {email; url; percentage; cents; money; bounded_string; locale; timestamp; duration}
 
-Enums: {
-  actor_kind
-  trigger
-  locale
-  priority
-  status
-}
+Enums: {actor_kind; priority; status; trigger}
 
-External: {
-  external_currency
-  external_nanoid
-}
-
-Primitives: {
-  timestamp_primitive
-  duration_primitive
-}
+External: {ext_currency; ext_nanoid; ext_language}
