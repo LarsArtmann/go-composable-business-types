@@ -82,7 +82,7 @@ func TestTimestamp(t *testing.T) {
 	now := time.Now()
 	ts := NewTimestamp(now)
 
-	if !ts.Time.Equal(now) {
+	if !ts.Equal(now) {
 		t.Error("Timestamp should store time")
 	}
 
