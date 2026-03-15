@@ -257,24 +257,24 @@ func (id ID[B, V]) GoString() string { return id.String() }
 func (id ID[B, V]) Format(f fmt.State, verb rune) {
 	switch verb {
 	case 's':
-		fmt.Fprint(f, id.String())
+		_, _ = fmt.Fprint(f, id.String())
 	case 'd':
 		switch v := any(id.value).(type) {
 		case int, int8, int16, int32, int64, uint, uint8, uint16, uint32, uint64:
-			fmt.Fprintf(f, "%d", v)
+			_, _ = fmt.Fprintf(f, "%d", v)
 		default:
-			fmt.Fprintf(f, "%%!d(type=%T)", id.value)
+			_, _ = fmt.Fprintf(f, "%%!d(type=%T)", id.value)
 		}
 	case 'q':
-		fmt.Fprintf(f, "%q", id.String())
+		_, _ = fmt.Fprintf(f, "%q", id.String())
 	case 'v':
 		if f.Flag('#') {
-			fmt.Fprintf(f, "id(%s)", id.String())
+			_, _ = fmt.Fprintf(f, "id(%s)", id.String())
 		} else {
-			fmt.Fprint(f, id.String())
+			_, _ = fmt.Fprint(f, id.String())
 		}
 	default:
-		fmt.Fprintf(f, "%%!%c(type=%T)", verb, id.value)
+		_, _ = fmt.Fprintf(f, "%%!%c(type=%T)", verb, id.value)
 	}
 }
 
@@ -476,7 +476,9 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 	case string:
 		return []byte(v), nil
 	case int:
-		binary.Write(&buf, binary.LittleEndian, int64(v))
+		if err := binary.Write(&buf, binary.LittleEndian, int64(v)); err != nil {
+			return nil, fmt.Errorf("id: failed to marshal int: %w", err)
+		}
 		return buf.Bytes(), nil
 	case int8:
 		return []byte{byte(v)}, nil
@@ -493,7 +495,9 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		binary.LittleEndian.PutUint64(b, uint64(v))
 		return b, nil
 	case uint:
-		binary.Write(&buf, binary.LittleEndian, uint64(v))
+		if err := binary.Write(&buf, binary.LittleEndian, uint64(v)); err != nil {
+			return nil, fmt.Errorf("id: failed to marshal uint: %w", err)
+		}
 		return buf.Bytes(), nil
 	case uint8:
 		return []byte{v}, nil
