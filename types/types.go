@@ -132,7 +132,7 @@ func (u URL) Scheme() string {
 	if u == "" {
 		return ""
 	}
-	for i := 0; i < len(u); i++ {
+	for i := range len(u) {
 		if u[i] == ':' {
 			return string(u[:i])
 		}
