@@ -8,6 +8,7 @@ import (
 	"math"
 	"sort"
 	"testing"
+	"unicode/utf8"
 )
 
 type (
@@ -923,6 +924,12 @@ func FuzzIDJSONString(f *testing.F) {
 	}
 
 	f.Fuzz(func(t *testing.T, orig string) {
+		// Skip invalid UTF-8 strings - JSON requires valid UTF-8 and cannot
+		// round-trip invalid sequences (they become replacement characters)
+		if !utf8.ValidString(orig) {
+			t.Skip("skipping invalid UTF-8 string")
+		}
+
 		id := NewID[StringBrand](orig)
 		data, err := json.Marshal(id)
 		if err != nil {
