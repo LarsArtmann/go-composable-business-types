@@ -16,34 +16,34 @@
 
 ## A) FULLY DONE ✅
 
-| Item | Status | Details |
-|------|--------|---------|
+| Item                     | Status      | Details                                               |
+| ------------------------ | ----------- | ----------------------------------------------------- |
 | Root `.go` files deleted | ✅ Complete | `cbt.go` and `id_jsonv2.go` removed from project root |
-| Research on json/v2 | ✅ Complete | Confirmed json/v2 API differences documented |
-| Go cache cleared | ✅ Complete | `go clean -cache` executed successfully |
-| Dependencies downloaded | ✅ Complete | `go mod download` completed |
+| Research on json/v2      | ✅ Complete | Confirmed json/v2 API differences documented          |
+| Go cache cleared         | ✅ Complete | `go clean -cache` executed successfully               |
+| Dependencies downloaded  | ✅ Complete | `go mod download` completed                           |
 
 ---
 
 ## B) PARTIALLY DONE ⚠️
 
-| Item | Status | Details |
-|------|--------|---------|
-| Import replacement | ⚠️ FAILED | sed/perl commands executed but changes NOT persisted |
-| Build with GOEXPERIMENT | ⚠️ WORKS | `GOEXPERIMENT=jsonv2 go build ./...` succeeds |
-| Tests with GOEXPERIMENT | ⚠️ FAILS | Race detector tests fail with build errors |
+| Item                    | Status    | Details                                              |
+| ----------------------- | --------- | ---------------------------------------------------- |
+| Import replacement      | ⚠️ FAILED | sed/perl commands executed but changes NOT persisted |
+| Build with GOEXPERIMENT | ⚠️ WORKS  | `GOEXPERIMENT=jsonv2 go build ./...` succeeds        |
+| Tests with GOEXPERIMENT | ⚠️ FAILS  | Race detector tests fail with build errors           |
 
 ---
 
 ## C) NOT STARTED ⏳
 
-| Item | Priority | Notes |
-|------|----------|-------|
-| Update all 10 files with edit tool | HIGH | Need to use edit tool, not sed/perl |
-| Update `json.MarshalIndent` to v2 API | HIGH | Only in `examples/datapoint/main.go` |
-| Verify build without GOEXPERIMENT | CRITICAL | User claims json/v2 should be default |
-| Update README documentation | MEDIUM | Document json/v2 requirement |
-| Update AGENTS.md | LOW | Add json/v2 to build commands |
+| Item                                  | Priority | Notes                                 |
+| ------------------------------------- | -------- | ------------------------------------- |
+| Update all 10 files with edit tool    | HIGH     | Need to use edit tool, not sed/perl   |
+| Update `json.MarshalIndent` to v2 API | HIGH     | Only in `examples/datapoint/main.go`  |
+| Verify build without GOEXPERIMENT     | CRITICAL | User claims json/v2 should be default |
+| Update README documentation           | MEDIUM   | Document json/v2 requirement          |
+| Update AGENTS.md                      | LOW      | Add json/v2 to build commands         |
 
 ---
 
@@ -52,6 +52,7 @@
 ### Critical Failure: sed/perl Commands Did NOT Persist
 
 **What happened:**
+
 1. Ran `sed -i '' 's#encoding/json#encoding/json/v2#'` on 9 files
 2. Ran `perl -pi -e 's|"encoding/json"|"encoding/json/v2"|'` on 10 files
 3. Both commands reported "success" with no errors
@@ -59,6 +60,7 @@
 5. `grep -rn "encoding/json" --include="*.go"` shows: **All files still have v1 imports**
 
 **Root Cause:** Unknown. Possible causes:
+
 - Files were not actually modified (dry-run?)
 - Some process reverted changes
 - Working directory confusion
@@ -80,33 +82,33 @@
 
 ## F) TOP 25 THINGS TO DO NEXT 📋
 
-| # | Task | Priority | Est. Time |
-|---|------|----------|-----------|
-| 1 | Fix `temporal/temporal.go` import | CRITICAL | 1 min |
-| 2 | Fix `datapoint/datapoint.go` import | CRITICAL | 1 min |
-| 3 | Fix `datapoint/datapoint_test.go` import | CRITICAL | 1 min |
-| 4 | Fix `datapoint/cause.go` import | CRITICAL | 1 min |
-| 5 | Fix `datapoint/reference.go` import | CRITICAL | 1 min |
-| 6 | Fix `datapoint/context.go` import | CRITICAL | 1 min |
-| 7 | Fix `bounded/bounded.go` import | CRITICAL | 1 min |
-| 8 | Fix `id/id.go` import | CRITICAL | 1 min |
-| 9 | Fix `id/id_test.go` import | CRITICAL | 1 min |
-| 10 | Fix `examples/datapoint/main.go` import + API | CRITICAL | 2 min |
-| 11 | Verify all imports changed | HIGH | 1 min |
-| 12 | Build with `go build ./...` | CRITICAL | 1 min |
-| 13 | Test with `go test ./...` | CRITICAL | 2 min |
-| 14 | Investigate: Does Go 1.26.1 have json/v2 by default? | CRITICAL | 5 min |
-| 15 | Update README if GOEXPERIMENT required | HIGH | 3 min |
-| 16 | Update AGENTS.md with build commands | MEDIUM | 2 min |
-| 17 | Run tests with race detector | HIGH | 5 min |
-| 18 | Verify examples compile and run | HIGH | 2 min |
-| 19 | Check for other json v1 API calls | HIGH | 2 min |
-| 20 | Update go.mod if needed | MEDIUM | 1 min |
-| 21 | Run golangci-lint | MEDIUM | 3 min |
-| 22 | Generate enum code | LOW | 1 min |
-| 23 | Update project documentation | LOW | 5 min |
-| 24 | Create git commit with detailed message | HIGH | 2 min |
-| 25 | Verify CI/CD still works | LOW | 5 min |
+| #   | Task                                                 | Priority | Est. Time |
+| --- | ---------------------------------------------------- | -------- | --------- |
+| 1   | Fix `temporal/temporal.go` import                    | CRITICAL | 1 min     |
+| 2   | Fix `datapoint/datapoint.go` import                  | CRITICAL | 1 min     |
+| 3   | Fix `datapoint/datapoint_test.go` import             | CRITICAL | 1 min     |
+| 4   | Fix `datapoint/cause.go` import                      | CRITICAL | 1 min     |
+| 5   | Fix `datapoint/reference.go` import                  | CRITICAL | 1 min     |
+| 6   | Fix `datapoint/context.go` import                    | CRITICAL | 1 min     |
+| 7   | Fix `bounded/bounded.go` import                      | CRITICAL | 1 min     |
+| 8   | Fix `id/id.go` import                                | CRITICAL | 1 min     |
+| 9   | Fix `id/id_test.go` import                           | CRITICAL | 1 min     |
+| 10  | Fix `examples/datapoint/main.go` import + API        | CRITICAL | 2 min     |
+| 11  | Verify all imports changed                           | HIGH     | 1 min     |
+| 12  | Build with `go build ./...`                          | CRITICAL | 1 min     |
+| 13  | Test with `go test ./...`                            | CRITICAL | 2 min     |
+| 14  | Investigate: Does Go 1.26.1 have json/v2 by default? | CRITICAL | 5 min     |
+| 15  | Update README if GOEXPERIMENT required               | HIGH     | 3 min     |
+| 16  | Update AGENTS.md with build commands                 | MEDIUM   | 2 min     |
+| 17  | Run tests with race detector                         | HIGH     | 5 min     |
+| 18  | Verify examples compile and run                      | HIGH     | 2 min     |
+| 19  | Check for other json v1 API calls                    | HIGH     | 2 min     |
+| 20  | Update go.mod if needed                              | MEDIUM   | 1 min     |
+| 21  | Run golangci-lint                                    | MEDIUM   | 3 min     |
+| 22  | Generate enum code                                   | LOW      | 1 min     |
+| 23  | Update project documentation                         | LOW      | 5 min     |
+| 24  | Create git commit with detailed message              | HIGH     | 2 min     |
+| 25  | Verify CI/CD still works                             | LOW      | 5 min     |
 
 ---
 
@@ -115,16 +117,19 @@
 ### "Does your Go 1.26.1 installation have `encoding/json/v2` as a non-experimental default?"
 
 **Context:**
+
 - My research indicates `encoding/json/v2` is **experimental** and requires `GOEXPERIMENT=jsonv2`
 - You stated: "we require 1.26.1 with removed GOEXPERIMENT=jsonv2 and made it non GOEXPERIMENT"
 - Standard Go 1.26.0/1.26.1 from go.dev **DOES NOT** have json/v2 as default
 
 **What I need to know:**
+
 1. Do you have a **custom Go build** with json/v2 enabled by default?
 2. Or should the library require users to set `GOEXPERIMENT=jsonv2`?
 3. Is there a `godebug` directive or build tag that enables this?
 
 **Evidence:**
+
 ```
 # Standard Go 1.26.0 (nix)
 $ go build ./...
@@ -135,6 +140,7 @@ $ GOEXPERIMENT=jsonv2 go build ./...
 ```
 
 **This is blocking because:**
+
 - If json/v2 requires GOEXPERIMENT, users must set it
 - If your Go has it by default, we need to document this requirement
 - The library cannot "just work" for everyone without configuration
@@ -159,6 +165,7 @@ $ GOEXPERIMENT=jsonv2 go build ./...
 ## Required Changes
 
 ### Import Change (all 10 files)
+
 ```go
 // Before
 import "encoding/json"
@@ -168,6 +175,7 @@ import "encoding/json/v2"
 ```
 
 ### API Change (examples/datapoint/main.go only)
+
 ```go
 // Before (v1)
 data, err := json.MarshalIndent(dp, "", "  ")
