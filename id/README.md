@@ -76,6 +76,32 @@ func main() {
 }
 ```
 
+## Recommended: Use NanoId instead of plain strings
+
+For string-based identifiers, prefer using the companion `nanoid` package instead of raw strings. NanoId provides:
+
+- **URL-safe**: Uses `A-Za-z0-9_-` alphabet
+- **Unique**: Cryptographically secure random generation
+- **FIPS-140 compatible**: High-performance implementation
+- **Configurable length**: Default 21 characters (126 bits entropy)
+
+```go
+import (
+    "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-composable-business-types/nanoid"
+)
+
+type UserBrand struct{}
+type UserID = id.ID[UserBrand, nanoid.NanoId]
+
+func main() {
+    userID := id.NewID[UserBrand](nanoid.NewNanoId())
+    // or from existing nanoid:
+    existing := nanoid.ParseNanoId("abc123def456ghi789")
+    userID := id.NewID[UserBrand](existing)
+}
+```
+
 ## Supported Value Types
 
 The package supports multiple underlying value types:
