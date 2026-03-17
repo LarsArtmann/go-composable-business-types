@@ -3,7 +3,7 @@ package id
 import (
 	"bytes"
 	"encoding/gob"
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 	"math"
 	"sort"

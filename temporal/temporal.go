@@ -1,7 +1,7 @@
 package temporal
 
 import (
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 	"time"
 

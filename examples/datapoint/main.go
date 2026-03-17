@@ -4,8 +4,7 @@
 package main
 
 import (
-	"encoding/json/jsontext"
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
@@ -74,7 +73,7 @@ func main() {
 	fmt.Printf("Causes: %d\n", len(dp.Causes()))
 
 	// Serialize to JSON
-	data, err := json.Marshal(dp, jsontext.WithIndent("  "))
+	data, err := json.MarshalIndent(dp, "", "  ")
 	if err != nil {
 		panic(err)
 	}

@@ -2,7 +2,7 @@ package bounded
 
 import (
 	"database/sql/driver"
-	"encoding/json/v2"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"

@@ -1,7 +1,7 @@
 package datapoint
 
 import (
-	"encoding/json/v2"
+	"encoding/json"
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
