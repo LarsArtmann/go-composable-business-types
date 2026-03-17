@@ -33,22 +33,23 @@ GetOrder(id.NewID[UserBrand]("user-123")) // Compile error: type mismatch
 
 ### 1.2 API Surface
 
-| Constructor | Usage |
-|-------------|-------|
-| `NewID[Brand](value)` | Create ID (type inferred for strings) |
-| `NewID[Brand, ValueType](value)` | Create ID with explicit type |
+| Constructor                      | Usage                                 |
+| -------------------------------- | ------------------------------------- |
+| `NewID[Brand](value)`            | Create ID (type inferred for strings) |
+| `NewID[Brand, ValueType](value)` | Create ID with explicit type          |
 
-| Methods | Purpose |
-|---------|---------|
-| `Get() V` | Extract underlying value |
-| `IsZero() bool` | Check for zero value |
-| `Equal(other) bool` | Type-safe equality |
-| `Compare(other) int` | Ordered comparison |
-| `Or(default) ID` | Default value handling |
+| Methods              | Purpose                  |
+| -------------------- | ------------------------ |
+| `Get() V`            | Extract underlying value |
+| `IsZero() bool`      | Check for zero value     |
+| `Equal(other) bool`  | Type-safe equality       |
+| `Compare(other) int` | Ordered comparison       |
+| `Or(default) ID`     | Default value handling   |
 
 ### 1.3 Serialization Support
 
 The `ID` type implements all standard Go interfaces:
+
 - `json.Marshaler` / `json.Unmarshaler` → `"user-123"` or `null`
 - `sql.Scanner` / `driver.Valuer` → Database storage
 - `encoding.TextMarshaler` / `TextUnmarshaler` → XML/TOML
@@ -61,18 +62,19 @@ The `ID` type implements all standard Go interfaces:
 
 ### 2.1 Current State Analysis
 
-| Package | Uses `id` Package? | Uses `nanoid` Directly? | Pattern |
-|---------|-------------------|------------------------|---------|
-| `actor` | ✅ Yes | ❌ No | `id.ID[struct{}, T]` for generic actor IDs |
-| `datapoint` | ❌ No | ✅ Yes | `nanoid.NanoId` for DataPoint IDs |
-| `datapoint/reference.go` | ❌ No | ❌ No | Generic `T comparable` for reference IDs |
-| `datapoint/cause.go` | ❌ No | ✅ Yes | `nanoid.NanoId` for cause IDs |
+| Package                  | Uses `id` Package? | Uses `nanoid` Directly? | Pattern                                    |
+| ------------------------ | ------------------ | ----------------------- | ------------------------------------------ |
+| `actor`                  | ✅ Yes             | ❌ No                   | `id.ID[struct{}, T]` for generic actor IDs |
+| `datapoint`              | ❌ No              | ✅ Yes                  | `nanoid.NanoId` for DataPoint IDs          |
+| `datapoint/reference.go` | ❌ No              | ❌ No                   | Generic `T comparable` for reference IDs   |
+| `datapoint/cause.go`     | ❌ No              | ✅ Yes                  | `nanoid.NanoId` for cause IDs              |
 
 ### 2.2 Analysis: Correct Usage Patterns
 
 #### ✅ `actor` Package: Correct Usage
 
 The `actor` package correctly uses `id.ID[struct{}, T]` because:
+
 - It provides **generic actor entry types** for consumers
 - The brand is `struct{}` (unbranded) because actor IDs can be any comparable type
 - Consumers can use `id.NewID[struct{}, string]("user-123")` directly
@@ -93,6 +95,7 @@ actorEntry := actor.UserActor(userID, "Alice")
 #### ✅ `datapoint` Package: Correct Usage
 
 The `datapoint` package correctly uses `nanoid.NanoId` directly because:
+
 - DataPoint IDs are **always NanoIds** (internal implementation detail)
 - Consumers don't need to brand DataPoint IDs (they're system-generated)
 - The `Reference[T]` and `Cause[T]` types use generics for flexibility
@@ -274,14 +277,14 @@ type UserID = id.ID[UserBrand, string]
 
 ### Decision Matrix
 
-| Use Case | Recommended Type | Rationale |
-|----------|-----------------|-----------|
-| Public entity IDs in your domain | `id.ID[Brand, V]` | Compile-time safety |
-| System-generated internal IDs | `nanoid.NanoId` | Direct, simple, no branding needed |
-| Generic storage (Reference, Cause) | `T comparable` | Maximum flexibility for consumers |
-| Actor IDs in audit trails | `id.ID[struct{}, T]` | Generic but still type-safe |
-| Database primary keys | `id.ID[Brand, int64]` or `id.ID[Brand, string]` | Depends on DB schema |
-| External API identifiers | `id.ID[Brand, string]` | JSON-friendly, human-readable |
+| Use Case                           | Recommended Type                                | Rationale                          |
+| ---------------------------------- | ----------------------------------------------- | ---------------------------------- |
+| Public entity IDs in your domain   | `id.ID[Brand, V]`                               | Compile-time safety                |
+| System-generated internal IDs      | `nanoid.NanoId`                                 | Direct, simple, no branding needed |
+| Generic storage (Reference, Cause) | `T comparable`                                  | Maximum flexibility for consumers  |
+| Actor IDs in audit trails          | `id.ID[struct{}, T]`                            | Generic but still type-safe        |
+| Database primary keys              | `id.ID[Brand, int64]` or `id.ID[Brand, string]` | Depends on DB schema               |
+| External API identifiers           | `id.ID[Brand, string]`                          | JSON-friendly, human-readable      |
 
 ### Quick Reference
 
@@ -327,6 +330,7 @@ type ActorEntry[T comparable] struct {
 ### 6.2 For Library Consumers
 
 1. **Define brands for your domain entities**
+
    ```go
    type UserBrand struct{}
    type OrderBrand struct{}
@@ -334,12 +338,14 @@ type ActorEntry[T comparable] struct {
    ```
 
 2. **Create type aliases for convenience**
+
    ```go
    type UserID = id.ID[UserBrand, nanoid.NanoId]
    type OrderID = id.ID[OrderBrand, nanoid.NanoId]
    ```
 
 3. **Provide constructors for your ID types**
+
    ```go
    func NewUserID() UserID { ... }
    func ParseUserID(s string) (UserID, error) { ... }
@@ -442,6 +448,7 @@ The `id` package is a **powerful tool for library consumers** to achieve compile
 - ❌ NOT to force constraints on consumers
 
 The current architecture correctly separates concerns:
+
 - `actor` uses `id.ID[struct{}, T]` for generic, type-safe actor identification
 - `datapoint` uses `nanoid.NanoId` directly for system-generated IDs
 - `Reference[T]` and `Cause[T]` use `T comparable` for maximum consumer flexibility
