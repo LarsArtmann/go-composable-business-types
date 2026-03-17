@@ -584,7 +584,7 @@ func TestTimestampSQL(t *testing.T) {
 	}
 
 	// Test Scan with nil
-	var ts5 Timestamp = NewTimestamp(time.Now())
+	ts5 := NewTimestamp(time.Now())
 	if err := ts5.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -663,7 +663,7 @@ func TestDurationSQL(t *testing.T) {
 	}
 
 	// Test Scan with nil
-	var d6 Duration = NewDuration(time.Hour)
+	d6 := NewDuration(time.Hour)
 	if err := d6.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
