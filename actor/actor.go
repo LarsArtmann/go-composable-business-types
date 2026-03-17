@@ -1,3 +1,15 @@
+// Package actor provides types for tracking audit trails and actor chains.
+//
+// ActorChain represents an ordered chain of actors (e.g., User → Service → Service)
+// for tracking who performed actions in a system. Each ActorEntry contains
+// an ID, name, and kind (User, Bot, System, Service).
+//
+// Basic usage:
+//
+//	chain := actor.NewActorChain(actor.UserActor(userID, "Alice")).
+//	    Append(actor.ServiceActor(serviceID, "API Gateway"))
+//	origin := chain.Origin()   // User Alice
+//	current := chain.Current() // API Gateway
 package actor
 
 import (

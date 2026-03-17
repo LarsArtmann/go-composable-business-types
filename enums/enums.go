@@ -1,3 +1,12 @@
+// Package enums provides generated enumerations for common domain concepts.
+//
+// This package uses go-enum for code generation and includes:
+//   - ActorKind: User, Bot, System, Service
+//   - Priority: Low, Medium, High, Critical
+//   - Status: Draft, Active, Paused, Archived, Deleted
+//   - Trigger: Manual, Scheduled, Webhook, Import, Migration, System, Correction
+//
+//go:generate go tool go-enum --marshal --names --values --mustparse --sql
 package enums
 
 //go:generate go tool go-enum --marshal --names --values --mustparse --sql

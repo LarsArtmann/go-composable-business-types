@@ -1,3 +1,15 @@
+// Package datapoint provides self-contained data units with complete audit trails.
+//
+// DataPoint[T] wraps a payload of type T with comprehensive metadata including
+// NanoId, Bitemporal tracking, Actor, Trigger, Context, References, Causes, Tags, and Version.
+// Inspired by event sourcing, it preserves all relationships at the application layer.
+//
+// Basic usage:
+//
+//	dp := datapoint.NewDataPoint(payload, actorEntry).
+//	    WithTrigger(enums.TriggerWebhook).
+//	    WithReason("customer checkout").
+//	    WithReference(datapoint.NewReference("order-123", "parent"))
 package datapoint
 
 import (

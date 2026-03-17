@@ -72,7 +72,7 @@ func main() {
 	fmt.Printf("References: %d\n", len(dp.References()))
 	fmt.Printf("Causes: %d\n", len(dp.Causes()))
 
-	// Serialize to JSON
+	// Serialize to JSON with indentation
 	data, err := json.MarshalIndent(dp, "", "  ")
 	if err != nil {
 		panic(err)

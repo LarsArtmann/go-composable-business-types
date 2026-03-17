@@ -1,3 +1,15 @@
+// Package temporal provides bitemporal time tracking.
+//
+// Bitemporal captures both valid time (when the fact was true in the real world)
+// and transaction time (when it was recorded in the system). This enables
+// point-in-time queries and corrections of historical data.
+//
+// Basic usage:
+//
+//	from := types.NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+//	until := types.NewTimestamp(time.Date(2024, 12, 31, 0, 0, 0, 0, time.UTC))
+//	recorded := types.Now()
+//	temp := temporal.NewBitemporalWithRange(from, until, recorded)
 package temporal
 
 import (

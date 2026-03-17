@@ -1,3 +1,13 @@
+// Package nanoid provides URL-safe, unique identifiers.
+//
+// NanoId is a FIPS-140 compatible, high-performance unique ID generator
+// wrapped around github.com/sixafter/nanoid. Default length is 21 characters
+// (126 bits of entropy).
+//
+// Basic usage:
+//
+//	id := nanoid.NewNanoId()  // 21 chars
+//	id := nanoid.NewNanoIdWithLength(32)
 package nanoid
 
 import (

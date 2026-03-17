@@ -1,3 +1,13 @@
+// Package locale provides BCP 47 language tag handling for internationalization.
+//
+// Locale wraps golang.org/x/text/language.Tag for full BCP 47 compliance.
+// It supports parsing, serialization, and SQL storage.
+//
+// Basic usage:
+//
+//	loc, err := locale.ParseLocale("en-US")
+//	// Or use constants:
+//	loc = locale.LocaleDeDE
 package locale
 
 import (

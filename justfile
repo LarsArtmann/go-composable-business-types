@@ -7,28 +7,28 @@ default:
 
 # Generate enum code
 generate:
-    go generate ./...
+    GOEXPERIMENT=jsonv2 go generate ./...
 
 # Build the project
 build:
-    go build ./...
+    GOEXPERIMENT=jsonv2 go build ./...
 
 # Run all tests with race detector
 test:
-    go test -race ./...
+    GOEXPERIMENT=jsonv2 go test -race ./...
 
 # Run tests with coverage
 test-coverage:
-    go test -race -coverprofile=coverage.out ./...
+    GOEXPERIMENT=jsonv2 go test -race -coverprofile=coverage.out ./...
     @go tool cover -func=coverage.out | grep -E '^total:'
 
 # Run benchmarks
 bench:
-    go test -bench=. -benchmem -timeout=5m ./...
+    GOEXPERIMENT=jsonv2 go test -bench=. -benchmem -timeout=5m ./...
 
 # Run linting
 lint:
-    golangci-lint run --fix
+    GOEXPERIMENT=jsonv2 golangci-lint run --fix
 
 # Run everything: generate, build, test, lint
 check: generate build test lint
@@ -49,11 +49,11 @@ install-deps:
 
 # Format code
 fmt:
-    go fmt ./...
+    GOEXPERIMENT=jsonv2 go fmt ./...
 
 # Vet code
 vet:
-    go vet ./...
+    GOEXPERIMENT=jsonv2 go vet ./...
 
 # Run go mod tidy
 tidy:

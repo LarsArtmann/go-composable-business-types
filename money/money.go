@@ -1,3 +1,13 @@
+// Package money provides ISO 4217 currency handling.
+//
+// Money wraps github.com/bojanz/currency for domain clarity and type safety.
+// It supports formatting, arithmetic, and parsing from various formats.
+//
+// Basic usage:
+//
+//	usd, err := money.NewMoney("99.99", "USD")
+//	eur := money.MustParseCurrency("EUR")
+//	formatted := money.FormatMoney(usd, "de_DE") // "99,99 $"
 package money
 
 import (

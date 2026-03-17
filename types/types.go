@@ -1,3 +1,14 @@
+// Package types provides common domain types for business applications.
+//
+// Types included: Email, URL, Percentage, Cents, Timestamp, Duration.
+// All types include validation, SQL scanning, and JSON serialization support.
+//
+// Basic usage:
+//
+//	email, _ := types.NewEmail("user@example.com")
+//	url, _ := types.NewURL("https://example.com")
+//	cents := types.NewCents(1099) // $10.99
+//	pct := types.NewPercentage(50) // 50%
 package types
 
 import (

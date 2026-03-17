@@ -1,3 +1,14 @@
+// Package bounded provides length-validated string types.
+//
+// BoundedString ensures strings meet minimum and maximum length constraints,
+// useful for domain validation (e.g., product names, titles, descriptions).
+//
+// Basic usage:
+//
+//	name, err := bounded.NewBoundedString(1, 100, "John Doe")
+//	// Or use factory functions:
+//	NewProductName := bounded.BoundedStringOf(1, 200)
+//	product, err := NewProductName("Widget")
 package bounded
 
 import (

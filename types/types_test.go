@@ -188,3 +188,516 @@ func TestURL(t *testing.T) {
 		})
 	}
 }
+
+func TestURLParts(t *testing.T) {
+	url, _ := NewURL("https://example.com:8080/path/to/resource")
+	if url.Scheme() != "https" {
+		t.Errorf("expected scheme https, got %s", url.Scheme())
+	}
+	if url.Host() != "example.com:8080" {
+		t.Errorf("expected host example.com:8080, got %s", url.Host())
+	}
+	if url.Path() != "/path/to/resource" {
+		t.Errorf("expected path /path/to/resource, got %s", url.Path())
+	}
+}
+
+func TestURLIsZero(t *testing.T) {
+	var zero URL
+	if !zero.IsZero() {
+		t.Error("zero URL should be zero")
+	}
+
+	url, _ := NewURL("https://example.com")
+	if url.IsZero() {
+		t.Error("non-zero URL should not be zero")
+	}
+}
+
+func TestMustParseEmail(t *testing.T) {
+	email := MustParseEmail("test@example.com")
+	if email.String() != "test@example.com" {
+		t.Errorf("expected test@example.com, got %s", email.String())
+	}
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("expected panic for invalid email")
+		}
+	}()
+	MustParseEmail("invalid-email")
+}
+
+func TestMustParseURL(t *testing.T) {
+	url := MustParseURL("https://example.com")
+	if url.String() != "https://example.com" {
+		t.Errorf("expected https://example.com, got %s", url.String())
+	}
+
+	defer func() {
+		if r := recover(); r == nil {
+			t.Error("expected panic for invalid URL")
+		}
+	}()
+	MustParseURL("not-a-valid-url")
+}
+
+func TestEmailNormalize(t *testing.T) {
+	email, _ := NewEmail("User@Example.COM")
+	normalized := email.Normalize()
+	if normalized.String() != "User@example.com" {
+		t.Errorf("expected User@example.com, got %s", normalized.String())
+	}
+}
+
+func TestEmailIsZero(t *testing.T) {
+	var zero Email
+	if !zero.IsZero() {
+		t.Error("zero Email should be zero")
+	}
+
+	email, _ := NewEmail("test@example.com")
+	if email.IsZero() {
+		t.Error("non-zero Email should not be zero")
+	}
+}
+
+func TestPercentageCompare(t *testing.T) {
+	tests := []struct {
+		a, b     Percentage
+		expected int
+	}{
+		{NewPercentage(50), NewPercentage(50), 0},
+		{NewPercentage(30), NewPercentage(50), -1},
+		{NewPercentage(70), NewPercentage(50), 1},
+	}
+
+	for _, tt := range tests {
+		result := tt.a.Compare(tt.b)
+		if result != tt.expected {
+			t.Errorf("Compare(%d, %d) = %d, expected %d", tt.a, tt.b, result, tt.expected)
+		}
+	}
+}
+
+func TestCentsCompare(t *testing.T) {
+	tests := []struct {
+		a, b     Cents
+		expected int
+	}{
+		{NewCents(100), NewCents(100), 0},
+		{NewCents(50), NewCents(100), -1},
+		{NewCents(150), NewCents(100), 1},
+	}
+
+	for _, tt := range tests {
+		result := tt.a.Compare(tt.b)
+		if result != tt.expected {
+			t.Errorf("Compare(%d, %d) = %d, expected %d", tt.a, tt.b, result, tt.expected)
+		}
+	}
+}
+
+func TestTimestampCompare(t *testing.T) {
+	t1 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+	t2 := NewTimestamp(time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC))
+	t3 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+
+	if t1.Compare(t2) != -1 {
+		t.Error("t1 should be before t2")
+	}
+	if t2.Compare(t1) != 1 {
+		t.Error("t2 should be after t1")
+	}
+	if t1.Compare(t3) != 0 {
+		t.Error("t1 should equal t3")
+	}
+}
+
+func TestDurationCompare(t *testing.T) {
+	d1 := NewDuration(time.Hour)
+	d2 := NewDuration(2 * time.Hour)
+	d3 := NewDuration(time.Hour)
+
+	if d1.Compare(d2) != -1 {
+		t.Error("d1 should be less than d2")
+	}
+	if d2.Compare(d1) != 1 {
+		t.Error("d2 should be greater than d1")
+	}
+	if d1.Compare(d3) != 0 {
+		t.Error("d1 should equal d3")
+	}
+}
+
+// SQL Scanner/Valuer tests
+func TestEmailSQL(t *testing.T) {
+	// Test Value
+	email, _ := NewEmail("test@example.com")
+	val, err := email.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != "test@example.com" {
+		t.Errorf("expected test@example.com, got %v", val)
+	}
+
+	// Test Value for zero
+	var zero Email
+	val, err = zero.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != nil {
+		t.Errorf("expected nil, got %v", val)
+	}
+
+	// Test Scan with string
+	var e Email
+	if err := e.Scan("scanned@example.com"); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if e.String() != "scanned@example.com" {
+		t.Errorf("expected scanned@example.com, got %s", e.String())
+	}
+
+	// Test Scan with []byte
+	var e2 Email
+	if err := e2.Scan([]byte("byte@example.com")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if e2.String() != "byte@example.com" {
+		t.Errorf("expected byte@example.com, got %s", e2.String())
+	}
+
+	// Test Scan with nil
+	var e3 Email
+	e3, _ = NewEmail("test@example.com")
+	if err := e3.Scan(nil); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !e3.IsZero() {
+		t.Error("expected zero value after scanning nil")
+	}
+
+	// Test Scan with empty string
+	var e4 Email
+	if err := e4.Scan(""); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !e4.IsZero() {
+		t.Error("expected zero value after scanning empty string")
+	}
+
+	// Test Scan with invalid type
+	var e5 Email
+	if err := e5.Scan(123); err == nil {
+		t.Error("expected error for invalid type")
+	}
+
+	// Test Scan with invalid email
+	var e6 Email
+	if err := e6.Scan("not-an-email"); err == nil {
+		t.Error("expected error for invalid email")
+	}
+}
+
+func TestURLSQL(t *testing.T) {
+	// Test Value
+	url := MustParseURL("https://example.com")
+	val, err := url.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != "https://example.com" {
+		t.Errorf("expected https://example.com, got %v", val)
+	}
+
+	// Test Value for zero
+	var zero URL
+	val, err = zero.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != nil {
+		t.Errorf("expected nil, got %v", val)
+	}
+
+	// Test Scan with string
+	var u URL
+	if err := u.Scan("https://scanned.example.com"); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if u.String() != "https://scanned.example.com" {
+		t.Errorf("expected https://scanned.example.com, got %s", u.String())
+	}
+
+	// Test Scan with []byte
+	var u2 URL
+	if err := u2.Scan([]byte("https://byte.example.com")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if u2.String() != "https://byte.example.com" {
+		t.Errorf("expected https://byte.example.com, got %s", u2.String())
+	}
+
+	// Test Scan with nil
+	u3 := MustParseURL("https://example.com")
+	if err := u3.Scan(nil); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !u3.IsZero() {
+		t.Error("expected zero value after scanning nil")
+	}
+
+	// Test Scan with empty string
+	var u4 URL
+	if err := u4.Scan(""); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !u4.IsZero() {
+		t.Error("expected zero value after scanning empty string")
+	}
+
+	// Test Scan with invalid type
+	var u5 URL
+	if err := u5.Scan(123); err == nil {
+		t.Error("expected error for invalid type")
+	}
+
+	// Test Scan with invalid URL
+	var u6 URL
+	if err := u6.Scan("not-a-url"); err == nil {
+		t.Error("expected error for invalid URL")
+	}
+}
+
+func TestCentsSQL(t *testing.T) {
+	// Test Value
+	c := NewCents(1099)
+	val, err := c.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != int64(1099) {
+		t.Errorf("expected 1099, got %v", val)
+	}
+
+	// Test Scan with int64
+	var c2 Cents
+	if err := c2.Scan(int64(500)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if c2 != 500 {
+		t.Errorf("expected 500, got %d", c2)
+	}
+
+	// Test Scan with float64
+	var c3 Cents
+	if err := c3.Scan(float64(750)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if c3 != 750 {
+		t.Errorf("expected 750, got %d", c3)
+	}
+
+	// Test Scan with []byte
+	var c4 Cents
+	if err := c4.Scan([]byte("999")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if c4 != 999 {
+		t.Errorf("expected 999, got %d", c4)
+	}
+
+	// Test Scan with nil
+	c5 := NewCents(100)
+	if err := c5.Scan(nil); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if c5 != 0 {
+		t.Errorf("expected 0, got %d", c5)
+	}
+
+	// Test Scan with invalid type
+	var c6 Cents
+	if err := c6.Scan("not-a-number"); err == nil {
+		t.Error("expected error for invalid type")
+	}
+
+	// Test Scan with invalid []byte
+	var c7 Cents
+	if err := c7.Scan([]byte("not-a-number")); err == nil {
+		t.Error("expected error for invalid []byte")
+	}
+}
+
+func TestTimestampSQL(t *testing.T) {
+	// Test Value
+	ts := NewTimestamp(time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC))
+	val, err := ts.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !val.(time.Time).Equal(ts.Time) {
+		t.Errorf("expected %v, got %v", ts.Time, val)
+	}
+
+	// Test Value for zero
+	var zero Timestamp
+	val, err = zero.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != nil {
+		t.Errorf("expected nil, got %v", val)
+	}
+
+	// Test Scan with time.Time
+	var ts2 Timestamp
+	inputTime := time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC)
+	if err := ts2.Scan(inputTime); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !ts2.Equal(inputTime) {
+		t.Errorf("expected %v, got %v", inputTime, ts2.Time)
+	}
+
+	// Test Scan with string (RFC3339)
+	var ts3 Timestamp
+	if err := ts3.Scan("2024-03-15T12:00:00Z"); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	expected := time.Date(2024, 3, 15, 12, 0, 0, 0, time.UTC)
+	if !ts3.Equal(expected) {
+		t.Errorf("expected %v, got %v", expected, ts3.Time)
+	}
+
+	// Test Scan with []byte (RFC3339)
+	var ts4 Timestamp
+	if err := ts4.Scan([]byte("2024-09-01T00:00:00Z")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	expected2 := time.Date(2024, 9, 1, 0, 0, 0, 0, time.UTC)
+	if !ts4.Equal(expected2) {
+		t.Errorf("expected %v, got %v", expected2, ts4.Time)
+	}
+
+	// Test Scan with nil
+	var ts5 Timestamp = NewTimestamp(time.Now())
+	if err := ts5.Scan(nil); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if !ts5.Time.IsZero() {
+		t.Error("expected zero time after scanning nil")
+	}
+
+	// Test Scan with invalid type
+	var ts6 Timestamp
+	if err := ts6.Scan(123); err == nil {
+		t.Error("expected error for invalid type")
+	}
+
+	// Test Scan with invalid string
+	var ts7 Timestamp
+	if err := ts7.Scan("not-a-timestamp"); err == nil {
+		t.Error("expected error for invalid timestamp string")
+	}
+}
+
+func TestDurationSQL(t *testing.T) {
+	// Test Value
+	d := NewDuration(time.Hour + 30*time.Minute)
+	val, err := d.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != int64(time.Hour+30*time.Minute) {
+		t.Errorf("expected %d, got %v", int64(time.Hour+30*time.Minute), val)
+	}
+
+	// Test Value for zero
+	var zero Duration
+	val, err = zero.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != nil {
+		t.Errorf("expected nil, got %v", val)
+	}
+
+	// Test Scan with int64
+	var d2 Duration
+	if err := d2.Scan(int64(time.Hour)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d2.Duration != time.Hour {
+		t.Errorf("expected %v, got %v", time.Hour, d2.Duration)
+	}
+
+	// Test Scan with float64
+	var d3 Duration
+	if err := d3.Scan(float64(2 * time.Hour)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d3.Duration != 2*time.Hour {
+		t.Errorf("expected %v, got %v", 2*time.Hour, d3.Duration)
+	}
+
+	// Test Scan with string
+	var d4 Duration
+	if err := d4.Scan("30m"); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d4.Duration != 30*time.Minute {
+		t.Errorf("expected 30m, got %v", d4.Duration)
+	}
+
+	// Test Scan with []byte
+	var d5 Duration
+	if err := d5.Scan([]byte("1h30m")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d5.Duration != time.Hour+30*time.Minute {
+		t.Errorf("expected 1h30m, got %v", d5.Duration)
+	}
+
+	// Test Scan with nil
+	var d6 Duration = NewDuration(time.Hour)
+	if err := d6.Scan(nil); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d6.Duration != 0 {
+		t.Errorf("expected 0, got %v", d6.Duration)
+	}
+
+	// Test Scan with empty string
+	var d7 Duration
+	if err := d7.Scan(""); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d7.Duration != 0 {
+		t.Errorf("expected 0, got %v", d7.Duration)
+	}
+
+	// Test Scan with empty []byte
+	var d8 Duration
+	if err := d8.Scan([]byte{}); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d8.Duration != 0 {
+		t.Errorf("expected 0, got %v", d8.Duration)
+	}
+
+	// Test Scan with invalid type
+	var d9 Duration
+	if err := d9.Scan(struct{}{}); err == nil {
+		t.Error("expected error for invalid type")
+	}
+
+	// Test Scan with invalid string
+	var d10 Duration
+	if err := d10.Scan("not-a-duration"); err == nil {
+		t.Error("expected error for invalid duration string")
+	}
+}
