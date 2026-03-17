@@ -37,7 +37,7 @@ import (
 	"encoding"
 	"encoding/binary"
 	"encoding/gob"
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 	"strconv"
 )
