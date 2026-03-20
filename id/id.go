@@ -42,6 +42,13 @@ import (
 	"strconv"
 )
 
+// Byte sizes for binary marshaling of integer types
+const (
+	byteSizeInt16 = 2 // size of int16 and uint16 in bytes
+	byteSizeInt32 = 4 // size of int32 and uint32 in bytes
+	byteSizeInt64 = 8 // size of int64, uint, and uint64 in bytes
+)
+
 // ID is a branded, strongly-typed identifier that prevents mixing different entity IDs.
 // B is the brand (phantom type for distinctness), V is the value type.
 //
@@ -483,15 +490,15 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 	case int8:
 		return []byte{byte(v)}, nil
 	case int16:
-		b := make([]byte, 2)
+		b := make([]byte, byteSizeInt16)
 		binary.LittleEndian.PutUint16(b, uint16(v))
 		return b, nil
 	case int32:
-		b := make([]byte, 4)
+		b := make([]byte, byteSizeInt32)
 		binary.LittleEndian.PutUint32(b, uint32(v))
 		return b, nil
 	case int64:
-		b := make([]byte, 8)
+		b := make([]byte, byteSizeInt64)
 		binary.LittleEndian.PutUint64(b, uint64(v))
 		return b, nil
 	case uint:
@@ -502,15 +509,15 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 	case uint8:
 		return []byte{v}, nil
 	case uint16:
-		b := make([]byte, 2)
+		b := make([]byte, byteSizeInt16)
 		binary.LittleEndian.PutUint16(b, v)
 		return b, nil
 	case uint32:
-		b := make([]byte, 4)
+		b := make([]byte, byteSizeInt32)
 		binary.LittleEndian.PutUint32(b, v)
 		return b, nil
 	case uint64:
-		b := make([]byte, 8)
+		b := make([]byte, byteSizeInt64)
 		binary.LittleEndian.PutUint64(b, v)
 		return b, nil
 	default:
@@ -531,8 +538,8 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		*id = ID[B, V]{value: any(string(data)).(V)}
 		return nil
 	case int:
-		if len(data) < 8 {
-			return fmt.Errorf("id: insufficient data for int: got %d bytes, want 8", len(data))
+		if len(data) < byteSizeInt64 {
+			return fmt.Errorf("id: insufficient data for int: got %d bytes, want %d", len(data), byteSizeInt64)
 		}
 		n := int(binary.LittleEndian.Uint64(data))
 		*id = ID[B, V]{value: any(n).(V)}
@@ -544,29 +551,29 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		*id = ID[B, V]{value: any(int8(data[0])).(V)}
 		return nil
 	case int16:
-		if len(data) < 2 {
-			return fmt.Errorf("id: insufficient data for int16: got %d bytes, want 2", len(data))
+		if len(data) < byteSizeInt16 {
+			return fmt.Errorf("id: insufficient data for int16: got %d bytes, want %d", len(data), byteSizeInt16)
 		}
 		n := int16(binary.LittleEndian.Uint16(data))
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int32:
-		if len(data) < 4 {
-			return fmt.Errorf("id: insufficient data for int32: got %d bytes, want 4", len(data))
+		if len(data) < byteSizeInt32 {
+			return fmt.Errorf("id: insufficient data for int32: got %d bytes, want %d", len(data), byteSizeInt32)
 		}
 		n := int32(binary.LittleEndian.Uint32(data))
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int64:
-		if len(data) < 8 {
-			return fmt.Errorf("id: insufficient data for int64: got %d bytes, want 8", len(data))
+		if len(data) < byteSizeInt64 {
+			return fmt.Errorf("id: insufficient data for int64: got %d bytes, want %d", len(data), byteSizeInt64)
 		}
 		n := int64(binary.LittleEndian.Uint64(data))
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case uint:
-		if len(data) < 8 {
-			return fmt.Errorf("id: insufficient data for uint: got %d bytes, want 8", len(data))
+		if len(data) < byteSizeInt64 {
+			return fmt.Errorf("id: insufficient data for uint: got %d bytes, want %d", len(data), byteSizeInt64)
 		}
 		n := uint(binary.LittleEndian.Uint64(data))
 		*id = ID[B, V]{value: any(n).(V)}
@@ -578,22 +585,22 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		*id = ID[B, V]{value: any(data[0]).(V)}
 		return nil
 	case uint16:
-		if len(data) < 2 {
-			return fmt.Errorf("id: insufficient data for uint16: got %d bytes, want 2", len(data))
+		if len(data) < byteSizeInt16 {
+			return fmt.Errorf("id: insufficient data for uint16: got %d bytes, want %d", len(data), byteSizeInt16)
 		}
 		n := binary.LittleEndian.Uint16(data)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case uint32:
-		if len(data) < 4 {
-			return fmt.Errorf("id: insufficient data for uint32: got %d bytes, want 4", len(data))
+		if len(data) < byteSizeInt32 {
+			return fmt.Errorf("id: insufficient data for uint32: got %d bytes, want %d", len(data), byteSizeInt32)
 		}
 		n := binary.LittleEndian.Uint32(data)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case uint64:
-		if len(data) < 8 {
-			return fmt.Errorf("id: insufficient data for uint64: got %d bytes, want 8", len(data))
+		if len(data) < byteSizeInt64 {
+			return fmt.Errorf("id: insufficient data for uint64: got %d bytes, want %d", len(data), byteSizeInt64)
 		}
 		n := binary.LittleEndian.Uint64(data)
 		*id = ID[B, V]{value: any(n).(V)}

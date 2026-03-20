@@ -21,6 +21,12 @@ type Order struct {
 	Amount     int64  `json:"amount"`
 }
 
+// Example values for demonstration purposes
+const (
+	exampleOrderAmount = 10000 // $100.00 in cents
+	exampleRefVersion  = 5
+)
+
 func main() {
 	// Create an actor (user who initiated the action)
 	userID := id.NewID[struct{}, string]("user-123")
@@ -37,7 +43,7 @@ func main() {
 	order := Order{
 		OrderID:    "ORD-2024-001",
 		CustomerID: "CUST-456",
-		Amount:     10000, // $100.00 in cents
+		Amount:     exampleOrderAmount,
 	}
 
 	// Create DataPoint with complete audit trail
@@ -51,7 +57,7 @@ func main() {
 
 	// Add references to related entities
 	customerRef := datapoint.NewReference("CUST-456", "customer").
-		WithVersion(5)
+		WithVersion(exampleRefVersion)
 	dp = dp.WithReference(customerRef)
 
 	// Add causal chain (this order was triggered by a cart event)

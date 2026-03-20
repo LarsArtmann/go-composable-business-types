@@ -11,6 +11,12 @@ import (
 	"github.com/larsartmann/go-composable-business-types/types"
 )
 
+// Example values for demonstration purposes
+const (
+	exampleCents      = 1099 // $10.99 in cents
+	examplePercentage = 75   // 75%
+)
+
 func main() {
 	// Generate a unique NanoId
 	id := nanoid.NewNanoId()
@@ -26,11 +32,11 @@ func main() {
 	fmt.Println("Domain:", email.Domain())
 
 	// Create monetary amounts
-	cents := types.NewCents(1099)
+	cents := types.NewCents(exampleCents)
 	fmt.Printf("Cents: %s (%.2f)\n", cents.String(), cents.Float64())
 
 	// Create percentage
-	pct := types.NewPercentage(75)
+	pct := types.NewPercentage(examplePercentage)
 	fmt.Printf("Percentage: %s (%.2f)\n", pct.String(), pct.Float64())
 
 	// Parse URL

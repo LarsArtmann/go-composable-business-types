@@ -172,13 +172,19 @@ func (u URL) Path() string {
 // Percentage represents a value from 0-100.
 type Percentage uint8
 
+// Percentage constants for common values
+const (
+	percentageDivisor  = 100 // Used for float64 conversion
+	percentageMaxValue = 100 // Maximum valid percentage
+)
+
 func NewPercentage(v uint8) Percentage {
-	if v > 100 {
-		return 100
+	if v > percentageMaxValue {
+		return percentageMaxValue
 	}
 	return Percentage(v)
 }
-func (p Percentage) Float64() float64 { return float64(p) / 100 }
+func (p Percentage) Float64() float64 { return float64(p) / percentageDivisor }
 
 // String returns the percentage as a human-readable string (e.g., "50%").
 func (p Percentage) String() string { return fmt.Sprintf("%d%%", p) }
@@ -190,7 +196,7 @@ func (p Percentage) IsZero() bool { return p == 0 }
 func (p Percentage) IsMin() bool { return p == 0 }
 
 // IsMax returns true if the percentage is 100 (maximum value).
-func (p Percentage) IsMax() bool { return p == 100 }
+func (p Percentage) IsMax() bool { return p == percentageMaxValue }
 
 // Compare returns -1 if p < other, 0 if equal, 1 if p > other.
 func (p Percentage) Compare(other Percentage) int {
@@ -206,9 +212,12 @@ func (p Percentage) Compare(other Percentage) int {
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 
+// Cents conversion constant
+const centsDivisor = 100 // Used for float64 conversion
+
 func NewCents(v int64) Cents     { return Cents(v) }
 func (c Cents) Int64() int64     { return int64(c) }
-func (c Cents) Float64() float64 { return float64(c) / 100 }
+func (c Cents) Float64() float64 { return float64(c) / centsDivisor }
 
 func (c Cents) Add(other Cents) Cents { return c + other }
 func (c Cents) Sub(other Cents) Cents { return c - other }
@@ -232,7 +241,7 @@ func (c Cents) Sign() int {
 }
 
 // String returns the cents as a human-readable currency string (e.g., "$12.34").
-func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/100.0) }
+func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/centsDivisor) }
 
 func (c Cents) IsZero() bool     { return c == 0 }
 func (c Cents) IsPositive() bool { return c > 0 }

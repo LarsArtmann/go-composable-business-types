@@ -25,6 +25,10 @@ type NanoId struct{ value string }
 const (
 	// DefaultNanoIdLength is the default length for new NanoIds (21 chars = 126 bits of entropy).
 	DefaultNanoIdLength = nanoid.DefaultLength
+
+	// Minimum length constraints
+	minNanoIdLength = 8   // ErrNanoIdTooShort
+	maxNanoIdLength = 256 // ErrNanoIdTooLong
 )
 
 var (
@@ -52,10 +56,10 @@ func ParseNanoId(s string) (NanoId, error) {
 	if s == "" {
 		return NanoId{}, ErrNanoIdEmpty
 	}
-	if len(s) < 8 {
+	if len(s) < minNanoIdLength {
 		return NanoId{}, ErrNanoIdTooShort
 	}
-	if len(s) > 256 {
+	if len(s) > maxNanoIdLength {
 		return NanoId{}, ErrNanoIdTooLong
 	}
 
