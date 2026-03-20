@@ -911,35 +911,35 @@ func FuzzIDBinaryString(f *testing.F) {
 // Benchmarks
 
 func BenchmarkNewID(b *testing.B) {
-	for range b.N {
+	for b.Loop() {
 		_ = NewID[StringBrand]("test-id")
 	}
 }
 
 func BenchmarkIDGet(b *testing.B) {
 	id := NewID[StringBrand]("test-id")
-	for range b.N {
+	for b.Loop() {
 		_ = id.Get()
 	}
 }
 
 func BenchmarkIDString(b *testing.B) {
 	id := NewID[StringBrand]("test-id")
-	for range b.N {
+	for b.Loop() {
 		_ = id.String()
 	}
 }
 
 func BenchmarkIDStringInt64(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
-	for range b.N {
+	for b.Loop() {
 		_ = id.String()
 	}
 }
 
 func BenchmarkIDIsZero(b *testing.B) {
 	id := NewID[StringBrand]("test-id")
-	for range b.N {
+	for b.Loop() {
 		_ = id.IsZero()
 	}
 }
@@ -947,7 +947,7 @@ func BenchmarkIDIsZero(b *testing.B) {
 func BenchmarkIDEqual(b *testing.B) {
 	id1 := NewID[StringBrand]("test-id")
 	id2 := NewID[StringBrand]("test-id")
-	for range b.N {
+	for b.Loop() {
 		_ = id1.Equal(id2)
 	}
 }
@@ -955,28 +955,28 @@ func BenchmarkIDEqual(b *testing.B) {
 func BenchmarkIDCompare(b *testing.B) {
 	id1 := NewID[Int64Brand, int64](100)
 	id2 := NewID[Int64Brand, int64](200)
-	for range b.N {
+	for b.Loop() {
 		_ = id1.Compare(id2)
 	}
 }
 
 func BenchmarkIDMarshalJSON(b *testing.B) {
 	id := NewID[StringBrand]("test-id-12345")
-	for range b.N {
+	for b.Loop() {
 		_, _ = id.MarshalJSON()
 	}
 }
 
 func BenchmarkIDMarshalJSONInt64(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
-	for range b.N {
+	for b.Loop() {
 		_, _ = id.MarshalJSON()
 	}
 }
 
 func BenchmarkIDUnmarshalJSON(b *testing.B) {
 	data := []byte(`"test-id-12345"`)
-	for range b.N {
+	for b.Loop() {
 		var id ID[StringBrand, string]
 		_ = id.UnmarshalJSON(data)
 	}
@@ -984,7 +984,7 @@ func BenchmarkIDUnmarshalJSON(b *testing.B) {
 
 func BenchmarkIDUnmarshalJSONInt64(b *testing.B) {
 	data := []byte(`123456789`)
-	for range b.N {
+	for b.Loop() {
 		var id ID[Int64Brand, int64]
 		_ = id.UnmarshalJSON(data)
 	}
@@ -992,7 +992,7 @@ func BenchmarkIDUnmarshalJSONInt64(b *testing.B) {
 
 func BenchmarkIDMarshalBinary(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
-	for range b.N {
+	for b.Loop() {
 		_, _ = id.MarshalBinary()
 	}
 }
@@ -1000,21 +1000,21 @@ func BenchmarkIDMarshalBinary(b *testing.B) {
 func BenchmarkIDUnmarshalBinary(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
 	data, _ := id.MarshalBinary()
-	for range b.N {
+	for b.Loop() {
 		var restored ID[Int64Brand, int64]
 		_ = restored.UnmarshalBinary(data)
 	}
 }
 
 func BenchmarkIDScan(b *testing.B) {
-	for range b.N {
+	for b.Loop() {
 		var id ID[StringBrand, string]
 		_ = id.Scan("test-id-12345")
 	}
 }
 
 func BenchmarkIDScanInt64(b *testing.B) {
-	for range b.N {
+	for b.Loop() {
 		var id ID[Int64Brand, int64]
 		_ = id.Scan(int64(123456789))
 	}
@@ -1022,21 +1022,21 @@ func BenchmarkIDScanInt64(b *testing.B) {
 
 func BenchmarkIDValue(b *testing.B) {
 	id := NewID[StringBrand]("test-id-12345")
-	for range b.N {
+	for b.Loop() {
 		_, _ = id.Value()
 	}
 }
 
 func BenchmarkIDValueInt64(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
-	for range b.N {
+	for b.Loop() {
 		_, _ = id.Value()
 	}
 }
 
 func BenchmarkJSONRoundTrip(b *testing.B) {
 	id := NewID[StringBrand]("test-id-12345")
-	for range b.N {
+	for b.Loop() {
 		data, _ := json.Marshal(id)
 		var restored ID[StringBrand, string]
 		_ = json.Unmarshal(data, &restored)
@@ -1045,7 +1045,7 @@ func BenchmarkJSONRoundTrip(b *testing.B) {
 
 func BenchmarkJSONRoundTripInt64(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
-	for range b.N {
+	for b.Loop() {
 		data, _ := json.Marshal(id)
 		var restored ID[Int64Brand, int64]
 		_ = json.Unmarshal(data, &restored)
