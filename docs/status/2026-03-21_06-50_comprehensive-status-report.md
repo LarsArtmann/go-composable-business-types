@@ -29,33 +29,33 @@ The project is in **GOOD HEALTH**. All tests pass, build succeeds, and significa
 
 ### A) FULLY DONE ✅
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Shared scanutil package | ✅ COMPLETE | ScanString, ScanInt64 helpers; refactored 4 packages |
-| JSON marshaling for Percentage/Duration | ✅ COMPLETE | MarshalJSON/UnmarshalJSON implemented |
-| Scan/Value for Percentage | ✅ COMPLETE | SQL support now complete |
-| Email.split() optimization | ✅ COMPLETE | Replaced loop with strings.IndexByte |
-| URL.Scheme() optimization | ✅ COMPLETE | Replaced loop with strings.IndexByte |
-| validate.Validator interface | ✅ COMPLETE | New package with interface |
-| Validate() on types | ✅ COMPLETE | Email, URL, Cents, Percentage |
-| Tests added | ✅ COMPLETE | scanutil, PercentageJSON, DurationJSON |
-| Linter fixes applied | ✅ COMPLETE | golangci-lint auto-fixes |
-| Commits pushed | ✅ COMPLETE | 6 commits to origin |
+| Task                                    | Status      | Notes                                                |
+| --------------------------------------- | ----------- | ---------------------------------------------------- |
+| Shared scanutil package                 | ✅ COMPLETE | ScanString, ScanInt64 helpers; refactored 4 packages |
+| JSON marshaling for Percentage/Duration | ✅ COMPLETE | MarshalJSON/UnmarshalJSON implemented                |
+| Scan/Value for Percentage               | ✅ COMPLETE | SQL support now complete                             |
+| Email.split() optimization              | ✅ COMPLETE | Replaced loop with strings.IndexByte                 |
+| URL.Scheme() optimization               | ✅ COMPLETE | Replaced loop with strings.IndexByte                 |
+| validate.Validator interface            | ✅ COMPLETE | New package with interface                           |
+| Validate() on types                     | ✅ COMPLETE | Email, URL, Cents, Percentage                        |
+| Tests added                             | ✅ COMPLETE | scanutil, PercentageJSON, DurationJSON               |
+| Linter fixes applied                    | ✅ COMPLETE | golangci-lint auto-fixes                             |
+| Commits pushed                          | ✅ COMPLETE | 6 commits to origin                                  |
 
 ### B) PARTIALLY DONE 🔄
 
-| Task | Status | Notes |
-|------|--------|-------|
-| URL caching | 🔄 SKIPPED | Would require API change (type URL string → struct) |
+| Task                                             | Status       | Notes                                                        |
+| ------------------------------------------------ | ------------ | ------------------------------------------------------------ |
+| URL caching                                      | 🔄 SKIPPED   | Would require API change (type URL string → struct)          |
 | BoundedString constraint validation on unmarshal | 🔄 BY DESIGN | JSON can't carry constraints; documented as correct behavior |
 
 ### C) NOT STARTED ⏳
 
-| Task | Priority | Notes |
-|------|----------|-------|
-| Add Validate() to remaining types | Medium | Timestamp, Duration, NanoId, BoundedString could benefit |
-| BoundedString.Validate() | Low | Would need minLen/maxLen passed somehow |
-| Comprehensive benchmarks | Low | Currently has benchmarks but not comprehensive |
+| Task                              | Priority | Notes                                                    |
+| --------------------------------- | -------- | -------------------------------------------------------- |
+| Add Validate() to remaining types | Medium   | Timestamp, Duration, NanoId, BoundedString could benefit |
+| BoundedString.Validate()          | Low      | Would need minLen/maxLen passed somehow                  |
+| Comprehensive benchmarks          | Low      | Currently has benchmarks but not comprehensive           |
 
 ### D) TOTALLY FUCKED UP ❌
 
@@ -160,17 +160,20 @@ f37fec1 refactor(go-mod): rollback to Go 1.26.0 and encoding/json
 ### Question: Should we change `type URL string` to a struct with cached parsed URL?
 
 **Current State:**
+
 - `type URL string` - simple wrapper
 - Every call to Host(), Path(), Scheme() re-parses the URL
 - Performance concern for repeated access
 
 **Dilemma:**
+
 - Changing to `type URL struct { raw string; parsed *url.URL }` is a breaking API change
 - Would require updating all JSON/SQL serialization
 - The performance impact may be negligible in practice (URL parsing is fast)
 - Adds complexity for marginal gain
 
 **What I Don't Know:**
+
 - Is there a non-breaking way to add caching?
 - What's the actual performance profile under load?
 - Do users actually call Host()/Path() repeatedly on same URL?
@@ -181,20 +184,20 @@ f37fec1 refactor(go-mod): rollback to Go 1.26.0 and encoding/json
 
 ## Test Coverage
 
-| Package | Coverage | Notes |
-|---------|----------|-------|
-| actor | ✅ | Full coverage |
-| bounded | ✅ | Full coverage |
-| datapoint | ✅ | Full coverage |
-| enums | ✅ | Generated, full coverage |
-| id | ✅ | Full coverage |
-| locale | ✅ | Full coverage |
-| money | ✅ | Full coverage |
-| nanoid | ✅ | Full coverage |
-| scanutil | ✅ | New, full coverage |
-| temporal | ✅ | Full coverage |
-| types | ✅ | Full coverage |
-| validate | ❌ | NO TESTS YET |
+| Package   | Coverage | Notes                    |
+| --------- | -------- | ------------------------ |
+| actor     | ✅       | Full coverage            |
+| bounded   | ✅       | Full coverage            |
+| datapoint | ✅       | Full coverage            |
+| enums     | ✅       | Generated, full coverage |
+| id        | ✅       | Full coverage            |
+| locale    | ✅       | Full coverage            |
+| money     | ✅       | Full coverage            |
+| nanoid    | ✅       | Full coverage            |
+| scanutil  | ✅       | New, full coverage       |
+| temporal  | ✅       | Full coverage            |
+| types     | ✅       | Full coverage            |
+| validate  | ❌       | NO TESTS YET             |
 
 ---
 
