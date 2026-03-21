@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewActorChain(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-1")
 	entry := UserActor(userID, "Alice")
 	chain := NewActorChain(entry)
@@ -21,6 +22,7 @@ func TestNewActorChain(t *testing.T) {
 }
 
 func TestActorChainOriginAndCurrent(t *testing.T) {
+	t.Parallel()
 	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "Alice")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-2"), "Service 2"))
@@ -34,6 +36,7 @@ func TestActorChainOriginAndCurrent(t *testing.T) {
 }
 
 func TestActorChainHasKind(t *testing.T) {
+	t.Parallel()
 	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "Alice")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1"))
 
@@ -49,6 +52,7 @@ func TestActorChainHasKind(t *testing.T) {
 }
 
 func TestActorChainByKind(t *testing.T) {
+	t.Parallel()
 	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "User")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-2"), "Service 2"))
@@ -65,6 +69,7 @@ func TestActorChainByKind(t *testing.T) {
 }
 
 func TestUserActor(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-1")
 	actor := UserActor(userID, "John Doe")
 
@@ -80,6 +85,7 @@ func TestUserActor(t *testing.T) {
 }
 
 func TestBotActor(t *testing.T) {
+	t.Parallel()
 	botID := id.NewID[struct{}, string]("bot-1")
 	actor := BotActor(botID, "GitHub Bot")
 
@@ -89,6 +95,7 @@ func TestBotActor(t *testing.T) {
 }
 
 func TestSystemActor(t *testing.T) {
+	t.Parallel()
 	actor := SystemActor[string]()
 
 	if actor.Kind != enums.ActorKindSystem {
@@ -97,6 +104,7 @@ func TestSystemActor(t *testing.T) {
 }
 
 func TestServiceActor(t *testing.T) {
+	t.Parallel()
 	serviceID := id.NewID[struct{}, string]("svc-1")
 	actor := ServiceActor(serviceID, "Order Service")
 
@@ -106,6 +114,7 @@ func TestServiceActor(t *testing.T) {
 }
 
 func TestActorEntryIsZero(t *testing.T) {
+	t.Parallel()
 	var zero ActorEntry[string]
 	if !zero.IsZero() {
 		t.Error("zero ActorEntry should be zero")
@@ -118,6 +127,7 @@ func TestActorEntryIsZero(t *testing.T) {
 }
 
 func TestActorEntryOptionalName(t *testing.T) {
+	t.Parallel()
 	// Actor without name
 	actor := UserActor(id.NewID[struct{}, string]("u-1"))
 	if actor.Name != "" {
