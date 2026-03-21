@@ -56,8 +56,8 @@ func NewDataPoint[T comparable](payload T, actorEntry actor.ActorEntry[string]) 
 	}
 }
 
-// Id returns the DataPoint ID.
-func (d DataPoint[T]) Id() nanoid.NanoId { return d.id }
+// ID returns the DataPoint ID.
+func (d DataPoint[T]) ID() nanoid.NanoId { return d.id }
 
 // Payload returns the data payload.
 func (d DataPoint[T]) Payload() T { return d.payload }

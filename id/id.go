@@ -386,7 +386,11 @@ func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 		return nil
 
 	default:
-		return fmt.Errorf("id: unsupported type %T for JSON unmarshaling (data=%q)", zero, string(data))
+		return fmt.Errorf(
+			"id: unsupported type %T for JSON unmarshaling (data=%q)",
+			zero,
+			string(data),
+		)
 	}
 }
 
@@ -434,7 +438,11 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	default:
-		return fmt.Errorf("id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)", zero, string(data))
+		return fmt.Errorf(
+			"id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)",
+			zero,
+			string(data),
+		)
 	}
 }
 
@@ -518,7 +526,12 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		return nil
 	case int8:
 		if len(data) < 1 {
-			return fmt.Errorf("id: insufficient data for int8: got %d bytes, want 1 (data=%x, targetType=%T)", len(data), data, zero)
+			return fmt.Errorf(
+				"id: insufficient data for int8: got %d bytes, want 1 (data=%x, targetType=%T)",
+				len(data),
+				data,
+				zero,
+			)
 		}
 		*id = ID[B, V]{value: any(int8(data[0])).(V)}
 		return nil
@@ -576,7 +589,12 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		return nil
 	case uint8:
 		if len(data) < 1 {
-			return fmt.Errorf("id: insufficient data for uint8: got %d bytes, want 1 (data=%x, targetType=%T)", len(data), data, zero)
+			return fmt.Errorf(
+				"id: insufficient data for uint8: got %d bytes, want 1 (data=%x, targetType=%T)",
+				len(data),
+				data,
+				zero,
+			)
 		}
 		*id = ID[B, V]{value: any(data[0]).(V)}
 		return nil

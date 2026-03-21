@@ -18,7 +18,7 @@ func TestNewDataPoint(t *testing.T) {
 	if dp.IsZero() {
 		t.Error("DataPoint should not be zero")
 	}
-	if dp.Id().IsZero() {
+	if dp.ID().IsZero() {
 		t.Error("DataPoint should have an ID")
 	}
 	if dp.Payload() != "test payload" {
@@ -187,7 +187,7 @@ func TestDataPointUnmarshalJSON(t *testing.T) {
 	if parsed.Version() != 42 {
 		t.Errorf("expected version 42, got %d", parsed.Version())
 	}
-	if parsed.Id().IsZero() {
+	if parsed.ID().IsZero() {
 		t.Error("parsed DataPoint should have an ID")
 	}
 }

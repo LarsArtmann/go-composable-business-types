@@ -59,8 +59,8 @@ func NewCauseEvent[T comparable](id nanoid.NanoId, event string, trace ...nanoid
 	}
 }
 
-// Id returns the cause ID.
-func (c Cause[T]) Id() nanoid.NanoId { return c.id }
+// ID returns the cause ID.
+func (c Cause[T]) ID() nanoid.NanoId { return c.id }
 
 // Kind returns the cause kind (e.g., "direct", "command", "event").
 func (c Cause[T]) Kind() string { return c.kind }
@@ -126,7 +126,13 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	for i, t := range raw.Trace {
 		parsed, err := nanoid.ParseNanoId(t)
 		if err != nil {
-			return fmt.Errorf("unmarshal cause: parse trace[%d] %q from JSON %q: %w", i, t, string(data), err)
+			return fmt.Errorf(
+				"unmarshal cause: parse trace[%d] %q from JSON %q: %w",
+				i,
+				t,
+				string(data),
+				err,
+			)
 		}
 		c.trace[i] = parsed
 	}

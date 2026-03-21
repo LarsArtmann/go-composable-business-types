@@ -68,7 +68,7 @@ func main() {
 
 	// Display DataPoint info
 	fmt.Println("=== DataPoint with Audit Trail ===")
-	fmt.Printf("ID: %s\n", dp.Id().String())
+	fmt.Printf("ID: %s\n", dp.ID().String())
 	fmt.Printf("Payload: %+v\n", dp.Payload())
 	fmt.Printf("Actor: %s (kind: %s)\n", dp.Actor().Name, dp.Actor().Kind.String())
 	fmt.Printf("Trigger: %s\n", dp.Trigger().String())

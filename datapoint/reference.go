@@ -24,8 +24,8 @@ func NewReference[T comparable](id T, relation string) Reference[T] {
 	}
 }
 
-// Id returns the referenced entity ID.
-func (r Reference[T]) Id() T { return r.id }
+// ID returns the referenced entity ID.
+func (r Reference[T]) ID() T { return r.id }
 
 // Relation returns the relationship type.
 func (r Reference[T]) Relation() string { return r.relation }
@@ -116,14 +116,23 @@ func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	case string:
 		id, ok := any(raw.ID).(T)
 		if !ok {
-			return fmt.Errorf("unmarshal reference: cannot convert ID %q to target type %T", raw.ID, zero)
+			return fmt.Errorf(
+				"unmarshal reference: cannot convert ID %q to target type %T",
+				raw.ID,
+				zero,
+			)
 		}
 		r.id = id
 	default:
 		// For other types, the ID type must support text unmarshaling
 		if u, ok := any(&r.id).(interface{ UnmarshalText([]byte) error }); ok {
 			if err := u.UnmarshalText([]byte(raw.ID)); err != nil {
-				return fmt.Errorf("unmarshal reference: unmarshal id %q to type %T: %w", raw.ID, zero, err)
+				return fmt.Errorf(
+					"unmarshal reference: unmarshal id %q to type %T: %w",
+					raw.ID,
+					zero,
+					err,
+				)
 			}
 		}
 	}
