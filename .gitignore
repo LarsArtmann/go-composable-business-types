@@ -7,3 +7,5 @@ test
 *.out
 coverage.out
 *.png
+# Dependencies
+node_modules/

@@ -1,142 +1,115 @@
 version: "2"
 run:
-  timeout: 5m
-  issues-exit-code: 1
-  tests: true
+    timeout: 5m
+    go: ""
+    build-tags: []
+    allow-parallel-runners: false
+    allow-serial-runners: false
+    issues-exit-code: 1
+    tests: true
 output:
-  formats: {}
+    formats: {}
 linters:
-  settings:
-    depguard:
-      rules:
-        main:
-          allow:
-            - $gostd
-            - github.com/larsartmann/go-composable-business-types/** # Allow all subpackages
-            - golang.org/x/text
-            - github.com/bojanz/currency
-            - github.com/sixafter/nanoid
-          list-mode: lax
-    cyclop:
-      max-complexity: 15
-    funlen:
-      lines: 80
-      statements: 50
-    gocyclo:
-      min-complexity: 15
-    gocognit:
-      min-complexity: 30
-  enable:
-    # Bug detection
-    - errcheck
-    - govet
-    - staticcheck
-    - ineffassign
-    - unused
-    - bodyclose
-    - durationcheck
-    - nilnesserr
-    - sqlclosecheck
-    - wastedassign
-    - copyloopvar
-    - unconvert
-    - unparam
-    - mirror
-
-    # Code quality
-    - gocritic
-    - misspell
-    - bidichk
-    - containedctx
-    - contextcheck
-    - decorder
-    - dogsled
-    - dupl
-    - dupword
-    - exhaustive
-    - ginkgolinter
-    - gocheckcompilerdirectives
-    - gochecksumtype
-    - gomoddirectives
-    - gomodguard
-    - iotamixing
-    - nakedret
-    - nestif
-    - prealloc
-    - predeclared
-    - rowserrcheck
-    - testifylint
-    - usetesting
-
-    # Dependencies
-    - depguard
-
-    # Modern Go
-    - intrange
-    - exptostd
-    - modernize
-  disable:
-    # Too opinionated for library code
-    - exhaustruct
-    - testpackage
-    - varnamelen
-    - wsl_v5
-    - forbidigo
-    - paralleltest
-    - revive
-    - nlreturn
-    - mnd
-    - nilnil
-    - wrapcheck
-    - err113
-    - forcetypeassert
-    - ireturn
-    - recvcheck
-    - noinlineerr
-    - tagliatelle
-    - gochecknoglobals
-    - godot
-    - funcorder
-    - inamedparam
-    - canonicalheader
-    - interfacebloat
-    - godox
-    - godoclint
-    - arangolint
-    - promlinter
-    - protogetter
-    - spancheck
-    - zerologlint
-    - gosmopolitan
-    - asciicheck
-    - tparallel
-    - thelper
-    - grouper
-    - reassign
-    - unqueryvet
-    - embeddedstructfieldcheck
-    - perfsprint
-    - tagalign
-    - makezero
-    - goheader
-    - fatcontext
-    - nonamedreturns
-    - goprintffuncname
-    - errname
-    - maintidx
-    - whitespace
-    - asasalint
-    - importas
-    - nolintlint
-    - errorlint
-    - cyclop
-    - gocyclo
-    - gocognit
-    - funlen
+    enable:
+        - maintidx
+        - protogetter
+        - staticcheck
+        - unused
+        - gocognit
+        - gomoddirectives
+        - mirror
+        - dupl
+        - reassign
+        - errchkjson
+        - nilerr
+        - prealloc
+        - gochecknoinits
+        - gochecksumtype
+        - funlen
+        - thelper
+        - ineffassign
+        - gocritic
+        - errorlint
+        - paralleltest
+        - usetesting
+        - gocyclo
+        - govet
+        - nakedret
+        - exptostd
+        - noctx
+        - predeclared
+        - bidichk
+        - interfacebloat
+        - spancheck
+        - bodyclose
+        - wastedassign
+        - misspell
+        - nolintlint
+        - decorder
+        - dupword
+        - errname
+        - perfsprint
+        - containedctx
+        - musttag
+        - gochecknoglobals
+        - nilnil
+        - goconst
+        - gosec
+        - loggercheck
+        - forcetypeassert
+        - revive
+        - zerologlint
+        - iotamixing
+        - sloglint
+        - gocheckcompilerdirectives
+        - unconvert
+        - errcheck
+        - sqlclosecheck
+        - exhaustruct
+        - gosmopolitan
+        - gomodguard
+        - rowserrcheck
+        - depguard
+        - intrange
+        - ginkgolinter
+        - nestif
+        - nilnesserr
+        - contextcheck
+        - recvcheck
+        - cyclop
+        - durationcheck
+        - dogsled
+        - wrapcheck
+        - testifylint
+        - exhaustive
+        - copyloopvar
+        - modernize
+        - unparam
+    settings:
+        cyclop:
+            max-complexity: 15
+        depguard:
+            rules:
+                main:
+                    allow:
+                        - $gostd
+                        - github.com/larsartmann/go-composable-business-types/**
+                        - golang.org/x/text
+                        - github.com/bojanz/currency
+                        - github.com/sixafter/nanoid
+                    list-mode: lax
+        funlen:
+            lines: 80
+            statements: 50
+        gocognit:
+            min-complexity: 30
+        gocyclo:
+            min-complexity: 15
 formatters:
-  enable:
-    - gofmt
-    - goimports
+    enable:
+        - gofmt
+        - goimports
+        - golines
 issues:
-  max-issues-per-linter: 50
-  max-same-issues: 10
+    max-issues-per-linter: 50
+    max-same-issues: 10
