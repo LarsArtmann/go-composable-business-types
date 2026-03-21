@@ -83,17 +83,12 @@ func (e Email) split() (local, domain string, ok bool) {
 	if e == "" {
 		return "", "", false
 	}
-	idx := -1
-	for i := range len(e) {
-		if e[i] == '@' {
-			idx = i
-			break
-		}
-	}
-	if idx <= 0 || idx >= len(e)-1 {
+	s := string(e)
+	idx := strings.IndexByte(s, '@')
+	if idx <= 0 || idx >= len(s)-1 {
 		return "", "", false
 	}
-	return string(e[:idx]), string(e[idx+1:]), true
+	return s[:idx], s[idx+1:], true
 }
 
 // URL represents a validated URL with http or https scheme.
