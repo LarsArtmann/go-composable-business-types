@@ -52,7 +52,8 @@ func (c Context) Tag(key string) string {
 
 // IsZero returns true if this is the zero value.
 func (c Context) IsZero() bool {
-	return c.environment == "" && c.session == "" && c.request == "" && c.source == "" && len(c.tags) == 0
+	return c.environment == "" && c.session == "" && c.request == "" && c.source == "" &&
+		len(c.tags) == 0
 }
 
 // WithEnvironment returns a copy with environment set.

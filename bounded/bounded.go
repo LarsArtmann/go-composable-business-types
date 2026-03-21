@@ -42,7 +42,11 @@ func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 
 	length := utf8.RuneCountInString(value)
 	if length < minLen {
-		return BoundedString{}, fmt.Errorf("string length %d is less than minimum %d", length, minLen)
+		return BoundedString{}, fmt.Errorf(
+			"string length %d is less than minimum %d",
+			length,
+			minLen,
+		)
 	}
 	if length > maxLen {
 		return BoundedString{}, fmt.Errorf("string length %d exceeds maximum %d", length, maxLen)

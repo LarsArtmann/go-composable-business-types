@@ -77,7 +77,11 @@ func ServiceActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntr
 }
 
 // newActorEntry is a helper to create ActorEntry with optional name.
-func newActorEntry[T comparable](kind enums.ActorKind, id id.ID[struct{}, T], name ...string) ActorEntry[T] {
+func newActorEntry[T comparable](
+	kind enums.ActorKind,
+	id id.ID[struct{}, T],
+	name ...string,
+) ActorEntry[T] {
 	n := ""
 	if len(name) > 0 {
 		n = name[0]

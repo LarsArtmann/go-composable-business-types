@@ -227,7 +227,13 @@ func TestParseStatus(t *testing.T) {
 }
 
 func TestStatusIsValid(t *testing.T) {
-	validStatuses := []Status{StatusDraft, StatusActive, StatusPaused, StatusArchived, StatusDeleted}
+	validStatuses := []Status{
+		StatusDraft,
+		StatusActive,
+		StatusPaused,
+		StatusArchived,
+		StatusDeleted,
+	}
 	for _, s := range validStatuses {
 		if !s.IsValid() {
 			t.Errorf("Status %v should be valid", s)
