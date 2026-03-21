@@ -701,3 +701,94 @@ func TestDurationSQL(t *testing.T) {
 		t.Error("expected error for invalid duration string")
 	}
 }
+
+func TestPercentageJSON(t *testing.T) {
+	// Test MarshalJSON
+	p := NewPercentage(50)
+	data, err := p.MarshalJSON()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if string(data) != "50" {
+		t.Errorf("expected 50, got %s", string(data))
+	}
+
+	// Test UnmarshalJSON
+	var p2 Percentage
+	if err := p2.UnmarshalJSON([]byte("75")); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if p2 != 75 {
+		t.Errorf("expected 75, got %d", p2)
+	}
+
+	// Test Round-trip
+	var p3 Percentage
+	if err := p3.UnmarshalJSON(data); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if p3 != p {
+		t.Errorf("round-trip failed: expected %d, got %d", p, p3)
+	}
+}
+
+func TestPercentageSQL(t *testing.T) {
+	// Test Value
+	p := NewPercentage(75)
+	val, err := p.Value()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if val != int64(75) {
+		t.Errorf("expected 75, got %v", val)
+	}
+
+	// Test Scan with int64
+	var p2 Percentage
+	if err := p2.Scan(int64(50)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if p2 != 50 {
+		t.Errorf("expected 50, got %d", p2)
+	}
+}
+
+func TestDurationJSON(t *testing.T) {
+	// Test MarshalJSON
+	d := NewDuration(time.Hour + 30*time.Minute)
+	data, err := d.MarshalJSON()
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	expected := `"1h30m0s"`
+	if string(data) != expected {
+		t.Errorf("expected %s, got %s", expected, string(data))
+	}
+
+	// Test UnmarshalJSON
+	var d2 Duration
+	if err := d2.UnmarshalJSON([]byte(`"2h15m0s"`)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d2.Duration != 2*time.Hour+15*time.Minute {
+		t.Errorf("expected 2h15m0s, got %v", d2.Duration)
+	}
+
+	// Test Empty
+	var d3 Duration
+	if err := d3.UnmarshalJSON([]byte(`""`)); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d3.Duration != 0 {
+		t.Errorf("expected 0, got %v", d3.Duration)
+	}
+
+	// Test Round-trip
+	var d4 Duration
+	if err := d4.UnmarshalJSON(data); err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+	if d4.Duration != d.Duration {
+		t.Errorf("round-trip failed: expected %v, got %v", d.Duration, d4.Duration)
+	}
+}

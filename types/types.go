@@ -13,6 +13,7 @@ package types
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/mail"
@@ -210,6 +211,35 @@ func (p Percentage) Compare(other Percentage) int {
 	return 0
 }
 
+// MarshalJSON implements json.Marshaler.
+func (p Percentage) MarshalJSON() ([]byte, error) {
+	return json.Marshal(uint8(p))
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (p *Percentage) UnmarshalJSON(data []byte) error {
+	var v uint8
+	if err := json.Unmarshal(data, &v); err != nil {
+		return fmt.Errorf("percentage: invalid JSON: %w", err)
+	}
+	*p = Percentage(v)
+	return nil
+}
+
+// Scan implements sql.Scanner for Percentage.
+// Supports int64 and uint8 sources.
+func (p *Percentage) Scan(src any) error {
+	return scanutil.ScanInt64(src, func(v int64) error {
+		*p = Percentage(v)
+		return nil
+	})
+}
+
+// Value implements driver.Valuer for Percentage.
+func (p Percentage) Value() (driver.Value, error) {
+	return scanutil.Int64Value(int64(p))
+}
+
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 
@@ -351,6 +381,29 @@ func (d Duration) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return int64(d.Duration), nil
+}
+
+// MarshalJSON implements json.Marshaler.
+func (d Duration) MarshalJSON() ([]byte, error) {
+	return json.Marshal(d.String())
+}
+
+// UnmarshalJSON implements json.Unmarshaler.
+func (d *Duration) UnmarshalJSON(data []byte) error {
+	var s string
+	if err := json.Unmarshal(data, &s); err != nil {
+		return fmt.Errorf("duration: invalid JSON: %w", err)
+	}
+	if s == "" {
+		d.Duration = 0
+		return nil
+	}
+	parsed, err := time.ParseDuration(s)
+	if err != nil {
+		return fmt.Errorf("duration: cannot parse %q: %w", s, err)
+	}
+	d.Duration = parsed
+	return nil
 }
 
 // Scan implements sql.Scanner for Email.
