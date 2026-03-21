@@ -250,7 +250,7 @@ func (p Percentage) MarshalJSON() ([]byte, error) {
 func (p *Percentage) UnmarshalJSON(data []byte) error {
 	var v uint8
 	if err := json.Unmarshal(data, &v); err != nil {
-		return fmt.Errorf("percentage: invalid JSON: %w", err)
+		return fmt.Errorf("percentage: invalid JSON %q: %w", string(data), err)
 	}
 	*p = Percentage(v)
 	return nil
@@ -391,7 +391,7 @@ func (d *Duration) Scan(src any) error {
 		}
 		parsed, err := time.ParseDuration(v)
 		if err != nil {
-			return fmt.Errorf("duration: cannot parse %q: %w", v, err)
+			return fmt.Errorf("duration: cannot parse %q from string: %w", v, err)
 		}
 		d.Duration = parsed
 		return nil
@@ -402,7 +402,7 @@ func (d *Duration) Scan(src any) error {
 		}
 		parsed, err := time.ParseDuration(string(v))
 		if err != nil {
-			return fmt.Errorf("duration: cannot parse %q: %w", string(v), err)
+			return fmt.Errorf("duration: cannot parse %q from []byte: %w", string(v), err)
 		}
 		d.Duration = parsed
 		return nil
@@ -429,7 +429,7 @@ func (d Duration) MarshalJSON() ([]byte, error) {
 func (d *Duration) UnmarshalJSON(data []byte) error {
 	var s string
 	if err := json.Unmarshal(data, &s); err != nil {
-		return fmt.Errorf("duration: invalid JSON: %w", err)
+		return fmt.Errorf("duration: invalid JSON %q: %w", string(data), err)
 	}
 	if s == "" {
 		d.Duration = 0
@@ -516,14 +516,14 @@ func (t *Timestamp) Scan(src any) error {
 	case string:
 		parsed, err := time.Parse(time.RFC3339Nano, v)
 		if err != nil {
-			return fmt.Errorf("timestamp: cannot parse %q: %w", v, err)
+			return fmt.Errorf("timestamp: cannot parse %q from string: %w", v, err)
 		}
 		t.Time = parsed
 		return nil
 	case []byte:
 		parsed, err := time.Parse(time.RFC3339Nano, string(v))
 		if err != nil {
-			return fmt.Errorf("timestamp: cannot parse %q: %w", string(v), err)
+			return fmt.Errorf("timestamp: cannot parse %q from []byte: %w", string(v), err)
 		}
 		t.Time = parsed
 		return nil

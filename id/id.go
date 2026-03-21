@@ -38,7 +38,6 @@ import (
 	"encoding/binary"
 	"encoding/gob"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strconv"
 )
@@ -83,140 +82,106 @@ func (id ID[B, V]) Equal(other ID[B, V]) bool {
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
 // Requires V to be ordered. Panics if V is not an ordered type.
 func (id ID[B, V]) Compare(other ID[B, V]) int {
-	switch any(id.value).(type) {
+	// Use type switches with capture to avoid redundant type assertions.
+	// The type assertions for other.value are safe because both IDs have
+	// the same type parameter V, so they must have the same underlying type.
+	switch a := any(id.value).(type) {
 	case int:
-		a := any(id.value).(int)
-		b := any(other.value).(int)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(int)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case int8:
-		a := any(id.value).(int8)
-		b := any(other.value).(int8)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(int8)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case int16:
-		a := any(id.value).(int16)
-		b := any(other.value).(int16)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(int16)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case int32:
-		a := any(id.value).(int32)
-		b := any(other.value).(int32)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(int32)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case int64:
-		a := any(id.value).(int64)
-		b := any(other.value).(int64)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(int64)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case uint:
-		a := any(id.value).(uint)
-		b := any(other.value).(uint)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(uint)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case uint8:
-		a := any(id.value).(uint8)
-		b := any(other.value).(uint8)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(uint8)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case uint16:
-		a := any(id.value).(uint16)
-		b := any(other.value).(uint16)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(uint16)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case uint32:
-		a := any(id.value).(uint32)
-		b := any(other.value).(uint32)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(uint32)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case uint64:
-		a := any(id.value).(uint64)
-		b := any(other.value).(uint64)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(uint64)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case string:
-		a := any(id.value).(string)
-		b := any(other.value).(string)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(string)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case float32:
-		a := any(id.value).(float32)
-		b := any(other.value).(float32)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(float32)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	case float64:
-		a := any(id.value).(float64)
-		b := any(other.value).(float64)
-		if a < b {
-			return -1
+		b, ok := any(other.value).(float64)
+		if !ok {
+			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
 		}
-		if a > b {
-			return 1
-		}
-		return 0
+		return compareOrdered(a, b)
 	default:
 		panic(fmt.Sprintf("id: Compare called on non-ordered type %T", id.value))
 	}
+}
+
+// compareOrdered compares two ordered values and returns -1, 0, or 1.
+func compareOrdered[T interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
+		~string | ~float32 | ~float64
+}](a, b T) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
 }
 
 // Or returns the ID if not zero, otherwise returns the provided default.
@@ -421,7 +386,7 @@ func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 		return nil
 
 	default:
-		return fmt.Errorf("id: unsupported type %T for JSON unmarshaling", zero)
+		return fmt.Errorf("id: unsupported type %T for JSON unmarshaling (data=%q)", zero, string(data))
 	}
 }
 
@@ -469,10 +434,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	default:
-		return fmt.Errorf(
-			"id: cannot unmarshal text into %T (only string and numeric IDs supported)",
-			zero,
-		)
+		return fmt.Errorf("id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)", zero, string(data))
 	}
 }
 
@@ -544,9 +506,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case int:
 		if len(data) < byteSizeInt64 {
 			return fmt.Errorf(
-				"id: insufficient data for int: got %d bytes, want %d",
+				"id: insufficient data for int: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt64,
+				data,
+				zero,
 			)
 		}
 		n := int(binary.LittleEndian.Uint64(data))
@@ -554,16 +518,18 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		return nil
 	case int8:
 		if len(data) < 1 {
-			return errors.New("id: insufficient data for int8")
+			return fmt.Errorf("id: insufficient data for int8: got %d bytes, want 1 (data=%x, targetType=%T)", len(data), data, zero)
 		}
 		*id = ID[B, V]{value: any(int8(data[0])).(V)}
 		return nil
 	case int16:
 		if len(data) < byteSizeInt16 {
 			return fmt.Errorf(
-				"id: insufficient data for int16: got %d bytes, want %d",
+				"id: insufficient data for int16: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt16,
+				data,
+				zero,
 			)
 		}
 		n := int16(binary.LittleEndian.Uint16(data))
@@ -572,9 +538,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case int32:
 		if len(data) < byteSizeInt32 {
 			return fmt.Errorf(
-				"id: insufficient data for int32: got %d bytes, want %d",
+				"id: insufficient data for int32: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt32,
+				data,
+				zero,
 			)
 		}
 		n := int32(binary.LittleEndian.Uint32(data))
@@ -583,9 +551,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case int64:
 		if len(data) < byteSizeInt64 {
 			return fmt.Errorf(
-				"id: insufficient data for int64: got %d bytes, want %d",
+				"id: insufficient data for int64: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt64,
+				data,
+				zero,
 			)
 		}
 		n := int64(binary.LittleEndian.Uint64(data))
@@ -594,9 +564,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case uint:
 		if len(data) < byteSizeInt64 {
 			return fmt.Errorf(
-				"id: insufficient data for uint: got %d bytes, want %d",
+				"id: insufficient data for uint: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt64,
+				data,
+				zero,
 			)
 		}
 		n := uint(binary.LittleEndian.Uint64(data))
@@ -604,16 +576,18 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		return nil
 	case uint8:
 		if len(data) < 1 {
-			return errors.New("id: insufficient data for uint8")
+			return fmt.Errorf("id: insufficient data for uint8: got %d bytes, want 1 (data=%x, targetType=%T)", len(data), data, zero)
 		}
 		*id = ID[B, V]{value: any(data[0]).(V)}
 		return nil
 	case uint16:
 		if len(data) < byteSizeInt16 {
 			return fmt.Errorf(
-				"id: insufficient data for uint16: got %d bytes, want %d",
+				"id: insufficient data for uint16: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt16,
+				data,
+				zero,
 			)
 		}
 		n := binary.LittleEndian.Uint16(data)
@@ -622,9 +596,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case uint32:
 		if len(data) < byteSizeInt32 {
 			return fmt.Errorf(
-				"id: insufficient data for uint32: got %d bytes, want %d",
+				"id: insufficient data for uint32: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt32,
+				data,
+				zero,
 			)
 		}
 		n := binary.LittleEndian.Uint32(data)
@@ -633,16 +609,18 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case uint64:
 		if len(data) < byteSizeInt64 {
 			return fmt.Errorf(
-				"id: insufficient data for uint64: got %d bytes, want %d",
+				"id: insufficient data for uint64: got %d bytes, want %d (data=%x, targetType=%T)",
 				len(data),
 				byteSizeInt64,
+				data,
+				zero,
 			)
 		}
 		n := binary.LittleEndian.Uint64(data)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	default:
-		return fmt.Errorf("id: unsupported type %T for binary unmarshaling", zero)
+		return fmt.Errorf("id: unsupported type %T for binary unmarshaling (data=%x)", zero, data)
 	}
 }
 
@@ -675,7 +653,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(string(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into string-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into string-based ID (src=%T)", src, src)
 		}
 
 	case int:
@@ -690,7 +668,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(int(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into int-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into int-based ID (targetType=%T)", src, zero)
 		}
 
 	case int32:
@@ -705,7 +683,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(int32(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into int32-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into int32-based ID (targetType=%T)", src, zero)
 		}
 
 	case int64:
@@ -720,7 +698,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(int64(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into int64-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into int64-based ID (targetType=%T)", src, zero)
 		}
 
 	case uint:
@@ -735,7 +713,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(uint(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into uint-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into uint-based ID (targetType=%T)", src, zero)
 		}
 
 	case uint32:
@@ -750,7 +728,7 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(uint32(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into uint32-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into uint32-based ID (targetType=%T)", src, zero)
 		}
 
 	case uint64:
@@ -765,11 +743,11 @@ func (id *ID[B, V]) Scan(src any) error {
 			*id = ID[B, V]{value: any(uint64(v)).(V)}
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into uint64-based ID", src)
+			return fmt.Errorf("id: cannot scan %T into uint64-based ID (targetType=%T)", src, zero)
 		}
 
 	default:
-		return fmt.Errorf("id: unsupported target type %T for SQL scanning", zero)
+		return fmt.Errorf("id: unsupported target type %T for SQL scanning (src=%T)", zero, src)
 	}
 }
 

@@ -124,7 +124,7 @@ func (b Bitemporal) MarshalJSON() ([]byte, error) {
 func (b *Bitemporal) UnmarshalJSON(data []byte) error {
 	var raw jsonBitemporal
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return fmt.Errorf("unmarshal bitemporal: invalid JSON: %w", err)
+		return fmt.Errorf("unmarshal bitemporal: invalid JSON %q: %w", string(data), err)
 	}
 	b.validFrom = types.NewTimestamp(raw.ValidFrom)
 	b.validUntil = types.NewTimestamp(raw.ValidUntil)

@@ -14,7 +14,6 @@ package bounded
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"strings"
 	"unicode/utf8"
@@ -34,22 +33,18 @@ type BoundedString struct {
 // Returns an error if the string length is outside [minLen, maxLen].
 func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 	if minLen < 0 {
-		return BoundedString{}, errors.New("minimum length cannot be negative")
+		return BoundedString{}, fmt.Errorf("minimum length cannot be negative: minLen=%d, maxLen=%d, value=%q", minLen, maxLen, value)
 	}
 	if maxLen < minLen {
-		return BoundedString{}, errors.New("maximum length cannot be less than minimum length")
+		return BoundedString{}, fmt.Errorf("maximum length cannot be less than minimum length: minLen=%d, maxLen=%d, value=%q", minLen, maxLen, value)
 	}
 
 	length := utf8.RuneCountInString(value)
 	if length < minLen {
-		return BoundedString{}, fmt.Errorf(
-			"string length %d is less than minimum %d",
-			length,
-			minLen,
-		)
+		return BoundedString{}, fmt.Errorf("string length %d is less than minimum %d: maxLen=%d, value=%q", length, minLen, maxLen, value)
 	}
 	if length > maxLen {
-		return BoundedString{}, fmt.Errorf("string length %d exceeds maximum %d", length, maxLen)
+		return BoundedString{}, fmt.Errorf("string length %d exceeds maximum %d: minLen=%d, value=%q", length, maxLen, minLen, value)
 	}
 
 	return BoundedString{value: value, minLen: minLen, maxLen: maxLen}, nil
@@ -109,7 +104,7 @@ func (bs BoundedString) MarshalJSON() ([]byte, error) {
 func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	var value string
 	if err := json.Unmarshal(data, &value); err != nil {
-		return fmt.Errorf("boundedstring: unmarshal JSON: %w", err)
+		return fmt.Errorf("boundedstring: unmarshal JSON %q: %w", string(data), err)
 	}
 	bs.value = value
 	bs.minLen = 0

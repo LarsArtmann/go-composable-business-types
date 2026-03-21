@@ -68,7 +68,7 @@ func ScanInt64(src any, setValue func(int64) error) error {
 	case []byte:
 		parsed, err := parseIntFromBytes(v)
 		if err != nil {
-			return err
+			return fmt.Errorf("cannot scan %T (len=%d) into int64 value: %w", src, len(v), err)
 		}
 		return setValue(parsed)
 	default:

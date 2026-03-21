@@ -19,44 +19,44 @@ The project is in **EXCELLENT HEALTH** ✅. All tests pass, build succeeds, modu
 
 ### A) FULLY DONE ✅
 
-| Task | Status | Evidence |
-|------|--------|----------|
-| Project structure with selective imports | ✅ COMPLETE | 12 packages, clean architecture |
-| Core types (Email, URL, Percentage, Duration, Cents, Timestamp) | ✅ COMPLETE | Full test coverage, JSON/SQL support |
-| ID types with phantom types | ✅ COMPLETE | Generic ID[B,V] with comprehensive tests |
-| NanoId generation | ✅ COMPLETE | FIPS-140 compatible |
-| Money handling (ISO 4217) | ✅ COMPLETE | Wrapper around bojanz/currency |
-| Locale (BCP 47) | ✅ COMPLETE | Full test coverage |
-| Bitemporal tracking | ✅ COMPLETE | Valid/Recorded time support |
-| BoundedString | ✅ COMPLETE | Length-constrained strings |
-| ActorChain/ActorEntry | ✅ COMPLETE | Audit trail tracking |
-| DataPoint with metadata | ✅ COMPLETE | Cause, Reference, Context support |
-| Enums (ActorKind, Priority, Status, Trigger) | ✅ COMPLETE | go-enum generated |
-| scanutil package | ✅ COMPLETE | Shared ScanString/ScanInt64 helpers |
-| validate.Validator interface | ✅ COMPLETE | New package |
-| Validate() on core types | ✅ COMPLETE | Email, URL, Cents, Percentage |
-| JSON marshaling all types | ✅ COMPLETE | encoding/json (stable) |
-| SQL driver.Value/Scan | ✅ COMPLETE | All types support database |
-| Build system | ✅ COMPLETE | go build, justfile, CI |
-| Documentation | ✅ COMPLETE | README, LICENSE, CHANGELOG, architecture |
-| Performance optimizations | ✅ COMPLETE | strings.IndexByte in Email/URL |
-| Test coverage | ✅ COMPLETE | 145 test functions across 11 files |
+| Task                                                            | Status      | Evidence                                 |
+| --------------------------------------------------------------- | ----------- | ---------------------------------------- |
+| Project structure with selective imports                        | ✅ COMPLETE | 12 packages, clean architecture          |
+| Core types (Email, URL, Percentage, Duration, Cents, Timestamp) | ✅ COMPLETE | Full test coverage, JSON/SQL support     |
+| ID types with phantom types                                     | ✅ COMPLETE | Generic ID[B,V] with comprehensive tests |
+| NanoId generation                                               | ✅ COMPLETE | FIPS-140 compatible                      |
+| Money handling (ISO 4217)                                       | ✅ COMPLETE | Wrapper around bojanz/currency           |
+| Locale (BCP 47)                                                 | ✅ COMPLETE | Full test coverage                       |
+| Bitemporal tracking                                             | ✅ COMPLETE | Valid/Recorded time support              |
+| BoundedString                                                   | ✅ COMPLETE | Length-constrained strings               |
+| ActorChain/ActorEntry                                           | ✅ COMPLETE | Audit trail tracking                     |
+| DataPoint with metadata                                         | ✅ COMPLETE | Cause, Reference, Context support        |
+| Enums (ActorKind, Priority, Status, Trigger)                    | ✅ COMPLETE | go-enum generated                        |
+| scanutil package                                                | ✅ COMPLETE | Shared ScanString/ScanInt64 helpers      |
+| validate.Validator interface                                    | ✅ COMPLETE | New package                              |
+| Validate() on core types                                        | ✅ COMPLETE | Email, URL, Cents, Percentage            |
+| JSON marshaling all types                                       | ✅ COMPLETE | encoding/json (stable)                   |
+| SQL driver.Value/Scan                                           | ✅ COMPLETE | All types support database               |
+| Build system                                                    | ✅ COMPLETE | go build, justfile, CI                   |
+| Documentation                                                   | ✅ COMPLETE | README, LICENSE, CHANGELOG, architecture |
+| Performance optimizations                                       | ✅ COMPLETE | strings.IndexByte in Email/URL           |
+| Test coverage                                                   | ✅ COMPLETE | 145 test functions across 11 files       |
 
 ### B) PARTIALLY DONE 🔄
 
-| Task | Status | Notes |
-|------|--------|-------|
-| URL caching | 🔄 SKIPPED | Would require API break (string → struct) |
-| BoundedString validation on unmarshal | 🔄 BY DESIGN | JSON can't carry constraints; documented |
+| Task                                  | Status       | Notes                                     |
+| ------------------------------------- | ------------ | ----------------------------------------- |
+| URL caching                           | 🔄 SKIPPED   | Would require API break (string → struct) |
+| BoundedString validation on unmarshal | 🔄 BY DESIGN | JSON can't carry constraints; documented  |
 
 ### C) NOT STARTED ⏳
 
-| Task | Priority | Impact |
-|------|----------|--------|
-| Tests for validate package | HIGH | Only gap in test coverage |
-| Validate() for Timestamp, Duration, NanoId, BoundedString | MEDIUM | Complete the interface |
-| Fuzz tests for Email/URL | MEDIUM | Catch edge cases |
-| Comprehensive benchmarks | LOW | Verify performance claims |
+| Task                                                      | Priority | Impact                    |
+| --------------------------------------------------------- | -------- | ------------------------- |
+| Tests for validate package                                | HIGH     | Only gap in test coverage |
+| Validate() for Timestamp, Duration, NanoId, BoundedString | MEDIUM   | Complete the interface    |
+| Fuzz tests for Email/URL                                  | MEDIUM   | Catch edge cases          |
+| Comprehensive benchmarks                                  | LOW      | Verify performance claims |
 
 ### D) TOTALLY FUCKED UP ❌
 
@@ -66,36 +66,36 @@ The project is in **EXCELLENT HEALTH** ✅. All tests pass, build succeeds, modu
 
 ## Statistics
 
-| Metric | Value |
-|--------|-------|
-| Go Source Files | 29 |
-| Test Files | 11 |
-| Test Functions | 145 |
+| Metric              | Value       |
+| ------------------- | ----------- |
+| Go Source Files     | 29          |
+| Test Files          | 11          |
+| Test Functions      | 145         |
 | Packages with Tests | 12/13 (92%) |
-| Build Status | ✅ PASSING |
-| Test Status | ✅ ALL PASS |
-| Race Detection | ✅ PASSING |
+| Build Status        | ✅ PASSING  |
+| Test Status         | ✅ ALL PASS |
+| Race Detection      | ✅ PASSING  |
 | Module Verification | ✅ VERIFIED |
-| TODO/FIXME Markers | 0 |
+| TODO/FIXME Markers  | 0           |
 
 ---
 
 ## Test Coverage Matrix
 
-| Package | Tests | Coverage | Notes |
-|---------|-------|----------|-------|
-| actor | ✅ | Full | ActorChain, ActorEntry |
-| bounded | ✅ | Full | BoundedString constraints |
-| datapoint | ✅ | Full | DataPoint, Cause, Reference, Context |
-| enums | ✅ | Full | Generated enum code |
-| id | ✅ | Full | ID[B,V] phantom types |
-| locale | ✅ | Full | BCP 47 locale tags |
-| money | ✅ | Full | ISO 4217 currency |
-| nanoid | ✅ | Full | FIPS-140 NanoId |
-| scanutil | ✅ | Full | Shared scan helpers |
-| temporal | ✅ | Full | Bitemporal tracking |
-| types | ✅ | Full | Email, URL, Percentage, etc. |
-| validate | ❌ | **NONE** | **Only gap - needs tests** |
+| Package   | Tests | Coverage | Notes                                |
+| --------- | ----- | -------- | ------------------------------------ |
+| actor     | ✅    | Full     | ActorChain, ActorEntry               |
+| bounded   | ✅    | Full     | BoundedString constraints            |
+| datapoint | ✅    | Full     | DataPoint, Cause, Reference, Context |
+| enums     | ✅    | Full     | Generated enum code                  |
+| id        | ✅    | Full     | ID[B,V] phantom types                |
+| locale    | ✅    | Full     | BCP 47 locale tags                   |
+| money     | ✅    | Full     | ISO 4217 currency                    |
+| nanoid    | ✅    | Full     | FIPS-140 NanoId                      |
+| scanutil  | ✅    | Full     | Shared scan helpers                  |
+| temporal  | ✅    | Full     | Bitemporal tracking                  |
+| types     | ✅    | Full     | Email, URL, Percentage, etc.         |
+| validate  | ❌    | **NONE** | **Only gap - needs tests**           |
 
 ---
 
@@ -189,13 +189,13 @@ golang.org/x/text v0.35.0              ✅ BCP 47 locale support
 
 ## Build & CI Status
 
-| Check | Status |
-|-------|--------|
-| `go build ./...` | ✅ PASS |
-| `go test -race ./...` | ✅ PASS (12 packages) |
-| `go mod verify` | ✅ VERIFIED |
-| `go vet ./...` | ✅ PASS |
-| golangci-lint | ⚠️ Running (parallel conflict - benign) |
+| Check                 | Status                                  |
+| --------------------- | --------------------------------------- |
+| `go build ./...`      | ✅ PASS                                 |
+| `go test -race ./...` | ✅ PASS (12 packages)                   |
+| `go mod verify`       | ✅ VERIFIED                             |
+| `go vet ./...`        | ✅ PASS                                 |
+| golangci-lint         | ⚠️ Running (parallel conflict - benign) |
 
 ---
 
@@ -218,16 +218,16 @@ a2e163f docs: add project documentation and license files
 
 ## Architecture Health
 
-| Aspect | Status |
-|--------|--------|
-| Package boundaries | ✅ Clear separation |
-| Selective imports | ✅ Working (Go 1.26) |
-| Phantom types | ✅ Type-safe IDs |
-| Immutable values | ✅ With* pattern |
-| JSON serialization | ✅ All types |
-| SQL support | ✅ All types |
-| Documentation | ✅ Comprehensive |
-| Test coverage | ✅ 92% (11/12 packages) |
+| Aspect             | Status                  |
+| ------------------ | ----------------------- |
+| Package boundaries | ✅ Clear separation     |
+| Selective imports  | ✅ Working (Go 1.26)    |
+| Phantom types      | ✅ Type-safe IDs        |
+| Immutable values   | ✅ With\* pattern       |
+| JSON serialization | ✅ All types            |
+| SQL support        | ✅ All types            |
+| Documentation      | ✅ Comprehensive        |
+| Test coverage      | ✅ 92% (11/12 packages) |
 
 ---
 
@@ -238,6 +238,7 @@ a2e163f docs: add project documentation and license files
 **Context:**
 
 Currently, constructors return `(T, error)`:
+
 ```go
 email, err := types.NewEmail("test@example.com")
 if err != nil {
@@ -248,6 +249,7 @@ if err != nil {
 **Consideration:**
 
 A `Result[T]` type could enable railway-oriented programming:
+
 ```go
 type Result[T] struct {
     value T
@@ -312,12 +314,12 @@ I don't have user feedback yet. The library isn't used in production (that I kno
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| validate package untested | HIGH | MEDIUM | Add tests immediately |
-| Breaking API change needed | LOW | HIGH | Design carefully, version appropriately |
-| Dependency vulnerability | LOW | HIGH | Weekly checks, dependabot |
-| Performance regression | LOW | MEDIUM | Benchmark suite |
+| Risk                       | Likelihood | Impact | Mitigation                              |
+| -------------------------- | ---------- | ------ | --------------------------------------- |
+| validate package untested  | HIGH       | MEDIUM | Add tests immediately                   |
+| Breaking API change needed | LOW        | HIGH   | Design carefully, version appropriately |
+| Dependency vulnerability   | LOW        | HIGH   | Weekly checks, dependabot               |
+| Performance regression     | LOW        | MEDIUM | Benchmark suite                         |
 
 ---
 

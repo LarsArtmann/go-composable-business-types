@@ -222,7 +222,7 @@ func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
 func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonDataPoint[T]
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return fmt.Errorf("unmarshal datapoint: invalid JSON: %w", err)
+		return fmt.Errorf("unmarshal datapoint: invalid JSON %q: %w", string(data), err)
 	}
 
 	// Parse ID

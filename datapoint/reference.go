@@ -83,8 +83,14 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 	var idStr string
 	if s, ok := any(r.id).(interface{ String() string }); ok {
 		idStr = s.String()
+	} else if s, ok := any(r.id).(string); ok {
+		idStr = s
 	} else {
-		idStr = any(r.id).(string)
+		return nil, fmt.Errorf(
+			"reference: ID type %T with value %q does not support String() or string conversion",
+			r.id,
+			idStr,
+		)
 	}
 	return json.Marshal(jsonReference{
 		ID:       idStr,
@@ -98,7 +104,7 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonReference
 	if err := json.Unmarshal(data, &raw); err != nil {
-		return fmt.Errorf("unmarshal reference: invalid JSON: %w", err)
+		return fmt.Errorf("unmarshal reference: invalid JSON %q: %w", string(data), err)
 	}
 	r.relation = raw.Relation
 	r.version = raw.Version
@@ -108,12 +114,16 @@ func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	var zero T
 	switch any(zero).(type) {
 	case string:
-		r.id = any(raw.ID).(T)
+		id, ok := any(raw.ID).(T)
+		if !ok {
+			return fmt.Errorf("unmarshal reference: cannot convert ID %q to target type %T", raw.ID, zero)
+		}
+		r.id = id
 	default:
 		// For other types, the ID type must support text unmarshaling
 		if u, ok := any(&r.id).(interface{ UnmarshalText([]byte) error }); ok {
 			if err := u.UnmarshalText([]byte(raw.ID)); err != nil {
-				return fmt.Errorf("unmarshal reference: unmarshal id %q: %w", raw.ID, err)
+				return fmt.Errorf("unmarshal reference: unmarshal id %q to type %T: %w", raw.ID, zero, err)
 			}
 		}
 	}
