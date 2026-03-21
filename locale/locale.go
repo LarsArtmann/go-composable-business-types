@@ -14,6 +14,7 @@ import (
 	"database/sql/driver"
 	"fmt"
 
+	"github.com/larsartmann/go-composable-business-types/scanutil"
 	"golang.org/x/text/language"
 )
 
@@ -96,11 +97,7 @@ func (l *Locale) UnmarshalText(data []byte) error {
 // Scan implements sql.Scanner for Locale.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (l *Locale) Scan(src any) error {
-	switch v := src.(type) {
-	case nil:
-		l.tag = language.Und
-		return nil
-	case string:
+	return scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			l.tag = language.Und
 			return nil
@@ -111,20 +108,7 @@ func (l *Locale) Scan(src any) error {
 		}
 		*l = parsed
 		return nil
-	case []byte:
-		if len(v) == 0 {
-			l.tag = language.Und
-			return nil
-		}
-		parsed, err := ParseLocale(string(v))
-		if err != nil {
-			return fmt.Errorf("scan locale: %w", err)
-		}
-		*l = parsed
-		return nil
-	default:
-		return fmt.Errorf("locale: cannot scan non-string value (got %T)", src)
-	}
+	})
 }
 
 // Value implements driver.Valuer for Locale.

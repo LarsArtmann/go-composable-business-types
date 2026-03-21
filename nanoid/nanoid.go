@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/larsartmann/go-composable-business-types/scanutil"
 	"github.com/sixafter/nanoid"
 )
 
@@ -125,42 +126,22 @@ func isNanoIdChar(r rune) bool {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (id *NanoId) Scan(src any) error {
-	switch v := src.(type) {
-	case nil:
-		*id = NanoId{}
-		return nil
-	case string:
+	return scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*id = NanoId{}
 			return nil
 		}
 		parsed, err := ParseNanoId(v)
 		if err != nil {
-			return fmt.Errorf("nanoid: scan string %q: %w", v, err)
+			return fmt.Errorf("nanoid: scan %q: %w", v, err)
 		}
 		*id = parsed
 		return nil
-	case []byte:
-		if len(v) == 0 {
-			*id = NanoId{}
-			return nil
-		}
-		parsed, err := ParseNanoId(string(v))
-		if err != nil {
-			return fmt.Errorf("nanoid: scan []byte %q: %w", string(v), err)
-		}
-		*id = parsed
-		return nil
-	default:
-		return fmt.Errorf("nanoid: cannot scan non-string/[]byte value (got %T)", src)
-	}
+	})
 }
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty NanoId, otherwise the string value.
 func (id NanoId) Value() (driver.Value, error) {
-	if id.IsZero() {
-		return nil, nil
-	}
-	return id.value, nil
+	return scanutil.NullableValue(id.value)
 }

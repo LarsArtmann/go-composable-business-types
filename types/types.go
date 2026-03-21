@@ -18,9 +18,10 @@ import (
 	"net/mail"
 	"net/url"
 	"regexp"
-	"strconv"
 	"strings"
 	"time"
+
+	"github.com/larsartmann/go-composable-business-types/scanutil"
 )
 
 // emailRegex matches most common valid email formats.
@@ -355,11 +356,7 @@ func (d Duration) Value() (driver.Value, error) {
 // Scan implements sql.Scanner for Email.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (e *Email) Scan(src any) error {
-	switch v := src.(type) {
-	case nil:
-		*e = ""
-		return nil
-	case string:
+	return scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*e = ""
 			return nil
@@ -370,39 +367,19 @@ func (e *Email) Scan(src any) error {
 		}
 		*e = parsed
 		return nil
-	case []byte:
-		if len(v) == 0 {
-			*e = ""
-			return nil
-		}
-		parsed, err := NewEmail(string(v))
-		if err != nil {
-			return fmt.Errorf("email: invalid value %q: %w", string(v), err)
-		}
-		*e = parsed
-		return nil
-	default:
-		return fmt.Errorf("email: cannot scan value (got %T)", src)
-	}
+	})
 }
 
 // Value implements driver.Valuer for Email.
 // Returns nil for empty Email, otherwise the string value.
 func (e Email) Value() (driver.Value, error) {
-	if e.IsZero() {
-		return nil, nil
-	}
-	return string(e), nil
+	return scanutil.NullableValue(string(e))
 }
 
 // Scan implements sql.Scanner for URL.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (u *URL) Scan(src any) error {
-	switch v := src.(type) {
-	case nil:
-		*u = ""
-		return nil
-	case string:
+	return scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*u = ""
 			return nil
@@ -413,54 +390,22 @@ func (u *URL) Scan(src any) error {
 		}
 		*u = parsed
 		return nil
-	case []byte:
-		if len(v) == 0 {
-			*u = ""
-			return nil
-		}
-		parsed, err := NewURL(string(v))
-		if err != nil {
-			return fmt.Errorf("url: invalid value %q: %w", string(v), err)
-		}
-		*u = parsed
-		return nil
-	default:
-		return fmt.Errorf("url: cannot scan value (got %T)", src)
-	}
+	})
 }
 
 // Value implements driver.Valuer for URL.
 // Returns nil for empty URL, otherwise the string value.
 func (u URL) Value() (driver.Value, error) {
-	if u.IsZero() {
-		return nil, nil
-	}
-	return string(u), nil
+	return scanutil.NullableValue(string(u))
 }
 
 // Scan implements sql.Scanner for Cents.
 // Supports int64, float64, and []byte sources.
 func (c *Cents) Scan(src any) error {
-	switch v := src.(type) {
-	case nil:
-		*c = 0
-		return nil
-	case int64:
+	return scanutil.ScanInt64(src, func(v int64) error {
 		*c = Cents(v)
 		return nil
-	case float64:
-		*c = Cents(int64(v))
-		return nil
-	case []byte:
-		val, err := strconv.ParseInt(string(v), 10, 64)
-		if err != nil {
-			return fmt.Errorf("cents: cannot parse %q: %w", string(v), err)
-		}
-		*c = Cents(val)
-		return nil
-	default:
-		return fmt.Errorf("cents: cannot scan non-numeric value (got %T)", src)
-	}
+	})
 }
 
 // Value implements driver.Valuer for Cents.
