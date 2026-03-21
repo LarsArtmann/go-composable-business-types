@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/larsartmann/go-composable-business-types/scanutil"
+	"github.com/larsartmann/go-composable-business-types/validate"
 )
 
 // emailRegex matches most common valid email formats.
@@ -67,6 +68,22 @@ func (e Email) String() string    { return string(e) }
 func (e Email) IsZero() bool      { return e == "" }
 func (e Email) LocalPart() string { s, _, _ := e.split(); return s }
 func (e Email) Domain() string    { _, d, _ := e.split(); return d }
+
+// Validate implements validate.Validator for Email.
+func (e Email) Validate() error {
+	if e == "" {
+		return ErrInvalidEmail
+	}
+	addr, err := mail.ParseAddress(string(e))
+	if err != nil {
+		return ErrInvalidEmail
+	}
+	email := addr.Address
+	if !emailRegex.MatchString(email) {
+		return ErrInvalidEmail
+	}
+	return nil
+}
 
 // Normalize returns an email with normalized case.
 // Per RFC 1035, domain names are case-insensitive, so the domain is lowercased.
@@ -130,6 +147,24 @@ func (u URL) String() string { return string(u) }
 
 // IsZero returns true if the URL is empty.
 func (u URL) IsZero() bool { return u == "" }
+
+// Validate implements validate.Validator for URL.
+func (u URL) Validate() error {
+	if u == "" {
+		return ErrInvalidURL
+	}
+	parsed, err := url.Parse(string(u))
+	if err != nil {
+		return ErrInvalidURL
+	}
+	if parsed.Scheme != "http" && parsed.Scheme != "https" {
+		return ErrInvalidURL
+	}
+	if parsed.Host == "" {
+		return ErrInvalidURL
+	}
+	return nil
+}
 
 // Parse returns the underlying url.URL. Since URLs are validated at construction,
 // this should never fail, but returns error for safety.
@@ -235,6 +270,9 @@ func (p Percentage) Value() (driver.Value, error) {
 	return scanutil.Int64Value(int64(p))
 }
 
+// Validate implements validate.Validator for Percentage.
+func (p Percentage) Validate() error { return nil }
+
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 
@@ -244,6 +282,10 @@ const centsDivisor = 100 // Used for float64 conversion
 func NewCents(v int64) Cents     { return Cents(v) }
 func (c Cents) Int64() int64     { return int64(c) }
 func (c Cents) Float64() float64 { return float64(c) / centsDivisor }
+
+// Validate implements validate.Validator for Cents.
+// Cents are always valid since they can represent any integer value.
+func (c Cents) Validate() error { return nil }
 
 func (c Cents) Add(other Cents) Cents { return c + other }
 func (c Cents) Sub(other Cents) Cents { return c - other }
@@ -497,3 +539,11 @@ func (t Timestamp) Value() (driver.Value, error) {
 	}
 	return t.Time, nil
 }
+
+// Compile-time interface assertions to ensure types implement validate.Validator.
+var (
+	_ validate.Validator = Email("")
+	_ validate.Validator = URL("")
+	_ validate.Validator = Cents(0)
+	_ validate.Validator = Percentage(0)
+)
