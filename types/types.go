@@ -140,12 +140,12 @@ func (u URL) Scheme() string {
 	if u == "" {
 		return ""
 	}
-	for i := range len(u) {
-		if u[i] == ':' {
-			return string(u[:i])
-		}
+	s := string(u)
+	idx := strings.IndexByte(s, ':')
+	if idx <= 0 {
+		return ""
 	}
-	return ""
+	return s[:idx]
 }
 
 // Host returns the URL host (e.g., "example.com" or "example.com:8080").
