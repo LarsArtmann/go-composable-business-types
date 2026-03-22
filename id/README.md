@@ -76,9 +76,9 @@ func main() {
 }
 ```
 
-## Recommended: Use NanoId instead of plain strings
+## Recommended: Use NanoID instead of plain strings
 
-For string-based identifiers, prefer using the companion `nanoid` package instead of raw strings. NanoId provides:
+For string-based identifiers, prefer using the companion `nanoid` package instead of raw strings. NanoID provides:
 
 - **URL-safe**: Uses `A-Za-z0-9_-` alphabet
 - **Unique**: Cryptographically secure random generation
@@ -92,12 +92,12 @@ import (
 )
 
 type UserBrand struct{}
-type UserID = id.ID[UserBrand, nanoid.NanoId]
+type UserID = id.ID[UserBrand, nanoid.NanoID]
 
 func main() {
-    userID := id.NewID[UserBrand](nanoid.NewNanoId())
+    userID := id.NewID[UserBrand](nanoid.NewNanoID())
     // or from existing nanoid:
-    existing := nanoid.ParseNanoId("abc123def456ghi789")
+    existing := nanoid.ParseNanoID("abc123def456ghi789")
     userID := id.NewID[UserBrand](existing)
 }
 ```

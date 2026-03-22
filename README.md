@@ -17,7 +17,7 @@ go get github.com/larsartmann/go-composable-business-types
 | Type            | Purpose                                                              |
 | --------------- | -------------------------------------------------------------------- |
 | `ID[B, V]`      | Branded, type-safe identifier - prevents mixing different entity IDs |
-| `NanoId`        | URL-safe, cryptographically random ID (default 21 chars)             |
+| `NanoID`        | URL-safe, cryptographically random ID (default 21 chars)             |
 | `ActorChain[T]` | Ordered chain of actors (User → Service → Service) for audit trails  |
 | `DataPoint[T]`  | Self-contained data unit with complete audit trail                   |
 | `Bitemporal`    | Bitemporal tracking (validFrom, validUntil, recorded)                |
@@ -118,7 +118,7 @@ fmt.Println(tax.Float64())   // 0.08
 
 ### Core Features
 
-- **NanoId**: Unique, URL-safe identifier (21 chars by default)
+- **NanoID**: Unique, URL-safe identifier (21 chars by default)
 - **Bitemporal tracking**: `validFrom`, `validUntil`, `recorded` timestamps
 - **Actor tracking**: Who caused this data point (User, Bot, Service, System)
 - **Trigger**: What caused this data point (Manual, Scheduled, Webhook, etc.)
@@ -153,7 +153,7 @@ dp := datapoint.NewDataPoint(OrderState{
 }, actorEntry).WithReason("customer placed order")
 
 // Access fields
-fmt.Println(dp.Id())           // NanoId (unique)
+fmt.Println(dp.ID())           // NanoID (unique)
 fmt.Println(dp.Payload())      // OrderState
 fmt.Println(dp.Actor().Name)   // "Alice"
 fmt.Println(dp.Trigger())      // TriggerManual
@@ -179,7 +179,7 @@ dp := datapoint.NewDataPoint(payload, actorEntry).
     WithVersion(3).
     WithTag("correlation_id", "corr-123").
     WithReference(datapoint.NewReference("order-456", "parent")).
-    WithCause(datapoint.NewCauseCommand[string](nanoid.NewNanoId(), "approved"))
+    WithCause(datapoint.NewCauseCommand[string](nanoid.NewNanoID(), "approved"))
 ```
 
 ### Bitemporal Tracking
@@ -221,8 +221,8 @@ ref := datapoint.NewReference("doc-123", "source").
     WithTag("department", "legal")
 
 // Cause tracking (event-triggered)
-causeID := nanoid.NewNanoId()
-trace := []nanoid.NanoId{intermediateId}
+causeID := nanoid.NewNanoID()
+trace := []nanoid.NanoID{intermediateId}
 cause := datapoint.NewCauseEvent[string](causeID, "created", trace...)
 
 dp := datapoint.NewDataPoint(payload, actorEntry).

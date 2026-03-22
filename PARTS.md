@@ -18,7 +18,7 @@ This project contains **9 packages** with **14 distinct types** that fall into t
 | Package     | Types                                                          | Unique Value | Extract? | Recommendation                        |
 | ----------- | -------------------------------------------------------------- | ------------ | -------- | ------------------------------------- |
 | `id/`       | `ID[B,V]`                                                      | Medium       | Maybe    | Pattern is simple but useful          |
-| `nanoid/`   | `NanoId`                                                       | Low          | No       | Thin wrapper around `sixafter/nanoid` |
+| `nanoid/`   | `NanoID`                                                       | Low          | No       | Thin wrapper around `sixafter/nanoid` |
 | `temporal/` | `Bitemporal`                                                   | **High**     | **Yes**  | **No Go equivalent exists**           |
 | `actor/`    | `ActorChain[T]`, `ActorEntry[T]`                               | **High**     | **Yes**  | Novel audit trail pattern             |
 | `bounded/`  | `BoundedString`                                                | Medium       | Maybe    | Useful standalone, consider extending |
@@ -71,9 +71,9 @@ type OrderID = ID[OrderBrand, int64]
 
 ---
 
-### 2. NanoId (`nanoid/`)
+### 2. NanoID (`nanoid/`)
 
-**Location:** `nanoid/nanoid.go` (~151 lines)
+**Location:** `nanoid/nanoid.go` (~137 lines)
 
 **Description:** URL-safe, cryptographically random identifier with validation.
 
@@ -398,7 +398,7 @@ github.com/larsartmann/go-event-audit
 | Component               | Reason                            |
 | ----------------------- | --------------------------------- |
 | `ID[B,V]`               | Simple pattern, no library value  |
-| `NanoId`                | Thin wrapper around excellent lib |
+| `NanoID`                | Thin wrapper around excellent lib |
 | `BoundedString`         | Could extract but works well here |
 | `Email`, `URL`          | Thin wrappers                     |
 | `Money`                 | Direct alias to best-in-class     |
@@ -429,7 +429,7 @@ This library follows the principles from HOW_TO_GOLANG.md:
 | Package     | Type             | Lines   | Unique Value | Extract? | Reason                       |
 | ----------- | ---------------- | ------- | ------------ | -------- | ---------------------------- |
 | `id/`       | `ID[B,V]`        | ~167    | Medium       | Maybe    | Pattern is simple but useful |
-| `nanoid/`   | `NanoId`         | ~151    | Low          | No       | Thin wrapper                 |
+| `nanoid/`   | `NanoID`         | ~137    | Low          | No       | Thin wrapper                 |
 | `temporal/` | `Bitemporal`     | ~121    | **High**     | **Yes**  | **No Go equivalent**         |
 | `actor/`    | `ActorChain`     | ~80     | **High**     | **Yes**  | Novel pattern                |
 | `bounded/`  | `BoundedString`  | ~132    | Medium       | Maybe    | Useful standalone            |
