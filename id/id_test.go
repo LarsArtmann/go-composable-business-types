@@ -1118,9 +1118,12 @@ func ExampleID_Compare() {
 	id2 := NewID[OrderBrand, int64](200)
 	id3 := NewID[OrderBrand, int64](100)
 
-	fmt.Println(id1.Compare(id2))
-	fmt.Println(id2.Compare(id1))
-	fmt.Println(id1.Compare(id3))
+	cmp, _ := id1.Compare(id2)
+	fmt.Println(cmp)
+	cmp, _ = id2.Compare(id1)
+	fmt.Println(cmp)
+	cmp, _ = id1.Compare(id3)
+	fmt.Println(cmp)
 	// Output:
 	// -1
 	// 1
