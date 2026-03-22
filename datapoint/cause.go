@@ -17,7 +17,12 @@ type Cause[T comparable] struct {
 }
 
 // NewCause creates a new Cause with the given parameters.
-func NewCause[T comparable](id nanoid.NanoID, kind enums.CauseKind, effect string, trace []nanoid.NanoID) Cause[T] {
+func NewCause[T comparable](
+	id nanoid.NanoID,
+	kind enums.CauseKind,
+	effect string,
+	trace []nanoid.NanoID,
+) Cause[T] {
 	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
 	return Cause[T]{
@@ -86,7 +91,7 @@ func (c Cause[T]) IsZero() bool {
 
 // jsonCause is the JSON representation of Cause.
 type jsonCause struct {
-	ID     string           `json:"id"`
+	ID     string          `json:"id"`
 	Kind   enums.CauseKind `json:"kind"`
 	Effect string          `json:"effect"`
 	Trace  []string        `json:"trace,omitempty"`
