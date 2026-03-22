@@ -4,19 +4,20 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"github.com/larsartmann/go-composable-business-types/enums"
 	"github.com/larsartmann/go-composable-business-types/nanoid"
 )
 
 // Cause represents a causal relationship to another DataPoint or event.
 type Cause[T comparable] struct {
 	id     nanoid.NanoID
-	kind   string
+	kind   enums.CauseKind
 	effect string
 	trace  []nanoid.NanoID
 }
 
 // NewCause creates a new Cause with the given parameters.
-func NewCause[T comparable](id nanoid.NanoID, kind, effect string, trace []nanoid.NanoID) Cause[T] {
+func NewCause[T comparable](id nanoid.NanoID, kind enums.CauseKind, effect string, trace []nanoid.NanoID) Cause[T] {
 	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
 	return Cause[T]{
@@ -31,7 +32,7 @@ func NewCause[T comparable](id nanoid.NanoID, kind, effect string, trace []nanoi
 func NewCauseDirect[T comparable](id nanoid.NanoID) Cause[T] {
 	return Cause[T]{
 		id:     id,
-		kind:   "direct",
+		kind:   enums.CauseKindDirect,
 		effect: "caused",
 		trace:  nil,
 	}
@@ -41,7 +42,7 @@ func NewCauseDirect[T comparable](id nanoid.NanoID) Cause[T] {
 func NewCauseCommand[T comparable](id nanoid.NanoID, command string) Cause[T] {
 	return Cause[T]{
 		id:     id,
-		kind:   "command",
+		kind:   enums.CauseKindCommand,
 		effect: command,
 		trace:  nil,
 	}
@@ -53,7 +54,7 @@ func NewCauseEvent[T comparable](id nanoid.NanoID, event string, trace ...nanoid
 	copy(t, trace)
 	return Cause[T]{
 		id:     id,
-		kind:   "event",
+		kind:   enums.CauseKindEvent,
 		effect: event,
 		trace:  t,
 	}
@@ -62,8 +63,8 @@ func NewCauseEvent[T comparable](id nanoid.NanoID, event string, trace ...nanoid
 // ID returns the cause ID.
 func (c Cause[T]) ID() nanoid.NanoID { return c.id }
 
-// Kind returns the cause kind (e.g., "direct", "command", "event").
-func (c Cause[T]) Kind() string { return c.kind }
+// Kind returns the cause kind.
+func (c Cause[T]) Kind() enums.CauseKind { return c.kind }
 
 // Effect returns the effect description.
 func (c Cause[T]) Effect() string { return c.effect }
@@ -80,15 +81,15 @@ func (c Cause[T]) Trace() []nanoid.NanoID {
 
 // IsZero returns true if this is the zero value.
 func (c Cause[T]) IsZero() bool {
-	return c.id.IsZero() && c.kind == "" && c.effect == "" && len(c.trace) == 0
+	return c.id.IsZero() && c.kind == 0 && c.effect == "" && len(c.trace) == 0
 }
 
 // jsonCause is the JSON representation of Cause.
 type jsonCause struct {
-	ID     string   `json:"id"`
-	Kind   string   `json:"kind"`
-	Effect string   `json:"effect"`
-	Trace  []string `json:"trace,omitempty"`
+	ID     string           `json:"id"`
+	Kind   enums.CauseKind `json:"kind"`
+	Effect string          `json:"effect"`
+	Trace  []string        `json:"trace,omitempty"`
 }
 
 // MarshalJSON implements json.Marshaler.

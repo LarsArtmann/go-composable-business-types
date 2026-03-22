@@ -105,7 +105,7 @@ func TestDataPointWithCause(t *testing.T) {
 	if len(causes) != 1 {
 		t.Errorf("expected 1 cause, got %d", len(causes))
 	}
-	if causes[0].Kind() != "direct" {
+	if causes[0].Kind() != enums.CauseKindDirect {
 		t.Errorf("expected kind 'direct', got %s", causes[0].Kind())
 	}
 }

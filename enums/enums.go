@@ -5,11 +5,10 @@
 //   - Priority: Low, Medium, High, Critical
 //   - Status: Draft, Active, Paused, Archived, Deleted
 //   - Trigger: Manual, Scheduled, Webhook, Import, Migration, System, Correction
+//   - CauseKind: Direct, Command, Event
 //
 //go:generate go tool go-enum --marshal --names --values --sql
 package enums
-
-//go:generate go tool go-enum --marshal --names --values --sql
 
 // ActorKind represents the type of actor performing an action.
 // ENUM(User, Bot, System, Service)
@@ -36,3 +35,13 @@ type Status uint8
 //
 // )
 type Trigger uint8
+
+// CauseKind represents the type of causal relationship.
+// ENUM(
+//
+//	Direct,  // Direct causal relationship
+//	Command, // Command-triggered relationship
+//	Event    // Event-triggered relationship
+//
+// )
+type CauseKind uint8

@@ -85,6 +85,8 @@ var ErrNotOrdered = errors.New("id: Compare requires an ordered type (int, uint,
 
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
 // Returns ErrNotOrdered if V is not an ordered type.
+//
+//nolint:forcetypeassert // Type assertion is safe: outer type switch validates V matches case type
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
 	case int:

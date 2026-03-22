@@ -186,6 +186,176 @@ func (x ActorKind) Value() (driver.Value, error) {
 }
 
 const (
+	// CauseKindDirect is a CauseKind of type Direct.
+	// Direct causal relationship
+	CauseKindDirect CauseKind = iota
+	// CauseKindCommand is a CauseKind of type Command.
+	// Command-triggered relationship
+	CauseKindCommand
+	// CauseKindEvent is a CauseKind of type Event.
+	// Event-triggered relationship
+	CauseKindEvent
+)
+
+var ErrInvalidCauseKind = fmt.Errorf("not a valid CauseKind, try [%s]", strings.Join(_CauseKindNames, ", "))
+
+const _CauseKindName = "DirectCommandEvent"
+
+var _CauseKindNames = []string{
+	_CauseKindName[0:6],
+	_CauseKindName[6:13],
+	_CauseKindName[13:18],
+}
+
+// CauseKindNames returns a list of possible string values of CauseKind.
+func CauseKindNames() []string {
+	tmp := make([]string, len(_CauseKindNames))
+	copy(tmp, _CauseKindNames)
+	return tmp
+}
+
+// CauseKindValues returns a list of the values for CauseKind
+func CauseKindValues() []CauseKind {
+	return []CauseKind{
+		CauseKindDirect,
+		CauseKindCommand,
+		CauseKindEvent,
+	}
+}
+
+var _CauseKindMap = map[CauseKind]string{
+	CauseKindDirect:  _CauseKindName[0:6],
+	CauseKindCommand: _CauseKindName[6:13],
+	CauseKindEvent:   _CauseKindName[13:18],
+}
+
+// String implements the Stringer interface.
+func (x CauseKind) String() string {
+	if str, ok := _CauseKindMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("CauseKind(%d)", x)
+}
+
+// IsValid provides a quick way to determine if the typed value is
+// part of the allowed enumerated values
+func (x CauseKind) IsValid() bool {
+	_, ok := _CauseKindMap[x]
+	return ok
+}
+
+var _CauseKindValue = map[string]CauseKind{
+	_CauseKindName[0:6]:   CauseKindDirect,
+	_CauseKindName[6:13]:  CauseKindCommand,
+	_CauseKindName[13:18]: CauseKindEvent,
+}
+
+// ParseCauseKind attempts to convert a string to a CauseKind.
+func ParseCauseKind(name string) (CauseKind, error) {
+	if x, ok := _CauseKindValue[name]; ok {
+		return x, nil
+	}
+	return CauseKind(0), fmt.Errorf("%s is %w", name, ErrInvalidCauseKind)
+}
+
+// MarshalText implements the text marshaller method.
+func (x CauseKind) MarshalText() ([]byte, error) {
+	return []byte(x.String()), nil
+}
+
+// UnmarshalText implements the text unmarshaller method.
+func (x *CauseKind) UnmarshalText(text []byte) error {
+	name := string(text)
+	tmp, err := ParseCauseKind(name)
+	if err != nil {
+		return err
+	}
+	*x = tmp
+	return nil
+}
+
+// AppendText appends the textual representation of itself to the end of b
+// (allocating a larger slice if necessary) and returns the updated slice.
+//
+// Implementations must not retain b, nor mutate any bytes within b[:len(b)].
+func (x *CauseKind) AppendText(b []byte) ([]byte, error) {
+	return append(b, x.String()...), nil
+}
+
+var errCauseKindNilPtr = errors.New("value pointer is nil") // one per type for package clashes
+
+// Scan implements the Scanner interface.
+func (x *CauseKind) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = CauseKind(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = CauseKind(v)
+	case string:
+		*x, err = ParseCauseKind(v)
+	case []byte:
+		*x, err = ParseCauseKind(string(v))
+	case CauseKind:
+		*x = v
+	case int:
+		*x = CauseKind(v)
+	case *CauseKind:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = CauseKind(v)
+	case uint64:
+		*x = CauseKind(v)
+	case *int:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *int64:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = CauseKind(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *uint:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *uint64:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *string:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x, err = ParseCauseKind(*v)
+	}
+
+	return
+}
+
+// Value implements the driver Valuer interface.
+func (x CauseKind) Value() (driver.Value, error) {
+	return x.String(), nil
+}
+
+const (
 	// PriorityLow is a Priority of type Low.
 	PriorityLow Priority = iota
 	// PriorityMedium is a Priority of type Medium.
