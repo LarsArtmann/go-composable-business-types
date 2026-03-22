@@ -73,19 +73,11 @@ func TestParseActorKind(t *testing.T) {
 	}
 }
 
-func TestMustParseActorKind(t *testing.T) {
-	// Valid cases
-	if MustParseActorKind("User") != ActorKindUser {
-		t.Error("MustParseActorKind(User) failed")
+func TestParseActorKindError(t *testing.T) {
+	_, err := ParseActorKind("Invalid")
+	if err == nil {
+		t.Error("expected error for invalid ActorKind")
 	}
-
-	// Invalid case - should panic
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("expected panic for invalid ActorKind")
-		}
-	}()
-	MustParseActorKind("Invalid")
 }
 
 func TestActorKindIsValid(t *testing.T) {

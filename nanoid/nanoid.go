@@ -1,13 +1,13 @@
 // Package nanoid provides URL-safe, unique identifiers.
 //
-// NanoId is a FIPS-140 compatible, high-performance unique ID generator
+// NanoID is a FIPS-140 compatible, high-performance unique ID generator
 // wrapped around github.com/sixafter/nanoid. Default length is 21 characters
 // (126 bits of entropy).
 //
 // Basic usage:
 //
-//	id := nanoid.NewNanoId()  // 21 chars
-//	id := nanoid.NewNanoIdWithLength(32)
+//	id := nanoid.NewNanoID()  // 21 chars
+//	id := nanoid.NewNanoIDWithLength(32)
 package nanoid
 
 import (
@@ -19,81 +19,71 @@ import (
 	"github.com/sixafter/nanoid"
 )
 
-// NanoId is a URL-safe, unique identifier (default 21 characters).
+// NanoID is a URL-safe, unique identifier (default 21 characters).
 // Wrapped around https://github.com/sixafter/nanoid - FIPS-140 compatible, high-performance.
-type NanoId struct{ value string }
+type NanoID struct{ value string }
 
 const (
-	// DefaultNanoIdLength is the default length for new NanoIds (21 chars = 126 bits of entropy).
-	DefaultNanoIdLength = nanoid.DefaultLength
+	// DefaultNanoIDLength is the default length for new NanoIDs (21 chars = 126 bits of entropy).
+	DefaultNanoIDLength = nanoid.DefaultLength
 
 	// Minimum length constraints
-	minNanoIdLength = 8   // ErrNanoIdTooShort
-	maxNanoIdLength = 256 // ErrNanoIdTooLong
+	minNanoIDLength = 8   // ErrNanoIDTooShort
+	maxNanoIDLength = 256 // ErrNanoIDTooLong
 )
 
 var (
-	ErrNanoIdEmpty    = errors.New("nanoid: cannot be empty")
-	ErrNanoIdTooShort = errors.New("nanoid: minimum length is 8 characters")
-	ErrNanoIdTooLong  = errors.New("nanoid: maximum length is 256 characters")
-	ErrNanoIdInvalid  = errors.New("nanoid: contains invalid characters")
+	ErrNanoIDEmpty    = errors.New("nanoid: cannot be empty")
+	ErrNanoIDTooShort = errors.New("nanoid: minimum length is 8 characters")
+	ErrNanoIDTooLong  = errors.New("nanoid: maximum length is 256 characters")
+	ErrNanoIDInvalid  = errors.New("nanoid: contains invalid characters")
 )
 
-// NewNanoId generates a new random NanoId with the default length (21 characters).
-func NewNanoId() NanoId {
-	return NewNanoIdWithLength(DefaultNanoIdLength)
+// NewNanoID generates a new random NanoID with the default length (21 characters).
+func NewNanoID() NanoID {
+	return NewNanoIDWithLength(DefaultNanoIDLength)
 }
 
-// NewNanoIdWithLength generates a new random NanoId with a custom length.
+// NewNanoIDWithLength generates a new random NanoID with a custom length.
 // Panics if generation fails (should never happen with valid length).
-func NewNanoIdWithLength(length int) NanoId {
-	return NanoId{value: string(nanoid.MustWithLength(length))}
+func NewNanoIDWithLength(length int) NanoID {
+	return NanoID{value: string(nanoid.MustWithLength(length))}
 }
 
-// ParseNanoId validates and creates a NanoId from a string.
+// ParseNanoID validates and creates a NanoID from a string.
 // Returns an error if the string is empty, too short (<8), too long (>256),
 // or contains characters outside the URL-safe alphabet.
-func ParseNanoId(s string) (NanoId, error) {
+func ParseNanoID(s string) (NanoID, error) {
 	if s == "" {
-		return NanoId{}, ErrNanoIdEmpty
+		return NanoID{}, ErrNanoIDEmpty
 	}
-	if len(s) < minNanoIdLength {
-		return NanoId{}, ErrNanoIdTooShort
+	if len(s) < minNanoIDLength {
+		return NanoID{}, ErrNanoIDTooShort
 	}
-	if len(s) > maxNanoIdLength {
-		return NanoId{}, ErrNanoIdTooLong
+	if len(s) > maxNanoIDLength {
+		return NanoID{}, ErrNanoIDTooLong
 	}
 
 	for _, r := range s {
-		if !isNanoIdChar(r) {
-			return NanoId{}, ErrNanoIdInvalid
+		if !isNanoIDChar(r) {
+			return NanoID{}, ErrNanoIDInvalid
 		}
 	}
 
-	return NanoId{value: s}, nil
+	return NanoID{value: s}, nil
 }
 
-// MustParseNanoId is like ParseNanoId but panics on error.
-// Use only for hardcoded strings known at compile time.
-func MustParseNanoId(s string) NanoId {
-	id, err := ParseNanoId(s)
-	if err != nil {
-		panic(err)
-	}
-	return id
-}
+// String returns the string representation of the NanoID.
+func (id NanoID) String() string { return id.value }
 
-// String returns the string representation of the NanoId.
-func (id NanoId) String() string { return id.value }
-
-// IsZero returns true if the NanoId has no value.
-func (id NanoId) IsZero() bool { return id.value == "" }
+// IsZero returns true if the NanoID has no value.
+func (id NanoID) IsZero() bool { return id.value == "" }
 
 // GoString implements fmt.GoStringer for debugging.
-func (id NanoId) GoString() string { return id.value }
+func (id NanoID) GoString() string { return id.value }
 
 // MarshalText implements encoding.TextMarshaler for JSON serialization.
-func (id NanoId) MarshalText() ([]byte, error) {
+func (id NanoID) MarshalText() ([]byte, error) {
 	if id.IsZero() {
 		return nil, nil
 	}
@@ -101,13 +91,13 @@ func (id NanoId) MarshalText() ([]byte, error) {
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler for JSON deserialization.
-func (id *NanoId) UnmarshalText(data []byte) error {
+func (id *NanoID) UnmarshalText(data []byte) error {
 	if len(data) == 0 {
-		*id = NanoId{}
+		*id = NanoID{}
 		return nil
 	}
 
-	parsed, err := ParseNanoId(string(data))
+	parsed, err := ParseNanoID(string(data))
 	if err != nil {
 		return err
 	}
@@ -115,8 +105,8 @@ func (id *NanoId) UnmarshalText(data []byte) error {
 	return nil
 }
 
-// isNanoIdChar checks if a rune is a valid NanoId character.
-func isNanoIdChar(r rune) bool {
+// isNanoIDChar checks if a rune is a valid NanoID character.
+func isNanoIDChar(r rune) bool {
 	return (r >= 'A' && r <= 'Z') ||
 		(r >= 'a' && r <= 'z') ||
 		(r >= '0' && r <= '9') ||
@@ -125,13 +115,13 @@ func isNanoIdChar(r rune) bool {
 
 // Scan implements sql.Scanner for database deserialization.
 // Supports string and []byte sources. Empty string/nil results in zero value.
-func (id *NanoId) Scan(src any) error {
+func (id *NanoID) Scan(src any) error {
 	return scanutil.ScanString(src, func(v string) error {
 		if v == "" {
-			*id = NanoId{}
+			*id = NanoID{}
 			return nil
 		}
-		parsed, err := ParseNanoId(v)
+		parsed, err := ParseNanoID(v)
 		if err != nil {
 			return fmt.Errorf("nanoid: scan %q: %w", v, err)
 		}
@@ -141,7 +131,7 @@ func (id *NanoId) Scan(src any) error {
 }
 
 // Value implements driver.Valuer for database serialization.
-// Returns nil for empty NanoId, otherwise the string value.
-func (id NanoId) Value() (driver.Value, error) {
+// Returns nil for empty NanoID, otherwise the string value.
+func (id NanoID) Value() (driver.Value, error) {
 	return scanutil.NullableValue(id.value)
 }

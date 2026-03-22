@@ -61,8 +61,9 @@ func main() {
 	dp = dp.WithReference(customerRef)
 
 	// Add causal chain (this order was triggered by a cart event)
-	causeID := nanoid.NewNanoId()
-	trace := []nanoid.NanoId{nanoid.MustParseNanoId("cart-123")}
+	causeID := nanoid.NewNanoID()
+	cartNanoID, _ := nanoid.ParseNanoID("cart-123")
+	trace := []nanoid.NanoID{cartNanoID}
 	cause := datapoint.NewCauseEvent[string](causeID, "cart-checked-out", trace...)
 	dp = dp.WithCause(cause)
 

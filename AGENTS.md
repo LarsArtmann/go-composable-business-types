@@ -49,7 +49,7 @@ This library uses a single Go module with subpackages for selective imports:
 ├── id/                 # ID[B,V] - branded/phantom type identifiers
 ├── locale/             # Locale - BCP 47 language tags
 ├── money/              # Money - ISO 4217 currency wrapper
-├── nanoid/             # NanoId - URL-safe unique identifiers
+├── nanoid/             # NanoID - URL-safe unique identifiers
 ├── temporal/           # Bitemporal - valid/recorded time tracking
 ├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
 └── cbt.go              # Root package (imports all subpackages)
@@ -63,7 +63,7 @@ import "github.com/larsartmann/go-composable-business-types/nanoid"
 import "github.com/larsartmann/go-composable-business-types/types"
 
 func main() {
-    id := nanoid.NewNanoId()
+    id := nanoid.NewNanoID()
     email, _ := types.NewEmail("test@example.com")
 }
 ```
@@ -121,7 +121,7 @@ func main() {
 
 ## Code Conventions
 
-- **Phantom types**: Strong type safety with branded types (NanoId, Email, etc.)
+- **Phantom types**: Strong type safety with branded types (NanoID, Email, etc.)
 - **Functional patterns**: Immutable value types with `With*` methods returning copies
 - **JSON serialization**: Custom MarshalJSON/UnmarshalJSON for type-safe serialization
 - **Error handling**: Constructors return errors; `Must*` variants panic on invalid input

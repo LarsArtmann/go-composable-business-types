@@ -6,10 +6,10 @@
 //   - Status: Draft, Active, Paused, Archived, Deleted
 //   - Trigger: Manual, Scheduled, Webhook, Import, Migration, System, Correction
 //
-//go:generate go tool go-enum --marshal --names --values --mustparse --sql
+//go:generate go tool go-enum --marshal --names --values --sql
 package enums
 
-//go:generate go tool go-enum --marshal --names --values --mustparse --sql
+//go:generate go tool go-enum --marshal --names --values --sql
 
 // ActorKind represents the type of actor performing an action.
 // ENUM(User, Bot, System, Service)

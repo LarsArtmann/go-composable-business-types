@@ -88,15 +88,6 @@ func ParseActorKind(name string) (ActorKind, error) {
 	return ActorKind(0), fmt.Errorf("%s is %w", name, ErrInvalidActorKind)
 }
 
-// MustParseActorKind converts a string to a ActorKind, and panics if is not valid.
-func MustParseActorKind(name string) ActorKind {
-	val, err := ParseActorKind(name)
-	if err != nil {
-		panic(err)
-	}
-	return val
-}
-
 // MarshalText implements the text marshaller method.
 func (x ActorKind) MarshalText() ([]byte, error) {
 	return []byte(x.String()), nil
@@ -268,15 +259,6 @@ func ParsePriority(name string) (Priority, error) {
 		return x, nil
 	}
 	return Priority(0), fmt.Errorf("%s is %w", name, ErrInvalidPriority)
-}
-
-// MustParsePriority converts a string to a Priority, and panics if is not valid.
-func MustParsePriority(name string) Priority {
-	val, err := ParsePriority(name)
-	if err != nil {
-		panic(err)
-	}
-	return val
 }
 
 // MarshalText implements the text marshaller method.
@@ -456,15 +438,6 @@ func ParseStatus(name string) (Status, error) {
 		return x, nil
 	}
 	return Status(0), fmt.Errorf("%s is %w", name, ErrInvalidStatus)
-}
-
-// MustParseStatus converts a string to a Status, and panics if is not valid.
-func MustParseStatus(name string) Status {
-	val, err := ParseStatus(name)
-	if err != nil {
-		panic(err)
-	}
-	return val
 }
 
 // MarshalText implements the text marshaller method.
@@ -663,15 +636,6 @@ func ParseTrigger(name string) (Trigger, error) {
 		return x, nil
 	}
 	return Trigger(0), fmt.Errorf("%s is %w", name, ErrInvalidTrigger)
-}
-
-// MustParseTrigger converts a string to a Trigger, and panics if is not valid.
-func MustParseTrigger(name string) Trigger {
-	val, err := ParseTrigger(name)
-	if err != nil {
-		panic(err)
-	}
-	return val
 }
 
 // MarshalText implements the text marshaller method.

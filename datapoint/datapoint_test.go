@@ -97,7 +97,7 @@ func TestDataPointWithCause(t *testing.T) {
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
 
-	causeID := nanoid.NewNanoId()
+	causeID := nanoid.NewNanoID()
 	cause := NewCauseDirect[string](causeID)
 	dp2 := dp.WithCause(cause)
 
@@ -246,7 +246,7 @@ func TestDataPointComplexChain(t *testing.T) {
 		WithVersion(3).
 		WithTag("type", "subscription")
 
-	causeID := nanoid.NewNanoId()
+	causeID := nanoid.NewNanoID()
 	cause := NewCauseCommand[string](causeID, "create-order")
 
 	dp := NewDataPoint("widget-order", actorEntry).

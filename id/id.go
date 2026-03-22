@@ -38,6 +38,7 @@ import (
 	"encoding/binary"
 	"encoding/gob"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -79,102 +80,178 @@ func (id ID[B, V]) Equal(other ID[B, V]) bool {
 	return id.value == other.value
 }
 
+// ErrNotOrdered is returned when Compare is called on an ID with a non-ordered value type.
+var ErrNotOrdered = errors.New("id: Compare requires an ordered type (int, uint, float, or string)")
+
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
-// Requires V to be ordered. Panics if V is not an ordered type.
-func (id ID[B, V]) Compare(other ID[B, V]) int {
-	// Use type switches with capture to avoid redundant type assertions.
-	// The type assertions for other.value are safe because both IDs have
-	// the same type parameter V, so they must have the same underlying type.
+// Returns ErrNotOrdered if V is not an ordered type.
+func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
 	case int:
-		b, ok := any(other.value).(int)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(int)
+		return compareInt(a, b), nil
 	case int8:
-		b, ok := any(other.value).(int8)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(int8)
+		return compareInt8(a, b), nil
 	case int16:
-		b, ok := any(other.value).(int16)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(int16)
+		return compareInt16(a, b), nil
 	case int32:
-		b, ok := any(other.value).(int32)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(int32)
+		return compareInt32(a, b), nil
 	case int64:
-		b, ok := any(other.value).(int64)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(int64)
+		return compareInt64(a, b), nil
 	case uint:
-		b, ok := any(other.value).(uint)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(uint)
+		return compareUint(a, b), nil
 	case uint8:
-		b, ok := any(other.value).(uint8)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(uint8)
+		return compareUint8(a, b), nil
 	case uint16:
-		b, ok := any(other.value).(uint16)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(uint16)
+		return compareUint16(a, b), nil
 	case uint32:
-		b, ok := any(other.value).(uint32)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(uint32)
+		return compareUint32(a, b), nil
 	case uint64:
-		b, ok := any(other.value).(uint64)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(uint64)
+		return compareUint64(a, b), nil
 	case string:
-		b, ok := any(other.value).(string)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(string)
+		return compareString(a, b), nil
 	case float32:
-		b, ok := any(other.value).(float32)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(float32)
+		return compareFloat32(a, b), nil
 	case float64:
-		b, ok := any(other.value).(float64)
-		if !ok {
-			panic(fmt.Sprintf("id: Compare type mismatch: %T vs %T", id.value, other.value))
-		}
-		return compareOrdered(a, b)
+		b := any(other.value).(float64)
+		return compareFloat64(a, b), nil
 	default:
-		panic(fmt.Sprintf("id: Compare called on non-ordered type %T", id.value))
+		return 0, ErrNotOrdered
 	}
 }
 
-// compareOrdered compares two ordered values and returns -1, 0, or 1.
-func compareOrdered[T interface {
-	~int | ~int8 | ~int16 | ~int32 | ~int64 |
-		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 |
-		~string | ~float32 | ~float64
-}](a, b T) int {
+func compareInt(a, b int) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareInt8(a, b int8) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareInt16(a, b int16) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareInt32(a, b int32) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareInt64(a, b int64) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareUint(a, b uint) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareUint8(a, b uint8) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareUint16(a, b uint16) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareUint32(a, b uint32) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareUint64(a, b uint64) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareString(a, b string) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareFloat32(a, b float32) int {
+	if a < b {
+		return -1
+	}
+	if a > b {
+		return 1
+	}
+	return 0
+}
+
+func compareFloat64(a, b float64) int {
 	if a < b {
 		return -1
 	}

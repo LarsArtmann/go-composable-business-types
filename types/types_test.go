@@ -214,32 +214,44 @@ func TestURLIsZero(t *testing.T) {
 	}
 }
 
-func TestMustParseEmail(t *testing.T) {
-	email := MustParseEmail("test@example.com")
+func TestParseEmailError(t *testing.T) {
+	_, err := NewEmail("invalid-email")
+	if err == nil {
+		t.Error("expected error for invalid email")
+	}
+	if err != ErrInvalidEmail {
+		t.Errorf("expected ErrInvalidEmail, got %v", err)
+	}
+}
+
+func TestParseEmail(t *testing.T) {
+	email, err := NewEmail("test@example.com")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if email.String() != "test@example.com" {
 		t.Errorf("expected test@example.com, got %s", email.String())
 	}
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("expected panic for invalid email")
-		}
-	}()
-	MustParseEmail("invalid-email")
 }
 
-func TestMustParseURL(t *testing.T) {
-	url := MustParseURL("https://example.com")
+func TestParseURLError(t *testing.T) {
+	_, err := NewURL("not-a-valid-url")
+	if err == nil {
+		t.Error("expected error for invalid URL")
+	}
+	if err != ErrInvalidURL {
+		t.Errorf("expected ErrInvalidURL, got %v", err)
+	}
+}
+
+func TestParseURL(t *testing.T) {
+	url, err := NewURL("https://example.com")
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
 	if url.String() != "https://example.com" {
 		t.Errorf("expected https://example.com, got %s", url.String())
 	}
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("expected panic for invalid URL")
-		}
-	}()
-	MustParseURL("not-a-valid-url")
 }
 
 func TestEmailNormalize(t *testing.T) {
@@ -404,7 +416,7 @@ func TestEmailSQL(t *testing.T) {
 
 func TestURLSQL(t *testing.T) {
 	// Test Value
-	url := MustParseURL("https://example.com")
+	url, _ := NewURL("https://example.com")
 	val, err := url.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -442,7 +454,7 @@ func TestURLSQL(t *testing.T) {
 	}
 
 	// Test Scan with nil
-	u3 := MustParseURL("https://example.com")
+	var u3 URL
 	if err := u3.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}

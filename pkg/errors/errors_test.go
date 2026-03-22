@@ -72,16 +72,16 @@ func TestBoundedStringSentinels(t *testing.T) {
 	}
 }
 
-func TestNanoIdSentinels(t *testing.T) {
+func TestNanoIDSentinels(t *testing.T) {
 	tests := []struct {
 		name string
 		err  error
 		want error
 	}{
-		{"ErrNanoIdEmpty", ErrNanoIdEmpty, ErrNanoIdEmpty},
-		{"ErrNanoIdTooShort", ErrNanoIdTooShort, ErrNanoIdTooShort},
-		{"ErrNanoIdTooLong", ErrNanoIdTooLong, ErrNanoIdTooLong},
-		{"ErrNanoIdInvalid", ErrNanoIdInvalid, ErrNanoIdInvalid},
+		{"ErrNanoIDEmpty", ErrNanoIDEmpty, ErrNanoIDEmpty},
+		{"ErrNanoIDTooShort", ErrNanoIDTooShort, ErrNanoIDTooShort},
+		{"ErrNanoIDTooLong", ErrNanoIDTooLong, ErrNanoIDTooLong},
+		{"ErrNanoIDInvalid", ErrNanoIDInvalid, ErrNanoIDInvalid},
 	}
 
 	for _, tt := range tests {
@@ -418,23 +418,23 @@ func TestIsBoundedStringError(t *testing.T) {
 	}
 }
 
-func TestIsNanoIdError(t *testing.T) {
+func TestIsNanoIDError(t *testing.T) {
 	tests := []struct {
 		name string
 		err  error
 		want bool
 	}{
-		{"ErrNanoIdEmpty", ErrNanoIdEmpty, true},
-		{"ErrNanoIdTooShort", ErrNanoIdTooShort, true},
-		{"ErrNanoIdTooLong", ErrNanoIdTooLong, true},
-		{"ErrNanoIdInvalid", ErrNanoIdInvalid, true},
+		{"ErrNanoIDEmpty", ErrNanoIDEmpty, true},
+		{"ErrNanoIDTooShort", ErrNanoIDTooShort, true},
+		{"ErrNanoIDTooLong", ErrNanoIDTooLong, true},
+		{"ErrNanoIDInvalid", ErrNanoIDInvalid, true},
 		{"other error", errors.New("other"), false},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := IsNanoIdError(tt.err); got != tt.want {
-				t.Errorf("IsNanoIdError() = %v, want %v", got, tt.want)
+			if got := IsNanoIDError(tt.err); got != tt.want {
+				t.Errorf("IsNanoIDError() = %v, want %v", got, tt.want)
 			}
 		})
 	}

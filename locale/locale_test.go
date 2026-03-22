@@ -39,18 +39,11 @@ func TestParseLocale(t *testing.T) {
 	}
 }
 
-func TestMustParseLocale(t *testing.T) {
-	loc := MustParseLocale("en-US")
-	if loc.String() != "en-US" {
-		t.Errorf("expected en-US, got %s", loc.String())
+func TestParseLocaleError(t *testing.T) {
+	_, err := ParseLocale("invalid-locale-code")
+	if err == nil {
+		t.Error("expected error for invalid locale")
 	}
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("expected panic for invalid locale")
-		}
-	}()
-	MustParseLocale("invalid-locale-code")
 }
 
 func TestLocaleParts(t *testing.T) {
@@ -102,7 +95,7 @@ func TestLocaleConstants(t *testing.T) {
 }
 
 func TestNewLocale(t *testing.T) {
-	tag := language.MustParse("en-GB")
+	tag, _ := language.Parse("en-GB")
 	loc := NewLocale(tag)
 	if loc.String() != "en-GB" {
 		t.Errorf("expected en-GB, got %s", loc.String())

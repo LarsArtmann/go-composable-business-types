@@ -1,7 +1,7 @@
 // Package datapoint provides self-contained data units with complete audit trails.
 //
 // DataPoint[T] wraps a payload of type T with comprehensive metadata including
-// NanoId, Bitemporal tracking, Actor, Trigger, Context, References, Causes, Tags, and Version.
+// NanoID, Bitemporal tracking, Actor, Trigger, Context, References, Causes, Tags, and Version.
 // Inspired by event sourcing, it preserves all relationships at the application layer.
 //
 // Basic usage:
@@ -26,7 +26,7 @@ import (
 
 // DataPoint is a self-contained data unit with a complete audit trail.
 type DataPoint[T comparable] struct {
-	id         nanoid.NanoId
+	id         nanoid.NanoID
 	payload    T
 	actor      actor.ActorEntry[string]
 	temporal   temporal.Bitemporal
@@ -42,7 +42,7 @@ type DataPoint[T comparable] struct {
 // NewDataPoint creates a new DataPoint with the given payload and actor.
 func NewDataPoint[T comparable](payload T, actorEntry actor.ActorEntry[string]) DataPoint[T] {
 	return DataPoint[T]{
-		id:         nanoid.NewNanoId(),
+		id:         nanoid.NewNanoID(),
 		payload:    payload,
 		actor:      actorEntry,
 		temporal:   temporal.NewBitemporal(types.Now()),
@@ -57,7 +57,7 @@ func NewDataPoint[T comparable](payload T, actorEntry actor.ActorEntry[string]) 
 }
 
 // ID returns the DataPoint ID.
-func (d DataPoint[T]) ID() nanoid.NanoId { return d.id }
+func (d DataPoint[T]) ID() nanoid.NanoID { return d.id }
 
 // Payload returns the data payload.
 func (d DataPoint[T]) Payload() T { return d.payload }
@@ -226,7 +226,7 @@ func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	}
 
 	// Parse ID
-	id, err := nanoid.ParseNanoId(raw.ID)
+	id, err := nanoid.ParseNanoID(raw.ID)
 	if err != nil {
 		return fmt.Errorf("unmarshal datapoint: parse id %q: %w", raw.ID, err)
 	}

@@ -12,6 +12,7 @@
 ## Executive Summary
 
 The library is in **HEALTHY** condition with all tests passing. Recent work focused on:
+
 1. Creating a centralized `pkg/errors` package for domain-specific errors
 2. Standardizing Go naming conventions (Id() → ID())
 3. Maintaining test coverage across all packages
@@ -23,25 +24,27 @@ The library is in **HEALTHY** condition with all tests passing. Recent work focu
 ## a) FULLY DONE ✅
 
 ### 1. Core Package Architecture
-| Package | Status | Description |
-|---------|--------|-------------|
-| `actor/` | ✅ COMPLETE | ActorChain[T], ActorEntry[T] with full JSON/SQL support |
-| `bounded/` | ✅ COMPLETE | BoundedString with length validation, factory functions |
-| `datapoint/` | ✅ COMPLETE | DataPoint[T], Reference[T], Cause[T], Context with audit trails |
-| `enums/` | ✅ COMPLETE | ActorKind, Priority, Status, Trigger with go-enum generation |
-| `id/` | ✅ COMPLETE | ID[B,V] branded/phantom type with 5 serialization formats |
-| `locale/` | ✅ COMPLETE | BCP 47 Locale type with validation |
-| `money/` | ✅ COMPLETE | ISO 4217 wrapper around github.com/bojanz/currency |
-| `nanoid/` | ✅ COMPLETE | FIPS-140 compatible NanoID wrapper |
-| `scanutil/` | ✅ COMPLETE | SQL scanning utilities |
-| `temporal/` | ✅ COMPLETE | Bitemporal time tracking |
-| `types/` | ✅ COMPLETE | Email, URL, Percentage, Cents, Timestamp, Duration |
-| `validate/` | ✅ COMPLETE | Validator interface |
-| `pkg/errors/` | ✅ COMPLETE | Centralized domain errors (NEW - 2026-03-21) |
+
+| Package       | Status      | Description                                                     |
+| ------------- | ----------- | --------------------------------------------------------------- |
+| `actor/`      | ✅ COMPLETE | ActorChain[T], ActorEntry[T] with full JSON/SQL support         |
+| `bounded/`    | ✅ COMPLETE | BoundedString with length validation, factory functions         |
+| `datapoint/`  | ✅ COMPLETE | DataPoint[T], Reference[T], Cause[T], Context with audit trails |
+| `enums/`      | ✅ COMPLETE | ActorKind, Priority, Status, Trigger with go-enum generation    |
+| `id/`         | ✅ COMPLETE | ID[B,V] branded/phantom type with 5 serialization formats       |
+| `locale/`     | ✅ COMPLETE | BCP 47 Locale type with validation                              |
+| `money/`      | ✅ COMPLETE | ISO 4217 wrapper around github.com/bojanz/currency              |
+| `nanoid/`     | ✅ COMPLETE | FIPS-140 compatible NanoID wrapper                              |
+| `scanutil/`   | ✅ COMPLETE | SQL scanning utilities                                          |
+| `temporal/`   | ✅ COMPLETE | Bitemporal time tracking                                        |
+| `types/`      | ✅ COMPLETE | Email, URL, Percentage, Cents, Timestamp, Duration              |
+| `validate/`   | ✅ COMPLETE | Validator interface                                             |
+| `pkg/errors/` | ✅ COMPLETE | Centralized domain errors (NEW - 2026-03-21)                    |
 
 ### 2. Recent Completed Work
 
 #### 2026-03-21: Errors Package (Commit c5575f1)
+
 - **Created:** `pkg/errors/errors.go` (288 lines)
   - Sentinel errors: `ErrInvalidEmail`, `ErrInvalidURL`, `ErrBoundedStringMinLength`, etc.
   - Structured types: `UnmarshalError`, `ValidationError`, `RangeError`, `ScanError`
@@ -52,6 +55,7 @@ The library is in **HEALTHY** condition with all tests passing. Recent work focu
   - Tests for `errors.Is()`, `errors.As()`, nil handling, wrapping
 
 #### 2026-03-21: Naming Convention Fix (Commit 6851e7d)
+
 - **Changed:** `Id()` → `ID()` in:
   - `datapoint.DataPoint.ID()`
   - `datapoint.Reference.ID()`
@@ -59,6 +63,7 @@ The library is in **HEALTHY** condition with all tests passing. Recent work focu
 - **Updated:** All callers in `datapoint_test.go`, `examples/datapoint/main.go`
 
 ### 3. Testing Infrastructure
+
 - ✅ 12 test files with comprehensive coverage
 - ✅ Race detector tests passing
 - ✅ All packages have at least basic test coverage
@@ -69,25 +74,28 @@ The library is in **HEALTHY** condition with all tests passing. Recent work focu
 ## b) PARTIALLY DONE 🟡
 
 ### 1. Error Package Integration
-| Package | Status | Notes |
-|---------|--------|-------|
-| `pkg/errors/` | ✅ 100% | Package complete with tests |
-| `nanoid/` | 🟡 0% | Still uses local error vars (redundant) |
-| `bounded/` | 🟡 0% | Uses fmt.Errorf instead of structured errors |
-| `types/` | 🟡 0% | Uses local errors (ErrInvalidEmail, ErrInvalidURL) |
-| `id/` | 🟡 0% | Uses fmt.Errorf without structured errors |
+
+| Package       | Status  | Notes                                              |
+| ------------- | ------- | -------------------------------------------------- |
+| `pkg/errors/` | ✅ 100% | Package complete with tests                        |
+| `nanoid/`     | 🟡 0%   | Still uses local error vars (redundant)            |
+| `bounded/`    | 🟡 0%   | Uses fmt.Errorf instead of structured errors       |
+| `types/`      | 🟡 0%   | Uses local errors (ErrInvalidEmail, ErrInvalidURL) |
+| `id/`         | 🟡 0%   | Uses fmt.Errorf without structured errors          |
 
 **Action:** Gradually migrate packages to use `pkg/errors` for consistency
 
 ### 2. Documentation
-| Item | Status | Notes |
-|------|--------|-------|
-| README.md | 🟡 Partial | Good basics, needs API examples |
-| AGENTS.md | ✅ Current | Build commands accurate |
+
+| Item         | Status     | Notes                             |
+| ------------ | ---------- | --------------------------------- |
+| README.md    | 🟡 Partial | Good basics, needs API examples   |
+| AGENTS.md    | ✅ Current | Build commands accurate           |
 | Package docs | 🟡 Partial | Some packages lack usage examples |
-| CHANGELOG.md | 🟡 Stale | Last entry 2026-02-12 |
+| CHANGELOG.md | 🟡 Stale   | Last entry 2026-02-12             |
 
 ### 3. Lint/Quality
+
 - 🟡 `wrapcheck` warnings: 20+ locations not wrapping external errors
 - 🟡 `revive` warnings: Method comments missing on exported funcs
 - 🟡 `exhaustruct` warnings: 10+ struct literals not fully initialized
@@ -99,28 +107,31 @@ The library is in **HEALTHY** condition with all tests passing. Recent work focu
 ## c) NOT STARTED ❌
 
 ### 1. Planned Features
-| Feature | Priority | Notes |
-|---------|----------|-------|
-| `secret/` package | HIGH | For passwords, API keys, tokens (security wrapper) |
-| `version/` package | MEDIUM | Semantic versioning types |
-| `quantity/` package | MEDIUM | Unit-aware quantities (kg, m, etc.) |
-| `address/` package | LOW | Structured address types |
-| `phone/` package | LOW | E.164 phone number validation |
+
+| Feature             | Priority | Notes                                              |
+| ------------------- | -------- | -------------------------------------------------- |
+| `secret/` package   | HIGH     | For passwords, API keys, tokens (security wrapper) |
+| `version/` package  | MEDIUM   | Semantic versioning types                          |
+| `quantity/` package | MEDIUM   | Unit-aware quantities (kg, m, etc.)                |
+| `address/` package  | LOW      | Structured address types                           |
+| `phone/` package    | LOW      | E.164 phone number validation                      |
 
 ### 2. Infrastructure
-| Task | Priority | Notes |
-|------|----------|-------|
-| Benchmark suite | MEDIUM | Compare with std alternatives |
-| Fuzz testing | MEDIUM | For parsers (Email, URL, NanoID) |
-| CI/CD improvements | LOW | Add coverage badges, code quality gates |
-| Examples expansion | MEDIUM | More real-world usage examples |
+
+| Task               | Priority | Notes                                   |
+| ------------------ | -------- | --------------------------------------- |
+| Benchmark suite    | MEDIUM   | Compare with std alternatives           |
+| Fuzz testing       | MEDIUM   | For parsers (Email, URL, NanoID)        |
+| CI/CD improvements | LOW      | Add coverage badges, code quality gates |
+| Examples expansion | MEDIUM   | More real-world usage examples          |
 
 ### 3. Package Consolidation Analysis
-| Analysis | Status | Notes |
-|----------|--------|-------|
+
+| Analysis                      | Status  | Notes                        |
+| ----------------------------- | ------- | ---------------------------- |
 | `types/` vs specific packages | PENDING | Should Email be in `email/`? |
-| `cbt.go` root exports | PENDING | Should root import all? |
-| Selective import docs | PENDING | Document import patterns |
+| `cbt.go` root exports         | PENDING | Should root import all?      |
+| Selective import docs         | PENDING | Document import patterns     |
 
 ---
 
@@ -233,14 +244,14 @@ Minor environmental issues (Go cache) resolved with `go clean`.
 
 We have inconsistent naming across the codebase:
 
-| Current | Go Convention | File |
-|---------|--------------|------|
-| `NanoId` | `NanoID` | nanoid/nanoid.go |
-| `DefaultNanoIdLength` | `DefaultNanoIDLength` | nanoid/nanoid.go |
-| `ErrNanoIdEmpty` | `ErrNanoIDEmpty` | nanoid/nanoid.go |
-| `ParseNanoId` | `ParseNanoID` | nanoid/nanoid.go |
-| `NewNanoId` | `NewNanoID` | nanoid/nanoid.go |
-| `Id()` → `ID()` ✅ FIXED | `ID()` | datapoint/ |
+| Current                  | Go Convention         | File             |
+| ------------------------ | --------------------- | ---------------- |
+| `NanoId`                 | `NanoID`              | nanoid/nanoid.go |
+| `DefaultNanoIdLength`    | `DefaultNanoIDLength` | nanoid/nanoid.go |
+| `ErrNanoIdEmpty`         | `ErrNanoIDEmpty`      | nanoid/nanoid.go |
+| `ParseNanoId`            | `ParseNanoID`         | nanoid/nanoid.go |
+| `NewNanoId`              | `NewNanoID`           | nanoid/nanoid.go |
+| `Id()` → `ID()` ✅ FIXED | `ID()`                | datapoint/       |
 
 **The Tradeoffs:**
 
@@ -272,6 +283,7 @@ We have inconsistent naming across the codebase:
 **But I need your decision:**
 
 Do we:
+
 - **A)** Rename everything to `NanoID` now (breaking change)
 - **B)** Keep `NanoId` and add `//nolint` comments
 - **C)** Some hybrid approach I'm not seeing
@@ -281,6 +293,7 @@ Do we:
 ## Appendix: File Inventory
 
 ### Source Files (19)
+
 ```
 actor/actor.go
 bounded/bounded.go
@@ -303,6 +316,7 @@ examples/datapoint/main.go
 ```
 
 ### Test Files (12)
+
 ```
 actor/actor_test.go
 bounded/bounded_test.go
@@ -319,6 +333,7 @@ types/types_test.go
 ```
 
 ### Generated Files (1)
+
 ```
 enums/enums_enum.go (via go-enum)
 ```
@@ -327,16 +342,16 @@ enums/enums_enum.go (via go-enum)
 
 ## Metrics Summary
 
-| Metric | Value | Trend |
-|--------|-------|-------|
-| Packages | 14 | +1 (new errors pkg) |
-| Go Files | 31 | +2 (errors pkg + test) |
-| Test Files | 12 | +1 |
-| Lines of Code | ~3,500 | +770 |
-| Test Coverage | ~85% | +5% |
-| Build Status | ✅ PASS | Stable |
-| Test Status | ✅ PASS | Stable |
-| Lint Warnings | ~120 | -30 (fixed Id→ID) |
+| Metric        | Value   | Trend                  |
+| ------------- | ------- | ---------------------- |
+| Packages      | 14      | +1 (new errors pkg)    |
+| Go Files      | 31      | +2 (errors pkg + test) |
+| Test Files    | 12      | +1                     |
+| Lines of Code | ~3,500  | +770                   |
+| Test Coverage | ~85%    | +5%                    |
+| Build Status  | ✅ PASS | Stable                 |
+| Test Status   | ✅ PASS | Stable                 |
+| Lint Warnings | ~120    | -30 (fixed Id→ID)      |
 
 ---
 

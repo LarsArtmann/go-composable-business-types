@@ -99,7 +99,10 @@ func TestIDCompare(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			idA := NewID[Int64Brand, int](tt.a)
 			idB := NewID[Int64Brand, int](tt.b)
-			result := idA.Compare(idB)
+			result, err := idA.Compare(idB)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
 			if result != tt.expected {
 				t.Errorf("expected %d, got %d", tt.expected, result)
 			}
@@ -112,13 +115,25 @@ func TestIDCompareString(t *testing.T) {
 	idB := NewID[StringBrand]("b")
 	idC := NewID[StringBrand]("a")
 
-	if idA.Compare(idB) != -1 {
+	cmp, err := idA.Compare(idB)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cmp != -1 {
 		t.Error("expected 'a' < 'b'")
 	}
-	if idA.Compare(idC) != 0 {
+	cmp, err = idA.Compare(idC)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cmp != 0 {
 		t.Error("expected 'a' == 'a'")
 	}
-	if idB.Compare(idA) != 1 {
+	cmp, err = idB.Compare(idA)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cmp != 1 {
 		t.Error("expected 'b' > 'a'")
 	}
 }
@@ -127,7 +142,11 @@ func TestIDCompareInt64(t *testing.T) {
 	idA := NewID[Int64Brand, int64](100)
 	idB := NewID[Int64Brand, int64](200)
 
-	if idA.Compare(idB) != -1 {
+	cmp, err := idA.Compare(idB)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cmp != -1 {
 		t.Error("expected 100 < 200")
 	}
 }
@@ -136,7 +155,11 @@ func TestIDCompareUint64(t *testing.T) {
 	idA := NewID[Uint64Brand, uint64](100)
 	idB := NewID[Uint64Brand, uint64](200)
 
-	if idA.Compare(idB) != -1 {
+	cmp, err := idA.Compare(idB)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	if cmp != -1 {
 		t.Error("expected 100 < 200")
 	}
 }
@@ -779,7 +802,11 @@ func TestIDSorting(t *testing.T) {
 	}
 
 	sort.Slice(ids, func(i, j int) bool {
-		return ids[i].Compare(ids[j]) < 0
+		cmp, err := ids[i].Compare(ids[j])
+		if err != nil {
+			panic(err)
+		}
+		return cmp < 0
 	})
 
 	expected := []int64{1, 2, 3}
@@ -956,7 +983,7 @@ func BenchmarkIDCompare(b *testing.B) {
 	id1 := NewID[Int64Brand, int64](100)
 	id2 := NewID[Int64Brand, int64](200)
 	for b.Loop() {
-		_ = id1.Compare(id2)
+		_, _ = id1.Compare(id2)
 	}
 }
 

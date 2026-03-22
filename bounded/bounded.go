@@ -72,16 +72,7 @@ func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 	return BoundedString{value: value, minLen: minLen, maxLen: maxLen}, nil
 }
 
-// MustBoundedString creates a BoundedString or panics on validation failure.
-// Use only when the input is guaranteed valid (e.g., constants, tests).
-func MustBoundedString(minLen, maxLen int, value string) BoundedString {
-	bs, err := NewBoundedString(minLen, maxLen, value)
-	if err != nil {
-		panic(err)
-	}
-	return bs
-}
-
+// BoundedStringOf
 func (bs BoundedString) String() string    { return bs.value }
 func (bs BoundedString) Len() int          { return utf8.RuneCountInString(bs.value) }
 func (bs BoundedString) MinLen() int       { return bs.minLen }

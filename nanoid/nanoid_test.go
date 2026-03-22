@@ -4,24 +4,24 @@ import (
 	"testing"
 )
 
-func TestNewNanoId(t *testing.T) {
-	id := NewNanoId()
+func TestNewNanoID(t *testing.T) {
+	id := NewNanoID()
 	if id.IsZero() {
-		t.Error("expected non-zero NanoId")
+		t.Error("expected non-zero NanoID")
 	}
-	if len(id.String()) != DefaultNanoIdLength {
-		t.Errorf("expected length %d, got %d", DefaultNanoIdLength, len(id.String()))
+	if len(id.String()) != DefaultNanoIDLength {
+		t.Errorf("expected length %d, got %d", DefaultNanoIDLength, len(id.String()))
 	}
 }
 
-func TestNewNanoIdWithLength(t *testing.T) {
-	id := NewNanoIdWithLength(10)
+func TestNewNanoIDWithLength(t *testing.T) {
+	id := NewNanoIDWithLength(10)
 	if len(id.String()) != 10 {
 		t.Errorf("expected length 10, got %d", len(id.String()))
 	}
 }
 
-func TestParseNanoId(t *testing.T) {
+func TestParseNanoID(t *testing.T) {
 	tests := []struct {
 		name    string
 		input   string
@@ -36,7 +36,7 @@ func TestParseNanoId(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			id, err := ParseNanoId(tt.input)
+			id, err := ParseNanoID(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error, got nil")
@@ -53,34 +53,27 @@ func TestParseNanoId(t *testing.T) {
 	}
 }
 
-func TestMustParseNanoId(t *testing.T) {
-	id := MustParseNanoId("V1StGXR8_Z5jdHi6B-myT")
-	if id.String() != "V1StGXR8_Z5jdHi6B-myT" {
-		t.Errorf("expected V1StGXR8_Z5jdHi6B-myT, got %s", id.String())
+func TestParseNanoIDError(t *testing.T) {
+	_, err := ParseNanoID("invalid")
+	if err == nil {
+		t.Error("expected error for invalid NanoID")
 	}
-
-	defer func() {
-		if r := recover(); r == nil {
-			t.Error("expected panic for invalid NanoId")
-		}
-	}()
-	MustParseNanoId("invalid")
 }
 
-func TestNanoIdIsZero(t *testing.T) {
-	var zero NanoId
+func TestNanoIDIsZero(t *testing.T) {
+	var zero NanoID
 	if !zero.IsZero() {
-		t.Error("expected zero NanoId to be zero")
+		t.Error("expected zero NanoID to be zero")
 	}
 
-	nonZero := NewNanoId()
+	nonZero := NewNanoID()
 	if nonZero.IsZero() {
-		t.Error("expected non-zero NanoId to not be zero")
+		t.Error("expected non-zero NanoID to not be zero")
 	}
 }
 
-func TestNanoIdJSON(t *testing.T) {
-	id := MustParseNanoId("V1StGXR8_Z5jdHi6B-myT")
+func TestNanoIDJSON(t *testing.T) {
+	id, _ := ParseNanoID("V1StGXR8_Z5jdHi6B-myT")
 
 	data, err := id.MarshalText()
 	if err != nil {
@@ -91,7 +84,7 @@ func TestNanoIdJSON(t *testing.T) {
 	}
 
 	// Test unmarshal
-	var parsed NanoId
+	var parsed NanoID
 	err = parsed.UnmarshalText([]byte("V1StGXR8_Z5jdHi6B-myT"))
 	if err != nil {
 		t.Fatalf("UnmarshalText failed: %v", err)

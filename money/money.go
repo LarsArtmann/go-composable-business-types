@@ -6,7 +6,6 @@
 // Basic usage:
 //
 //	usd, err := money.NewMoney("99.99", "USD")
-//	eur := money.MustParseCurrency("EUR")
 //	formatted := money.FormatMoney(usd, "de_DE") // "99,99 $"
 package money
 

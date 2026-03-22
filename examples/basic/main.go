@@ -18,9 +18,9 @@ const (
 )
 
 func main() {
-	// Generate a unique NanoId
-	id := nanoid.NewNanoId()
-	fmt.Println("Generated NanoId:", id.String())
+	// Generate a unique NanoID
+	id := nanoid.NewNanoID()
+	fmt.Println("Generated NanoID:", id.String())
 
 	// Parse and validate an email
 	email, err := types.NewEmail("user@example.com")

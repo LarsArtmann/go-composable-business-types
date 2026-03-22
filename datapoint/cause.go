@@ -9,15 +9,15 @@ import (
 
 // Cause represents a causal relationship to another DataPoint or event.
 type Cause[T comparable] struct {
-	id     nanoid.NanoId
+	id     nanoid.NanoID
 	kind   string
 	effect string
-	trace  []nanoid.NanoId
+	trace  []nanoid.NanoID
 }
 
 // NewCause creates a new Cause with the given parameters.
-func NewCause[T comparable](id nanoid.NanoId, kind, effect string, trace []nanoid.NanoId) Cause[T] {
-	t := make([]nanoid.NanoId, len(trace))
+func NewCause[T comparable](id nanoid.NanoID, kind, effect string, trace []nanoid.NanoID) Cause[T] {
+	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
 	return Cause[T]{
 		id:     id,
@@ -28,7 +28,7 @@ func NewCause[T comparable](id nanoid.NanoId, kind, effect string, trace []nanoi
 }
 
 // NewCauseDirect creates a Cause for a direct causal relationship.
-func NewCauseDirect[T comparable](id nanoid.NanoId) Cause[T] {
+func NewCauseDirect[T comparable](id nanoid.NanoID) Cause[T] {
 	return Cause[T]{
 		id:     id,
 		kind:   "direct",
@@ -38,7 +38,7 @@ func NewCauseDirect[T comparable](id nanoid.NanoId) Cause[T] {
 }
 
 // NewCauseCommand creates a Cause for a command-triggered relationship.
-func NewCauseCommand[T comparable](id nanoid.NanoId, command string) Cause[T] {
+func NewCauseCommand[T comparable](id nanoid.NanoID, command string) Cause[T] {
 	return Cause[T]{
 		id:     id,
 		kind:   "command",
@@ -48,8 +48,8 @@ func NewCauseCommand[T comparable](id nanoid.NanoId, command string) Cause[T] {
 }
 
 // NewCauseEvent creates a Cause for an event-triggered relationship.
-func NewCauseEvent[T comparable](id nanoid.NanoId, event string, trace ...nanoid.NanoId) Cause[T] {
-	t := make([]nanoid.NanoId, len(trace))
+func NewCauseEvent[T comparable](id nanoid.NanoID, event string, trace ...nanoid.NanoID) Cause[T] {
+	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
 	return Cause[T]{
 		id:     id,
@@ -60,7 +60,7 @@ func NewCauseEvent[T comparable](id nanoid.NanoId, event string, trace ...nanoid
 }
 
 // ID returns the cause ID.
-func (c Cause[T]) ID() nanoid.NanoId { return c.id }
+func (c Cause[T]) ID() nanoid.NanoID { return c.id }
 
 // Kind returns the cause kind (e.g., "direct", "command", "event").
 func (c Cause[T]) Kind() string { return c.kind }
@@ -69,11 +69,11 @@ func (c Cause[T]) Kind() string { return c.kind }
 func (c Cause[T]) Effect() string { return c.effect }
 
 // Trace returns the causal trace chain.
-func (c Cause[T]) Trace() []nanoid.NanoId {
+func (c Cause[T]) Trace() []nanoid.NanoID {
 	if c.trace == nil {
 		return nil
 	}
-	result := make([]nanoid.NanoId, len(c.trace))
+	result := make([]nanoid.NanoID, len(c.trace))
 	copy(result, c.trace)
 	return result
 }
@@ -115,16 +115,16 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	c.effect = raw.Effect
 
 	// Parse ID
-	id, err := nanoid.ParseNanoId(raw.ID)
+	id, err := nanoid.ParseNanoID(raw.ID)
 	if err != nil {
 		return fmt.Errorf("unmarshal cause: parse id %q: %w", raw.ID, err)
 	}
 	c.id = id
 
 	// Parse trace
-	c.trace = make([]nanoid.NanoId, len(raw.Trace))
+	c.trace = make([]nanoid.NanoID, len(raw.Trace))
 	for i, t := range raw.Trace {
-		parsed, err := nanoid.ParseNanoId(t)
+		parsed, err := nanoid.ParseNanoID(t)
 		if err != nil {
 			return fmt.Errorf(
 				"unmarshal cause: parse trace[%d] %q from JSON %q: %w",

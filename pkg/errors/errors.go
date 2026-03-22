@@ -83,17 +83,17 @@ var (
 
 // NanoID errors
 var (
-	// ErrNanoIdEmpty is returned when a NanoID is empty.
-	ErrNanoIdEmpty = fmt.Errorf("nanoid cannot be empty")
+	// ErrNanoIDEmpty is returned when a NanoID is empty.
+	ErrNanoIDEmpty = fmt.Errorf("nanoid cannot be empty")
 
-	// ErrNanoIdTooShort is returned when a NanoID is too short.
-	ErrNanoIdTooShort = fmt.Errorf("nanoid below minimum length")
+	// ErrNanoIDTooShort is returned when a NanoID is too short.
+	ErrNanoIDTooShort = fmt.Errorf("nanoid below minimum length")
 
-	// ErrNanoIdTooLong is returned when a NanoID is too long.
-	ErrNanoIdTooLong = fmt.Errorf("nanoid exceeds maximum length")
+	// ErrNanoIDTooLong is returned when a NanoID is too long.
+	ErrNanoIDTooLong = fmt.Errorf("nanoid exceeds maximum length")
 
-	// ErrNanoIdInvalid is returned when a NanoID contains invalid characters.
-	ErrNanoIdInvalid = fmt.Errorf("nanoid contains invalid characters")
+	// ErrNanoIDInvalid is returned when a NanoID contains invalid characters.
+	ErrNanoIDInvalid = fmt.Errorf("nanoid contains invalid characters")
 )
 
 // ID errors
@@ -143,7 +143,7 @@ func (e *UnmarshalError) Unwrap() error {
 type ValidationError struct {
 	Field string // The field that failed validation
 	Value any    // The invalid value
-	Err   error // The underlying error
+	Err   error  // The underlying error
 }
 
 func (e *ValidationError) Error() string {
@@ -156,9 +156,9 @@ func (e *ValidationError) Unwrap() error {
 
 // RangeError represents a value outside valid range.
 type RangeError struct {
-	Value    any  // The invalid value
-	Min      any  // Minimum allowed value
-	Max      any  // Maximum allowed value
+	Value      any  // The invalid value
+	Min        any  // Minimum allowed value
+	Max        any  // Maximum allowed value
 	OutOfRange bool // true if above max, false if below min
 }
 
@@ -211,9 +211,9 @@ func WrapInvalid(err error, field string, value any) error {
 // WrapRange wraps an error as a range error.
 func WrapRange(value, min, max any, outOfRange bool) error {
 	return &RangeError{
-		Value:     value,
-		Min:       min,
-		Max:       max,
+		Value:      value,
+		Min:        min,
+		Max:        max,
 		OutOfRange: outOfRange,
 	}
 }
@@ -265,12 +265,12 @@ func IsBoundedStringError(err error) bool {
 		errors.Is(err, ErrBoundedStringMaxLessThanMin)
 }
 
-// IsNanoIdError checks if the error is related to NanoID validation.
-func IsNanoIdError(err error) bool {
-	return errors.Is(err, ErrNanoIdEmpty) ||
-		errors.Is(err, ErrNanoIdTooShort) ||
-		errors.Is(err, ErrNanoIdTooLong) ||
-		errors.Is(err, ErrNanoIdInvalid)
+// IsNanoIDError checks if the error is related to NanoID validation.
+func IsNanoIDError(err error) bool {
+	return errors.Is(err, ErrNanoIDEmpty) ||
+		errors.Is(err, ErrNanoIDTooShort) ||
+		errors.Is(err, ErrNanoIDTooLong) ||
+		errors.Is(err, ErrNanoIDInvalid)
 }
 
 // IsIDError checks if the error is related to ID validation.

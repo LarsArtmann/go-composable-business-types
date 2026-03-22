@@ -55,15 +55,7 @@ func NewEmail(v string) (Email, error) {
 	return Email(email), nil
 }
 
-// MustParseEmail panics if the email is invalid. Use for compile-time known constants.
-func MustParseEmail(v string) Email {
-	e, err := NewEmail(v)
-	if err != nil {
-		panic(err)
-	}
-	return e
-}
-
+// Email constants for well-known domains
 func (e Email) String() string    { return string(e) }
 func (e Email) IsZero() bool      { return e == "" }
 func (e Email) LocalPart() string { s, _, _ := e.split(); return s }
@@ -134,15 +126,7 @@ func NewURL(v string) (URL, error) {
 	return URL(v), nil
 }
 
-// MustParseURL panics if the URL is invalid. Use for compile-time known constants.
-func MustParseURL(v string) URL {
-	u, err := NewURL(v)
-	if err != nil {
-		panic(err)
-	}
-	return u
-}
-
+// URL constants
 func (u URL) String() string { return string(u) }
 
 // IsZero returns true if the URL is empty.

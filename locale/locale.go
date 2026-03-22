@@ -24,17 +24,27 @@ type Locale struct {
 	tag language.Tag
 }
 
-// Common locale constants for convenience.
+// Common locale constants for convenience (compile-time validated).
 var (
-	LocaleEnUS = Locale{tag: language.MustParse("en-US")} // American English
-	LocaleEnGB = Locale{tag: language.MustParse("en-GB")} // British English
-	LocaleDeDE = Locale{tag: language.MustParse("de-DE")} // German (Germany)
-	LocaleFrFR = Locale{tag: language.MustParse("fr-FR")} // French (France)
-	LocaleEsES = Locale{tag: language.MustParse("es-ES")} // Spanish (Spain)
-	LocaleItIT = Locale{tag: language.MustParse("it-IT")} // Italian (Italy)
-	LocaleJaJP = Locale{tag: language.MustParse("ja-JP")} // Japanese (Japan)
-	LocaleZhCN = Locale{tag: language.MustParse("zh-CN")} // Simplified Chinese (China)
+	LocaleEnUS = mustNewLocale("en-US") // American English
+	LocaleEnGB = mustNewLocale("en-GB") // British English
+	LocaleDeDE = mustNewLocale("de-DE") // German (Germany)
+	LocaleFrFR = mustNewLocale("fr-FR") // French (France)
+	LocaleEsES = mustNewLocale("es-ES") // Spanish (Spain)
+	LocaleItIT = mustNewLocale("it-IT") // Italian (Italy)
+	LocaleJaJP = mustNewLocale("ja-JP") // Japanese (Japan)
+	LocaleZhCN = mustNewLocale("zh-CN") // Simplified Chinese (China)
 )
+
+// mustNewLocale validates locale strings at package initialization.
+// These are compile-time constants, so panics here indicate developer error.
+func mustNewLocale(s string) Locale {
+	loc, err := ParseLocale(s)
+	if err != nil {
+		panic(fmt.Errorf("invalid locale constant %q: %w", s, err))
+	}
+	return loc
+}
 
 // ParseLocale parses a BCP 47 language tag string.
 // Accepts both hyphen (en-US) and underscore (en_US) formats.
@@ -44,11 +54,6 @@ func ParseLocale(s string) (Locale, error) {
 		return Locale{}, fmt.Errorf("parse locale %q: %w", s, err)
 	}
 	return Locale{tag: tag}, nil
-}
-
-// MustParseLocale parses a BCP 47 language tag string, panicking on error.
-func MustParseLocale(s string) Locale {
-	return Locale{tag: language.MustParse(s)}
 }
 
 // NewLocale creates a Locale from a language.Tag.
