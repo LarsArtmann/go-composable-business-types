@@ -60,7 +60,11 @@ func TestBoundedStringSentinels(t *testing.T) {
 		{"ErrBoundedStringMinLength", ErrBoundedStringMinLength, ErrBoundedStringMinLength},
 		{"ErrBoundedStringMaxLength", ErrBoundedStringMaxLength, ErrBoundedStringMaxLength},
 		{"ErrBoundedStringMinNegative", ErrBoundedStringMinNegative, ErrBoundedStringMinNegative},
-		{"ErrBoundedStringMaxLessThanMin", ErrBoundedStringMaxLessThanMin, ErrBoundedStringMaxLessThanMin},
+		{
+			"ErrBoundedStringMaxLessThanMin",
+			ErrBoundedStringMaxLessThanMin,
+			ErrBoundedStringMaxLessThanMin,
+		},
 	}
 
 	for _, tt := range tests {

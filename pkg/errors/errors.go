@@ -45,79 +45,79 @@ import (
 // Email errors
 var (
 	// ErrInvalidEmail is returned when an email address fails validation.
-	ErrInvalidEmail = fmt.Errorf("invalid email address")
+	ErrInvalidEmail = errors.New("invalid email address")
 
 	// ErrEmailEmpty is returned when an email address is empty.
-	ErrEmailEmpty = fmt.Errorf("email cannot be empty")
+	ErrEmailEmpty = errors.New("email cannot be empty")
 )
 
 // URL errors
 var (
 	// ErrInvalidURL is returned when a URL fails validation.
-	ErrInvalidURL = fmt.Errorf("invalid URL")
+	ErrInvalidURL = errors.New("invalid URL")
 
 	// ErrURLEmpty is returned when a URL is empty.
-	ErrURLEmpty = fmt.Errorf("URL cannot be empty")
+	ErrURLEmpty = errors.New("URL cannot be empty")
 
 	// ErrURLScheme is returned when a URL has an invalid scheme.
-	ErrURLScheme = fmt.Errorf("URL must use http or https scheme")
+	ErrURLScheme = errors.New("URL must use http or https scheme")
 
 	// ErrURLHost is returned when a URL has no host.
-	ErrURLHost = fmt.Errorf("URL must have a host")
+	ErrURLHost = errors.New("URL must have a host")
 )
 
 // BoundedString errors
 var (
 	// ErrBoundedStringMinLength is returned when a string is too short.
-	ErrBoundedStringMinLength = fmt.Errorf("string below minimum length")
+	ErrBoundedStringMinLength = errors.New("string below minimum length")
 
 	// ErrBoundedStringMaxLength is returned when a string is too long.
-	ErrBoundedStringMaxLength = fmt.Errorf("string exceeds maximum length")
+	ErrBoundedStringMaxLength = errors.New("string exceeds maximum length")
 
 	// ErrBoundedStringMinNegative is returned when minimum length is negative.
-	ErrBoundedStringMinNegative = fmt.Errorf("minimum length cannot be negative")
+	ErrBoundedStringMinNegative = errors.New("minimum length cannot be negative")
 
 	// ErrBoundedStringMaxLessThanMin is returned when max < min.
-	ErrBoundedStringMaxLessThanMin = fmt.Errorf("maximum length cannot be less than minimum length")
+	ErrBoundedStringMaxLessThanMin = errors.New("maximum length cannot be less than minimum length")
 )
 
 // NanoID errors
 var (
 	// ErrNanoIDEmpty is returned when a NanoID is empty.
-	ErrNanoIDEmpty = fmt.Errorf("nanoid cannot be empty")
+	ErrNanoIDEmpty = errors.New("nanoid cannot be empty")
 
 	// ErrNanoIDTooShort is returned when a NanoID is too short.
-	ErrNanoIDTooShort = fmt.Errorf("nanoid below minimum length")
+	ErrNanoIDTooShort = errors.New("nanoid below minimum length")
 
 	// ErrNanoIDTooLong is returned when a NanoID is too long.
-	ErrNanoIDTooLong = fmt.Errorf("nanoid exceeds maximum length")
+	ErrNanoIDTooLong = errors.New("nanoid exceeds maximum length")
 
 	// ErrNanoIDInvalid is returned when a NanoID contains invalid characters.
-	ErrNanoIDInvalid = fmt.Errorf("nanoid contains invalid characters")
+	ErrNanoIDInvalid = errors.New("nanoid contains invalid characters")
 )
 
 // ID errors
 var (
 	// ErrIDInvalid is returned when an ID value is invalid.
-	ErrIDInvalid = fmt.Errorf("invalid ID value")
+	ErrIDInvalid = errors.New("invalid ID value")
 
 	// ErrIDTypeNotSupported is returned when an ID type is not supported.
-	ErrIDTypeNotSupported = fmt.Errorf("unsupported ID type for this operation")
+	ErrIDTypeNotSupported = errors.New("unsupported ID type for this operation")
 
 	// ErrIDInsufficientData is returned when there's not enough data to decode.
-	ErrIDInsufficientData = fmt.Errorf("insufficient data for ID type")
+	ErrIDInsufficientData = errors.New("insufficient data for ID type")
 )
 
 // Parse/Marshal errors - structured errors for detailed context
 var (
 	// ErrMalformedInput is returned when input cannot be parsed.
-	ErrMalformedInput = fmt.Errorf("malformed input")
+	ErrMalformedInput = errors.New("malformed input")
 
 	// ErrUnsupportedType is returned when a type is not supported.
-	ErrUnsupportedType = fmt.Errorf("unsupported type")
+	ErrUnsupportedType = errors.New("unsupported type")
 
 	// ErrInvalidJSON is returned when JSON is malformed.
-	ErrInvalidJSON = fmt.Errorf("invalid JSON")
+	ErrInvalidJSON = errors.New("invalid JSON")
 )
 
 // =============================================================================

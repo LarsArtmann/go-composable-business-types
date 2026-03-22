@@ -1,6 +1,7 @@
 package types
 
 import (
+	"errors"
 	"testing"
 	"time"
 )
@@ -219,7 +220,7 @@ func TestParseEmailError(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for invalid email")
 	}
-	if err != ErrInvalidEmail {
+	if !errors.Is(err, ErrInvalidEmail) {
 		t.Errorf("expected ErrInvalidEmail, got %v", err)
 	}
 }
@@ -239,7 +240,7 @@ func TestParseURLError(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for invalid URL")
 	}
-	if err != ErrInvalidURL {
+	if !errors.Is(err, ErrInvalidURL) {
 		t.Errorf("expected ErrInvalidURL, got %v", err)
 	}
 }
