@@ -2,7 +2,7 @@
 
 **Date:** 2026-03-22 03:15  
 **Project:** go-composable-business-types  
-**Session Focus:** Panic elimination, type safety improvements, code organization  
+**Session Focus:** Panic elimination, type safety improvements, code organization
 
 ---
 
@@ -12,13 +12,13 @@ This session achieved significant progress toward the goal of creating a robust,
 
 ### Key Metrics
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| `Must*` Functions | 7 | 0 | -100% |
-| Explicit Panics | 24 | ~10 | -58% |
-| Lines in id/id.go | 915 | 733 | -182 lines (-20%) |
-| Tests Passing | 11/11 | 12/12 | 100% |
-| Compilation Errors | 0 | 0 | ✓ |
+| Metric             | Before | After | Change            |
+| ------------------ | ------ | ----- | ----------------- |
+| `Must*` Functions  | 7      | 0     | -100%             |
+| Explicit Panics    | 24     | ~10   | -58%              |
+| Lines in id/id.go  | 915    | 733   | -182 lines (-20%) |
+| Tests Passing      | 11/11  | 12/12 | 100%              |
+| Compilation Errors | 0      | 0     | ✓                 |
 
 ---
 
@@ -27,22 +27,24 @@ This session achieved significant progress toward the goal of creating a robust,
 ### 1. Panic Removal - COMPLETED ✓
 
 #### Removed `Must*` Functions
+
 All `Must*` functions that could cause runtime panics have been eliminated from the public API:
 
-| Package | Removed Function | Replacement |
-|---------|------------------|-------------|
-| `bounded` | `MustBoundedString()` | `NewBoundedString()` (returns error) |
-| `types` | `MustParseEmail()` | `NewEmail()` (returns error) |
-| `types` | `MustParseURL()` | `NewURL()` (returns error) |
-| `locale` | `MustParseLocale()` | Internal `mustNewLocale()` for constants only |
-| `nanoid` | `MustParseNanoId()` | `ParseNanoID()` (returns error) |
-| `enums` | `MustParseActorKind()` | `ParseActorKind()` (returns error) |
+| Package   | Removed Function       | Replacement                                   |
+| --------- | ---------------------- | --------------------------------------------- |
+| `bounded` | `MustBoundedString()`  | `NewBoundedString()` (returns error)          |
+| `types`   | `MustParseEmail()`     | `NewEmail()` (returns error)                  |
+| `types`   | `MustParseURL()`       | `NewURL()` (returns error)                    |
+| `locale`  | `MustParseLocale()`    | Internal `mustNewLocale()` for constants only |
+| `nanoid`  | `MustParseNanoId()`    | `ParseNanoID()` (returns error)               |
+| `enums`   | `MustParseActorKind()` | `ParseActorKind()` (returns error)            |
 
 **Impact:** Library consumers now have explicit error handling for all parsing operations, eliminating surprise panics in production.
 
 #### Refactored `ID.Compare()` to Return Errors
 
 **Before:**
+
 ```go
 func (id ID[B, V]) Compare(other ID[B, V]) int {
     switch a := any(id.value).(type) {
@@ -57,6 +59,7 @@ func (id ID[B, V]) Compare(other ID[B, V]) int {
 ```
 
 **After:**
+
 ```go
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
     switch a := any(id.value).(type) {
@@ -80,11 +83,11 @@ func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 
 Fixed inconsistent naming between type and functions:
 
-| Old (Incorrect) | New (Correct) |
-|-----------------|---------------|
-| `NanoId` type | `NanoID` type |
-| `NewNanoId()` | `NewNanoID()` |
-| `ParseNanoId()` | `ParseNanoID()` |
+| Old (Incorrect)       | New (Correct)         |
+| --------------------- | --------------------- |
+| `NanoId` type         | `NanoID` type         |
+| `NewNanoId()`         | `NewNanoID()`         |
+| `ParseNanoId()`       | `ParseNanoID()`       |
 | `DefaultNanoIdLength` | `DefaultNanoIDLength` |
 
 This aligns with Go naming conventions (acronyms stay uppercase) and ensures consistency across the entire API.
@@ -130,15 +133,18 @@ This is the idiomatic Go way to check for specific errors, supporting error wrap
 ### 1. ID Package Refactoring - PARTIAL ⚠️
 
 **What was done:**
+
 - Successfully extracted `Compare` method and 14 comparison helpers to `compare.go`
 - Moved `ErrNotOrdered` to `compare.go`
 - Reduced `id/id.go` from 915 to 733 lines (20% reduction)
 
 **What was reverted:**
+
 - Due to `forcetypeassert` lint errors in the extracted file, the changes were reverted
 - The extraction approach needs refinement to pass all linters
 
 **Next steps:**
+
 - Re-implement with proper `nolint:forcetypeassert` annotations for safe type assertions
 - Extract marshal.go, sql.go in subsequent commits
 - Ensure each file stays under 350 lines
@@ -146,6 +152,7 @@ This is the idiomatic Go way to check for specific errors, supporting error wrap
 ### 2. `branching-flow panic` Analysis - PARTIAL ⚠️
 
 **Findings:**
+
 - 443 potential panic conditions detected
 - Most are false positives (nil dereference warnings on value types)
 - ~10 explicit panics remain in codebase:
@@ -161,42 +168,42 @@ This is the idiomatic Go way to check for specific errors, supporting error wrap
 
 ### High Impact / Low Effort
 
-| # | Task | Impact | Effort | Files |
-|---|------|--------|--------|-------|
-| 1 | **Add CauseKind enum** | Medium | Low | `enums/`, `datapoint/cause.go` |
-| 2 | **Fix integer overflow (G115)** | Medium | Low | `types/types.go:247` |
-| 3 | **Add missing documentation** | Low | Medium | `bounded/`, `types/` |
-| 4 | **Fix receiver consistency** | Medium | Medium | `types/types.go`, `bounded/` |
+| #   | Task                            | Impact | Effort | Files                          |
+| --- | ------------------------------- | ------ | ------ | ------------------------------ |
+| 1   | **Add CauseKind enum**          | Medium | Low    | `enums/`, `datapoint/cause.go` |
+| 2   | **Fix integer overflow (G115)** | Medium | Low    | `types/types.go:247`           |
+| 3   | **Add missing documentation**   | Low    | Medium | `bounded/`, `types/`           |
+| 4   | **Fix receiver consistency**    | Medium | Medium | `types/types.go`, `bounded/`   |
 
 ### High Impact / High Effort
 
-| # | Task | Impact | Effort | Files |
-|---|------|--------|--------|-------|
-| 5 | **Complete ID package split** | High | Medium | `id/id.go` → 4 files |
-| 6 | **Rename BoundedString→String** | Medium | Low-Med | `bounded/bounded.go` |
-| 7 | **Fix locale global variables** | Low | Low | `locale/locale.go` |
-| 8 | **Add BDD/TDD test structure** | High | High | New test files |
+| #   | Task                            | Impact | Effort  | Files                |
+| --- | ------------------------------- | ------ | ------- | -------------------- |
+| 5   | **Complete ID package split**   | High   | Medium  | `id/id.go` → 4 files |
+| 6   | **Rename BoundedString→String** | Medium | Low-Med | `bounded/bounded.go` |
+| 7   | **Fix locale global variables** | Low    | Low     | `locale/locale.go`   |
+| 8   | **Add BDD/TDD test structure**  | High   | High    | New test files       |
 
 ### Code Quality Improvements
 
-| # | Task | Impact | Effort | Notes |
-|---|------|--------|--------|-------|
-| 9 | **Add Compare to all types** | Low | Medium | `types/`, `bounded/` |
-| 10 | **Add SQL support to temporal** | Medium | Medium | `temporal/temporal.go` |
-| 11 | **Create integration tests** | High | High | `tests/` directory |
-| 12 | **Add fuzz tests** | Medium | Medium | `*_fuzz_test.go` |
-| 13 | **Add benchmarks** | Low | Medium | `*_bench_test.go` |
-| 14 | **Review uint usage** | Low | Low | Check appropriateness |
-| 15 | **Add gci/fieldalignment** | Low | Low | `.golangci.yml` |
+| #   | Task                            | Impact | Effort | Notes                  |
+| --- | ------------------------------- | ------ | ------ | ---------------------- |
+| 9   | **Add Compare to all types**    | Low    | Medium | `types/`, `bounded/`   |
+| 10  | **Add SQL support to temporal** | Medium | Medium | `temporal/temporal.go` |
+| 11  | **Create integration tests**    | High   | High   | `tests/` directory     |
+| 12  | **Add fuzz tests**              | Medium | Medium | `*_fuzz_test.go`       |
+| 13  | **Add benchmarks**              | Low    | Medium | `*_bench_test.go`      |
+| 14  | **Review uint usage**           | Low    | Low    | Check appropriateness  |
+| 15  | **Add gci/fieldalignment**      | Low    | Low    | `.golangci.yml`        |
 
 ### Documentation & Architecture
 
-| # | Task | Impact | Effort | Notes |
-|---|------|--------|--------|-------|
-| 16 | **Create architecture.md** | Medium | Medium | Document design patterns |
-| 17 | **Add example tests** | Low | Medium | `*_example_test.go` |
-| 18 | **Document type safety patterns** | Medium | Low | README updates |
-| 19 | **Create migration guide** | High | Medium | For v1→v2 if needed |
+| #   | Task                              | Impact | Effort | Notes                    |
+| --- | --------------------------------- | ------ | ------ | ------------------------ |
+| 16  | **Create architecture.md**        | Medium | Medium | Document design patterns |
+| 17  | **Add example tests**             | Low    | Medium | `*_example_test.go`      |
+| 18  | **Document type safety patterns** | Medium | Low    | README updates           |
+| 19  | **Create migration guide**        | High   | Medium | For v1→v2 if needed      |
 
 ---
 
@@ -283,20 +290,20 @@ None detected. The codebase maintains good separation of concerns without duplic
 
 ## Testing Status
 
-| Package | Tests | Coverage | Status |
-|---------|-------|----------|--------|
-| actor | ✓ | Good | ✓ Pass |
-| bounded | ✓ | Good | ✓ Pass |
-| datapoint | ✓ | Good | ✓ Pass |
-| enums | ✓ | Good | ✓ Pass |
-| id | ✓ | Good | ✓ Pass |
-| locale | ✓ | Good | ✓ Pass |
-| money | ✓ | Good | ✓ Pass |
-| nanoid | ✓ | Good | ✓ Pass |
-| pkg/errors | ✓ | Good | ✓ Pass |
-| scanutil | ✓ | Good | ✓ Pass |
-| temporal | ✓ | Good | ✓ Pass |
-| types | ✓ | Good | ✓ Pass |
+| Package    | Tests | Coverage | Status |
+| ---------- | ----- | -------- | ------ |
+| actor      | ✓     | Good     | ✓ Pass |
+| bounded    | ✓     | Good     | ✓ Pass |
+| datapoint  | ✓     | Good     | ✓ Pass |
+| enums      | ✓     | Good     | ✓ Pass |
+| id         | ✓     | Good     | ✓ Pass |
+| locale     | ✓     | Good     | ✓ Pass |
+| money      | ✓     | Good     | ✓ Pass |
+| nanoid     | ✓     | Good     | ✓ Pass |
+| pkg/errors | ✓     | Good     | ✓ Pass |
+| scanutil   | ✓     | Good     | ✓ Pass |
+| temporal   | ✓     | Good     | ✓ Pass |
+| types      | ✓     | Good     | ✓ Pass |
 
 **Total:** 12/12 packages passing
 
@@ -306,14 +313,14 @@ None detected. The codebase maintains good separation of concerns without duplic
 
 Running `golangci-lint` shows 213 issues, mostly in these categories:
 
-| Category | Count | Action |
-|----------|-------|--------|
-| wrapcheck | 28 | Accept - external errors don't need wrapping |
-| revive | 44 | Fix documentation issues |
-| paralleltest | 50 | Consider adding t.Parallel() |
-| gosec | 19 | Fix integer overflow issues |
-| gocyclo | 5 | Refactor complex functions |
-| exhaustruct | 17 | Ignore - false positives on zero values |
+| Category     | Count | Action                                       |
+| ------------ | ----- | -------------------------------------------- |
+| wrapcheck    | 28    | Accept - external errors don't need wrapping |
+| revive       | 44    | Fix documentation issues                     |
+| paralleltest | 50    | Consider adding t.Parallel()                 |
+| gosec        | 19    | Fix integer overflow issues                  |
+| gocyclo      | 5     | Refactor complex functions                   |
+| exhaustruct  | 17    | Ignore - false positives on zero values      |
 
 ---
 
@@ -322,6 +329,7 @@ Running `golangci-lint` shows 213 issues, mostly in these categories:
 **How should we handle the `forcetypeassert` linter errors when extracting the ID Compare functionality?**
 
 The current implementation uses type assertions like:
+
 ```go
 b := any(other.value).(int)
 ```
@@ -334,6 +342,7 @@ These are safe because they're in a type switch where we've already verified the
 4. Use generics constraints (would require significant refactoring)
 
 The type assertions are safe because:
+
 - The outer switch validates the type of `id.value`
 - Both IDs have the same type parameter `V`
 - Therefore `other.value` has the same type
@@ -361,5 +370,5 @@ This session successfully eliminated all user-facing panic conditions from the l
 
 ---
 
-*Generated with Crush*  
-*Assisted-by: Kimi K2.5 via Crush <crush@charm.land>*
+_Generated with Crush_  
+_Assisted-by: Kimi K2.5 via Crush <crush@charm.land>_
