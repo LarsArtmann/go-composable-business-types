@@ -188,7 +188,7 @@ func (d DataPoint[T]) WithTemporal(t temporal.Bitemporal) DataPoint[T] {
 
 // jsonDataPoint is the JSON representation of DataPoint.
 type jsonDataPoint[T comparable] struct {
-	ID         string                   `json:"id"`
+	ID         nanoid.NanoID            `json:"id"`
 	Payload    T                        `json:"payload"`
 	Actor      actor.ActorEntry[string] `json:"actor"`
 	Temporal   temporal.Bitemporal      `json:"temporal"`
@@ -203,8 +203,8 @@ type jsonDataPoint[T comparable] struct {
 
 // MarshalJSON implements json.Marshaler.
 func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
-	return json.Marshal(jsonDataPoint[T]{
-		ID:         d.id.String(),
+	b, err := json.Marshal(jsonDataPoint[T]{
+		ID:         d.id,
 		Payload:    d.payload,
 		Actor:      d.actor,
 		Temporal:   d.temporal,
@@ -216,6 +216,10 @@ func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
 		References: d.references,
 		Causes:     d.causes,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal datapoint: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -226,11 +230,7 @@ func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	}
 
 	// Parse ID
-	id, err := nanoid.ParseNanoID(raw.ID)
-	if err != nil {
-		return fmt.Errorf("unmarshal datapoint: parse id %q: %w", raw.ID, err)
-	}
-	d.id = id
+	d.id = raw.ID
 
 	d.payload = raw.Payload
 	d.actor = raw.Actor

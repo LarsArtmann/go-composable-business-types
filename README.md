@@ -1,10 +1,18 @@
 # go-composable-business-types
 
-Strongly typed, composable base values for safer, more interoperable Go projects.
+**Strongly typed, composable business types for Go — featuring DataPoint[T], a self-contained data unit with complete audit trail built-in.**
 
-## Project Goal
+## What is this?
 
-Build the best possible data types for Lars Artmann's Golang applications, leveraging superb existing libraries where appropriate. **Backwards compatibility is NOT a concern** — we prioritize clean, optimal design over legacy support.
+A Go library of type-safe base values designed for business applications. It combines:
+
+- **Branded/phantom types** (`ID[B, V]`) — prevent mixing `UserID` with `OrderID` at compile time
+- **Audit trail primitives** — `ActorChain[T]`, `Context`, `Reference[T]`, `Cause[T]` for traceability
+- **Bitemporal tracking** — separate valid time from recorded time
+- **Domain primitives** — `BoundedString`, `Money`, `Email`, `Percentage`, `Cents`, `Timestamp`, `Duration`
+- **Self-contained data units** — `DataPoint[T]` wraps any payload with full metadata (who, when, why, what caused it, references, tags)
+
+Selective imports let you use only what you need.
 
 ## Installation
 

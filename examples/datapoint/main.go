@@ -14,11 +14,23 @@ import (
 	"github.com/larsartmann/go-composable-business-types/nanoid"
 )
 
+// OrderBrand is the phantom type for OrderID.
+type OrderBrand struct{}
+
+// CustomerBrand is the phantom type for CustomerID.
+type CustomerBrand struct{}
+
+// OrderID is a strong ID type for order identifiers.
+type OrderID = id.ID[OrderBrand, string]
+
+// CustomerID is a strong ID type for customer identifiers.
+type CustomerID = id.ID[CustomerBrand, string]
+
 // Order represents a business domain type
 type Order struct {
-	OrderID    string `json:"order_id"`
-	CustomerID string `json:"customer_id"`
-	Amount     int64  `json:"amount"`
+	OrderID    OrderID    `json:"order_id"`
+	CustomerID CustomerID `json:"customer_id"`
+	Amount     int64      `json:"amount"`
 }
 
 // Example values for demonstration purposes
@@ -41,8 +53,8 @@ func main() {
 
 	// Create the order payload
 	order := Order{
-		OrderID:    "ORD-2024-001",
-		CustomerID: "CUST-456",
+		OrderID:    id.NewID[OrderBrand, string]("ORD-2024-001"),
+		CustomerID: id.NewID[CustomerBrand, string]("CUST-456"),
 		Amount:     exampleOrderAmount,
 	}
 

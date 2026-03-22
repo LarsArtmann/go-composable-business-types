@@ -91,24 +91,24 @@ func (c Cause[T]) IsZero() bool {
 
 // jsonCause is the JSON representation of Cause.
 type jsonCause struct {
-	ID     string          `json:"id"`
+	ID     nanoid.NanoID   `json:"id"`
 	Kind   enums.CauseKind `json:"kind"`
 	Effect string          `json:"effect"`
-	Trace  []string        `json:"trace,omitempty"`
+	Trace  []nanoid.NanoID `json:"trace,omitempty"`
 }
 
 // MarshalJSON implements json.Marshaler.
 func (c Cause[T]) MarshalJSON() ([]byte, error) {
-	trace := make([]string, len(c.trace))
-	for i, t := range c.trace {
-		trace[i] = t.String()
-	}
-	return json.Marshal(jsonCause{
-		ID:     c.id.String(),
+	b, err := json.Marshal(jsonCause{
+		ID:     c.id,
 		Kind:   c.kind,
 		Effect: c.effect,
-		Trace:  trace,
+		Trace:  c.trace,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("marshal cause: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -121,26 +121,10 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	c.effect = raw.Effect
 
 	// Parse ID
-	id, err := nanoid.ParseNanoID(raw.ID)
-	if err != nil {
-		return fmt.Errorf("unmarshal cause: parse id %q: %w", raw.ID, err)
-	}
-	c.id = id
+	c.id = raw.ID
 
 	// Parse trace
 	c.trace = make([]nanoid.NanoID, len(raw.Trace))
-	for i, t := range raw.Trace {
-		parsed, err := nanoid.ParseNanoID(t)
-		if err != nil {
-			return fmt.Errorf(
-				"unmarshal cause: parse trace[%d] %q from JSON %q: %w",
-				i,
-				t,
-				string(data),
-				err,
-			)
-		}
-		c.trace[i] = parsed
-	}
+	copy(c.trace, raw.Trace)
 	return nil
 }
