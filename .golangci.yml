@@ -1,82 +1,85 @@
-version: 2
-
+version: "2"
 run:
-  timeout: 5m
-  issues-exit-code: 1
-  tests: true
-
+    timeout: 5m
+    go: ""
+    build-tags: []
+    allow-parallel-runners: false
+    allow-serial-runners: false
+    issues-exit-code: 1
+    tests: true
+output:
+    formats: {}
 linters:
-  enable:
-    - bidichk
-    - bodyclose
-    - containedctx
-    - contextcheck
-    - copyloopvar
-    - cyclop
-    - decorder
-    - dogsled
-    - dupl
-    - dupword
-    - durationcheck
-    - errchkjson
-    - errname
-    - errorlint
-    - exptostd
-    - exhaustive
-    - gocheckcompilerdirectives
-    - gochecknoinits
-    - gocognit
-    # - goconst  # Disabled: minor test string issues, readability over constants in tests
-    - gocritic
-    - gocyclo
-    - gomoddirectives
-    - gomodguard
-    - gosec
-    - interfacebloat
-    - intrange
-    - maintidx
-    - misspell
-    - nakedret
-    - nestif
-    - nilerr
-    - nilnesserr
-    - noctx
-    - nolintlint
-    - perfsprint
-    - prealloc
-    - predeclared
-    - protogetter
-    - reassign
-    - rowserrcheck
-    - sloglint
-    - spancheck
-    - sqlclosecheck
-    - unconvert
-    - unparam
-    - usetesting
-
-linters-settings:
-  cyclop:
-    max-complexity: 25
-  gocognit:
-    min-complexity: 30
-  gocyclo:
-    min-complexity: 20
-  gocritic:
-    disabled-checks:
-      - deprecatedComment
-
-issues:
-  max-issues-per-linter: 50
-  max-same-issues: 10
-  exclude-rules:
-    # Generated code
-    - path: enums/enum_enum\.go
-      linters:
-        - all
-    # Test functions with multiple SQL test cases
-    - path: _test\.go
-      linters:
-        - gocyclo
+    enable:
+        - loggercheck
+        - paralleltest
+        - exptostd
+        - gocritic
+        - gomoddirectives
+        - prealloc
+        - forcetypeassert
+        - wastedassign
+        - contextcheck
+        - dogsled
+        - errchkjson
+        - gosec
+        - nestif
+        - sloglint
+        - gochecknoglobals
+        - nilnesserr
+        - predeclared
+        - musttag
+        - gocognit
+        - reassign
+        - usetesting
+        - durationcheck
+        - interfacebloat
+        - noctx
+        - protogetter
+        - unconvert
         - cyclop
+        - nolintlint
+        - funlen
+        - ginkgolinter
+        - wrapcheck
+        - gocyclo
         - goconst
+        - nilnil
+        - bodyclose
+        - decorder
+        - gochecknoinits
+        - perfsprint
+        - mirror
+        - bidichk
+        - dupl
+        - dupword
+        - exhaustive
+        - rowserrcheck
+        - spancheck
+        - zerologlint
+        - exhaustruct
+        - revive
+        - copyloopvar
+        - errorlint
+        - gocheckcompilerdirectives
+        - nilerr
+        - gosmopolitan
+        - recvcheck
+        - testifylint
+        - misspell
+        - intrange
+        - nakedret
+        - thelper
+        - maintidx
+        - errname
+        - sqlclosecheck
+        - containedctx
+        - gomodguard
+        - unparam
+        - gochecksumtype
+formatters:
+    enable:
+        - golines
+issues:
+    max-issues-per-linter: 50
+    max-same-issues: 10
