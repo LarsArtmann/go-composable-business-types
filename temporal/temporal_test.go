@@ -21,7 +21,7 @@ func TestNewBitemporal(t *testing.T) {
 	if b.Recorded() != now {
 		t.Error("Recorded should equal input")
 	}
-	if b.IsCorrection() {
+	if b.IsCorrection() != NoCorrection {
 		t.Error("NewBitemporal should not be a correction")
 	}
 }
@@ -40,7 +40,7 @@ func TestNewBitemporalWithRange(t *testing.T) {
 	if b.ValidUntil() != until {
 		t.Error("ValidUntil mismatch")
 	}
-	if b.IsCorrection() {
+	if b.IsCorrection() != NoCorrection {
 		t.Error("should not be a correction")
 	}
 }
@@ -50,7 +50,7 @@ func TestNewCorrection(t *testing.T) {
 	now := types.Now()
 	b := NewCorrection(now, types.Timestamp{}, now)
 
-	if !b.IsCorrection() {
+	if b.IsCorrection() != IsCorrection {
 		t.Error("NewCorrection should be a correction")
 	}
 }

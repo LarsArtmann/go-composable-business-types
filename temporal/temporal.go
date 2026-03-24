@@ -20,6 +20,40 @@ import (
 	"github.com/larsartmann/go-composable-business-types/types"
 )
 
+// Correction represents whether a Bitemporal record is a correction.
+// This type-safe approach provides named constants while maintaining JSON compatibility.
+type Correction bool
+
+const (
+	// NoCorrection indicates this is not a correction record.
+	NoCorrection Correction = false
+	// IsCorrection indicates this is a correction of a previous record.
+	IsCorrection Correction = true
+)
+
+// String returns "correction" for true, empty string for false.
+func (c Correction) String() string {
+	if c {
+		return "correction"
+	}
+	return ""
+}
+
+// MarshalJSON implements json.Marshaler for Correction.
+func (c Correction) MarshalJSON() ([]byte, error) {
+	return json.Marshal(bool(c))
+}
+
+// UnmarshalJSON implements json.Unmarshaler for Correction.
+func (c *Correction) UnmarshalJSON(data []byte) error {
+	var b bool
+	if err := json.Unmarshal(data, &b); err != nil {
+		return fmt.Errorf("correction: invalid JSON %q: %w", string(data), err)
+	}
+	*c = Correction(b)
+	return nil
+}
+
 // Bitemporal captures both valid time (when the fact was true in the real world)
 // and transaction time (when we recorded it in the system).
 // This enables point-in-time queries and corrections of historical data.
@@ -27,7 +61,7 @@ type Bitemporal struct {
 	validFrom  types.Timestamp // When this fact became true in the real world
 	validUntil types.Timestamp // When this fact ceased to be true (zero = still valid)
 	recorded   types.Timestamp // When we recorded this fact in the system
-	correction bool            // Is this a correction of a previous record?
+	correction Correction      // Is this a correction of a previous record?
 }
 
 // NewBitemporal creates a new Bitemporal with valid time starting now.
@@ -37,14 +71,14 @@ func NewBitemporal(recorded types.Timestamp) Bitemporal {
 		validFrom:  recorded,
 		validUntil: types.Timestamp{},
 		recorded:   recorded,
-		correction: false,
+		correction: NoCorrection,
 	}
 }
 
 // NewBitemporalWithRange creates a Bitemporal with explicit valid time range.
 // If validUntil is zero, the fact is valid indefinitely.
 func NewBitemporalWithRange(validFrom, validUntil, recorded types.Timestamp) Bitemporal {
-	return NewCorrection(validFrom, validUntil, recorded).withCorrection(false)
+	return NewCorrection(validFrom, validUntil, recorded).withCorrection(NoCorrection)
 }
 
 // NewCorrection creates a Bitemporal that marks this as a correction.
@@ -53,12 +87,12 @@ func NewCorrection(validFrom, validUntil, recorded types.Timestamp) Bitemporal {
 		validFrom:  validFrom,
 		validUntil: validUntil,
 		recorded:   recorded,
-		correction: true,
+		correction: IsCorrection,
 	}
 }
 
 // withCorrection returns a copy with the correction flag set.
-func (b Bitemporal) withCorrection(c bool) Bitemporal {
+func (b Bitemporal) withCorrection(c Correction) Bitemporal {
 	b.correction = c
 	return b
 }
@@ -72,8 +106,8 @@ func (b Bitemporal) ValidUntil() types.Timestamp { return b.validUntil }
 // Recorded returns when this fact was recorded in the system.
 func (b Bitemporal) Recorded() types.Timestamp { return b.recorded }
 
-// IsCorrection returns true if this is a correction of a previous record.
-func (b Bitemporal) IsCorrection() bool { return b.correction }
+// IsCorrection returns the Correction type indicating if this is a correction.
+func (b Bitemporal) IsCorrection() Correction { return b.correction }
 
 // IsZero returns true if this is the zero value (all timestamps zero).
 func (b Bitemporal) IsZero() bool {
@@ -104,10 +138,10 @@ func (b Bitemporal) WithValidUntil(until types.Timestamp) Bitemporal {
 
 // jsonBitemporal is the JSON representation of Bitemporal.
 type jsonBitemporal struct {
-	ValidFrom  time.Time `json:"validFrom"`
-	ValidUntil time.Time `json:"validUntil"`
-	Recorded   time.Time `json:"recorded"`
-	Correction bool      `json:"correction,omitempty"`
+	ValidFrom  time.Time  `json:"validFrom"`
+	ValidUntil time.Time  `json:"validUntil"`
+	Recorded   time.Time  `json:"recorded"`
+	Correction Correction `json:"correction,omitempty"`
 }
 
 // MarshalJSON implements json.Marshaler.
