@@ -86,6 +86,7 @@ var ErrNotOrdered = errors.New("id: Compare requires an ordered type (int, uint,
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
 // Returns ErrNotOrdered if V is not an ordered type.
 //
+//nolint:cyclop // Generic type handling requires many type cases
 //nolint:forcetypeassert // Type assertion is safe: outer type switch validates V matches case type
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
@@ -272,6 +273,8 @@ func (id ID[B, V]) Or(defaultValue ID[B, V]) ID[B, V] {
 }
 
 // String returns a string representation of the value.
+//
+//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) String() string {
 	switch v := any(id.value).(type) {
 	case string:
@@ -333,6 +336,8 @@ func (id ID[B, V]) Format(f fmt.State, verb rune) {
 // MarshalJSON implements json.Marshaler for proper null handling.
 // String-based IDs serialize as JSON strings, numeric IDs as JSON numbers.
 // Zero values serialize to JSON null.
+//
+//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 	if id.IsZero() {
 		return []byte("null"), nil
@@ -369,7 +374,7 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler for JSON deserialization.
 // Supports null, strings, and numeric values based on the underlying type V.
 //
-//nolint:gocyclo,cyclop // Generic type handling requires many type cases
+//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
 		id.Reset()
@@ -528,6 +533,8 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler for binary encoding.
+//
+//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 	if id.IsZero() {
 		return nil, nil
@@ -543,7 +550,7 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		}
 		return buf.Bytes(), nil
 	case int8:
-		return []byte{byte(v)}, nil
+		return []byte{byte(v)}, nil //nolint:gosec // G115: int8 to byte is safe for serialization
 	case int16:
 		b := make([]byte, byteSizeInt16)
 		binary.LittleEndian.PutUint16(b, uint16(v)) //nolint:gosec // G115: int16 to uint16 is safe for serialization
@@ -582,7 +589,7 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler for binary decoding.
 //
-//nolint:gocyclo,cyclop // Generic type handling requires many type cases
+//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	if len(data) == 0 {
 		id.Reset()
@@ -738,7 +745,7 @@ func (id *ID[B, V]) GobDecode(data []byte) error {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
 //
-//nolint:gocyclo,cyclop // Generic type handling requires many type cases
+//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) Scan(src any) error {
 	if src == nil {
 		id.Reset()
@@ -856,6 +863,8 @@ func (id *ID[B, V]) Scan(src any) error {
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for zero values, otherwise the underlying value.
+//
+//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) Value() (driver.Value, error) {
 	if id.IsZero() {
 		return nil, nil

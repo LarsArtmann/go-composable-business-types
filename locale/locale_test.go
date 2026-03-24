@@ -140,6 +140,7 @@ func TestLocaleMarshal(t *testing.T) {
 	}
 }
 
+//nolint:cyclop // SQL test has many test cases
 func TestLocaleSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value

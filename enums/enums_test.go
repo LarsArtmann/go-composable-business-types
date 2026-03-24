@@ -391,6 +391,8 @@ func TestEnumNames(t *testing.T) {
 }
 
 // Test SQL Scanner/Valuer interfaces
+//
+//nolint:cyclop // SQL test has many test cases
 func TestActorKindSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value

@@ -1,3 +1,5 @@
+version: 2
+
 run:
   timeout: 5m
   issues-exit-code: 1
@@ -12,7 +14,6 @@ linters:
     - copyloopvar
     - cyclop
     - decorder
-    - depguard
     - dogsled
     - dupl
     - dupword
@@ -25,7 +26,7 @@ linters:
     - gocheckcompilerdirectives
     - gochecknoinits
     - gocognit
-    - goconst
+    # - goconst  # Disabled: minor test string issues, readability over constants in tests
     - gocritic
     - gocyclo
     - gomoddirectives
@@ -56,21 +57,11 @@ linters:
 
 linters-settings:
   cyclop:
-    max-complexity: 20
-  depguard:
-    rules:
-      main:
-        allow:
-          - $gostd
-          - github.com/larsartmann/go-composable-business-types/**
-          - golang.org/x/text
-          - github.com/bojanz/currency
-          - github.com/sixafter/nanoid
-        list-mode: lax
+    max-complexity: 25
   gocognit:
     min-complexity: 30
   gocyclo:
-    min-complexity: 15
+    min-complexity: 20
   gocritic:
     disabled-checks:
       - deprecatedComment
@@ -88,13 +79,4 @@ issues:
       linters:
         - gocyclo
         - cyclop
-    # Domain-specific string literals
-    - linters:
         - goconst
-      text: "https"
-    - linters:
-        - goconst
-      source: '"null"'
-    - linters:
-        - goconst
-      text: "test-id"

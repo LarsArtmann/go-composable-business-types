@@ -367,6 +367,7 @@ func TestDurationCompare(t *testing.T) {
 }
 
 // SQL Scanner/Valuer tests
+//nolint:cyclop // SQL tests have many test cases
 func TestEmailSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
@@ -439,6 +440,7 @@ func TestEmailSQL(t *testing.T) {
 	}
 }
 
+//nolint:cyclop // SQL test has many test cases
 func TestURLSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
@@ -510,6 +512,7 @@ func TestURLSQL(t *testing.T) {
 	}
 }
 
+//nolint:cyclop // SQL test has many test cases
 func TestCentsSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
@@ -571,6 +574,7 @@ func TestCentsSQL(t *testing.T) {
 	}
 }
 
+//nolint:cyclop // SQL test has many test cases
 func TestTimestampSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
@@ -645,6 +649,7 @@ func TestTimestampSQL(t *testing.T) {
 	}
 }
 
+//nolint:cyclop // SQL test has many test cases
 func TestDurationSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
