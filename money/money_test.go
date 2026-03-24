@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewMoney(t *testing.T) {
+	t.Parallel()
 	m, err := NewMoney("10.99", "USD")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -20,6 +21,7 @@ func TestNewMoney(t *testing.T) {
 }
 
 func TestNewMoneyFromCents(t *testing.T) {
+	t.Parallel()
 	m, err := NewMoneyFromCents(1099, "USD")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -32,6 +34,7 @@ func TestNewMoneyFromCents(t *testing.T) {
 }
 
 func TestIsValidCurrency(t *testing.T) {
+	t.Parallel()
 	if !IsValidCurrency("USD") {
 		t.Error("USD should be valid")
 	}
@@ -44,6 +47,7 @@ func TestIsValidCurrency(t *testing.T) {
 }
 
 func TestCurrencyDigits(t *testing.T) {
+	t.Parallel()
 	// USD has 2 decimal digits
 	digits, ok := CurrencyDigits("USD")
 	if !ok {
@@ -64,6 +68,7 @@ func TestCurrencyDigits(t *testing.T) {
 }
 
 func TestCurrencySymbol(t *testing.T) {
+	t.Parallel()
 	symbol, ok := CurrencySymbol("USD", "en-US")
 	if !ok {
 		t.Error("should get symbol")
@@ -74,6 +79,7 @@ func TestCurrencySymbol(t *testing.T) {
 }
 
 func TestCurrencySymbolForLocale(t *testing.T) {
+	t.Parallel()
 	loc := locale.LocaleEnUS
 	symbol, ok := CurrencySymbolForLocale("USD", loc)
 	if !ok {
@@ -85,6 +91,7 @@ func TestCurrencySymbolForLocale(t *testing.T) {
 }
 
 func TestAllCurrencyCodes(t *testing.T) {
+	t.Parallel()
 	codes := AllCurrencyCodes()
 	if len(codes) == 0 {
 		t.Error("should have currency codes")
@@ -98,6 +105,7 @@ func TestAllCurrencyCodes(t *testing.T) {
 }
 
 func TestFormatMoney(t *testing.T) {
+	t.Parallel()
 	m, _ := NewMoney("10.99", "USD")
 	formatted := FormatMoney(m, "en-US")
 	if formatted == "" {
@@ -106,6 +114,7 @@ func TestFormatMoney(t *testing.T) {
 }
 
 func TestFormatMoneyForLocale(t *testing.T) {
+	t.Parallel()
 	m, _ := NewMoney("10.99", "USD")
 	formatted := FormatMoneyForLocale(m, locale.LocaleEnUS)
 	if formatted == "" {
@@ -114,6 +123,7 @@ func TestFormatMoneyForLocale(t *testing.T) {
 }
 
 func TestNewMoneyFormatter(t *testing.T) {
+	t.Parallel()
 	formatter := NewMoneyFormatter("en-US")
 	if formatter == nil {
 		t.Error("formatter should not be nil")
@@ -121,6 +131,7 @@ func TestNewMoneyFormatter(t *testing.T) {
 }
 
 func TestNewMoneyFormatterForLocale(t *testing.T) {
+	t.Parallel()
 	formatter := NewMoneyFormatterForLocale(locale.LocaleEnUS)
 	if formatter == nil {
 		t.Error("formatter should not be nil")

@@ -209,10 +209,10 @@ func WrapInvalid(err error, field string, value any) error {
 }
 
 // WrapRange wraps an error as a range error.
-func WrapRange(value, min, max any, outOfRange bool) error {
+func WrapRange(value, minVal, max any, outOfRange bool) error {
 	return &RangeError{
 		Value:      value,
-		Min:        min,
+		Min:        minVal,
 		Max:        max,
 		OutOfRange: outOfRange,
 	}

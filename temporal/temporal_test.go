@@ -8,6 +8,7 @@ import (
 )
 
 func TestNewBitemporal(t *testing.T) {
+	t.Parallel()
 	now := types.Now()
 	b := NewBitemporal(now)
 
@@ -26,6 +27,7 @@ func TestNewBitemporal(t *testing.T) {
 }
 
 func TestNewBitemporalWithRange(t *testing.T) {
+	t.Parallel()
 	from := types.NewTimestamp(time.Now())
 	until := types.NewTimestamp(time.Now().Add(time.Hour))
 	recorded := types.Now()
@@ -44,6 +46,7 @@ func TestNewBitemporalWithRange(t *testing.T) {
 }
 
 func TestNewCorrection(t *testing.T) {
+	t.Parallel()
 	now := types.Now()
 	b := NewCorrection(now, types.Timestamp{}, now)
 
@@ -53,6 +56,7 @@ func TestNewCorrection(t *testing.T) {
 }
 
 func TestBitemporalIsZero(t *testing.T) {
+	t.Parallel()
 	var zero Bitemporal
 	if !zero.IsZero() {
 		t.Error("zero Bitemporal should be zero")
@@ -65,6 +69,7 @@ func TestBitemporalIsZero(t *testing.T) {
 }
 
 func TestBitemporalIsValidAt(t *testing.T) {
+	t.Parallel()
 	now := time.Now()
 	from := types.NewTimestamp(now.Add(-time.Hour))
 	until := types.NewTimestamp(now.Add(time.Hour))
@@ -89,6 +94,7 @@ func TestBitemporalIsValidAt(t *testing.T) {
 }
 
 func TestBitemporalIsCurrentlyValid(t *testing.T) {
+	t.Parallel()
 	now := types.Now()
 	b := NewBitemporal(now)
 
@@ -107,6 +113,7 @@ func TestBitemporalIsCurrentlyValid(t *testing.T) {
 }
 
 func TestBitemporalWithValidUntil(t *testing.T) {
+	t.Parallel()
 	b := NewBitemporal(types.Now())
 	newUntil := types.NewTimestamp(time.Now().Add(time.Hour))
 
@@ -122,6 +129,7 @@ func TestBitemporalWithValidUntil(t *testing.T) {
 }
 
 func TestBitemporalJSON(t *testing.T) {
+	t.Parallel()
 	now := time.Now()
 	b := NewBitemporalWithRange(
 		types.NewTimestamp(now),

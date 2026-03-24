@@ -33,6 +33,7 @@ const (
 )
 
 var (
+	// ErrNanoIDEmpty is returned when a NanoID is empty.
 	ErrNanoIDEmpty    = errors.New("nanoid: cannot be empty")
 	ErrNanoIDTooShort = errors.New("nanoid: minimum length is 8 characters")
 	ErrNanoIDTooLong  = errors.New("nanoid: maximum length is 256 characters")

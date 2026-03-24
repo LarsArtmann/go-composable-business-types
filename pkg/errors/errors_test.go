@@ -12,6 +12,7 @@ import (
 // =============================================================================
 
 func TestEmailSentinels(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -23,6 +24,7 @@ func TestEmailSentinels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}
@@ -31,6 +33,7 @@ func TestEmailSentinels(t *testing.T) {
 }
 
 func TestURLSentinels(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -44,6 +47,7 @@ func TestURLSentinels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}
@@ -52,6 +56,7 @@ func TestURLSentinels(t *testing.T) {
 }
 
 func TestBoundedStringSentinels(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -69,6 +74,7 @@ func TestBoundedStringSentinels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}
@@ -77,6 +83,7 @@ func TestBoundedStringSentinels(t *testing.T) {
 }
 
 func TestNanoIDSentinels(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -90,6 +97,7 @@ func TestNanoIDSentinels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}
@@ -98,6 +106,7 @@ func TestNanoIDSentinels(t *testing.T) {
 }
 
 func TestIDSentinels(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -110,6 +119,7 @@ func TestIDSentinels(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}
@@ -122,6 +132,7 @@ func TestIDSentinels(t *testing.T) {
 // =============================================================================
 
 func TestUnmarshalError(t *testing.T) {
+	t.Parallel()
 	original := errors.New("parse failed")
 	err := &UnmarshalError{
 		Type:  "JSON",
@@ -152,6 +163,7 @@ func TestUnmarshalError(t *testing.T) {
 }
 
 func TestValidationError(t *testing.T) {
+	t.Parallel()
 	original := errors.New("invalid format")
 	err := &ValidationError{
 		Field: "email",
@@ -182,7 +194,9 @@ func TestValidationError(t *testing.T) {
 }
 
 func TestRangeError(t *testing.T) {
+	t.Parallel()
 	t.Run("below minimum", func(t *testing.T) {
+		t.Parallel()
 		err := &RangeError{
 			Value:      5,
 			Min:        10,
@@ -197,6 +211,7 @@ func TestRangeError(t *testing.T) {
 	})
 
 	t.Run("above maximum", func(t *testing.T) {
+		t.Parallel()
 		err := &RangeError{
 			Value:      150,
 			Min:        10,
@@ -212,6 +227,7 @@ func TestRangeError(t *testing.T) {
 }
 
 func TestScanError(t *testing.T) {
+	t.Parallel()
 	original := errors.New("unsupported type")
 	err := &ScanError{
 		SourceType: "int64",
@@ -246,7 +262,9 @@ func TestScanError(t *testing.T) {
 // =============================================================================
 
 func TestWrapMalformed(t *testing.T) {
+	t.Parallel()
 	t.Run("wraps error", func(t *testing.T) {
+		t.Parallel()
 		inner := errors.New("invalid syntax")
 		err := WrapMalformed(inner, "JSON", `{bad}`)
 
@@ -256,6 +274,7 @@ func TestWrapMalformed(t *testing.T) {
 	})
 
 	t.Run("nil returns nil", func(t *testing.T) {
+		t.Parallel()
 		err := WrapMalformed(nil, "JSON", `{}`)
 		if err != nil {
 			t.Errorf("expected nil, got %v", err)
@@ -264,7 +283,9 @@ func TestWrapMalformed(t *testing.T) {
 }
 
 func TestWrapInvalid(t *testing.T) {
+	t.Parallel()
 	t.Run("wraps error", func(t *testing.T) {
+		t.Parallel()
 		inner := errors.New("invalid value")
 		err := WrapInvalid(inner, "email", "test@")
 
@@ -278,6 +299,7 @@ func TestWrapInvalid(t *testing.T) {
 	})
 
 	t.Run("nil returns nil", func(t *testing.T) {
+		t.Parallel()
 		err := WrapInvalid(nil, "field", "value")
 		if err != nil {
 			t.Errorf("expected nil, got %v", err)
@@ -286,6 +308,7 @@ func TestWrapInvalid(t *testing.T) {
 }
 
 func TestWrapRange(t *testing.T) {
+	t.Parallel()
 	err := WrapRange(150, 10, 100, true)
 
 	var target *RangeError
@@ -304,7 +327,9 @@ func TestWrapRange(t *testing.T) {
 }
 
 func TestWrapScan(t *testing.T) {
+	t.Parallel()
 	t.Run("wraps error", func(t *testing.T) {
+		t.Parallel()
 		inner := errors.New("conversion failed")
 		err := WrapScan(inner, "[]byte", "string")
 
@@ -321,6 +346,7 @@ func TestWrapScan(t *testing.T) {
 	})
 
 	t.Run("nil returns nil", func(t *testing.T) {
+		t.Parallel()
 		err := WrapScan(nil, "int", "string")
 		if err != nil {
 			t.Errorf("expected nil, got %v", err)
@@ -329,7 +355,9 @@ func TestWrapScan(t *testing.T) {
 }
 
 func TestWrapUnmarshal(t *testing.T) {
+	t.Parallel()
 	t.Run("wraps error", func(t *testing.T) {
+		t.Parallel()
 		inner := errors.New("unexpected EOF")
 		err := WrapUnmarshal(inner, "JSON", `{incomplete`)
 
@@ -346,6 +374,7 @@ func TestWrapUnmarshal(t *testing.T) {
 	})
 
 	t.Run("nil returns nil", func(t *testing.T) {
+		t.Parallel()
 		err := WrapUnmarshal(nil, "XML", `<tag>`)
 		if err != nil {
 			t.Errorf("expected nil, got %v", err)
@@ -358,6 +387,7 @@ func TestWrapUnmarshal(t *testing.T) {
 // =============================================================================
 
 func TestIsInvalidEmail(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -371,6 +401,7 @@ func TestIsInvalidEmail(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsInvalidEmail(tt.err); got != tt.want {
 				t.Errorf("IsInvalidEmail() = %v, want %v", got, tt.want)
 			}
@@ -379,6 +410,7 @@ func TestIsInvalidEmail(t *testing.T) {
 }
 
 func TestIsInvalidURL(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -393,6 +425,7 @@ func TestIsInvalidURL(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsInvalidURL(tt.err); got != tt.want {
 				t.Errorf("IsInvalidURL() = %v, want %v", got, tt.want)
 			}
@@ -401,6 +434,7 @@ func TestIsInvalidURL(t *testing.T) {
 }
 
 func TestIsBoundedStringError(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -415,6 +449,7 @@ func TestIsBoundedStringError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsBoundedStringError(tt.err); got != tt.want {
 				t.Errorf("IsBoundedStringError() = %v, want %v", got, tt.want)
 			}
@@ -423,6 +458,7 @@ func TestIsBoundedStringError(t *testing.T) {
 }
 
 func TestIsNanoIDError(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -437,6 +473,7 @@ func TestIsNanoIDError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsNanoIDError(tt.err); got != tt.want {
 				t.Errorf("IsNanoIDError() = %v, want %v", got, tt.want)
 			}
@@ -445,6 +482,7 @@ func TestIsNanoIDError(t *testing.T) {
 }
 
 func TestIsIDError(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -458,6 +496,7 @@ func TestIsIDError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsIDError(tt.err); got != tt.want {
 				t.Errorf("IsIDError() = %v, want %v", got, tt.want)
 			}
@@ -466,6 +505,7 @@ func TestIsIDError(t *testing.T) {
 }
 
 func TestIsParseError(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name string
 		err  error
@@ -479,6 +519,7 @@ func TestIsParseError(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			if got := IsParseError(tt.err); got != tt.want {
 				t.Errorf("IsParseError() = %v, want %v", got, tt.want)
 			}

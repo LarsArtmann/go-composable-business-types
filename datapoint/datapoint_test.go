@@ -11,6 +11,7 @@ import (
 )
 
 func TestNewDataPoint(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	dp := NewDataPoint("test payload", actorEntry)
@@ -36,6 +37,7 @@ func TestNewDataPoint(t *testing.T) {
 }
 
 func TestDataPointWithMethods(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -76,6 +78,7 @@ func TestDataPointWithMethods(t *testing.T) {
 }
 
 func TestDataPointWithReference(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -93,6 +96,7 @@ func TestDataPointWithReference(t *testing.T) {
 }
 
 func TestDataPointWithCause(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -111,6 +115,7 @@ func TestDataPointWithCause(t *testing.T) {
 }
 
 func TestDataPointWithContext(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -133,6 +138,7 @@ func TestDataPointWithContext(t *testing.T) {
 }
 
 func TestDataPointJSON(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	dp := NewDataPoint("test payload", actorEntry).
@@ -162,6 +168,7 @@ func TestDataPointJSON(t *testing.T) {
 }
 
 func TestDataPointUnmarshalJSON(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	original := NewDataPoint("test payload", actorEntry).
@@ -193,6 +200,7 @@ func TestDataPointUnmarshalJSON(t *testing.T) {
 }
 
 func TestDataPointIsZero(t *testing.T) {
+	t.Parallel()
 	var zero DataPoint[string]
 	if !zero.IsZero() {
 		t.Error("zero DataPoint should be zero")
@@ -207,6 +215,7 @@ func TestDataPointIsZero(t *testing.T) {
 }
 
 func TestDataPointIntPayload(t *testing.T) {
+	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint(42, actorEntry)
@@ -232,6 +241,7 @@ func TestDataPointIntPayload(t *testing.T) {
 }
 
 func TestDataPointComplexChain(t *testing.T) {
+	t.Parallel()
 	// Create a complex DataPoint with all fields set
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "John Doe")

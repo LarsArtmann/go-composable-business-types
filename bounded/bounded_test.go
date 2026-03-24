@@ -5,6 +5,7 @@ import (
 )
 
 func TestNewBoundedString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		minLen  int
@@ -24,6 +25,7 @@ func TestNewBoundedString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			bs, err := NewBoundedString(tt.minLen, tt.maxLen, tt.value)
 			if tt.wantErr {
 				if err == nil {
@@ -42,6 +44,7 @@ func TestNewBoundedString(t *testing.T) {
 }
 
 func TestBoundedStringLen(t *testing.T) {
+	t.Parallel()
 	bs, _ := NewBoundedString(1, 100, "hello")
 	if bs.Len() != 5 {
 		t.Errorf("expected length 5, got %d", bs.Len())
@@ -55,6 +58,7 @@ func TestBoundedStringLen(t *testing.T) {
 }
 
 func TestBoundedStringOf(t *testing.T) {
+	t.Parallel()
 	NewName := BoundedStringOf(1, 100)
 	name, err := NewName("John Doe")
 	if err != nil {
@@ -72,6 +76,7 @@ func TestBoundedStringOf(t *testing.T) {
 }
 
 func TestNonEmptyString(t *testing.T) {
+	t.Parallel()
 	s, err := NonEmptyString(100, "hello")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -88,6 +93,7 @@ func TestNonEmptyString(t *testing.T) {
 }
 
 func TestTrimmedBoundedString(t *testing.T) {
+	t.Parallel()
 	s, err := TrimmedBoundedString(1, 100, "  hello  ")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -98,6 +104,7 @@ func TestTrimmedBoundedString(t *testing.T) {
 }
 
 func TestBoundedStringIsZero(t *testing.T) {
+	t.Parallel()
 	var zero BoundedString
 	if !zero.IsZero() {
 		t.Error("expected zero BoundedString to be zero")
@@ -110,6 +117,7 @@ func TestBoundedStringIsZero(t *testing.T) {
 }
 
 func TestBoundedStringBounds(t *testing.T) {
+	t.Parallel()
 	bs, _ := NewBoundedString(5, 10, "hello")
 	if bs.MinLen() != 5 {
 		t.Errorf("expected MinLen 5, got %d", bs.MinLen())

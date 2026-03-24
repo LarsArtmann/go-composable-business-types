@@ -76,7 +76,7 @@ func TestUserActor(t *testing.T) {
 	if actor.Kind != enums.ActorKindUser {
 		t.Errorf("expected User kind, got %v", actor.Kind)
 	}
-	if actor.Id != userID {
+	if actor.ID != userID {
 		t.Error("ID mismatch")
 	}
 	if actor.Name != "John Doe" {

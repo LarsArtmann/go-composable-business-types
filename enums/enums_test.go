@@ -6,6 +6,7 @@ import (
 )
 
 func TestActorKind(t *testing.T) {
+	t.Parallel()
 	// Test constants exist
 	_ = ActorKindUser
 	_ = ActorKindBot
@@ -33,6 +34,7 @@ func TestActorKind(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
+			t.Parallel()
 			if tt.kind.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.kind.String())
 			}
@@ -41,6 +43,7 @@ func TestActorKind(t *testing.T) {
 }
 
 func TestParseActorKind(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input   string
 		want    ActorKind
@@ -56,6 +59,7 @@ func TestParseActorKind(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
 			got, err := ParseActorKind(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -74,6 +78,7 @@ func TestParseActorKind(t *testing.T) {
 }
 
 func TestParseActorKindError(t *testing.T) {
+	t.Parallel()
 	_, err := ParseActorKind("Invalid")
 	if err == nil {
 		t.Error("expected error for invalid ActorKind")
@@ -81,6 +86,7 @@ func TestParseActorKindError(t *testing.T) {
 }
 
 func TestActorKindIsValid(t *testing.T) {
+	t.Parallel()
 	if !ActorKindUser.IsValid() {
 		t.Error("ActorKindUser should be valid")
 	}
@@ -95,6 +101,7 @@ func TestActorKindIsValid(t *testing.T) {
 }
 
 func TestPriority(t *testing.T) {
+	t.Parallel()
 	// Test constants
 	_ = PriorityLow
 	_ = PriorityMedium
@@ -119,6 +126,7 @@ func TestPriority(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
+			t.Parallel()
 			if tt.priority.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.priority.String())
 			}
@@ -127,6 +135,7 @@ func TestPriority(t *testing.T) {
 }
 
 func TestParsePriority(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input   string
 		want    Priority
@@ -142,6 +151,7 @@ func TestParsePriority(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
 			got, err := ParsePriority(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -160,6 +170,7 @@ func TestParsePriority(t *testing.T) {
 }
 
 func TestPriorityIsValid(t *testing.T) {
+	t.Parallel()
 	if !PriorityLow.IsValid() {
 		t.Error("PriorityLow should be valid")
 	}
@@ -173,6 +184,7 @@ func TestPriorityIsValid(t *testing.T) {
 }
 
 func TestStatus(t *testing.T) {
+	t.Parallel()
 	// Test all statuses exist
 	statuses := []Status{StatusDraft, StatusActive, StatusPaused, StatusArchived, StatusDeleted}
 	expected := []string{"Draft", "Active", "Paused", "Archived", "Deleted"}
@@ -185,6 +197,7 @@ func TestStatus(t *testing.T) {
 }
 
 func TestParseStatus(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input   string
 		want    Status
@@ -201,6 +214,7 @@ func TestParseStatus(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
 			got, err := ParseStatus(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -219,6 +233,7 @@ func TestParseStatus(t *testing.T) {
 }
 
 func TestStatusIsValid(t *testing.T) {
+	t.Parallel()
 	validStatuses := []Status{
 		StatusDraft,
 		StatusActive,
@@ -238,6 +253,7 @@ func TestStatusIsValid(t *testing.T) {
 }
 
 func TestTrigger(t *testing.T) {
+	t.Parallel()
 	// Test all triggers
 	tests := []struct {
 		trigger  Trigger
@@ -254,6 +270,7 @@ func TestTrigger(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
+			t.Parallel()
 			if tt.trigger.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.trigger.String())
 			}
@@ -262,6 +279,7 @@ func TestTrigger(t *testing.T) {
 }
 
 func TestParseTrigger(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		input   string
 		want    Trigger
@@ -280,6 +298,7 @@ func TestParseTrigger(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
 			got, err := ParseTrigger(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -298,6 +317,7 @@ func TestParseTrigger(t *testing.T) {
 }
 
 func TestTriggerIsValid(t *testing.T) {
+	t.Parallel()
 	validTriggers := []Trigger{
 		TriggerManual, TriggerScheduled, TriggerWebhook, TriggerImport,
 		TriggerMigration, TriggerSystem, TriggerCorrection,
@@ -314,6 +334,7 @@ func TestTriggerIsValid(t *testing.T) {
 }
 
 func TestEnumValues(t *testing.T) {
+	t.Parallel()
 	// Test ActorKindValues
 	akValues := ActorKindValues()
 	if len(akValues) != 4 {
@@ -340,6 +361,7 @@ func TestEnumValues(t *testing.T) {
 }
 
 func TestEnumNames(t *testing.T) {
+	t.Parallel()
 	// Test ActorKindNames
 	akNames := ActorKindNames()
 	if len(akNames) != 4 {
@@ -370,6 +392,7 @@ func TestEnumNames(t *testing.T) {
 
 // Test SQL Scanner/Valuer interfaces
 func TestActorKindSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	val, err := ActorKindUser.Value()
 	if err != nil {
@@ -429,6 +452,7 @@ func TestActorKindSQL(t *testing.T) {
 }
 
 func TestPrioritySQL(t *testing.T) {
+	t.Parallel()
 	val, err := PriorityHigh.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -447,6 +471,7 @@ func TestPrioritySQL(t *testing.T) {
 }
 
 func TestStatusSQL(t *testing.T) {
+	t.Parallel()
 	val, err := StatusActive.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -465,6 +490,7 @@ func TestStatusSQL(t *testing.T) {
 }
 
 func TestTriggerSQL(t *testing.T) {
+	t.Parallel()
 	val, err := TriggerWebhook.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -484,6 +510,7 @@ func TestTriggerSQL(t *testing.T) {
 
 // Test MarshalText/UnmarshalText
 func TestActorKindMarshal(t *testing.T) {
+	t.Parallel()
 	data, err := ActorKindService.MarshalText()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -502,6 +529,7 @@ func TestActorKindMarshal(t *testing.T) {
 }
 
 func TestPriorityMarshal(t *testing.T) {
+	t.Parallel()
 	data, err := PriorityLow.MarshalText()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -520,6 +548,7 @@ func TestPriorityMarshal(t *testing.T) {
 }
 
 func TestStatusMarshal(t *testing.T) {
+	t.Parallel()
 	data, err := StatusDeleted.MarshalText()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
@@ -538,6 +567,7 @@ func TestStatusMarshal(t *testing.T) {
 }
 
 func TestTriggerMarshal(t *testing.T) {
+	t.Parallel()
 	data, err := TriggerCorrection.MarshalText()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)

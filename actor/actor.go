@@ -20,9 +20,14 @@ import (
 )
 
 // ActorEntry represents a single actor in an actor chain.
+//
+// Fields:
+//   - Kind: The type of actor (User, Bot, System, Service)
+//   - ID: The unique identifier for this actor
+//   - Name: Optional human-readable name
 type ActorEntry[T comparable] struct {
 	Kind enums.ActorKind
-	Id   id.ID[struct{}, T]
+	ID   id.ID[struct{}, T]
 	Name string // optional human-readable name
 }
 
@@ -30,13 +35,21 @@ type ActorEntry[T comparable] struct {
 // Index 0 = original actor, last index = current actor.
 type ActorChain[T comparable] []ActorEntry[T]
 
+// NewActorChain creates a new ActorChain with the first actor entry.
 func NewActorChain[T comparable](first ActorEntry[T]) ActorChain[T] {
 	return ActorChain[T]{first}
 }
 
-func (c ActorChain[T]) Origin() ActorEntry[T]                { return c[0] }
-func (c ActorChain[T]) Current() ActorEntry[T]               { return c[len(c)-1] }
-func (c ActorChain[T]) IsZero() bool                         { return len(c) == 0 }
+// Origin returns the first actor in the chain.
+func (c ActorChain[T]) Origin() ActorEntry[T] { return c[0] }
+
+// Current returns the most recent actor in the chain.
+func (c ActorChain[T]) Current() ActorEntry[T] { return c[len(c)-1] }
+
+// IsZero returns true if the chain is empty.
+func (c ActorChain[T]) IsZero() bool { return len(c) == 0 }
+
+// Append adds a new actor entry to the chain and returns the updated chain.
 func (c ActorChain[T]) Append(e ActorEntry[T]) ActorChain[T] { return append(c, e) }
 
 // ByKind returns all actors of a given kind in the chain.
@@ -86,11 +99,11 @@ func newActorEntry[T comparable](
 	if len(name) > 0 {
 		n = name[0]
 	}
-	return ActorEntry[T]{Kind: kind, Id: id, Name: n}
+	return ActorEntry[T]{Kind: kind, ID: id, Name: n}
 }
 
 // IsZero returns true if this is the zero value.
 func (e ActorEntry[T]) IsZero() bool {
 	var zeroID id.ID[struct{}, T]
-	return e.Id == zeroID && e.Name == ""
+	return e.ID == zeroID && e.Name == ""
 }

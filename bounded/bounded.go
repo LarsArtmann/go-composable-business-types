@@ -72,13 +72,25 @@ func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 	return BoundedString{value: value, minLen: minLen, maxLen: maxLen}, nil
 }
 
-// BoundedStringOf
-func (bs BoundedString) String() string    { return bs.value }
-func (bs BoundedString) Len() int          { return utf8.RuneCountInString(bs.value) }
-func (bs BoundedString) MinLen() int       { return bs.minLen }
-func (bs BoundedString) MaxLen() int       { return bs.maxLen }
-func (bs BoundedString) IsZero() bool      { return bs.value == "" }
+// String returns the underlying string value.
+func (bs BoundedString) String() string { return bs.value }
+
+// Len returns the number of runes in the string.
+func (bs BoundedString) Len() int { return utf8.RuneCountInString(bs.value) }
+
+// MinLen returns the minimum allowed length.
+func (bs BoundedString) MinLen() int { return bs.minLen }
+
+// MaxLen returns the maximum allowed length.
+func (bs BoundedString) MaxLen() int { return bs.maxLen }
+
+// IsZero returns true if the BoundedString is empty.
+func (bs BoundedString) IsZero() bool { return bs.value == "" }
+
+// IsMinLength returns true if the string is at the minimum allowed length.
 func (bs BoundedString) IsMinLength() bool { return bs.Len() == bs.minLen }
+
+// IsMaxLength returns true if the string is at the maximum allowed length.
 func (bs BoundedString) IsMaxLength() bool { return bs.Len() == bs.maxLen }
 
 // BoundedStringOf creates a constructor for BoundedString with fixed bounds.

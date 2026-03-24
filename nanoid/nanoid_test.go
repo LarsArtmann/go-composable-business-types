@@ -5,6 +5,7 @@ import (
 )
 
 func TestNewNanoID(t *testing.T) {
+	t.Parallel()
 	id := NewNanoID()
 	if id.IsZero() {
 		t.Error("expected non-zero NanoID")
@@ -15,6 +16,7 @@ func TestNewNanoID(t *testing.T) {
 }
 
 func TestNewNanoIDWithLength(t *testing.T) {
+	t.Parallel()
 	id := NewNanoIDWithLength(10)
 	if len(id.String()) != 10 {
 		t.Errorf("expected length 10, got %d", len(id.String()))
@@ -22,6 +24,7 @@ func TestNewNanoIDWithLength(t *testing.T) {
 }
 
 func TestParseNanoID(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   string
@@ -36,6 +39,7 @@ func TestParseNanoID(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			id, err := ParseNanoID(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -54,6 +58,7 @@ func TestParseNanoID(t *testing.T) {
 }
 
 func TestParseNanoIDError(t *testing.T) {
+	t.Parallel()
 	_, err := ParseNanoID("invalid")
 	if err == nil {
 		t.Error("expected error for invalid NanoID")
@@ -61,6 +66,7 @@ func TestParseNanoIDError(t *testing.T) {
 }
 
 func TestNanoIDIsZero(t *testing.T) {
+	t.Parallel()
 	var zero NanoID
 	if !zero.IsZero() {
 		t.Error("expected zero NanoID to be zero")
@@ -73,6 +79,7 @@ func TestNanoIDIsZero(t *testing.T) {
 }
 
 func TestNanoIDJSON(t *testing.T) {
+	t.Parallel()
 	id, _ := ParseNanoID("V1StGXR8_Z5jdHi6B-myT")
 
 	data, err := id.MarshalText()

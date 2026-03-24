@@ -5,6 +5,7 @@ import (
 )
 
 func TestScanString(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		src       any
@@ -19,6 +20,7 @@ func TestScanString(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			var got string
 			err := ScanString(tt.src, func(v string) error {
 				got = v
@@ -36,7 +38,8 @@ func TestScanString(t *testing.T) {
 }
 
 func TestScanString_InvalidType(t *testing.T) {
-	err := ScanString(12345, func(v string) error {
+	t.Parallel()
+	err := ScanString(12345, func(_ string) error {
 		t.Error("callback should not be called for invalid type")
 		return nil
 	})
@@ -46,6 +49,7 @@ func TestScanString_InvalidType(t *testing.T) {
 }
 
 func TestScanInt64(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name      string
 		src       any
@@ -62,6 +66,7 @@ func TestScanInt64(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			var got int64
 			err := ScanInt64(tt.src, func(v int64) error {
 				got = v
@@ -79,7 +84,8 @@ func TestScanInt64(t *testing.T) {
 }
 
 func TestScanInt64_InvalidType(t *testing.T) {
-	err := ScanInt64("not-a-number", func(v int64) error {
+	t.Parallel()
+	err := ScanInt64("not-a-number", func(_ int64) error {
 		t.Error("callback should not be called for invalid type")
 		return nil
 	})
@@ -89,6 +95,7 @@ func TestScanInt64_InvalidType(t *testing.T) {
 }
 
 func TestNullableValue(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   string
@@ -101,6 +108,7 @@ func TestNullableValue(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := NullableValue(tt.input)
 			if err != nil {
 				t.Errorf("NullableValue() error = %v", err)
@@ -117,6 +125,7 @@ func TestNullableValue(t *testing.T) {
 }
 
 func TestInt64Value(t *testing.T) {
+	t.Parallel()
 	got, err := Int64Value(12345)
 	if err != nil {
 		t.Errorf("Int64Value() error = %v", err)
@@ -127,6 +136,7 @@ func TestInt64Value(t *testing.T) {
 }
 
 func TestZeroAsNullValue(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   int64
@@ -138,6 +148,7 @@ func TestZeroAsNullValue(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			got, err := ZeroAsNullValue(tt.input)
 			if err != nil {
 				t.Errorf("ZeroAsNullValue() error = %v", err)

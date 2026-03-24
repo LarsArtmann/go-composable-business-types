@@ -31,6 +31,7 @@ type Validator interface {
 }
 
 // Validatable is a type alias for Validator for ergonomic usage.
+//
 // Deprecated: Use Validator directly.
 type Validatable = Validator
 

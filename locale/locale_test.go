@@ -7,6 +7,7 @@ import (
 )
 
 func TestParseLocale(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   string
@@ -22,6 +23,7 @@ func TestParseLocale(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			loc, err := ParseLocale(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -40,6 +42,7 @@ func TestParseLocale(t *testing.T) {
 }
 
 func TestParseLocaleError(t *testing.T) {
+	t.Parallel()
 	_, err := ParseLocale("invalid-locale-code")
 	if err == nil {
 		t.Error("expected error for invalid locale")
@@ -47,6 +50,7 @@ func TestParseLocaleError(t *testing.T) {
 }
 
 func TestLocaleParts(t *testing.T) {
+	t.Parallel()
 	loc, _ := ParseLocale("en-US")
 	if loc.Base() != "en" {
 		t.Errorf("expected base 'en', got %s", loc.Base())
@@ -57,6 +61,7 @@ func TestLocaleParts(t *testing.T) {
 }
 
 func TestLocaleIsZero(t *testing.T) {
+	t.Parallel()
 	var zero Locale
 	if !zero.IsZero() {
 		t.Error("expected zero locale to be zero")
@@ -69,6 +74,7 @@ func TestLocaleIsZero(t *testing.T) {
 }
 
 func TestLocaleConstants(t *testing.T) {
+	t.Parallel()
 	// Test that constants are defined
 	locales := []struct {
 		locale Locale
@@ -95,6 +101,7 @@ func TestLocaleConstants(t *testing.T) {
 }
 
 func TestNewLocale(t *testing.T) {
+	t.Parallel()
 	tag, _ := language.Parse("en-GB")
 	loc := NewLocale(tag)
 	if loc.String() != "en-GB" {
@@ -103,6 +110,7 @@ func TestNewLocale(t *testing.T) {
 }
 
 func TestLocaleTag(t *testing.T) {
+	t.Parallel()
 	loc, _ := ParseLocale("de-DE")
 	tag := loc.Tag()
 	if tag.String() != "de-DE" {
@@ -111,6 +119,7 @@ func TestLocaleTag(t *testing.T) {
 }
 
 func TestLocaleMarshal(t *testing.T) {
+	t.Parallel()
 	// Test MarshalText
 	loc, _ := ParseLocale("fr-FR")
 	data, err := loc.MarshalText()
@@ -132,6 +141,7 @@ func TestLocaleMarshal(t *testing.T) {
 }
 
 func TestLocaleSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	loc, _ := ParseLocale("it-IT")
 	val, err := loc.Value()
@@ -206,6 +216,7 @@ func TestLocaleSQL(t *testing.T) {
 }
 
 func TestLocaleEdgeCases(t *testing.T) {
+	t.Parallel()
 	// Test parsing with underscore format (should work with golang.org/x/text/language)
 	loc, err := ParseLocale("en_US")
 	// The language package normalizes it

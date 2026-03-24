@@ -7,6 +7,7 @@ import (
 )
 
 func TestNewPercentage(t *testing.T) {
+	t.Parallel()
 	p := NewPercentage(50)
 	if p.Float64() != 0.5 {
 		t.Errorf("expected 0.5, got %f", p.Float64())
@@ -19,6 +20,7 @@ func TestNewPercentage(t *testing.T) {
 }
 
 func TestPercentageHelpers(t *testing.T) {
+	t.Parallel()
 	zero := NewPercentage(0)
 	half := NewPercentage(50)
 	full := NewPercentage(100)
@@ -35,6 +37,7 @@ func TestPercentageHelpers(t *testing.T) {
 }
 
 func TestNewCents(t *testing.T) {
+	t.Parallel()
 	c := NewCents(1099)
 	if c.Int64() != 1099 {
 		t.Errorf("expected 1099, got %d", c.Int64())
@@ -45,6 +48,7 @@ func TestNewCents(t *testing.T) {
 }
 
 func TestCentsMath(t *testing.T) {
+	t.Parallel()
 	a := NewCents(100)
 	b := NewCents(50)
 
@@ -80,6 +84,7 @@ func TestCentsMath(t *testing.T) {
 }
 
 func TestTimestamp(t *testing.T) {
+	t.Parallel()
 	now := time.Now()
 	ts := NewTimestamp(now)
 
@@ -101,6 +106,7 @@ func TestTimestamp(t *testing.T) {
 }
 
 func TestDuration(t *testing.T) {
+	t.Parallel()
 	d := NewDuration(time.Hour)
 	if d.Duration != time.Hour {
 		t.Errorf("expected 1 hour, got %v", d.Duration)
@@ -113,6 +119,7 @@ func TestDuration(t *testing.T) {
 }
 
 func TestEmail(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   string
@@ -129,6 +136,7 @@ func TestEmail(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			email, err := NewEmail(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -147,6 +155,7 @@ func TestEmail(t *testing.T) {
 }
 
 func TestEmailParts(t *testing.T) {
+	t.Parallel()
 	email, _ := NewEmail("user@example.com")
 	if email.LocalPart() != "user" {
 		t.Errorf("expected local part 'user', got %s", email.LocalPart())
@@ -157,6 +166,7 @@ func TestEmailParts(t *testing.T) {
 }
 
 func TestURL(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		name    string
 		input   string
@@ -173,6 +183,7 @@ func TestURL(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			url, err := NewURL(tt.input)
 			if tt.wantErr {
 				if err == nil {
@@ -191,6 +202,7 @@ func TestURL(t *testing.T) {
 }
 
 func TestURLParts(t *testing.T) {
+	t.Parallel()
 	url, _ := NewURL("https://example.com:8080/path/to/resource")
 	if url.Scheme() != "https" {
 		t.Errorf("expected scheme https, got %s", url.Scheme())
@@ -204,6 +216,7 @@ func TestURLParts(t *testing.T) {
 }
 
 func TestURLIsZero(t *testing.T) {
+	t.Parallel()
 	var zero URL
 	if !zero.IsZero() {
 		t.Error("zero URL should be zero")
@@ -216,6 +229,7 @@ func TestURLIsZero(t *testing.T) {
 }
 
 func TestParseEmailError(t *testing.T) {
+	t.Parallel()
 	_, err := NewEmail("invalid-email")
 	if err == nil {
 		t.Error("expected error for invalid email")
@@ -226,6 +240,7 @@ func TestParseEmailError(t *testing.T) {
 }
 
 func TestParseEmail(t *testing.T) {
+	t.Parallel()
 	email, err := NewEmail("test@example.com")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -236,6 +251,7 @@ func TestParseEmail(t *testing.T) {
 }
 
 func TestParseURLError(t *testing.T) {
+	t.Parallel()
 	_, err := NewURL("not-a-valid-url")
 	if err == nil {
 		t.Error("expected error for invalid URL")
@@ -246,6 +262,7 @@ func TestParseURLError(t *testing.T) {
 }
 
 func TestParseURL(t *testing.T) {
+	t.Parallel()
 	url, err := NewURL("https://example.com")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -256,6 +273,7 @@ func TestParseURL(t *testing.T) {
 }
 
 func TestEmailNormalize(t *testing.T) {
+	t.Parallel()
 	email, _ := NewEmail("User@Example.COM")
 	normalized := email.Normalize()
 	if normalized.String() != "User@example.com" {
@@ -264,6 +282,7 @@ func TestEmailNormalize(t *testing.T) {
 }
 
 func TestEmailIsZero(t *testing.T) {
+	t.Parallel()
 	var zero Email
 	if !zero.IsZero() {
 		t.Error("zero Email should be zero")
@@ -276,6 +295,7 @@ func TestEmailIsZero(t *testing.T) {
 }
 
 func TestPercentageCompare(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     Percentage
 		expected int
@@ -294,6 +314,7 @@ func TestPercentageCompare(t *testing.T) {
 }
 
 func TestCentsCompare(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		a, b     Cents
 		expected int
@@ -312,6 +333,7 @@ func TestCentsCompare(t *testing.T) {
 }
 
 func TestTimestampCompare(t *testing.T) {
+	t.Parallel()
 	t1 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
 	t2 := NewTimestamp(time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC))
 	t3 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
@@ -328,6 +350,7 @@ func TestTimestampCompare(t *testing.T) {
 }
 
 func TestDurationCompare(t *testing.T) {
+	t.Parallel()
 	d1 := NewDuration(time.Hour)
 	d2 := NewDuration(2 * time.Hour)
 	d3 := NewDuration(time.Hour)
@@ -345,6 +368,7 @@ func TestDurationCompare(t *testing.T) {
 
 // SQL Scanner/Valuer tests
 func TestEmailSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	email, _ := NewEmail("test@example.com")
 	val, err := email.Value()
@@ -416,6 +440,7 @@ func TestEmailSQL(t *testing.T) {
 }
 
 func TestURLSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	url, _ := NewURL("https://example.com")
 	val, err := url.Value()
@@ -486,6 +511,7 @@ func TestURLSQL(t *testing.T) {
 }
 
 func TestCentsSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	c := NewCents(1099)
 	val, err := c.Value()
@@ -546,6 +572,7 @@ func TestCentsSQL(t *testing.T) {
 }
 
 func TestTimestampSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	ts := NewTimestamp(time.Date(2024, 1, 15, 10, 30, 0, 0, time.UTC))
 	val, err := ts.Value()
@@ -619,6 +646,7 @@ func TestTimestampSQL(t *testing.T) {
 }
 
 func TestDurationSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	d := NewDuration(time.Hour + 30*time.Minute)
 	val, err := d.Value()
@@ -716,6 +744,7 @@ func TestDurationSQL(t *testing.T) {
 }
 
 func TestPercentageJSON(t *testing.T) {
+	t.Parallel()
 	// Test MarshalJSON
 	p := NewPercentage(50)
 	data, err := p.MarshalJSON()
@@ -746,6 +775,7 @@ func TestPercentageJSON(t *testing.T) {
 }
 
 func TestPercentageSQL(t *testing.T) {
+	t.Parallel()
 	// Test Value
 	p := NewPercentage(75)
 	val, err := p.Value()
@@ -767,6 +797,7 @@ func TestPercentageSQL(t *testing.T) {
 }
 
 func TestDurationJSON(t *testing.T) {
+	t.Parallel()
 	// Test MarshalJSON
 	d := NewDuration(time.Hour + 30*time.Minute)
 	data, err := d.MarshalJSON()
