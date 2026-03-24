@@ -367,6 +367,7 @@ func TestDurationCompare(t *testing.T) {
 }
 
 // SQL Scanner/Valuer tests
+//
 //nolint:cyclop // SQL tests have many test cases
 func TestEmailSQL(t *testing.T) {
 	t.Parallel()
