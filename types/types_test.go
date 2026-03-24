@@ -4,6 +4,8 @@ import (
 	"errors"
 	"testing"
 	"time"
+
+	pkgerrors "github.com/larsartmann/go-composable-business-types/pkg/errors"
 )
 
 func TestNewPercentage(t *testing.T) {
@@ -234,7 +236,7 @@ func TestParseEmailError(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for invalid email")
 	}
-	if !errors.Is(err, ErrInvalidEmail) {
+	if !errors.Is(err, pkgerrors.ErrInvalidEmail) {
 		t.Errorf("expected ErrInvalidEmail, got %v", err)
 	}
 }
@@ -256,7 +258,7 @@ func TestParseURLError(t *testing.T) {
 	if err == nil {
 		t.Error("expected error for invalid URL")
 	}
-	if !errors.Is(err, ErrInvalidURL) {
+	if !errors.Is(err, pkgerrors.ErrInvalidURL) {
 		t.Errorf("expected ErrInvalidURL, got %v", err)
 	}
 }

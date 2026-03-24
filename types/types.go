@@ -14,7 +14,6 @@ package types
 import (
 	"database/sql/driver"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"net/mail"
 	"net/url"
@@ -22,6 +21,7 @@ import (
 	"strings"
 	"time"
 
+	pkgerrors "github.com/larsartmann/go-composable-business-types/pkg/errors"
 	"github.com/larsartmann/go-composable-business-types/scanutil"
 	"github.com/larsartmann/go-composable-business-types/validate"
 )
@@ -33,24 +33,21 @@ var emailRegex = regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]
 // Email represents a validated email address.
 type Email string
 
-// ErrInvalidEmail is returned when an email address fails validation.
-var ErrInvalidEmail = errors.New("invalid email address")
-
 // NewEmail creates a validated Email. Returns ErrInvalidEmail if validation fails.
 func NewEmail(v string) (Email, error) {
 	if v == "" {
-		return "", ErrInvalidEmail
+		return "", pkgerrors.ErrInvalidEmail
 	}
 	// mail.ParseAddress handles RFC 5322 parsing (including display names)
 	addr, err := mail.ParseAddress(v)
 	if err != nil {
-		return "", ErrInvalidEmail
+		return "", pkgerrors.ErrInvalidEmail
 	}
 	// Extract just the email address (strip any display name)
 	email := addr.Address
 	// Additional format check for common patterns
 	if !emailRegex.MatchString(email) {
-		return "", ErrInvalidEmail
+		return "", pkgerrors.ErrInvalidEmail
 	}
 	return Email(email), nil
 }
@@ -64,15 +61,15 @@ func (e Email) Domain() string    { _, d, _ := e.split(); return d }
 // Validate implements validate.Validator for Email.
 func (e Email) Validate() error {
 	if e == "" {
-		return ErrInvalidEmail
+		return pkgerrors.ErrInvalidEmail
 	}
 	addr, err := mail.ParseAddress(string(e))
 	if err != nil {
-		return ErrInvalidEmail
+		return pkgerrors.ErrInvalidEmail
 	}
 	email := addr.Address
 	if !emailRegex.MatchString(email) {
-		return ErrInvalidEmail
+		return pkgerrors.ErrInvalidEmail
 	}
 	return nil
 }
@@ -103,25 +100,22 @@ func (e Email) split() (local, domain string, ok bool) {
 // URL represents a validated URL with http or https scheme.
 type URL string
 
-// ErrInvalidURL is returned when a URL fails validation.
-var ErrInvalidURL = errors.New("invalid URL")
-
 // NewURL creates a validated URL. Returns ErrInvalidURL if validation fails.
 // Requires http or https scheme and a valid host.
 func NewURL(v string) (URL, error) {
 	if v == "" {
-		return "", ErrInvalidURL
+		return "", pkgerrors.ErrInvalidURL
 	}
 	parsed, err := url.Parse(v)
 	if err != nil {
-		return "", ErrInvalidURL
+		return "", pkgerrors.ErrInvalidURL
 	}
 	// Require scheme and host
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return "", ErrInvalidURL
+		return "", pkgerrors.ErrInvalidURL
 	}
 	if parsed.Host == "" {
-		return "", ErrInvalidURL
+		return "", pkgerrors.ErrInvalidURL
 	}
 	return URL(v), nil
 }
@@ -135,17 +129,17 @@ func (u URL) IsZero() bool { return u == "" }
 // Validate implements validate.Validator for URL.
 func (u URL) Validate() error {
 	if u == "" {
-		return ErrInvalidURL
+		return pkgerrors.ErrInvalidURL
 	}
 	parsed, err := url.Parse(string(u))
 	if err != nil {
-		return ErrInvalidURL
+		return pkgerrors.ErrInvalidURL
 	}
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return ErrInvalidURL
+		return pkgerrors.ErrInvalidURL
 	}
 	if parsed.Host == "" {
-		return ErrInvalidURL
+		return pkgerrors.ErrInvalidURL
 	}
 	return nil
 }
