@@ -17,7 +17,7 @@
 //		return nil
 //	}
 //
-//	func Process(v validate.Validatable) error {
+//	func Process(v validate.Validator) error {
 //		return v.Validate()
 //	}
 package validate
@@ -29,11 +29,6 @@ type Validator interface {
 	// Returns nil if the value is valid.
 	Validate() error
 }
-
-// Validatable is a type alias for Validator for ergonomic usage.
-//
-// Deprecated: Use Validator directly.
-type Validatable = Validator
 
 // IsValid checks if a value is valid without returning the error.
 // Use this when you only need to know if a value is valid.
