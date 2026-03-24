@@ -368,6 +368,8 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements json.Unmarshaler for JSON deserialization.
 // Supports null, strings, and numeric values based on the underlying type V.
+//
+//nolint:gocyclo,cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
 		id.Reset()
@@ -544,15 +546,15 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		return []byte{byte(v)}, nil
 	case int16:
 		b := make([]byte, byteSizeInt16)
-		binary.LittleEndian.PutUint16(b, uint16(v))
+		binary.LittleEndian.PutUint16(b, uint16(v)) //nolint:gosec // G115: int16 to uint16 is safe for serialization
 		return b, nil
 	case int32:
 		b := make([]byte, byteSizeInt32)
-		binary.LittleEndian.PutUint32(b, uint32(v))
+		binary.LittleEndian.PutUint32(b, uint32(v)) //nolint:gosec // G115: int32 to uint32 is safe for serialization
 		return b, nil
 	case int64:
 		b := make([]byte, byteSizeInt64)
-		binary.LittleEndian.PutUint64(b, uint64(v))
+		binary.LittleEndian.PutUint64(b, uint64(v)) //nolint:gosec // G115: int64 to uint64 is safe for serialization
 		return b, nil
 	case uint:
 		if err := binary.Write(&buf, binary.LittleEndian, uint64(v)); err != nil {
@@ -579,6 +581,8 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler for binary decoding.
+//
+//nolint:gocyclo,cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	if len(data) == 0 {
 		id.Reset()
@@ -600,7 +604,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 				zero,
 			)
 		}
-		n := int(binary.LittleEndian.Uint64(data))
+		n := int(binary.LittleEndian.Uint64(data)) //nolint:gosec // G115: uint64 to int is safe for unmarshaling
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int8:
@@ -624,7 +628,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 				zero,
 			)
 		}
-		n := int16(binary.LittleEndian.Uint16(data))
+		n := int16(binary.LittleEndian.Uint16(data)) //nolint:gosec // G115: uint16 to int16 is safe for unmarshaling
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int32:
@@ -637,7 +641,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 				zero,
 			)
 		}
-		n := int32(binary.LittleEndian.Uint32(data))
+		n := int32(binary.LittleEndian.Uint32(data)) //nolint:gosec // G115: uint32 to int32 is safe for unmarshaling
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int64:
@@ -650,7 +654,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 				zero,
 			)
 		}
-		n := int64(binary.LittleEndian.Uint64(data))
+		n := int64(binary.LittleEndian.Uint64(data)) //nolint:gosec // G115: uint64 to int64 is safe for unmarshaling
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case uint:
@@ -733,6 +737,8 @@ func (id *ID[B, V]) GobDecode(data []byte) error {
 
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
+//
+//nolint:gocyclo,cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) Scan(src any) error {
 	if src == nil {
 		id.Reset()
@@ -771,10 +777,10 @@ func (id *ID[B, V]) Scan(src any) error {
 	case int32:
 		switch v := src.(type) {
 		case int64:
-			*id = ID[B, V]{value: any(int32(v)).(V)}
+			*id = ID[B, V]{value: any(int32(v)).(V)} //nolint:gosec // G115: int64 to int32 for SQL scanning
 			return nil
 		case int:
-			*id = ID[B, V]{value: any(int32(v)).(V)}
+			*id = ID[B, V]{value: any(int32(v)).(V)} //nolint:gosec // G115: int to int32 for SQL scanning
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(int32(v)).(V)}
@@ -801,10 +807,10 @@ func (id *ID[B, V]) Scan(src any) error {
 	case uint:
 		switch v := src.(type) {
 		case int64:
-			*id = ID[B, V]{value: any(uint(v)).(V)}
+			*id = ID[B, V]{value: any(uint(v)).(V)} //nolint:gosec // G115: int64 to uint for SQL scanning
 			return nil
 		case int:
-			*id = ID[B, V]{value: any(uint(v)).(V)}
+			*id = ID[B, V]{value: any(uint(v)).(V)} //nolint:gosec // G115: int to uint for SQL scanning
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint(v)).(V)}
@@ -816,10 +822,10 @@ func (id *ID[B, V]) Scan(src any) error {
 	case uint32:
 		switch v := src.(type) {
 		case int64:
-			*id = ID[B, V]{value: any(uint32(v)).(V)}
+			*id = ID[B, V]{value: any(uint32(v)).(V)} //nolint:gosec // G115: int64 to uint32 for SQL scanning
 			return nil
 		case int:
-			*id = ID[B, V]{value: any(uint32(v)).(V)}
+			*id = ID[B, V]{value: any(uint32(v)).(V)} //nolint:gosec // G115: int to uint32 for SQL scanning
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint32(v)).(V)}
@@ -831,10 +837,10 @@ func (id *ID[B, V]) Scan(src any) error {
 	case uint64:
 		switch v := src.(type) {
 		case int64:
-			*id = ID[B, V]{value: any(uint64(v)).(V)}
+			*id = ID[B, V]{value: any(uint64(v)).(V)} //nolint:gosec // G115: int64 to uint64 for SQL scanning
 			return nil
 		case int:
-			*id = ID[B, V]{value: any(uint64(v)).(V)}
+			*id = ID[B, V]{value: any(uint64(v)).(V)} //nolint:gosec // G115: int to uint64 for SQL scanning
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint64(v)).(V)}
@@ -869,7 +875,7 @@ func (id ID[B, V]) Value() (driver.Value, error) {
 	case int64:
 		return v, nil
 	case uint:
-		return int64(v), nil
+		return int64(v), nil //nolint:gosec // G115: uint to int64 for SQL value
 	case uint8:
 		return int64(v), nil
 	case uint16:
@@ -877,7 +883,7 @@ func (id ID[B, V]) Value() (driver.Value, error) {
 	case uint32:
 		return int64(v), nil
 	case uint64:
-		return int64(v), nil
+		return int64(v), nil //nolint:gosec // G115: uint64 to int64 for SQL value
 	default:
 		return nil, fmt.Errorf("id: unsupported type %T for SQL value", id.value)
 	}

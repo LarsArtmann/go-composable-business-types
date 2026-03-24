@@ -247,7 +247,7 @@ func (p *Percentage) UnmarshalJSON(data []byte) error {
 // Supports int64 and uint8 sources.
 func (p *Percentage) Scan(src any) error {
 	return scanutil.ScanInt64(src, func(v int64) error {
-		*p = Percentage(v)
+		*p = Percentage(v) //nolint:gosec // G115: int64 to uint8 for Percentage (0-100 range)
 		return nil
 	})
 }

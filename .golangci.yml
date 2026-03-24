@@ -83,3 +83,18 @@ issues:
     - path: enums/enum_enum\.go
       linters:
         - all
+    # Test functions with multiple SQL test cases
+    - path: _test\.go
+      linters:
+        - gocyclo
+        - cyclop
+    # Domain-specific string literals
+    - linters:
+        - goconst
+      text: "https"
+    - linters:
+        - goconst
+      source: '"null"'
+    - linters:
+        - goconst
+      text: "test-id"

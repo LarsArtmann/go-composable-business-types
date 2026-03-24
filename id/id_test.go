@@ -1148,7 +1148,7 @@ func BenchmarkIDValueInt64(b *testing.B) {
 func BenchmarkJSONRoundTrip(b *testing.B) {
 	id := NewID[StringBrand]("test-id-12345")
 	for b.Loop() {
-		data, _ := json.Marshal(id)
+		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
 		var restored ID[StringBrand, string]
 		_ = json.Unmarshal(data, &restored)
 	}
@@ -1157,7 +1157,7 @@ func BenchmarkJSONRoundTrip(b *testing.B) {
 func BenchmarkJSONRoundTripInt64(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
 	for b.Loop() {
-		data, _ := json.Marshal(id)
+		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
 		var restored ID[Int64Brand, int64]
 		_ = json.Unmarshal(data, &restored)
 	}
