@@ -16,19 +16,19 @@ func TestIsValid(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name    string
+		name      string
 		validator Validator
-		want     bool
+		want      bool
 	}{
 		{
-			name:    "valid value returns true",
+			name:      "valid value returns true",
 			validator: mockValidator{err: nil},
-			want:     true,
+			want:      true,
 		},
 		{
-			name:    "invalid value returns false",
+			name:      "invalid value returns false",
 			validator: mockValidator{err: errors.New("validation failed")},
-			want:     false,
+			want:      false,
 		},
 	}
 
