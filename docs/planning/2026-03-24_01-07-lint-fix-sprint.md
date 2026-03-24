@@ -87,14 +87,14 @@ Fix all issues including refactoring. ~3+ hours of work for marginal improvement
 
 ### Phase 1: Quick Wins (1% → 51%)
 
-| #   | Task                                                      | File                     | Time  | Status    |
-| --- | --------------------------------------------------------- | ------------------------ | ----- | --------- |
-| 1.1 | Add nolint directive for G115 in id/id.go MarshalBinary   | id/id.go:544-555         | 2 min | ✅ done   |
-| 1.2 | Add nolint directive for G115 in id/id.go UnmarshalBinary | id/id.go:603-653         | 2 min | ✅ done   |
-| 1.3 | Add nolint directive for G115 in id/id.go Scan            | id/id.go:774-837         | 2 min | ✅ done   |
-| 1.4 | Add nolint directive for G115 in id/id.go Value           | id/id.go:872-880         | 2 min | ✅ done   |
-| 1.5 | Fix predeclared `max` parameter                           | pkg/errors/errors.go:212 | 2 min | ✅ done   |
-| 1.6 | Add nolint directive for G115 in types/types.go           | types/types.go:250       | 2 min | ✅ done   |
+| #   | Task                                                      | File                     | Time  | Status  |
+| --- | --------------------------------------------------------- | ------------------------ | ----- | ------- |
+| 1.1 | Add nolint directive for G115 in id/id.go MarshalBinary   | id/id.go:544-555         | 2 min | ✅ done |
+| 1.2 | Add nolint directive for G115 in id/id.go UnmarshalBinary | id/id.go:603-653         | 2 min | ✅ done |
+| 1.3 | Add nolint directive for G115 in id/id.go Scan            | id/id.go:774-837         | 2 min | ✅ done |
+| 1.4 | Add nolint directive for G115 in id/id.go Value           | id/id.go:872-880         | 2 min | ✅ done |
+| 1.5 | Fix predeclared `max` parameter                           | pkg/errors/errors.go:212 | 2 min | ✅ done |
+| 1.6 | Add nolint directive for G115 in types/types.go           | types/types.go:250       | 2 min | ✅ done |
 
 ### Phase 2: Clean Code (4% → 64%)
 
@@ -118,12 +118,12 @@ Fix all issues including refactoring. ~3+ hours of work for marginal improvement
 
 ### Phase 4: Verification
 
-| #   | Task                              | Time  | Status    |
-| --- | --------------------------------- | ----- | --------- |
-| 4.1 | Run golangci-lint to verify clean | 2 min | ✅ done   |
-| 4.2 | Run go test -race ./...           | 5 min | ✅ done   |
-| 4.3 | Run go build ./...                | 1 min | ✅ done   |
-| 4.4 | Commit and push changes           | 3 min | ✅ done   |
+| #   | Task                              | Time  | Status  |
+| --- | --------------------------------- | ----- | ------- |
+| 4.1 | Run golangci-lint to verify clean | 2 min | ✅ done |
+| 4.2 | Run go test -race ./...           | 5 min | ✅ done |
+| 4.3 | Run go build ./...                | 1 min | ✅ done |
+| 4.4 | Commit and push changes           | 3 min | ✅ done |
 
 ---
 
@@ -208,6 +208,7 @@ flowchart TD
 **Commit:** `5bc96ef` - fix(lint): resolve all remaining lint issues with nolint directives and config
 
 **Files Modified:**
+
 - `.golangci.yml` - Added targeted exclude rules
 - `id/id.go` - 17 nolint directives for G115 and complexity
 - `id/id_test.go` - 2 nolint directives for benchmarks
