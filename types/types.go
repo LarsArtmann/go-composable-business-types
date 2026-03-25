@@ -250,6 +250,9 @@ func (p *Percentage) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for Percentage.
 // Supports int64 and uint8 sources.
 func (p *Percentage) Scan(src any) error {
+	if p == nil {
+		return fmt.Errorf("percentage: scan: receiver is nil")
+	}
 	err := scanutil.ScanInt64(src, func(v int64) error {
 		*p = Percentage(v) //nolint:gosec // G115: int64 to uint8 for Percentage (0-100 range)
 		return nil
@@ -397,6 +400,9 @@ func (d Duration) Compare(other Duration) int {
 // Scan implements sql.Scanner for Duration.
 // Supports int64 (nanoseconds), float64, string (parseable duration), and []byte sources.
 func (d *Duration) Scan(src any) error {
+	if d == nil {
+		return fmt.Errorf("duration: scan: receiver is nil")
+	}
 	switch v := src.(type) {
 	case nil:
 		d.Duration = 0
@@ -473,6 +479,9 @@ func (d *Duration) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for Email.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (e *Email) Scan(src any) error {
+	if e == nil {
+		return fmt.Errorf("email: scan: receiver is nil")
+	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*e = ""
@@ -504,6 +513,9 @@ func (e Email) Value() (driver.Value, error) {
 // Scan implements sql.Scanner for URL.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (u *URL) Scan(src any) error {
+	if u == nil {
+		return fmt.Errorf("url: scan: receiver is nil")
+	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*u = ""
@@ -535,6 +547,9 @@ func (u URL) Value() (driver.Value, error) {
 // Scan implements sql.Scanner for Cents.
 // Supports int64, float64, and []byte sources.
 func (c *Cents) Scan(src any) error {
+	if c == nil {
+		return fmt.Errorf("cents: scan: receiver is nil")
+	}
 	err := scanutil.ScanInt64(src, func(v int64) error {
 		*c = Cents(v)
 		return nil
@@ -553,6 +568,9 @@ func (c Cents) Value() (driver.Value, error) {
 // Scan implements sql.Scanner for Timestamp.
 // Supports time.Time, string (RFC3339), and []byte sources.
 func (t *Timestamp) Scan(src any) error {
+	if t == nil {
+		return fmt.Errorf("timestamp: scan: receiver is nil")
+	}
 	switch v := src.(type) {
 	case nil:
 		t.Time = time.Time{}

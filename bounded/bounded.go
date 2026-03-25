@@ -144,6 +144,9 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string and []byte sources. Sets min=0, max=len(value).
 func (bs *BoundedString) Scan(src any) error {
+	if bs == nil {
+		return fmt.Errorf("boundedstring: scan: receiver is nil")
+	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*bs = BoundedString{}

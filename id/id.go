@@ -655,6 +655,9 @@ func (id *ID[B, V]) GobDecode(data []byte) error {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
 func (id *ID[B, V]) Scan(src any) error {
+	if id == nil {
+		return errors.New("id: scan: receiver is nil")
+	}
 	if src == nil {
 		id.Reset()
 		return nil

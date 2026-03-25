@@ -23,7 +23,12 @@ type Money = currency.Amount
 func NewMoney(amount, currencyCode string) (Money, error) {
 	m, err := currency.NewAmount(amount, currencyCode)
 	if err != nil {
-		return Money{}, fmt.Errorf("money: new amount: %w", err)
+		return Money{}, fmt.Errorf(
+			"money: new amount %q with currency %q: %w",
+			amount,
+			currencyCode,
+			err,
+		)
 	}
 	return m, nil
 }
@@ -32,7 +37,12 @@ func NewMoney(amount, currencyCode string) (Money, error) {
 func NewMoneyFromCents(cents int64, currencyCode string) (Money, error) {
 	m, err := currency.NewAmountFromInt64(cents, currencyCode)
 	if err != nil {
-		return Money{}, fmt.Errorf("money: new amount from cents: %w", err)
+		return Money{}, fmt.Errorf(
+			"money: new amount from cents %d with currency %q: %w",
+			cents,
+			currencyCode,
+			err,
+		)
 	}
 	return m, nil
 }

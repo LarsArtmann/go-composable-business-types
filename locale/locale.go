@@ -109,6 +109,9 @@ func (l *Locale) UnmarshalText(data []byte) error {
 // Scan implements sql.Scanner for Locale.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (l *Locale) Scan(src any) error {
+	if l == nil {
+		return errors.New("locale: scan: receiver is nil")
+	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			l.tag = language.Und
