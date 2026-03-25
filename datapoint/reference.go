@@ -71,8 +71,8 @@ func (r Reference[T]) WithTag(key, value string) Reference[T] {
 }
 
 // jsonReference is the JSON representation of Reference.
-type jsonReference struct {
-	ID       string            `json:"id"`
+type jsonReference[T comparable] struct {
+	ID       T                 `json:"id"`
 	Relation string            `json:"relation"`
 	Version  int               `json:"version,omitempty"`
 	Tags     map[string]string `json:"tags,omitempty"`
@@ -80,65 +80,27 @@ type jsonReference struct {
 
 // MarshalJSON implements json.Marshaler.
 func (r Reference[T]) MarshalJSON() ([]byte, error) {
-	var idStr string
-	if s, ok := any(r.id).(interface{ String() string }); ok {
-		idStr = s.String()
-	} else if s, ok := any(r.id).(string); ok {
-		idStr = s
-	} else {
-		return nil, fmt.Errorf(
-			"reference: ID type %T with value %q does not support String() or string conversion",
-			r.id,
-			idStr,
-		)
-	}
-	b, err := json.Marshal(jsonReference{
-		ID:       idStr,
+	b, err := json.Marshal(jsonReference[T]{
+		ID:       r.id,
 		Relation: r.relation,
 		Version:  r.version,
 		Tags:     r.tags,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("reference: marshal JSON for ID %q: %w", idStr, err)
+		return nil, fmt.Errorf("reference: marshal JSON: %w", err)
 	}
 	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *Reference[T]) UnmarshalJSON(data []byte) error {
-	var raw jsonReference
+	var raw jsonReference[T]
 	if err := json.Unmarshal(data, &raw); err != nil {
 		return fmt.Errorf("unmarshal reference: invalid JSON %q: %w", string(data), err)
 	}
+	r.id = raw.ID
 	r.relation = raw.Relation
 	r.version = raw.Version
 	r.tags = raw.Tags
-
-	// Try to unmarshal ID based on type
-	var zero T
-	switch any(zero).(type) {
-	case string:
-		id, ok := any(raw.ID).(T)
-		if !ok {
-			return fmt.Errorf(
-				"unmarshal reference: cannot convert ID %q to target type %T",
-				raw.ID,
-				zero,
-			)
-		}
-		r.id = id
-	default:
-		// For other types, the ID type must support text unmarshaling
-		if u, ok := any(&r.id).(interface{ UnmarshalText([]byte) error }); ok {
-			if err := u.UnmarshalText([]byte(raw.ID)); err != nil {
-				return fmt.Errorf(
-					"unmarshal reference: unmarshal id %q to type %T: %w",
-					raw.ID,
-					zero,
-					err,
-				)
-			}
-		}
-	}
 	return nil
 }

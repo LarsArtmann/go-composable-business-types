@@ -32,6 +32,7 @@ package id
 
 import (
 	"bytes"
+	"cmp"
 	"database/sql"
 	"database/sql/driver"
 	"encoding"
@@ -85,182 +86,37 @@ var ErrNotOrdered = errors.New("id: Compare requires an ordered type (int, uint,
 
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
 // Returns ErrNotOrdered if V is not an ordered type.
-//
-
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
 	case int:
-		b := any(other.value).(int)
-		return compareInt(a, b), nil
+		return cmp.Compare(a, any(other.value).(int)), nil
 	case int8:
-		b := any(other.value).(int8)
-		return compareInt8(a, b), nil
+		return cmp.Compare(a, any(other.value).(int8)), nil
 	case int16:
-		b := any(other.value).(int16)
-		return compareInt16(a, b), nil
+		return cmp.Compare(a, any(other.value).(int16)), nil
 	case int32:
-		b := any(other.value).(int32)
-		return compareInt32(a, b), nil
+		return cmp.Compare(a, any(other.value).(int32)), nil
 	case int64:
-		b := any(other.value).(int64)
-		return compareInt64(a, b), nil
+		return cmp.Compare(a, any(other.value).(int64)), nil
 	case uint:
-		b := any(other.value).(uint)
-		return compareUint(a, b), nil
+		return cmp.Compare(a, any(other.value).(uint)), nil
 	case uint8:
-		b := any(other.value).(uint8)
-		return compareUint8(a, b), nil
+		return cmp.Compare(a, any(other.value).(uint8)), nil
 	case uint16:
-		b := any(other.value).(uint16)
-		return compareUint16(a, b), nil
+		return cmp.Compare(a, any(other.value).(uint16)), nil
 	case uint32:
-		b := any(other.value).(uint32)
-		return compareUint32(a, b), nil
+		return cmp.Compare(a, any(other.value).(uint32)), nil
 	case uint64:
-		b := any(other.value).(uint64)
-		return compareUint64(a, b), nil
+		return cmp.Compare(a, any(other.value).(uint64)), nil
 	case string:
-		b := any(other.value).(string)
-		return compareString(a, b), nil
+		return cmp.Compare(a, any(other.value).(string)), nil
 	case float32:
-		b := any(other.value).(float32)
-		return compareFloat32(a, b), nil
+		return cmp.Compare(a, any(other.value).(float32)), nil
 	case float64:
-		b := any(other.value).(float64)
-		return compareFloat64(a, b), nil
+		return cmp.Compare(a, any(other.value).(float64)), nil
 	default:
 		return 0, ErrNotOrdered
 	}
-}
-
-func compareInt(a, b int) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareInt8(a, b int8) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareInt16(a, b int16) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareInt32(a, b int32) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareInt64(a, b int64) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareUint(a, b uint) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareUint8(a, b uint8) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareUint16(a, b uint16) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareUint32(a, b uint32) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareUint64(a, b uint64) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareString(a, b string) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareFloat32(a, b float32) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
-}
-
-func compareFloat64(a, b float64) int {
-	if a < b {
-		return -1
-	}
-	if a > b {
-		return 1
-	}
-	return 0
 }
 
 // Or returns the ID if not zero, otherwise returns the provided default.
