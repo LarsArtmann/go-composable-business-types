@@ -396,8 +396,6 @@ func (d Duration) Compare(other Duration) int {
 
 // Scan implements sql.Scanner for Duration.
 // Supports int64 (nanoseconds), float64, string (parseable duration), and []byte sources.
-//
-//nolint:cyclop // Multiple source type handling requires many type cases
 func (d *Duration) Scan(src any) error {
 	switch v := src.(type) {
 	case nil:

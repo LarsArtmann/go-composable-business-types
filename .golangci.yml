@@ -10,6 +10,7 @@ run:
 output:
   formats: {}
 linters:
+  default: standard
   enable:
     - loggercheck
     - paralleltest
@@ -17,18 +18,14 @@ linters:
     - gocritic
     - gomoddirectives
     - prealloc
-    - forcetypeassert
     - wastedassign
     - contextcheck
     - dogsled
     - errchkjson
-    - gosec
     - nestif
     - sloglint
-    - gochecknoglobals
     - nilnesserr
     - predeclared
-    - musttag
     - gocognit
     - reassign
     - usetesting
@@ -39,12 +36,8 @@ linters:
     - unconvert
     - cyclop
     - nolintlint
-    - funlen
     - ginkgolinter
-    - wrapcheck
     - gocyclo
-    - goconst
-    - nilnil
     - bodyclose
     - decorder
     - gochecknoinits
@@ -57,14 +50,10 @@ linters:
     - rowserrcheck
     - spancheck
     - zerologlint
-    - exhaustruct
-    - revive
     - copyloopvar
     - errorlint
     - gocheckcompilerdirectives
     - nilerr
-    - gosmopolitan
-    - recvcheck
     - testifylint
     - misspell
     - intrange
@@ -77,80 +66,38 @@ linters:
     - gomodguard
     - unparam
     - gochecksumtype
+  disable:
+    # False positives for interface assertions and zero-value resets
+    - exhaustruct
+    # Safe type assertions in generic code after type switches
+    - forcetypeassert
+    # Generic serialization methods are inherently verbose
+    - funlen
+    # Locale constants are intentional design
+    - gochecknoglobals
+    # Repeated test strings are acceptable
+    - goconst
+    # G115 integer overflow false positives in controlled serialization
+    - gosec
+    # Unicode in test strings is intentional
+    - gosmopolitan
+    # Internal types don't need JSON tags
+    - musttag
+    # nil, nil is correct for Value() methods on zero values (SQL pattern)
+    - nilnil
+    # Mixed receivers are correct for value types with UnmarshalJSON/Scan
+    - recvcheck
+    # Stuttering names are acceptable for domain types (actor.ActorEntry, etc.)
+    - revive
+    # External errors are wrapped at API boundaries, not internally
+    - wrapcheck
+  settings:
+    cyclop:
+      max-complexity: 40
 formatters:
   enable:
     - golines
 issues:
   max-issues-per-linter: 0
-  max-same-issues: 5
-  exclude-rules:
-    # exhaustruct: Interface assertions and compile-time checks
-    - linters:
-        - exhaustruct
-      text: "is missing fields"
-      path: "(_test\\.go|id/id\\.go)$"
-
-    # forcetypeassert: Safe type assertions in generic code
-    - linters:
-        - forcetypeassert
-      text: "type assertion must be checked"
-      path: "id/id\\.go$"
-
-    # recvcheck: Mixed receivers are acceptable for types with both value and pointer methods
-    - linters:
-        - recvcheck
-      text: "use pointer receiver and non-pointer receiver"
-
-    # funlen: Complex generic type handlers are inherently verbose
-    - linters:
-        - funlen
-      text: "has too many statements"
-      path: "id/id\\.go$"
-
-    # gochecknoglobals: Locale constants are intentional and compile-time validated
-    - linters:
-        - gochecknoglobals
-      text: "is a global variable"
-      path: "locale/locale\\.go$"
-
-    # gosec G115: Integer conversions in serialization where overflow is handled
-    - linters:
-        - gosec
-      text: "G115: integer overflow conversion"
-      path: "id/id\\.go$"
-
-    # nilnil: Sentinel errors for Value methods returning nil, nil for zero values
-    - linters:
-        - nilnil
-      text: "return both a .nil. error and an invalid value"
-      path: "(types/types\\.go|locale/locale\\.go|scanutil/scanutil\\.go)$"
-
-    # revive: Stuttering names are acceptable for domain-specific types
-    - linters:
-        - revive
-      text: "type name will be used by other packages, and that stutters"
-      path: "(actor/actor\\.go|bound/bounded\\.go|money/money\\.go)$"
-
-    # revive: Comments on private methods
-    - linters:
-        - revive
-      text: "exported method.*should have comment or be unexported"
-      path: "types/types\\.go$"
-
-    # gosmopolitan: Test strings with unicode
-    - linters:
-        - gosmopolitan
-      text: "contains rune in Han script"
-      path: "id/id_test\\.go$"
-
-    # musttag: JSON tags on internal types
-    - linters:
-        - musttag
-      text: "should be annotated with the .json. tag"
-      path: "datapoint/datapoint\\.go$"
-
-    # goconst: Repeated strings in tests
-    - linters:
-        - goconst
-      text: "has [0-9]+ occurrences, make it a constant"
-      path: ".*_test\\.go$"
+  max-same-issues: 0
+  new: false

@@ -99,7 +99,7 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 		Tags:     r.tags,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("reference: marshal JSON: %w", err)
+		return nil, fmt.Errorf("reference: marshal JSON for ID %q: %w", idStr, err)
 	}
 	return b, nil
 }

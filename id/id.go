@@ -272,8 +272,6 @@ func (id ID[B, V]) Or(defaultValue ID[B, V]) ID[B, V] {
 }
 
 // String returns a string representation of the value.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) String() string {
 	switch v := any(id.value).(type) {
 	case string:
@@ -335,8 +333,6 @@ func (id ID[B, V]) Format(f fmt.State, verb rune) {
 // MarshalJSON implements json.Marshaler for proper null handling.
 // String-based IDs serialize as JSON strings, numeric IDs as JSON numbers.
 // Zero values serialize to JSON null.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 	if id.IsZero() {
 		return []byte("null"), nil
@@ -420,8 +416,6 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 
 // UnmarshalJSON implements json.Unmarshaler for JSON deserialization.
 // Supports null, strings, and numeric values based on the underlying type V.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
 		id.Reset()
@@ -580,8 +574,6 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 }
 
 // MarshalBinary implements encoding.BinaryMarshaler for binary encoding.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 	if id.IsZero() {
 		return nil, nil
@@ -644,8 +636,6 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 }
 
 // UnmarshalBinary implements encoding.BinaryUnmarshaler for binary decoding.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	if len(data) == 0 {
 		id.Reset()
@@ -808,8 +798,6 @@ func (id *ID[B, V]) GobDecode(data []byte) error {
 
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id *ID[B, V]) Scan(src any) error {
 	if src == nil {
 		id.Reset()
@@ -943,8 +931,6 @@ func (id *ID[B, V]) Scan(src any) error {
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for zero values, otherwise the underlying value.
-//
-//nolint:cyclop // Generic type handling requires many type cases
 func (id ID[B, V]) Value() (driver.Value, error) {
 	if id.IsZero() {
 		return nil, nil

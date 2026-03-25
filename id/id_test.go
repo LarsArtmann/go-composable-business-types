@@ -269,7 +269,6 @@ func TestIDFormat(t *testing.T) {
 
 // JSON Tests
 
-//nolint:cyclop // Many test cases for JSON serialization
 func TestIDJSON(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID non-zero", func(t *testing.T) {
@@ -345,7 +344,6 @@ func TestIDJSON(t *testing.T) {
 	})
 }
 
-//nolint:cyclop // Many test cases for JSON deserialization
 func TestIDUnmarshalJSON(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID from string", func(t *testing.T) {
@@ -670,7 +668,6 @@ func TestIDGob(t *testing.T) {
 
 // SQL Scan/Value tests
 
-//nolint:cyclop // Many test cases for SQL scanning
 func TestIDScan(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID from string", func(t *testing.T) {
@@ -784,7 +781,6 @@ func testScanRoundTrip[B any, V comparable](t *testing.T, input any, expected V)
 	}
 }
 
-//nolint:cyclop // Many test cases for SQL value serialization
 func TestIDValue(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID non-zero", func(t *testing.T) {
