@@ -86,7 +86,6 @@ var ErrNotOrdered = errors.New("id: Compare requires an ordered type (int, uint,
 // Compare returns -1 if id < other, 0 if equal, 1 if id > other.
 // Returns ErrNotOrdered if V is not an ordered type.
 //
-//nolint:cyclop // Generic type handling requires many type cases
 
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
@@ -345,29 +344,77 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 
 	switch v := any(id.value).(type) {
 	case string:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal string JSON: %w", err)
+		}
+		return b, nil
 	case int:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal int JSON: %w", err)
+		}
+		return b, nil
 	case int8:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal int8 JSON: %w", err)
+		}
+		return b, nil
 	case int16:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal int16 JSON: %w", err)
+		}
+		return b, nil
 	case int32:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal int32 JSON: %w", err)
+		}
+		return b, nil
 	case int64:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal int64 JSON: %w", err)
+		}
+		return b, nil
 	case uint:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal uint JSON: %w", err)
+		}
+		return b, nil
 	case uint8:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal uint8 JSON: %w", err)
+		}
+		return b, nil
 	case uint16:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal uint16 JSON: %w", err)
+		}
+		return b, nil
 	case uint32:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal uint32 JSON: %w", err)
+		}
+		return b, nil
 	case uint64:
-		return json.Marshal(v)
+		b, err := json.Marshal(v)
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal uint64 JSON: %w", err)
+		}
+		return b, nil
 	default:
-		return json.Marshal(fmt.Sprintf("%v", v))
+		b, err := json.Marshal(fmt.Sprintf("%v", v))
+		if err != nil {
+			return nil, fmt.Errorf("id: marshal default JSON: %w", err)
+		}
+		return b, nil
 	}
 }
 
@@ -556,21 +603,21 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		binary.LittleEndian.PutUint16(
 			b,
 			uint16(v),
-		) //nolint:gosec // G115: int16 to uint16 is safe for serialization
+		)
 		return b, nil
 	case int32:
 		b := make([]byte, byteSizeInt32)
 		binary.LittleEndian.PutUint32(
 			b,
 			uint32(v),
-		) //nolint:gosec // G115: int32 to uint32 is safe for serialization
+		)
 		return b, nil
 	case int64:
 		b := make([]byte, byteSizeInt64)
 		binary.LittleEndian.PutUint64(
 			b,
 			uint64(v),
-		) //nolint:gosec // G115: int64 to uint64 is safe for serialization
+		)
 		return b, nil
 	case uint:
 		if err := binary.Write(&buf, binary.LittleEndian, uint64(v)); err != nil {
@@ -622,7 +669,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		}
 		n := int(
 			binary.LittleEndian.Uint64(data),
-		) //nolint:gosec // G115: uint64 to int is safe for unmarshaling
+		)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int8:
@@ -648,7 +695,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		}
 		n := int16(
 			binary.LittleEndian.Uint16(data),
-		) //nolint:gosec // G115: uint16 to int16 is safe for unmarshaling
+		)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int32:
@@ -663,7 +710,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		}
 		n := int32(
 			binary.LittleEndian.Uint32(data),
-		) //nolint:gosec // G115: uint32 to int32 is safe for unmarshaling
+		)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case int64:
@@ -678,7 +725,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		}
 		n := int64(
 			binary.LittleEndian.Uint64(data),
-		) //nolint:gosec // G115: uint64 to int64 is safe for unmarshaling
+		)
 		*id = ID[B, V]{value: any(n).(V)}
 		return nil
 	case uint:
@@ -803,12 +850,12 @@ func (id *ID[B, V]) Scan(src any) error {
 		case int64:
 			*id = ID[B, V]{
 				value: any(int32(v)).(V),
-			} //nolint:gosec // G115: int64 to int32 for SQL scanning
+			}
 			return nil
 		case int:
 			*id = ID[B, V]{
 				value: any(int32(v)).(V),
-			} //nolint:gosec // G115: int to int32 for SQL scanning
+			}
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(int32(v)).(V)}
@@ -837,12 +884,12 @@ func (id *ID[B, V]) Scan(src any) error {
 		case int64:
 			*id = ID[B, V]{
 				value: any(uint(v)).(V),
-			} //nolint:gosec // G115: int64 to uint for SQL scanning
+			}
 			return nil
 		case int:
 			*id = ID[B, V]{
 				value: any(uint(v)).(V),
-			} //nolint:gosec // G115: int to uint for SQL scanning
+			}
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint(v)).(V)}
@@ -856,12 +903,12 @@ func (id *ID[B, V]) Scan(src any) error {
 		case int64:
 			*id = ID[B, V]{
 				value: any(uint32(v)).(V),
-			} //nolint:gosec // G115: int64 to uint32 for SQL scanning
+			}
 			return nil
 		case int:
 			*id = ID[B, V]{
 				value: any(uint32(v)).(V),
-			} //nolint:gosec // G115: int to uint32 for SQL scanning
+			}
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint32(v)).(V)}
@@ -875,12 +922,12 @@ func (id *ID[B, V]) Scan(src any) error {
 		case int64:
 			*id = ID[B, V]{
 				value: any(uint64(v)).(V),
-			} //nolint:gosec // G115: int64 to uint64 for SQL scanning
+			}
 			return nil
 		case int:
 			*id = ID[B, V]{
 				value: any(uint64(v)).(V),
-			} //nolint:gosec // G115: int to uint64 for SQL scanning
+			}
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(uint64(v)).(V)}

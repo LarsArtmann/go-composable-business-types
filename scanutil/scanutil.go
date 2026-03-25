@@ -81,7 +81,11 @@ func parseIntFromBytes(data []byte) (int64, error) {
 	if len(data) == 0 {
 		return 0, nil
 	}
-	return strconv.ParseInt(string(data), 10, 64)
+	v, err := strconv.ParseInt(string(data), 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("scanutil: parse int from bytes: %w", err)
+	}
+	return v, nil
 }
 
 // NullableValue returns nil for empty strings, otherwise returns the string as driver.Value.

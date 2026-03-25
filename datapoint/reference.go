@@ -92,12 +92,16 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 			idStr,
 		)
 	}
-	return json.Marshal(jsonReference{
+	b, err := json.Marshal(jsonReference{
 		ID:       idStr,
 		Relation: r.relation,
 		Version:  r.version,
 		Tags:     r.tags,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("reference: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

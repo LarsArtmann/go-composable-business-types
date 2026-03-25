@@ -117,7 +117,7 @@ func isNanoIDChar(r rune) bool {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (id *NanoID) Scan(src any) error {
-	return scanutil.ScanString(src, func(v string) error {
+	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*id = NanoID{}
 			return nil
@@ -129,10 +129,18 @@ func (id *NanoID) Scan(src any) error {
 		*id = parsed
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("nanoid: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty NanoID, otherwise the string value.
 func (id NanoID) Value() (driver.Value, error) {
-	return scanutil.NullableValue(id.value)
+	v, err := scanutil.NullableValue(id.value)
+	if err != nil {
+		return nil, fmt.Errorf("nanoid: value: %w", err)
+	}
+	return v, nil
 }

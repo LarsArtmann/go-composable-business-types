@@ -112,13 +112,17 @@ type jsonContext struct {
 
 // MarshalJSON implements json.Marshaler.
 func (c Context) MarshalJSON() ([]byte, error) {
-	return json.Marshal(jsonContext{
+	b, err := json.Marshal(jsonContext{
 		Environment: c.environment,
 		Session:     c.session,
 		Request:     c.request,
 		Source:      c.source,
 		Tags:        c.tags,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("context: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.

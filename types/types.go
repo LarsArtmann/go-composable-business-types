@@ -146,7 +146,13 @@ func (u URL) Validate() error {
 
 // Parse returns the underlying url.URL. Since URLs are validated at construction,
 // this should never fail, but returns error for safety.
-func (u URL) Parse() (*url.URL, error) { return url.Parse(string(u)) }
+func (u URL) Parse() (*url.URL, error) {
+	parsed, err := url.Parse(string(u))
+	if err != nil {
+		return nil, fmt.Errorf("url: parse %q: %w", string(u), err)
+	}
+	return parsed, nil
+}
 
 // Scheme returns the URL scheme (http or https). Returns empty string if URL is zero.
 func (u URL) Scheme() string {
@@ -224,7 +230,11 @@ func (p Percentage) Compare(other Percentage) int {
 
 // MarshalJSON implements json.Marshaler.
 func (p Percentage) MarshalJSON() ([]byte, error) {
-	return json.Marshal(uint8(p))
+	b, err := json.Marshal(uint8(p))
+	if err != nil {
+		return nil, fmt.Errorf("percentage: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -240,15 +250,23 @@ func (p *Percentage) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for Percentage.
 // Supports int64 and uint8 sources.
 func (p *Percentage) Scan(src any) error {
-	return scanutil.ScanInt64(src, func(v int64) error {
+	err := scanutil.ScanInt64(src, func(v int64) error {
 		*p = Percentage(v) //nolint:gosec // G115: int64 to uint8 for Percentage (0-100 range)
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("percentage: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for Percentage.
 func (p Percentage) Value() (driver.Value, error) {
-	return scanutil.Int64Value(int64(p))
+	v, err := scanutil.Int64Value(int64(p))
+	if err != nil {
+		return nil, fmt.Errorf("percentage: value: %w", err)
+	}
+	return v, nil
 }
 
 // Validate implements validate.Validator for Percentage.
@@ -429,7 +447,11 @@ func (d Duration) Value() (driver.Value, error) {
 
 // MarshalJSON implements json.Marshaler.
 func (d Duration) MarshalJSON() ([]byte, error) {
-	return json.Marshal(d.String())
+	b, err := json.Marshal(d.String())
+	if err != nil {
+		return nil, fmt.Errorf("duration: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -453,7 +475,7 @@ func (d *Duration) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for Email.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (e *Email) Scan(src any) error {
-	return scanutil.ScanString(src, func(v string) error {
+	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*e = ""
 			return nil
@@ -465,18 +487,26 @@ func (e *Email) Scan(src any) error {
 		*e = parsed
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("email: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for Email.
 // Returns nil for empty Email, otherwise the string value.
 func (e Email) Value() (driver.Value, error) {
-	return scanutil.NullableValue(string(e))
+	v, err := scanutil.NullableValue(string(e))
+	if err != nil {
+		return nil, fmt.Errorf("email: value: %w", err)
+	}
+	return v, nil
 }
 
 // Scan implements sql.Scanner for URL.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (u *URL) Scan(src any) error {
-	return scanutil.ScanString(src, func(v string) error {
+	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*u = ""
 			return nil
@@ -488,21 +518,33 @@ func (u *URL) Scan(src any) error {
 		*u = parsed
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("url: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for URL.
 // Returns nil for empty URL, otherwise the string value.
 func (u URL) Value() (driver.Value, error) {
-	return scanutil.NullableValue(string(u))
+	v, err := scanutil.NullableValue(string(u))
+	if err != nil {
+		return nil, fmt.Errorf("url: value: %w", err)
+	}
+	return v, nil
 }
 
 // Scan implements sql.Scanner for Cents.
 // Supports int64, float64, and []byte sources.
 func (c *Cents) Scan(src any) error {
-	return scanutil.ScanInt64(src, func(v int64) error {
+	err := scanutil.ScanInt64(src, func(v int64) error {
 		*c = Cents(v)
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("cents: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for Cents.

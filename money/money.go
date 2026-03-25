@@ -10,6 +10,8 @@
 package money
 
 import (
+	"fmt"
+
 	"github.com/bojanz/currency"
 	"github.com/larsartmann/go-composable-business-types/locale"
 )
@@ -19,12 +21,20 @@ type Money = currency.Amount
 
 // NewMoney creates a monetary amount from a numeric string and currency code.
 func NewMoney(amount, currencyCode string) (Money, error) {
-	return currency.NewAmount(amount, currencyCode)
+	m, err := currency.NewAmount(amount, currencyCode)
+	if err != nil {
+		return Money{}, fmt.Errorf("money: new amount: %w", err)
+	}
+	return m, nil
 }
 
 // NewMoneyFromCents creates a monetary amount from minor units (cents).
 func NewMoneyFromCents(cents int64, currencyCode string) (Money, error) {
-	return currency.NewAmountFromInt64(cents, currencyCode)
+	m, err := currency.NewAmountFromInt64(cents, currencyCode)
+	if err != nil {
+		return Money{}, fmt.Errorf("money: new amount from cents: %w", err)
+	}
+	return m, nil
 }
 
 // IsValidCurrency checks if the currency code is valid ISO 4217.

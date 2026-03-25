@@ -121,7 +121,11 @@ func TrimmedBoundedString(minLen, maxLen int, value string) (BoundedString, erro
 // MarshalJSON implements json.Marshaler.
 // Serializes as a JSON string containing the value.
 func (bs BoundedString) MarshalJSON() ([]byte, error) {
-	return json.Marshal(bs.value)
+	b, err := json.Marshal(bs.value)
+	if err != nil {
+		return nil, fmt.Errorf("boundedstring: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
@@ -140,7 +144,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 // Scan implements sql.Scanner for database deserialization.
 // Supports string and []byte sources. Sets min=0, max=len(value).
 func (bs *BoundedString) Scan(src any) error {
-	return scanutil.ScanString(src, func(v string) error {
+	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*bs = BoundedString{}
 			return nil
@@ -150,10 +154,18 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.maxLen = utf8.RuneCountInString(v)
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("boundedstring: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty BoundedString, otherwise the string value.
 func (bs BoundedString) Value() (driver.Value, error) {
-	return scanutil.NullableValue(bs.value)
+	v, err := scanutil.NullableValue(bs.value)
+	if err != nil {
+		return nil, fmt.Errorf("boundedstring: value: %w", err)
+	}
+	return v, nil
 }

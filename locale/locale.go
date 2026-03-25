@@ -91,18 +91,25 @@ func (l Locale) Region() string {
 
 // MarshalText implements encoding.TextMarshaler for JSON/XML serialization.
 func (l Locale) MarshalText() ([]byte, error) {
-	return l.tag.MarshalText()
+	b, err := l.tag.MarshalText()
+	if err != nil {
+		return nil, fmt.Errorf("locale: marshal text: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler for JSON/XML deserialization.
 func (l *Locale) UnmarshalText(data []byte) error {
-	return l.tag.UnmarshalText(data)
+	if err := l.tag.UnmarshalText(data); err != nil {
+		return fmt.Errorf("locale: unmarshal text: %w", err)
+	}
+	return nil
 }
 
 // Scan implements sql.Scanner for Locale.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (l *Locale) Scan(src any) error {
-	return scanutil.ScanString(src, func(v string) error {
+	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			l.tag = language.Und
 			return nil
@@ -114,6 +121,10 @@ func (l *Locale) Scan(src any) error {
 		*l = parsed
 		return nil
 	})
+	if err != nil {
+		return fmt.Errorf("locale: scan: %w", err)
+	}
+	return nil
 }
 
 // Value implements driver.Valuer for Locale.

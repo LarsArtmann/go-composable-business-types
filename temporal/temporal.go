@@ -41,7 +41,11 @@ func (c Correction) String() string {
 
 // MarshalJSON implements json.Marshaler for Correction.
 func (c Correction) MarshalJSON() ([]byte, error) {
-	return json.Marshal(bool(c))
+	b, err := json.Marshal(bool(c))
+	if err != nil {
+		return nil, fmt.Errorf("correction: marshal JSON: %w", err)
+	}
+	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler for Correction.
@@ -146,12 +150,16 @@ type jsonBitemporal struct {
 
 // MarshalJSON implements json.Marshaler.
 func (b Bitemporal) MarshalJSON() ([]byte, error) {
-	return json.Marshal(jsonBitemporal{
+	bj, err := json.Marshal(jsonBitemporal{
 		ValidFrom:  b.validFrom.Time,
 		ValidUntil: b.validUntil.Time,
 		Recorded:   b.recorded.Time,
 		Correction: b.correction,
 	})
+	if err != nil {
+		return nil, fmt.Errorf("bitemporal: marshal JSON: %w", err)
+	}
+	return bj, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
