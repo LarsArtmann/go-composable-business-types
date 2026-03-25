@@ -16,36 +16,36 @@ The `id/` package provides branded, strongly-typed identifiers using phantom typ
 
 ### a) FULLY DONE
 
-| Task | Status | Notes |
-|------|--------|-------|
+| Task                                      | Status      | Notes                                                                             |
+| ----------------------------------------- | ----------- | --------------------------------------------------------------------------------- |
 | Refactored `Compare` to use `cmp.Compare` | ✅ Complete | Reduced ~130 lines of manual compare functions to ~30 lines using Go 1.21+ stdlib |
-| All tests passing | ✅ Complete | 1252 lines of tests, all green |
-| Linter passing | ✅ Complete | 0 issues |
+| All tests passing                         | ✅ Complete | 1252 lines of tests, all green                                                    |
+| Linter passing                            | ✅ Complete | 0 issues                                                                          |
 
 ### b) PARTIALLY DONE
 
-| Task | Status | Notes |
-|------|--------|-------|
+| Task                    | Status     | Notes                                                      |
+| ----------------------- | ---------- | ---------------------------------------------------------- |
 | Type safety enforcement | ⚠️ Partial | Phantom types work, but value type constraint is too loose |
 
 ### c) NOT STARTED
 
-| Task | Priority | Impact |
-|------|----------|--------|
-| Split id.go into multiple files | CRITICAL | High |
-| Add compile-time type constraint for supported value types | HIGH | High |
-| Fix test file unnecessary type arguments | LOW | Low |
-| Add `MustNewID` constructor | MEDIUM | Medium |
-| Consider removing `Reset()` method | MEDIUM | Medium |
+| Task                                                       | Priority | Impact |
+| ---------------------------------------------------------- | -------- | ------ |
+| Split id.go into multiple files                            | CRITICAL | High   |
+| Add compile-time type constraint for supported value types | HIGH     | High   |
+| Fix test file unnecessary type arguments                   | LOW      | Low    |
+| Add `MustNewID` constructor                                | MEDIUM   | Medium |
+| Consider removing `Reset()` method                         | MEDIUM   | Medium |
 
 ### d) TOTALLY FUCKED UP
 
-| Issue | Severity | Description |
-|-------|----------|-------------|
-| **File size violation** | CRITICAL | `id.go` is 854 lines (max 350) |
-| **Loose type constraint** | HIGH | `V comparable` allows unsupported types, causing runtime errors |
-| **Massive code duplication** | HIGH | Same type-switch pattern repeated 10+ times (~600 lines) |
-| **Inconsistent mutability** | MEDIUM | `Reset()` mutates, everything else is immutable |
+| Issue                        | Severity | Description                                                     |
+| ---------------------------- | -------- | --------------------------------------------------------------- |
+| **File size violation**      | CRITICAL | `id.go` is 854 lines (max 350)                                  |
+| **Loose type constraint**    | HIGH     | `V comparable` allows unsupported types, causing runtime errors |
+| **Massive code duplication** | HIGH     | Same type-switch pattern repeated 10+ times (~600 lines)        |
+| **Inconsistent mutability**  | MEDIUM   | `Reset()` mutates, everything else is immutable                 |
 
 ### e) WHAT WE SHOULD IMPROVE
 
@@ -65,6 +65,7 @@ The `id/` package provides branded, strongly-typed identifiers using phantom typ
 **Violation:** 2.4x over limit
 
 The file contains:
+
 - Core type and methods: ~160 lines
 - JSON serialization: ~190 lines
 - Text serialization: ~50 lines
@@ -75,11 +76,13 @@ The file contains:
 ### 2. Loose Type Constraint (HIGH)
 
 **Current:**
+
 ```go
 type ID[B any, V comparable] struct{ value V }
 ```
 
 **Problem:** `comparable` allows ANY comparable type, but we only support:
+
 - `string`, `int`, `int8`, `int16`, `int32`, `int64`
 - `uint`, `uint8`, `uint16`, `uint32`, `uint64`
 - `float32`, `float64`
@@ -87,6 +90,7 @@ type ID[B any, V comparable] struct{ value V }
 **Result:** Runtime errors for unsupported types instead of compile-time safety.
 
 **Proposed Fix:**
+
 ```go
 // IDValue is the set of types supported for ID values.
 type IDValue interface {
@@ -100,6 +104,7 @@ type ID[B any, V IDValue] struct{ value V }
 ### 3. Code Duplication Pattern (MEDIUM)
 
 The type-switch pattern is repeated in 10 methods:
+
 - `Compare`, `String`, `Format`
 - `MarshalJSON`, `UnmarshalJSON`
 - `MarshalText`, `UnmarshalText`
@@ -115,6 +120,7 @@ This is ~600 lines of similar code. However, in Go, explicit type switches are o
 `Reset()` mutates the ID in place, while all other operations are immutable. This breaks functional patterns.
 
 **Options:**
+
 1. Remove `Reset()` - use `var zero ID[B, V]` instead
 2. Document the exception
 3. Add `WithReset() ID[B, V]` that returns a zero value
@@ -200,11 +206,11 @@ id/
 
 ### Risk Assessment
 
-| Change | Risk | Mitigation |
-|--------|------|------------|
-| File split | LOW | No API changes, just file organization |
+| Change          | Risk   | Mitigation                                                     |
+| --------------- | ------ | -------------------------------------------------------------- |
+| File split      | LOW    | No API changes, just file organization                         |
 | Type constraint | MEDIUM | Breaking change for custom types, but those didn't work anyway |
-| Remove Reset() | LOW | Easy to add back if needed |
+| Remove Reset()  | LOW    | Easy to add back if needed                                     |
 
 ---
 
@@ -219,14 +225,14 @@ id/
 
 ## Execution Plan (Sorted by Impact/Effort)
 
-| Step | Task | Effort | Impact | ROI |
-|------|------|--------|--------|-----|
-| 1 | Split id.go into files | 30min | HIGH | ⭐⭐⭐⭐⭐ |
-| 2 | Add IDValue type constraint | 15min | HIGH | ⭐⭐⭐⭐⭐ |
-| 3 | Fix test type arguments | 10min | LOW | ⭐⭐ |
-| 4 | Add MustNewID | 5min | MEDIUM | ⭐⭐⭐ |
-| 5 | Document Reset() exception | 5min | LOW | ⭐⭐ |
-| 6 | Commit and push | 5min | - | - |
+| Step | Task                        | Effort | Impact | ROI        |
+| ---- | --------------------------- | ------ | ------ | ---------- |
+| 1    | Split id.go into files      | 30min  | HIGH   | ⭐⭐⭐⭐⭐ |
+| 2    | Add IDValue type constraint | 15min  | HIGH   | ⭐⭐⭐⭐⭐ |
+| 3    | Fix test type arguments     | 10min  | LOW    | ⭐⭐       |
+| 4    | Add MustNewID               | 5min   | MEDIUM | ⭐⭐⭐     |
+| 5    | Document Reset() exception  | 5min   | LOW    | ⭐⭐       |
+| 6    | Commit and push             | 5min   | -      | -          |
 
 **Total Estimated Time:** ~70 minutes
 
@@ -239,11 +245,13 @@ id/
 **Should we add a `Brand` interface constraint with a `Name()` method?**
 
 Currently:
+
 ```go
 type ID[B any, V comparable] struct{ value V }
 ```
 
 Proposed:
+
 ```go
 // Brand is a phantom type that identifies the entity type of an ID.
 type Brand interface {
@@ -254,12 +262,14 @@ type ID[B Brand, V comparable] struct{ value V }
 ```
 
 Usage would change from:
+
 ```go
 type UserBrand struct{}
 type UserID = ID[UserBrand, string]
 ```
 
 To:
+
 ```go
 type UserBrand struct{}
 func (UserBrand) Name() string { return "User" }
@@ -267,11 +277,13 @@ type UserID = ID[UserBrand, string]
 ```
 
 **Benefits:**
+
 - ✅ Runtime introspection of brand name (useful for debugging, logging, error messages)
 - ✅ Self-documenting ID types
 - ✅ Could enable generic error messages: `"invalid User ID"` instead of `"invalid ID"`
 
 **Trade-offs:**
+
 - ❌ Breaking change - requires adding `Name()` to all existing brand types
 - ❌ Tiny overhead (but phantom types are erased, so negligible)
 - ❌ Slightly more boilerplate
@@ -284,14 +296,14 @@ type UserID = ID[UserBrand, string]
 
 ## Updated Priority List (After User Feedback)
 
-| # | Task | Priority | Status |
-|---|------|----------|--------|
-| 1 | Split id.go into 5 files | CRITICAL | Pending |
-| 2 | Keep `V comparable` | DECIDED | ✅ No change needed |
-| 3 | Keep `B any` | DECIDED | ✅ No change needed |
-| 4 | Fix test type arguments | LOW | Pending |
-| 5 | Add MustNewID constructor | MEDIUM | Pending |
+| #   | Task                      | Priority | Status              |
+| --- | ------------------------- | -------- | ------------------- |
+| 1   | Split id.go into 5 files  | CRITICAL | Pending             |
+| 2   | Keep `V comparable`       | DECIDED  | ✅ No change needed |
+| 3   | Keep `B any`              | DECIDED  | ✅ No change needed |
+| 4   | Fix test type arguments   | LOW      | Pending             |
+| 5   | Add MustNewID constructor | MEDIUM   | Pending             |
 
 ---
 
-*End of Status Report*
+_End of Status Report_
