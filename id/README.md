@@ -76,6 +76,33 @@ func main() {
 }
 ```
 
+## Best Practice: Named Brand Types
+
+For better debugging and error messages, add a `Name()` method to your brand types:
+
+```go
+type UserBrand struct{}
+
+func (UserBrand) Name() string { return "User" }
+
+type UserID = id.ID[UserBrand, string]
+```
+
+This enables runtime introspection for logging, error messages, and debugging:
+
+```go
+func ValidateID[B interface{ Name() string }, V comparable](id id.ID[B, V]) error {
+    if id.IsZero() {
+        var brand B
+        return fmt.Errorf("invalid %s ID: empty", brand.Name())
+    }
+    return nil
+}
+// Output: "invalid User ID: empty"
+```
+
+**Note:** This is optional. The phantom type pattern works perfectly without any methods on the brand type.
+
 ## Recommended: Use NanoID instead of plain strings
 
 For string-based identifiers, prefer using the companion `nanoid` package instead of raw strings. NanoID provides:
