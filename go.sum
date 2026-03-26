@@ -54,8 +54,8 @@ github.com/russross/blackfriday/v2 v2.1.0 h1:JIOH55/0cWyOuilr9/qlrm0BSXldqnqwMsf
 github.com/russross/blackfriday/v2 v2.1.0/go.mod h1:+Rmxgy9KzJVeS9/2gXHxylqXiyQDYRxCVz55jmeOWTM=
 github.com/shopspring/decimal v1.4.0 h1:bxl37RwXBklmTi0C79JfXCEBD1cqqHt0bbgBAGFp81k=
 github.com/shopspring/decimal v1.4.0/go.mod h1:gawqmDU56v4yIKSwfBSFip1HdCCXN8/+DMd9qYNcwME=
-github.com/sixafter/aes-ctr-drbg v1.18.0 h1:/tRpQLmZaly3fLDwQ6R9GWkiND4Zi4TiPEMG4gd9D/w=
-github.com/sixafter/aes-ctr-drbg v1.18.0/go.mod h1:iOBiPPkiy5Z5cEWm2yCoqEtnkfafxNTokJLL0zOPZeQ=
+github.com/sixafter/aes-ctr-drbg v1.19.0 h1:F8hy3L1xcGKWxJZwe/C7xBC8JOqYXwlubrpJpQJ3jWg=
+github.com/sixafter/aes-ctr-drbg v1.19.0/go.mod h1:iOBiPPkiy5Z5cEWm2yCoqEtnkfafxNTokJLL0zOPZeQ=
 github.com/sixafter/nanoid v1.64.0 h1:3h1wQ1Vb3KBw8bu8gJnbKuebx+BrQWqVEacoU4pgZHc=
 github.com/sixafter/nanoid v1.64.0/go.mod h1:+Qh9Vl0rR0uL59wxhn3Fe224+1Vx9sbdniamHXqbd9Y=
 github.com/sixafter/prng-chacha v1.16.0 h1:WRiccbdSVfkg/1PQzrCltqWduGifmsSfoObBVlwuE+8=
