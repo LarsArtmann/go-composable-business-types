@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-composable-business-types
 
-go 1.25
+go 1.26
 
 tool github.com/abice/go-enum
 
