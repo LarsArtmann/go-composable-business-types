@@ -12,6 +12,7 @@ package locale
 
 import (
 	"database/sql/driver"
+	"errors"
 	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/scanutil"

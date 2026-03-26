@@ -581,7 +581,12 @@ func TestTimestampSQL(t *testing.T) {
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
-	if !val.(time.Time).Equal(ts.Time) {
+	valTime, ok := val.(time.Time)
+	if !ok {
+		t.Errorf("expected time.Time, got %T", val)
+		return
+	}
+	if !valTime.Equal(ts.Time) {
 		t.Errorf("expected %v, got %v", ts.Time, val)
 	}
 
