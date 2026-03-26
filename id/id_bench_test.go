@@ -1,0 +1,327 @@
+package id
+
+import (
+	"encoding/json"
+	"fmt"
+	"math"
+	"testing"
+	"unicode/utf8"
+)
+
+// Fuzz tests
+
+func FuzzIDJSONString(f *testing.F) {
+	testcases := []string{"test", "hello-world", "123", "", "unicode-日本語"}
+	for _, tc := range testcases {
+		f.Add(tc)
+	}
+
+	f.Fuzz(func(t *testing.T, orig string) {
+		// Skip invalid UTF-8 strings - JSON requires valid UTF-8 and cannot
+		// round-trip invalid sequences (they become replacement characters)
+		if !utf8.ValidString(orig) {
+			t.Skip("skipping invalid UTF-8 string")
+		}
+
+		id := NewID[StringBrand](orig)
+		data, err := json.Marshal(id)
+		if err != nil {
+			t.Fatalf("Marshal failed: %v", err)
+		}
+
+		var restored ID[StringBrand, string]
+		err = json.Unmarshal(data, &restored)
+		if err != nil {
+			t.Fatalf("Unmarshal failed: %v", err)
+		}
+
+		if restored.Get() != orig {
+			t.Errorf("expected %q, got %q", orig, restored.Get())
+		}
+	})
+}
+
+func FuzzIDJSONInt64(f *testing.F) {
+	testcases := []int64{0, 1, -1, 42, math.MaxInt64, math.MinInt64}
+	for _, tc := range testcases {
+		f.Add(tc)
+	}
+
+	f.Fuzz(func(t *testing.T, orig int64) {
+		id := NewID[Int64Brand, int64](orig)
+		data, err := json.Marshal(id)
+		if err != nil {
+			t.Fatalf("Marshal failed: %v", err)
+		}
+
+		var restored ID[Int64Brand, int64]
+		err = json.Unmarshal(data, &restored)
+		if err != nil {
+			t.Fatalf("Unmarshal failed: %v", err)
+		}
+
+		if restored.Get() != orig {
+			t.Errorf("expected %d, got %d", orig, restored.Get())
+		}
+	})
+}
+
+func FuzzIDBinaryString(f *testing.F) {
+	testcases := []string{"test", "hello-world", "123", "unicode-日本語"}
+	for _, tc := range testcases {
+		f.Add(tc)
+	}
+
+	f.Fuzz(func(t *testing.T, orig string) {
+		if orig == "" {
+			return // empty string is zero value
+		}
+		id := NewID[StringBrand](orig)
+		data, err := id.MarshalBinary()
+		if err != nil {
+			t.Fatalf("MarshalBinary failed: %v", err)
+		}
+
+		var restored ID[StringBrand, string]
+		err = restored.UnmarshalBinary(data)
+		if err != nil {
+			t.Fatalf("UnmarshalBinary failed: %v", err)
+		}
+
+		if restored.Get() != orig {
+			t.Errorf("expected %q, got %q", orig, restored.Get())
+		}
+	})
+}
+
+// Benchmarks
+
+func BenchmarkNewID(b *testing.B) {
+	for b.Loop() {
+		_ = NewID[StringBrand]("test-id")
+	}
+}
+
+func BenchmarkIDGet(b *testing.B) {
+	id := NewID[StringBrand]("test-id")
+	for b.Loop() {
+		_ = id.Get()
+	}
+}
+
+func BenchmarkIDString(b *testing.B) {
+	id := NewID[StringBrand]("test-id")
+	for b.Loop() {
+		_ = id.String()
+	}
+}
+
+func BenchmarkIDStringInt64(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	for b.Loop() {
+		_ = id.String()
+	}
+}
+
+func BenchmarkIDIsZero(b *testing.B) {
+	id := NewID[StringBrand]("test-id")
+	for b.Loop() {
+		_ = id.IsZero()
+	}
+}
+
+func BenchmarkIDEqual(b *testing.B) {
+	id1 := NewID[StringBrand]("test-id")
+	id2 := NewID[StringBrand]("test-id")
+	for b.Loop() {
+		_ = id1.Equal(id2)
+	}
+}
+
+func BenchmarkIDCompare(b *testing.B) {
+	id1 := NewID[Int64Brand, int64](100)
+	id2 := NewID[Int64Brand, int64](200)
+	for b.Loop() {
+		_, _ = id1.Compare(id2)
+	}
+}
+
+func BenchmarkIDMarshalJSON(b *testing.B) {
+	id := NewID[StringBrand]("test-id-12345")
+	for b.Loop() {
+		_, _ = id.MarshalJSON()
+	}
+}
+
+func BenchmarkIDMarshalJSONInt64(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	for b.Loop() {
+		_, _ = id.MarshalJSON()
+	}
+}
+
+func BenchmarkIDUnmarshalJSON(b *testing.B) {
+	data := []byte(`"test-id-12345"`)
+	for b.Loop() {
+		var id ID[StringBrand, string]
+		_ = id.UnmarshalJSON(data)
+	}
+}
+
+func BenchmarkIDUnmarshalJSONInt64(b *testing.B) {
+	data := []byte(`123456789`)
+	for b.Loop() {
+		var id ID[Int64Brand, int64]
+		_ = id.UnmarshalJSON(data)
+	}
+}
+
+func BenchmarkIDMarshalBinary(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	for b.Loop() {
+		_, _ = id.MarshalBinary()
+	}
+}
+
+func BenchmarkIDUnmarshalBinary(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	data, _ := id.MarshalBinary()
+	for b.Loop() {
+		var restored ID[Int64Brand, int64]
+		_ = restored.UnmarshalBinary(data)
+	}
+}
+
+func BenchmarkIDScan(b *testing.B) {
+	for b.Loop() {
+		var id ID[StringBrand, string]
+		_ = id.Scan("test-id-12345")
+	}
+}
+
+func BenchmarkIDScanInt64(b *testing.B) {
+	for b.Loop() {
+		var id ID[Int64Brand, int64]
+		_ = id.Scan(int64(123456789))
+	}
+}
+
+func BenchmarkIDValue(b *testing.B) {
+	id := NewID[StringBrand]("test-id-12345")
+	for b.Loop() {
+		_, _ = id.Value()
+	}
+}
+
+func BenchmarkIDValueInt64(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	for b.Loop() {
+		_, _ = id.Value()
+	}
+}
+
+func BenchmarkJSONRoundTrip(b *testing.B) {
+	id := NewID[StringBrand]("test-id-12345")
+	for b.Loop() {
+		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
+		var restored ID[StringBrand, string]
+		_ = json.Unmarshal(data, &restored)
+	}
+}
+
+func BenchmarkJSONRoundTripInt64(b *testing.B) {
+	id := NewID[Int64Brand, int64](123456789)
+	for b.Loop() {
+		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
+		var restored ID[Int64Brand, int64]
+		_ = json.Unmarshal(data, &restored)
+	}
+}
+
+// Example functions for godoc
+
+func ExampleNewID() {
+	type UserBrand struct{}
+
+	userID := NewID[UserBrand]("user-123")
+	fmt.Println(userID.Get())
+	// Output: user-123
+}
+
+func ExampleID_String() {
+	type OrderBrand struct{}
+
+	orderID := NewID[OrderBrand, int64](12345)
+	fmt.Println(orderID.String())
+	// Output: 12345
+}
+
+func ExampleID_Equal() {
+	type UserBrand struct{}
+
+	id1 := NewID[UserBrand]("user-123")
+	id2 := NewID[UserBrand]("user-123")
+	id3 := NewID[UserBrand]("user-456")
+
+	fmt.Println(id1.Equal(id2))
+	fmt.Println(id1.Equal(id3))
+	// Output:
+	// true
+	// false
+}
+
+func ExampleID_Compare() {
+	type OrderBrand struct{}
+
+	id1 := NewID[OrderBrand, int64](100)
+	id2 := NewID[OrderBrand, int64](200)
+	id3 := NewID[OrderBrand, int64](100)
+
+	cmp, _ := id1.Compare(id2)
+	fmt.Println(cmp)
+	cmp, _ = id2.Compare(id1)
+	fmt.Println(cmp)
+	cmp, _ = id1.Compare(id3)
+	fmt.Println(cmp)
+	// Output:
+	// -1
+	// 1
+	// 0
+}
+
+func ExampleID_Or() {
+	type UserBrand struct{}
+
+	id := NewID[UserBrand]("user-123")
+	defaultID := NewID[UserBrand]("unknown")
+
+	fmt.Println(id.Or(defaultID).Get())
+
+	var zeroID ID[UserBrand, string]
+	fmt.Println(zeroID.Or(defaultID).Get())
+	// Output:
+	// user-123
+	// unknown
+}
+
+func ExampleID_IsZero() {
+	type UserBrand struct{}
+
+	id := NewID[UserBrand]("user-123")
+	var zeroID ID[UserBrand, string]
+
+	fmt.Println(id.IsZero())
+	fmt.Println(zeroID.IsZero())
+	// Output:
+	// false
+	// true
+}
+
+func ExampleID_Reset() {
+	type UserBrand struct{}
+
+	id := NewID[UserBrand]("user-123")
+	id.Reset()
+	fmt.Println(id.IsZero())
+	// Output: true
+}
