@@ -15,7 +15,11 @@ type validationCase struct {
 }
 
 // testValidation runs table-driven validation tests for types with String() method.
-func testValidation[T interface{ String() string }](t *testing.T, tests []validationCase, constructor func(string) (T, error)) {
+func testValidation[T interface{ String() string }](
+	t *testing.T,
+	tests []validationCase,
+	constructor func(string) (T, error),
+) {
 	t.Helper()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

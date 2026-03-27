@@ -1,75 +1,75 @@
 version: "2"
 run:
-    timeout: 5m
-    go: 1.26.1
-    build-tags: []
-    allow-parallel-runners: false
-    allow-serial-runners: false
-    tests: true
-    concurrency: 4
+  timeout: 5m
+  go: 1.26.1
+  build-tags: []
+  allow-parallel-runners: false
+  allow-serial-runners: false
+  tests: true
+  concurrency: 4
 output:
-    formats: {}
+  formats: {}
 linters:
-    enable:
-        - bodyclose
-        - gochecknoinits
-        - dupl
-        - testifylint
-        - decorder
-        - gocritic
-        - wastedassign
-        - errchkjson
-        - usetesting
-        - durationcheck
-        - cyclop
-        - gocyclo
-        - reassign
-        - interfacebloat
-        - ginkgolinter
-        - exhaustive
-        - errorlint
-        - misspell
-        - sqlclosecheck
-        - containedctx
-        - paralleltest
-        - exptostd
-        - bidichk
-        - gomodguard
-        - unparam
-        - gochecksumtype
-        - nilnesserr
-        - unconvert
-        - perfsprint
-        - maintidx
-        - nestif
-        - protogetter
-        - rowserrcheck
-        - thelper
-        - errname
-        - prealloc
-        - sloglint
-        - gocognit
-        - noctx
-        - zerologlint
-        - copyloopvar
-        - intrange
-        - contextcheck
-        - dogsled
-        - mirror
-        - dupword
-        - spancheck
-        - gocheckcompilerdirectives
-        - nilerr
-        - nakedret
-        - loggercheck
-        - gomoddirectives
-        - predeclared
-        - nolintlint
-    default: standard
-    settings:
-        cyclop:
-            max-complexity: 40
+  enable:
+    - bodyclose
+    - gochecknoinits
+    - dupl
+    - testifylint
+    - decorder
+    - gocritic
+    - wastedassign
+    - errchkjson
+    - usetesting
+    - durationcheck
+    - cyclop
+    - gocyclo
+    - reassign
+    - interfacebloat
+    - ginkgolinter
+    - exhaustive
+    - errorlint
+    - misspell
+    - sqlclosecheck
+    - containedctx
+    - paralleltest
+    - exptostd
+    - bidichk
+    - gomodguard
+    - unparam
+    - gochecksumtype
+    - nilnesserr
+    - unconvert
+    - perfsprint
+    - maintidx
+    - nestif
+    - protogetter
+    - rowserrcheck
+    - thelper
+    - errname
+    - prealloc
+    - sloglint
+    - gocognit
+    - noctx
+    - zerologlint
+    - copyloopvar
+    - intrange
+    - contextcheck
+    - dogsled
+    - mirror
+    - dupword
+    - spancheck
+    - gocheckcompilerdirectives
+    - nilerr
+    - nakedret
+    - loggercheck
+    - gomoddirectives
+    - predeclared
+    - nolintlint
+  default: standard
+  settings:
+    cyclop:
+      max-complexity: 40
 formatters:
-    enable:
-        - golines
+  enable:
+    - golines
 issues: {}
