@@ -1,0 +1,67 @@
+[changelog]
+# changelog header
+header = """
+# Changelog\n
+All notable changes to this project will be documented in this file.\n
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).\n
+## [{latest_version}] - {latest_date}
+"""
+# template for the changelog template
+# https://keats.github.io/tera/docs/docs-overview/#templates
+body = """
+{% if version %}\
+### Added\n\n{% for change in changes.commits.scope %}{% if change.footers %}\
+- **{{ change.scope }}**: {{ change.footers | filter(attribute=\"key\", value=\"change\") | map(attribute=\"value\") | first | default(\"\") }}\n{% endif %}{% endfor %}{% for change in changes.commits.no_scope %}\
+{% if change.footers %}- {{ change.footers | filter(attribute=\"key\", value=\"change\") | map(attribute=\"value\") | first | default("") }}\
+{% endif %}{% endfor %}{% endif %}\
+{% for group in commits | group_by(attribute=\"group\") %}
+### {{ group.key | title }}\n\n{% for commit in group.value %}
+- {{ commit.message | split(pat="\n") | first }}{% endfor %}{% endfor %}
+"""
+# remove the version from the changelog footer
+footer = ""
+# categorization of commits
+[changelog.categories]
+# feat: A new feature (minor)
+"feat" = "Added"
+# fix: A bug fix (patch)
+"fix" = "Fixed"
+# perf: A code change that improves performance
+"perf" = "Improved"
+# refactor: A code change that neither fixes a bug nor adds a feature
+"refactor" = "Refactored"
+# docs: Documentation only changes
+"docs" = "Documentation"
+# test: Adding or correcting tests
+"test" = "Tests"
+# chore: Changes to the build process or auxiliary tools and libraries
+"chore" = "Maintenance"
+# style: Changes that do not affect the meaning of the code
+"style" = "Style"
+# ci: Changes to CI configuration files and scripts
+"ci" = "CI"
+# revert: Reverts a previous commit
+"revert" = "Reverted"
+# security: Changes related to security
+"security" = "Security"
+
+[changelog.breaking_commits]
+footer = """
+## Breaking Changes\n\n{% for commit in breaking_commits %}\
+- {{ commit.message | split(pat="\n") | first }}\
+{% endfor %}
+"""
+
+[git]
+# parse the commits based on https://www.conventionalcommits.org
+conventional_commits = true
+# filter out the following commits
+ignore_tags = ""
+# regex for parsing the version tag
+tag_filter = ["[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]*"]
+# regex for bumping the version
+version_resolver = "minor"
+# sort the commits inside sections by the following order
+sort_commits = "newest"
+# limit the number of commits in each section to the n-th last (0 = infinite)
+limit_commits = 10

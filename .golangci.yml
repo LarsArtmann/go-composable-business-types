@@ -72,4 +72,9 @@ linters:
 formatters:
   enable:
     - golines
-issues: {}
+issues:
+  exclude-rules:
+    - path: version/version.go
+      linters:
+        - gochecknoinits
+        - golines

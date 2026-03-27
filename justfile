@@ -58,3 +58,25 @@ vet:
 # Run go mod tidy
 tidy:
     go mod tidy
+
+# Install git-cliff for changelog generation
+install-cliff:
+    go install github.com/orhun/git-cliff/cmd/git-cliff@latest
+
+# Generate changelog (requires git-cliff: just install-cliff)
+changelog:
+    git-cliff --config cliff.toml --output CHANGELOG.md
+
+# Generate changelog for a specific tag
+changelog-tag TAG:
+    git-cliff --config cliff.toml --output CHANGELOG.md --tag {{TAG}}
+
+# Create a release tag for today
+# Usage: just release 1 (for 2026-03-27.1)
+release N:
+    git tag "{{date '+%Y-%m-%d'}}.{{N}}"
+    git push origin "{{date '+%Y-%m-%d'}}.{{N}}"
+
+# List all release tags
+tags:
+    git tag --list '[0-9][0-9][0-9][0-9]*' | sort -V | tail -10
