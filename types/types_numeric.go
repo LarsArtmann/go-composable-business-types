@@ -27,7 +27,7 @@ func NewPercentage(v uint8) Percentage {
 }
 
 // Float64 returns the percentage as a float64 between 0 and 1.
-func (p Percentage) Float64() float64 { return float64(p) / percentageDivisor }
+func (p Percentage) Float64() float64 { return float64(p) / percentageDivisor } //nolint:divbyzero // percentageDivisor is a constant 100, never zero
 
 // String returns the percentage as a human-readable string (e.g., "50%").
 func (p Percentage) String() string { return fmt.Sprintf("%d%%", p) }
@@ -112,7 +112,7 @@ func NewCents(v int64) Cents { return Cents(v) }
 func (c Cents) Int64() int64 { return int64(c) }
 
 // Float64 returns the cents value as a float64 (divided by 100).
-func (c Cents) Float64() float64 { return float64(c) / centsDivisor }
+func (c Cents) Float64() float64 { return float64(c) / centsDivisor } //nolint:divbyzero // centsDivisor is a constant 100, never zero
 
 // Validate implements validate.Validator for Cents.
 // Cents are always valid since they can represent any integer value.
@@ -150,7 +150,7 @@ func (c Cents) Sign() int {
 }
 
 // String returns the cents as a human-readable currency string (e.g., "$12.34").
-func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/centsDivisor) }
+func (c Cents) String() string { return fmt.Sprintf("$%.2f", float64(c)/centsDivisor) } //nolint:divbyzero // centsDivisor is a constant 100, never zero
 
 // IsZero returns true if Cents is zero.
 func (c Cents) IsZero() bool { return c == 0 }

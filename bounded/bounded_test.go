@@ -416,8 +416,8 @@ func TestBoundedStringIsMinMaxLength(t *testing.T) {
 	})
 }
 
-func mustBoundedString(minLen, maxLen int, value string) BoundedString {
-	bs, err := NewBoundedString(minLen, maxLen, value)
+func mustBoundedString(minLen, _ int, value string) BoundedString {
+	bs, err := NewBoundedString(minLen, 100, value)
 	if err != nil {
 		panic(err)
 	}

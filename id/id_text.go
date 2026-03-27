@@ -2,6 +2,7 @@ package id
 
 import (
 	"encoding"
+	"errors"
 	"fmt"
 	"strconv"
 )
@@ -28,7 +29,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	case string:
 		v, ok := any(string(data)).(V)
 		if !ok {
-			return fmt.Errorf("id: internal error: type assertion failed for string")
+			return errors.New("id: internal error: type assertion failed for string")
 		}
 		*id = ID[B, V]{value: v}
 		return nil
@@ -39,7 +40,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 		}
 		v, ok := any(n).(V)
 		if !ok {
-			return fmt.Errorf("id: internal error: type assertion failed for int")
+			return errors.New("id: internal error: type assertion failed for int")
 		}
 		*id = ID[B, V]{value: v}
 		return nil
@@ -50,7 +51,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 		}
 		v, ok := any(n).(V)
 		if !ok {
-			return fmt.Errorf("id: internal error: type assertion failed for int64")
+			return errors.New("id: internal error: type assertion failed for int64")
 		}
 		*id = ID[B, V]{value: v}
 		return nil
@@ -61,7 +62,7 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 		}
 		v, ok := any(n).(V)
 		if !ok {
-			return fmt.Errorf("id: internal error: type assertion failed for uint64")
+			return errors.New("id: internal error: type assertion failed for uint64")
 		}
 		*id = ID[B, V]{value: v}
 		return nil

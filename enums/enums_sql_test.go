@@ -491,168 +491,103 @@ func TestValueMethods(t *testing.T) {
 	})
 }
 
-// Test comprehensive Scan types for all enums
-func TestActorKindScanAllTypes(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name  string
-		src   any
-		want  ActorKind
-		valid bool
-	}{
-		{"int64", int64(1), ActorKindBot, true},
-		{"string", "System", ActorKindSystem, true},
-		{"bytes", []byte("Service"), ActorKindService, true},
-		{"int", int(0), ActorKindUser, true},
-		{"uint", uint(2), ActorKindSystem, true},
-		{"uint64", uint64(3), ActorKindService, true},
-		{"float64", float64(1), ActorKindBot, true},
-		{"nil", nil, ActorKind(0), true},
-	}
+// scanTestCase is a generic test case for Scan methods
+type scanTestCase[T any] struct {
+	name string
+	src  any
+	want T
+}
 
+// testScanAllTypes is a generic helper for testing Scan methods on enum types.
+// The scanFunc parameter allows calling Scan on a pointer to T.
+func testScanAllTypes[T comparable](
+	t *testing.T,
+	tests []scanTestCase[T],
+	scanFunc func(*T, any) error,
+) {
+	t.Helper()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			var ak ActorKind
-			err := ak.Scan(tt.src)
+			var e T
+			err := scanFunc(&e, tt.src)
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
-			if ak != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, ak)
+			if e != tt.want {
+				t.Errorf("expected %v, got %v", tt.want, e)
 			}
 		})
 	}
+}
+
+// Test comprehensive Scan types for all enums
+func TestActorKindScanAllTypes(t *testing.T) {
+	t.Parallel()
+	testScanAllTypes(t, []scanTestCase[ActorKind]{
+		{"int64", int64(1), ActorKindBot},
+		{"string", "System", ActorKindSystem},
+		{"bytes", []byte("Service"), ActorKindService},
+		{"int", int(0), ActorKindUser},
+		{"uint", uint(2), ActorKindSystem},
+		{"uint64", uint64(3), ActorKindService},
+		{"float64", float64(1), ActorKindBot},
+		{"nil", nil, ActorKind(0)},
+	}, (*ActorKind).Scan)
 }
 
 func TestPriorityScanAllTypes(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name  string
-		src   any
-		want  Priority
-		valid bool
-	}{
-		{"int64", int64(2), PriorityHigh, true},
-		{"string", "Critical", PriorityCritical, true},
-		{"bytes", []byte("Low"), PriorityLow, true},
-		{"int", int(1), PriorityMedium, true},
-		{"uint", uint(0), PriorityLow, true},
-		{"uint64", uint64(3), PriorityCritical, true},
-		{"float64", float64(2), PriorityHigh, true},
-		{"nil", nil, Priority(0), true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			var p Priority
-			err := p.Scan(tt.src)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-			if p != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, p)
-			}
-		})
-	}
+	testScanAllTypes(t, []scanTestCase[Priority]{
+		{"int64", int64(2), PriorityHigh},
+		{"string", "Critical", PriorityCritical},
+		{"bytes", []byte("Low"), PriorityLow},
+		{"int", int(1), PriorityMedium},
+		{"uint", uint(0), PriorityLow},
+		{"uint64", uint64(3), PriorityCritical},
+		{"float64", float64(2), PriorityHigh},
+		{"nil", nil, Priority(0)},
+	}, (*Priority).Scan)
 }
 
 func TestStatusScanAllTypes(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name  string
-		src   any
-		want  Status
-		valid bool
-	}{
-		{"int64", int64(1), StatusActive, true},
-		{"string", "Archived", StatusArchived, true},
-		{"bytes", []byte("Deleted"), StatusDeleted, true},
-		{"int", int(0), StatusDraft, true},
-		{"uint", uint(2), StatusPaused, true},
-		{"uint64", uint64(4), StatusDeleted, true},
-		{"float64", float64(1), StatusActive, true},
-		{"nil", nil, Status(0), true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			var s Status
-			err := s.Scan(tt.src)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-			if s != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, s)
-			}
-		})
-	}
+	testScanAllTypes(t, []scanTestCase[Status]{
+		{"int64", int64(1), StatusActive},
+		{"string", "Archived", StatusArchived},
+		{"bytes", []byte("Deleted"), StatusDeleted},
+		{"int", int(0), StatusDraft},
+		{"uint", uint(2), StatusPaused},
+		{"uint64", uint64(4), StatusDeleted},
+		{"float64", float64(1), StatusActive},
+		{"nil", nil, Status(0)},
+	}, (*Status).Scan)
 }
 
 func TestTriggerScanAllTypes(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name  string
-		src   any
-		want  Trigger
-		valid bool
-	}{
-		{"int64", int64(2), TriggerWebhook, true},
-		{"string", "Correction", TriggerCorrection, true},
-		{"bytes", []byte("Import"), TriggerImport, true},
-		{"int", int(0), TriggerManual, true},
-		{"uint", uint(5), TriggerSystem, true},
-		{"uint64", uint64(6), TriggerCorrection, true},
-		{"float64", float64(2), TriggerWebhook, true},
-		{"nil", nil, Trigger(0), true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			var tr Trigger
-			err := tr.Scan(tt.src)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-			if tr != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, tr)
-			}
-		})
-	}
+	testScanAllTypes(t, []scanTestCase[Trigger]{
+		{"int64", int64(2), TriggerWebhook},
+		{"string", "Correction", TriggerCorrection},
+		{"bytes", []byte("Import"), TriggerImport},
+		{"int", int(0), TriggerManual},
+		{"uint", uint(5), TriggerSystem},
+		{"uint64", uint64(6), TriggerCorrection},
+		{"float64", float64(2), TriggerWebhook},
+		{"nil", nil, Trigger(0)},
+	}, (*Trigger).Scan)
 }
 
 func TestCauseKindScanAllTypes(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		name  string
-		src   any
-		want  CauseKind
-		valid bool
-	}{
-		{"int64", int64(1), CauseKindCommand, true},
-		{"string", "Event", CauseKindEvent, true},
-		{"bytes", []byte("Direct"), CauseKindDirect, true},
-		{"int", int(0), CauseKindDirect, true},
-		{"uint", uint(2), CauseKindEvent, true},
-		{"uint64", uint64(1), CauseKindCommand, true},
-		{"float64", float64(1), CauseKindCommand, true},
-		{"nil", nil, CauseKind(0), true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			var ck CauseKind
-			err := ck.Scan(tt.src)
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-			if ck != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, ck)
-			}
-		})
-	}
+	testScanAllTypes(t, []scanTestCase[CauseKind]{
+		{"int64", int64(1), CauseKindCommand},
+		{"string", "Event", CauseKindEvent},
+		{"bytes", []byte("Direct"), CauseKindDirect},
+		{"int", int(0), CauseKindDirect},
+		{"uint", uint(2), CauseKindEvent},
+		{"uint64", uint64(1), CauseKindCommand},
+		{"float64", float64(1), CauseKindCommand},
+		{"nil", nil, CauseKind(0)},
+	}, (*CauseKind).Scan)
 }
