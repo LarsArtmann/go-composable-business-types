@@ -26,28 +26,44 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	var zero V
 	switch any(zero).(type) {
 	case string:
-		*id = ID[B, V]{value: any(string(data)).(V)}
+		v, ok := any(string(data)).(V)
+		if !ok {
+			return fmt.Errorf("id: internal error: type assertion failed for string")
+		}
+		*id = ID[B, V]{value: v}
 		return nil
 	case int:
 		n, err := strconv.Atoi(string(data))
 		if err != nil {
 			return fmt.Errorf("id: cannot parse %q as int: %w", data, err)
 		}
-		*id = ID[B, V]{value: any(n).(V)}
+		v, ok := any(n).(V)
+		if !ok {
+			return fmt.Errorf("id: internal error: type assertion failed for int")
+		}
+		*id = ID[B, V]{value: v}
 		return nil
 	case int64:
 		n, err := strconv.ParseInt(string(data), 10, 64)
 		if err != nil {
 			return fmt.Errorf("id: cannot parse %q as int64: %w", data, err)
 		}
-		*id = ID[B, V]{value: any(n).(V)}
+		v, ok := any(n).(V)
+		if !ok {
+			return fmt.Errorf("id: internal error: type assertion failed for int64")
+		}
+		*id = ID[B, V]{value: v}
 		return nil
 	case uint64:
 		n, err := strconv.ParseUint(string(data), 10, 64)
 		if err != nil {
 			return fmt.Errorf("id: cannot parse %q as uint64: %w", data, err)
 		}
-		*id = ID[B, V]{value: any(n).(V)}
+		v, ok := any(n).(V)
+		if !ok {
+			return fmt.Errorf("id: internal error: type assertion failed for uint64")
+		}
+		*id = ID[B, V]{value: v}
 		return nil
 	default:
 		return fmt.Errorf(
