@@ -159,3 +159,78 @@ func TestBitemporalJSON(t *testing.T) {
 		t.Error("parsed should not be zero")
 	}
 }
+
+func TestCorrectionString(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name     string
+		c        Correction
+		expected string
+	}{
+		{"NoCorrection", NoCorrection, ""},
+		{"IsCorrection", IsCorrection, "correction"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if got := tt.c.String(); got != tt.expected {
+				t.Errorf("Correction.String() = %q, want %q", got, tt.expected)
+			}
+		})
+	}
+}
+
+func TestCorrectionJSON(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name string
+		c    Correction
+		want string
+	}{
+		{"NoCorrection", NoCorrection, "false"},
+		{"IsCorrection", IsCorrection, "true"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			data, err := tt.c.MarshalJSON()
+			if err != nil {
+				t.Fatalf("MarshalJSON failed: %v", err)
+			}
+			if string(data) != tt.want {
+				t.Errorf("MarshalJSON() = %s, want %s", string(data), tt.want)
+			}
+
+			// Test round-trip
+			var parsed Correction
+			if err := parsed.UnmarshalJSON(data); err != nil {
+				t.Fatalf("UnmarshalJSON failed: %v", err)
+			}
+			if parsed != tt.c {
+				t.Errorf("round-trip failed: got %v, want %v", parsed, tt.c)
+			}
+		})
+	}
+}
+
+func TestCorrectionUnmarshalJSONErrors(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name    string
+		data    string
+		wantErr bool
+	}{
+		{"invalid JSON", `"not-a-bool"`, true},
+		{"malformed JSON", `{invalid`, true},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var c Correction
+			err := c.UnmarshalJSON([]byte(tt.data))
+			if (err != nil) != tt.wantErr {
+				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}

@@ -5,6 +5,16 @@ import (
 	"testing"
 )
 
+// assertUnmarshalError verifies that JSON unmarshaling fails with an error.
+func assertUnmarshalError[B any, V comparable](t *testing.T, data string) {
+	t.Helper()
+	var id ID[B, V]
+	err := json.Unmarshal([]byte(data), &id)
+	if err == nil {
+		t.Error("expected error for unmarshaling")
+	}
+}
+
 func TestIDJSON(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID non-zero", func(t *testing.T) {
@@ -144,29 +154,17 @@ func TestIDUnmarshalJSON(t *testing.T) {
 
 	t.Run("invalid JSON", func(t *testing.T) {
 		t.Parallel()
-		var id ID[StringBrand, string]
-		err := json.Unmarshal([]byte(`invalid`), &id)
-		if err == nil {
-			t.Error("expected error for invalid JSON")
-		}
+		assertUnmarshalError[StringBrand, string](t, `invalid`)
 	})
 
 	t.Run("number into string ID", func(t *testing.T) {
 		t.Parallel()
-		var id ID[StringBrand, string]
-		err := json.Unmarshal([]byte("123"), &id)
-		if err == nil {
-			t.Error("expected error for number into string ID")
-		}
+		assertUnmarshalError[StringBrand, string](t, "123")
 	})
 
 	t.Run("string into int64 ID", func(t *testing.T) {
 		t.Parallel()
-		var id ID[Int64Brand, int64]
-		err := json.Unmarshal([]byte(`"not-a-number"`), &id)
-		if err == nil {
-			t.Error("expected error for string into int64 ID")
-		}
+		assertUnmarshalError[Int64Brand, int64](t, `"not-a-number"`)
 	})
 }
 

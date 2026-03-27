@@ -2,6 +2,21 @@ package types
 
 import "testing"
 
+// testCompare runs table-driven comparison tests for types with Compare method.
+func testCompare[T any](t *testing.T, tests []struct {
+	a, b     T
+	expected int
+}, compare func(a, b T) int,
+) {
+	t.Helper()
+	for _, tt := range tests {
+		result := compare(tt.a, tt.b)
+		if result != tt.expected {
+			t.Errorf("Compare(%v, %v) = %d, expected %d", tt.a, tt.b, result, tt.expected)
+		}
+	}
+}
+
 func TestNewPercentage(t *testing.T) {
 	t.Parallel()
 	p := NewPercentage(50)
@@ -34,21 +49,14 @@ func TestPercentageHelpers(t *testing.T) {
 
 func TestPercentageCompare(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testCompare(t, []struct {
 		a, b     Percentage
 		expected int
 	}{
 		{NewPercentage(50), NewPercentage(50), 0},
 		{NewPercentage(30), NewPercentage(50), -1},
 		{NewPercentage(70), NewPercentage(50), 1},
-	}
-
-	for _, tt := range tests {
-		result := tt.a.Compare(tt.b)
-		if result != tt.expected {
-			t.Errorf("Compare(%d, %d) = %d, expected %d", tt.a, tt.b, result, tt.expected)
-		}
-	}
+	}, Percentage.Compare)
 }
 
 func TestPercentageJSON(t *testing.T) {
@@ -153,19 +161,12 @@ func TestCentsMath(t *testing.T) {
 
 func TestCentsCompare(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testCompare(t, []struct {
 		a, b     Cents
 		expected int
 	}{
 		{NewCents(100), NewCents(100), 0},
 		{NewCents(50), NewCents(100), -1},
 		{NewCents(150), NewCents(100), 1},
-	}
-
-	for _, tt := range tests {
-		result := tt.a.Compare(tt.b)
-		if result != tt.expected {
-			t.Errorf("Compare(%d, %d) = %d, expected %d", tt.a, tt.b, result, tt.expected)
-		}
-	}
+	}, Cents.Compare)
 }

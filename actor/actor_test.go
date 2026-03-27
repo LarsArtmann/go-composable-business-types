@@ -7,6 +7,13 @@ import (
 	"github.com/larsartmann/go-composable-business-types/id"
 )
 
+// newTestChain creates a test actor chain with a user and two services.
+func newTestChain(userName string) ActorChain[string] {
+	return NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), userName)).
+		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1")).
+		Append(ServiceActor(id.NewID[struct{}, string]("svc-2"), "Service 2"))
+}
+
 func TestNewActorChain(t *testing.T) {
 	t.Parallel()
 	userID := id.NewID[struct{}, string]("user-1")
@@ -23,9 +30,7 @@ func TestNewActorChain(t *testing.T) {
 
 func TestActorChainOriginAndCurrent(t *testing.T) {
 	t.Parallel()
-	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "Alice")).
-		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1")).
-		Append(ServiceActor(id.NewID[struct{}, string]("svc-2"), "Service 2"))
+	chain := newTestChain("Alice")
 
 	if chain.Origin().Name != "Alice" {
 		t.Errorf("expected origin Alice, got %s", chain.Origin().Name)
@@ -53,9 +58,7 @@ func TestActorChainHasKind(t *testing.T) {
 
 func TestActorChainByKind(t *testing.T) {
 	t.Parallel()
-	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "User")).
-		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1")).
-		Append(ServiceActor(id.NewID[struct{}, string]("svc-2"), "Service 2"))
+	chain := newTestChain("User")
 
 	services := chain.ByKind(enums.ActorKindService)
 	if len(services) != 2 {

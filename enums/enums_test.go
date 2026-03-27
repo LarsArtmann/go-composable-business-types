@@ -21,24 +21,12 @@ func TestActorKind(t *testing.T) {
 	}
 
 	// Test all ActorKind values
-	tests := []struct {
-		kind     ActorKind
-		expected string
-	}{
+	testEnumString(t, []enumStringCase[ActorKind]{
 		{ActorKindUser, "User"},
 		{ActorKindBot, "Bot"},
 		{ActorKindSystem, "System"},
 		{ActorKindService, "Service"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			t.Parallel()
-			if tt.kind.String() != tt.expected {
-				t.Errorf("expected %s, got %s", tt.expected, tt.kind.String())
-			}
-		})
-	}
+	})
 }
 
 func TestParseActorKind(t *testing.T) {

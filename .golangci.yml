@@ -1,103 +1,75 @@
 version: "2"
 run:
-  timeout: 5m
-  go: ""
-  build-tags: []
-  allow-parallel-runners: false
-  allow-serial-runners: false
-  issues-exit-code: 1
-  tests: true
+    timeout: 5m
+    go: 1.26.1
+    build-tags: []
+    allow-parallel-runners: false
+    allow-serial-runners: false
+    tests: true
+    concurrency: 4
 output:
-  formats: {}
+    formats: {}
 linters:
-  default: standard
-  enable:
-    - loggercheck
-    - paralleltest
-    - exptostd
-    - gocritic
-    - gomoddirectives
-    - prealloc
-    - wastedassign
-    - contextcheck
-    - dogsled
-    - errchkjson
-    - nestif
-    - sloglint
-    - nilnesserr
-    - predeclared
-    - gocognit
-    - reassign
-    - usetesting
-    - durationcheck
-    - interfacebloat
-    - noctx
-    - protogetter
-    - unconvert
-    - cyclop
-    - nolintlint
-    - ginkgolinter
-    - gocyclo
-    - bodyclose
-    - decorder
-    - gochecknoinits
-    - perfsprint
-    - mirror
-    - bidichk
-    - dupl
-    - dupword
-    - exhaustive
-    - rowserrcheck
-    - spancheck
-    - zerologlint
-    - copyloopvar
-    - errorlint
-    - gocheckcompilerdirectives
-    - nilerr
-    - testifylint
-    - misspell
-    - intrange
-    - nakedret
-    - thelper
-    - maintidx
-    - errname
-    - sqlclosecheck
-    - containedctx
-    - gomodguard
-    - unparam
-    - gochecksumtype
-  disable:
-    # False positives for interface assertions and zero-value resets
-    - exhaustruct
-    # Safe type assertions in generic code after type switches
-    - forcetypeassert
-    # Generic serialization methods are inherently verbose
-    - funlen
-    # Locale constants are intentional design
-    - gochecknoglobals
-    # Repeated test strings are acceptable
-    - goconst
-    # G115 integer overflow false positives in controlled serialization
-    - gosec
-    # Unicode in test strings is intentional
-    - gosmopolitan
-    # Internal types don't need JSON tags
-    - musttag
-    # nil, nil is correct for Value() methods on zero values (SQL pattern)
-    - nilnil
-    # Mixed receivers are correct for value types with UnmarshalJSON/Scan
-    - recvcheck
-    # Stuttering names are acceptable for domain types (actor.ActorEntry, etc.)
-    - revive
-    # External errors are wrapped at API boundaries, not internally
-    - wrapcheck
-  settings:
-    cyclop:
-      max-complexity: 40
+    enable:
+        - bodyclose
+        - gochecknoinits
+        - dupl
+        - testifylint
+        - decorder
+        - gocritic
+        - wastedassign
+        - errchkjson
+        - usetesting
+        - durationcheck
+        - cyclop
+        - gocyclo
+        - reassign
+        - interfacebloat
+        - ginkgolinter
+        - exhaustive
+        - errorlint
+        - misspell
+        - sqlclosecheck
+        - containedctx
+        - paralleltest
+        - exptostd
+        - bidichk
+        - gomodguard
+        - unparam
+        - gochecksumtype
+        - nilnesserr
+        - unconvert
+        - perfsprint
+        - maintidx
+        - nestif
+        - protogetter
+        - rowserrcheck
+        - thelper
+        - errname
+        - prealloc
+        - sloglint
+        - gocognit
+        - noctx
+        - zerologlint
+        - copyloopvar
+        - intrange
+        - contextcheck
+        - dogsled
+        - mirror
+        - dupword
+        - spancheck
+        - gocheckcompilerdirectives
+        - nilerr
+        - nakedret
+        - loggercheck
+        - gomoddirectives
+        - predeclared
+        - nolintlint
+    default: standard
+    settings:
+        cyclop:
+            max-complexity: 40
 formatters:
-  enable:
-    - golines
-issues:
-  max-issues-per-linter: 0
-  max-same-issues: 0
-  new: false
+    enable:
+        - golines
+issues: {}

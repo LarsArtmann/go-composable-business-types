@@ -6,21 +6,14 @@ import (
 	"testing"
 )
 
-// =============================================================================
-// Sentinel Error Tests
-// =============================================================================
-
-func TestEmailSentinels(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrInvalidEmail", ErrInvalidEmail, ErrInvalidEmail},
-		{"ErrEmailEmpty", ErrEmailEmpty, ErrEmailEmpty},
-	}
-
+// testSentinelErrors runs table-driven tests for sentinel error identity.
+func testSentinelErrors(t *testing.T, tests []struct {
+	name string
+	err  error
+	want error
+},
+) {
+	t.Helper()
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
@@ -31,9 +24,25 @@ func TestEmailSentinels(t *testing.T) {
 	}
 }
 
+// =============================================================================
+// Sentinel Error Tests
+// =============================================================================
+
+func TestEmailSentinels(t *testing.T) {
+	t.Parallel()
+	testSentinelErrors(t, []struct {
+		name string
+		err  error
+		want error
+	}{
+		{"ErrInvalidEmail", ErrInvalidEmail, ErrInvalidEmail},
+		{"ErrEmailEmpty", ErrEmailEmpty, ErrEmailEmpty},
+	})
+}
+
 func TestURLSentinels(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testSentinelErrors(t, []struct {
 		name string
 		err  error
 		want error
@@ -42,21 +51,12 @@ func TestURLSentinels(t *testing.T) {
 		{"ErrURLEmpty", ErrURLEmpty, ErrURLEmpty},
 		{"ErrURLScheme", ErrURLScheme, ErrURLScheme},
 		{"ErrURLHost", ErrURLHost, ErrURLHost},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if !errors.Is(tt.err, tt.want) {
-				t.Errorf("errors.Is() = false, want true")
-			}
-		})
-	}
+	})
 }
 
 func TestBoundedStringSentinels(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testSentinelErrors(t, []struct {
 		name string
 		err  error
 		want error
@@ -69,21 +69,12 @@ func TestBoundedStringSentinels(t *testing.T) {
 			ErrBoundedStringMaxLessThanMin,
 			ErrBoundedStringMaxLessThanMin,
 		},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if !errors.Is(tt.err, tt.want) {
-				t.Errorf("errors.Is() = false, want true")
-			}
-		})
-	}
+	})
 }
 
 func TestNanoIDSentinels(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testSentinelErrors(t, []struct {
 		name string
 		err  error
 		want error
@@ -92,21 +83,12 @@ func TestNanoIDSentinels(t *testing.T) {
 		{"ErrNanoIDTooShort", ErrNanoIDTooShort, ErrNanoIDTooShort},
 		{"ErrNanoIDTooLong", ErrNanoIDTooLong, ErrNanoIDTooLong},
 		{"ErrNanoIDInvalid", ErrNanoIDInvalid, ErrNanoIDInvalid},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if !errors.Is(tt.err, tt.want) {
-				t.Errorf("errors.Is() = false, want true")
-			}
-		})
-	}
+	})
 }
 
 func TestIDSentinels(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	testSentinelErrors(t, []struct {
 		name string
 		err  error
 		want error
@@ -114,14 +96,5 @@ func TestIDSentinels(t *testing.T) {
 		{"ErrIDInvalid", ErrIDInvalid, ErrIDInvalid},
 		{"ErrIDTypeNotSupported", ErrIDTypeNotSupported, ErrIDTypeNotSupported},
 		{"ErrIDInsufficientData", ErrIDInsufficientData, ErrIDInsufficientData},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if !errors.Is(tt.err, tt.want) {
-				t.Errorf("errors.Is() = false, want true")
-			}
-		})
-	}
+	})
 }

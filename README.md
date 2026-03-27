@@ -265,6 +265,32 @@ go generate ./...
 - `github.com/abice/go-enum` - Enum code generation
 - `github.com/bojanz/currency` - ISO 4217 currency handling with 370+ locales
 
+## Documentation
+
+| Document                       | Description                                                   |
+| ------------------------------ | ------------------------------------------------------------- |
+| [README.md](./README.md)       | This file — usage and examples                                |
+| [POLICY.md](./POLICY.md)       | Library policies: versioning, breaking changes, contributions |
+| [SUPPORT.md](./SUPPORT.md)     | Getting help, reporting issues, FAQ                           |
+| [SECURITY.md](./SECURITY.md)   | Security policy and vulnerability reporting                   |
+| [CHANGELOG.md](./CHANGELOG.md) | Version history and release notes                             |
+| [PARTS.md](./PARTS.md)         | Component analysis and architecture                           |
+
+## Contributing
+
+See [POLICY.md](./POLICY.md) for:
+
+- Contribution guidelines
+- Breaking changes policy
+- Commit message conventions
+- Code review process
+
+## Support
+
+- **Issues**: [GitHub Issues](https://github.com/larsartmann/go-composable-business-types/issues)
+- **Discussions**: [GitHub Discussions](https://github.com/larsartmann/go-composable-business-types/discussions)
+- **Security**: See [SECURITY.md](./SECURITY.md)
+
 ## License
 
 MIT

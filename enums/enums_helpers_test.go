@@ -5,6 +5,25 @@ import (
 	"testing"
 )
 
+// enumStringCase represents a test case for enum String() method.
+type enumStringCase[T interface{ String() string }] struct {
+	value    T
+	expected string
+}
+
+// testEnumString runs table-driven String() tests for enum types.
+func testEnumString[T interface{ String() string }](t *testing.T, tests []enumStringCase[T]) {
+	t.Helper()
+	for _, tt := range tests {
+		t.Run(tt.expected, func(t *testing.T) {
+			t.Parallel()
+			if tt.value.String() != tt.expected {
+				t.Errorf("expected %s, got %s", tt.expected, tt.value.String())
+			}
+		})
+	}
+}
+
 func TestEnumValues(t *testing.T) {
 	t.Parallel()
 	// Test ActorKindValues
@@ -79,23 +98,11 @@ func TestEnumNames(t *testing.T) {
 
 func TestCauseKind(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
-		kind     CauseKind
-		expected string
-	}{
+	testEnumString(t, []enumStringCase[CauseKind]{
 		{CauseKindDirect, "Direct"},
 		{CauseKindCommand, "Command"},
 		{CauseKindEvent, "Event"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			t.Parallel()
-			if tt.kind.String() != tt.expected {
-				t.Errorf("expected %s, got %s", tt.expected, tt.kind.String())
-			}
-		})
-	}
+	})
 }
 
 func TestParseCauseKind(t *testing.T) {

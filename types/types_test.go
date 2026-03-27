@@ -7,9 +7,52 @@ import (
 	pkgerrors "github.com/larsartmann/go-composable-business-types/pkg/errors"
 )
 
-func TestEmail(t *testing.T) {
+// validationCase represents a test case for string validation.
+type validationCase struct {
+	name    string
+	input   string
+	wantErr bool
+}
+
+// testValidation runs table-driven validation tests for types with String() method.
+func testValidation[T interface{ String() string }](t *testing.T, tests []validationCase, constructor func(string) (T, error)) {
+	t.Helper()
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got, err := constructor(tt.input)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("expected error")
+				}
+				return
+			}
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+			if got.String() != tt.input {
+				t.Errorf("expected %s, got %s", tt.input, got.String())
+			}
+		})
+	}
+}
+
+func TestEmailParts(t *testing.T) {
 	t.Parallel()
-	tests := []struct {
+	email, _ := NewEmail("user@example.com")
+	if email.LocalPart() != "user" {
+		t.Errorf("expected local part 'user', got %s", email.LocalPart())
+	}
+	if email.Domain() != "example.com" {
+		t.Errorf("expected domain 'example.com', got %s", email.Domain())
+	}
+}
+
+func TestValidation(t *testing.T) {
+	t.Parallel()
+
+	// Email validation tests - inline table
+	for _, tt := range []struct {
 		name    string
 		input   string
 		wantErr bool
@@ -21,10 +64,8 @@ func TestEmail(t *testing.T) {
 		{"no at", "testexample.com", true},
 		{"no domain", "test@", true},
 		{"no local", "@example.com", true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
+	} {
+		t.Run("Email/"+tt.name, func(t *testing.T) {
 			t.Parallel()
 			email, err := NewEmail(tt.input)
 			if tt.wantErr {
@@ -41,17 +82,17 @@ func TestEmail(t *testing.T) {
 			}
 		})
 	}
-}
 
-func TestEmailParts(t *testing.T) {
-	t.Parallel()
-	email, _ := NewEmail("user@example.com")
-	if email.LocalPart() != "user" {
-		t.Errorf("expected local part 'user', got %s", email.LocalPart())
-	}
-	if email.Domain() != "example.com" {
-		t.Errorf("expected domain 'example.com', got %s", email.Domain())
-	}
+	// URL validation tests - using helper
+	testValidation(t, []validationCase{
+		{"valid https", "https://example.com", false},
+		{"valid http", "http://example.com", false},
+		{"valid with path", "https://example.com/path", false},
+		{"empty", "", true},
+		{"no scheme", "example.com", true},
+		{"ftp not allowed", "ftp://example.com", true},
+		{"no host", "https:///path", true},
+	}, NewURL)
 }
 
 func TestParseEmailError(t *testing.T) {
@@ -95,42 +136,6 @@ func TestEmailIsZero(t *testing.T) {
 	email, _ := NewEmail("test@example.com")
 	if email.IsZero() {
 		t.Error("non-zero Email should not be zero")
-	}
-}
-
-func TestURL(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
-		{"valid https", "https://example.com", false},
-		{"valid http", "http://example.com", false},
-		{"valid with path", "https://example.com/path", false},
-		{"empty", "", true},
-		{"no scheme", "example.com", true},
-		{"ftp not allowed", "ftp://example.com", true},
-		{"no host", "https:///path", true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			url, err := NewURL(tt.input)
-			if tt.wantErr {
-				if err == nil {
-					t.Error("expected error")
-				}
-				return
-			}
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-			if url.String() != tt.input {
-				t.Errorf("expected %s, got %s", tt.input, url.String())
-			}
-		})
 	}
 }
 
