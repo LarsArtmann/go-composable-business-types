@@ -81,7 +81,8 @@ func BotActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T]
 
 // SystemActor creates an actor entry for system-initiated actions.
 func SystemActor[T comparable]() ActorEntry[T] {
-	return ActorEntry[T]{Kind: enums.ActorKindSystem}
+	var zeroID id.ID[struct{}, T]
+	return ActorEntry[T]{Kind: enums.ActorKindSystem, ID: zeroID, Name: ""}
 }
 
 // ServiceActor creates an actor entry for a service-to-service call.

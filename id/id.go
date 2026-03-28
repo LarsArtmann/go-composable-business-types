@@ -75,30 +75,43 @@ func (id ID[B, V]) Equal(other ID[B, V]) bool {
 func (id ID[B, V]) Compare(other ID[B, V]) (int, error) {
 	switch a := any(id.value).(type) {
 	case int:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(int)), nil
 	case int8:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(int8)), nil
 	case int16:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(int16)), nil
 	case int32:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(int32)), nil
 	case int64:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(int64)), nil
 	case uint:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(uint)), nil
 	case uint8:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(uint8)), nil
 	case uint16:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(uint16)), nil
 	case uint32:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(uint32)), nil
 	case uint64:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(uint64)), nil
 	case string:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(string)), nil
 	case float32:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(float32)), nil
 	case float64:
+		//nolint:forcetypeassert // V is same type for both id and other
 		return cmp.Compare(a, any(other.value).(float64)), nil
 	default:
 		return 0, ErrNotOrdered

@@ -18,7 +18,11 @@ type Context struct {
 // NewContext creates a new Context with default values.
 func NewContext() Context {
 	return Context{
-		tags: make(map[string]string),
+		environment: "",
+		session:     "",
+		request:     "",
+		source:      "",
+		tags:        make(map[string]string),
 	}
 }
 

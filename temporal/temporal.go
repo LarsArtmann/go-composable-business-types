@@ -73,7 +73,7 @@ type Bitemporal struct {
 func NewBitemporal(recorded types.Timestamp) Bitemporal {
 	return Bitemporal{
 		validFrom:  recorded,
-		validUntil: types.Timestamp{},
+		validUntil: types.Timestamp{Time: time.Time{}},
 		recorded:   recorded,
 		correction: NoCorrection,
 	}

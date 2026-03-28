@@ -94,7 +94,7 @@ func (id NanoID) MarshalText() ([]byte, error) {
 // UnmarshalText implements encoding.TextUnmarshaler for JSON deserialization.
 func (id *NanoID) UnmarshalText(data []byte) error {
 	if len(data) == 0 {
-		*id = NanoID{}
+		*id = NanoID{value: ""}
 		return nil
 	}
 
@@ -122,7 +122,7 @@ func (id *NanoID) Scan(src any) error {
 	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
-			*id = NanoID{}
+			*id = NanoID{value: ""}
 			return nil
 		}
 		parsed, err := ParseNanoID(v)

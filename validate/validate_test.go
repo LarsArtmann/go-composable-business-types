@@ -46,7 +46,7 @@ func TestValidatorInterface(t *testing.T) {
 	t.Parallel()
 
 	// Ensure mockValidator implements Validator
-	var _ Validator = mockValidator{}
+	var _ Validator = mockValidator{err: nil}
 
 	// Test that the interface is satisfied
 	var v Validator = mockValidator{err: nil}

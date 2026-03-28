@@ -48,7 +48,7 @@ func TestNewBitemporalWithRange(t *testing.T) {
 func TestNewCorrection(t *testing.T) {
 	t.Parallel()
 	now := types.Now()
-	b := NewCorrection(now, types.Timestamp{}, now)
+	b := NewCorrection(now, types.Timestamp{Time: time.Time{}}, now)
 
 	if b.IsCorrection() != IsCorrection {
 		t.Error("NewCorrection should be a correction")

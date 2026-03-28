@@ -181,23 +181,23 @@ func (id ID[B, V]) Value() (driver.Value, error) {
 
 // Compile-time interface assertions
 var (
-	_ fmt.Stringer     = ID[struct{}, string]{}
-	_ fmt.GoStringer   = ID[struct{}, string]{}
-	_ fmt.Formatter    = ID[struct{}, string]{}
-	_ json.Marshaler   = ID[struct{}, string]{}
+	_ fmt.Stringer     = ID[struct{}, string]{value: ""}
+	_ fmt.GoStringer   = ID[struct{}, string]{value: ""}
+	_ fmt.Formatter    = ID[struct{}, string]{value: ""}
+	_ json.Marshaler   = ID[struct{}, string]{value: ""}
 	_ json.Unmarshaler = (*ID[struct{}, string])(nil)
-	_ json.Marshaler   = ID[struct{}, int64]{}
+	_ json.Marshaler   = ID[struct{}, int64]{value: 0}
 	_ json.Unmarshaler = (*ID[struct{}, int64])(nil)
-	_ json.Marshaler   = ID[struct{}, int32]{}
+	_ json.Marshaler   = ID[struct{}, int32]{value: 0}
 	_ json.Unmarshaler = (*ID[struct{}, int32])(nil)
-	_ json.Marshaler   = ID[struct{}, uint64]{}
+	_ json.Marshaler   = ID[struct{}, uint64]{value: 0}
 	_ json.Unmarshaler = (*ID[struct{}, uint64])(nil)
 	_ sql.Scanner      = (*ID[struct{}, string])(nil)
 	_ sql.Scanner      = (*ID[struct{}, int64])(nil)
 	_ sql.Scanner      = (*ID[struct{}, int32])(nil)
 	_ sql.Scanner      = (*ID[struct{}, uint64])(nil)
-	_ driver.Valuer    = ID[struct{}, string]{}
-	_ driver.Valuer    = ID[struct{}, int64]{}
-	_ driver.Valuer    = ID[struct{}, int32]{}
-	_ driver.Valuer    = ID[struct{}, uint64]{}
+	_ driver.Valuer    = ID[struct{}, string]{value: ""}
+	_ driver.Valuer    = ID[struct{}, int64]{value: 0}
+	_ driver.Valuer    = ID[struct{}, int32]{value: 0}
+	_ driver.Valuer    = ID[struct{}, uint64]{value: 0}
 )

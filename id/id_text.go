@@ -77,8 +77,8 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 
 // Compile-time interface assertions for text marshaling
 var (
-	_ encoding.TextMarshaler   = ID[struct{}, string]{}
+	_ encoding.TextMarshaler   = ID[struct{}, string]{value: ""}
 	_ encoding.TextUnmarshaler = (*ID[struct{}, string])(nil)
-	_ encoding.TextMarshaler   = ID[struct{}, int64]{}
+	_ encoding.TextMarshaler   = ID[struct{}, int64]{value: 0}
 	_ encoding.TextUnmarshaler = (*ID[struct{}, int64])(nil)
 )

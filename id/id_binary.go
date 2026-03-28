@@ -1,7 +1,6 @@
 package id
 
 import (
-	"bytes"
 	"encoding"
 	"encoding/binary"
 	"encoding/gob"
@@ -21,43 +20,36 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		return nil, nil
 	}
 
-	var buf bytes.Buffer
 	switch v := any(id.value).(type) {
 	case string:
 		return []byte(v), nil
 	case int:
-		if err := binary.Write(&buf, binary.LittleEndian, int64(v)); err != nil {
-			return nil, fmt.Errorf("id: failed to marshal int: %w", err)
-		}
-		return buf.Bytes(), nil
+		b := make([]byte, byteSizeInt64)
+		//nolint:gosec // G115: int to uint64 is safe for binary serialization
+		binary.LittleEndian.PutUint64(b, uint64(v))
+		return b, nil
 	case int8:
 		return []byte{byte(v)}, nil //nolint:gosec // G115: int8 to byte is safe for serialization
 	case int16:
 		b := make([]byte, byteSizeInt16)
-		binary.LittleEndian.PutUint16(
-			b,
-			uint16(v),
-		)
+		//nolint:gosec // G115: int16 to uint16 is safe for binary serialization
+		binary.LittleEndian.PutUint16(b, uint16(v))
 		return b, nil
 	case int32:
 		b := make([]byte, byteSizeInt32)
-		binary.LittleEndian.PutUint32(
-			b,
-			uint32(v),
-		)
+		//nolint:gosec // G115: int32 to uint32 is safe for binary serialization
+		binary.LittleEndian.PutUint32(b, uint32(v))
 		return b, nil
 	case int64:
 		b := make([]byte, byteSizeInt64)
-		binary.LittleEndian.PutUint64(
-			b,
-			uint64(v),
-		)
+		//nolint:gosec // G115: int64 to uint64 is safe for binary serialization
+		binary.LittleEndian.PutUint64(b, uint64(v))
 		return b, nil
 	case uint:
-		if err := binary.Write(&buf, binary.LittleEndian, uint64(v)); err != nil {
-			return nil, fmt.Errorf("id: failed to marshal uint: %w", err)
-		}
-		return buf.Bytes(), nil
+		b := make([]byte, byteSizeInt64)
+		//nolint:gosec // G115: uint to uint64 is safe for binary serialization
+		binary.LittleEndian.PutUint64(b, uint64(v))
+		return b, nil
 	case uint8:
 		return []byte{v}, nil
 	case uint16:
@@ -240,10 +232,10 @@ func (id *ID[B, V]) GobDecode(data []byte) error {
 
 // Compile-time interface assertions for binary encoding
 var (
-	_ encoding.BinaryMarshaler   = ID[struct{}, string]{}
+	_ encoding.BinaryMarshaler   = ID[struct{}, string]{value: ""}
 	_ encoding.BinaryUnmarshaler = (*ID[struct{}, string])(nil)
-	_ encoding.BinaryMarshaler   = ID[struct{}, int64]{}
+	_ encoding.BinaryMarshaler   = ID[struct{}, int64]{value: 0}
 	_ encoding.BinaryUnmarshaler = (*ID[struct{}, int64])(nil)
-	_ gob.GobEncoder             = ID[struct{}, string]{}
+	_ gob.GobEncoder             = ID[struct{}, string]{value: ""}
 	_ gob.GobDecoder             = (*ID[struct{}, string])(nil)
 )
