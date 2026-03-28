@@ -1,8 +1,12 @@
 package version
 
 import (
+	"context"
+	"os/exec"
 	"runtime/debug"
+	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -24,6 +28,29 @@ func init() {
 			Date = setting.Value
 		}
 	}
+	Dirty = isGitDirty()
+}
+
+func isGitDirty() bool {
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, "git", "diff", "--stat")
+	out, err := cmd.Output()
+	if err != nil {
+		return false
+	}
+	output := string(out)
+	lines := strings.Split(strings.TrimSpace(output), "\n")
+	if len(lines) == 0 {
+		return false
+	}
+	lastLine := lines[len(lines)-1]
+	parts := strings.Fields(lastLine)
+	if len(parts) == 0 {
+		return false
+	}
+	changed, err := strconv.Atoi(parts[len(parts)-1])
+	return err == nil && changed > 0
 }
 
 var (
