@@ -26,23 +26,15 @@ import (
 // Use NewBoundedString to create validated instances.
 type BoundedString struct {
 	value  string
-	minLen int
-	maxLen int
+	minLen uint
+	maxLen uint
 }
 
 // NewBoundedString creates a BoundedString with the given length constraints.
 // Returns an error if the string length is outside [minLen, maxLen].
-func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
-	if minLen < 0 {
-		return BoundedString{}, fmt.Errorf(
-			"minimum length cannot be negative: minLen=%d, maxLen=%d, value=%q",
-			minLen,
-			maxLen,
-			value,
-		)
-	}
+func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) {
 	if maxLen < minLen {
-		return BoundedString{}, fmt.Errorf(
+		return BoundedString{value: "", minLen: 0, maxLen: 0}, fmt.Errorf(
 			"maximum length cannot be less than minimum length: minLen=%d, maxLen=%d, value=%q",
 			minLen,
 			maxLen,
@@ -50,7 +42,7 @@ func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 		)
 	}
 
-	length := utf8.RuneCountInString(value)
+	length := uint(utf8.RuneCountInString(value)) //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 	if length < minLen {
 		return BoundedString{}, fmt.Errorf(
 			"string length %d is less than minimum %d: maxLen=%d, value=%q",
@@ -77,13 +69,13 @@ func NewBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
 func (bs BoundedString) String() string { return bs.value }
 
 // Len returns the number of runes in the string.
-func (bs BoundedString) Len() int { return utf8.RuneCountInString(bs.value) }
+func (bs BoundedString) Len() uint { return uint(utf8.RuneCountInString(bs.value)) } //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 
 // MinLen returns the minimum allowed length.
-func (bs BoundedString) MinLen() int { return bs.minLen }
+func (bs BoundedString) MinLen() uint { return bs.minLen }
 
 // MaxLen returns the maximum allowed length.
-func (bs BoundedString) MaxLen() int { return bs.maxLen }
+func (bs BoundedString) MaxLen() uint { return bs.maxLen }
 
 // IsZero returns true if the BoundedString is empty.
 func (bs BoundedString) IsZero() bool { return bs.value == "" }
@@ -101,7 +93,7 @@ func (bs BoundedString) IsMaxLength() bool { return bs.Len() == bs.maxLen }
 //
 //	var NewName = cbt.BoundedStringOf(1, 100)
 //	name, err := NewName("John Doe")
-func BoundedStringOf(minLen, maxLen int) func(string) (BoundedString, error) {
+func BoundedStringOf(minLen, maxLen uint) func(string) (BoundedString, error) {
 	return func(value string) (BoundedString, error) {
 		return NewBoundedString(minLen, maxLen, value)
 	}
@@ -109,13 +101,13 @@ func BoundedStringOf(minLen, maxLen int) func(string) (BoundedString, error) {
 
 // NonEmptyString is a convenience constructor for strings that must have at least one character.
 // Equivalent to NewBoundedString(1, maxLen, value).
-func NonEmptyString(maxLen int, value string) (BoundedString, error) {
+func NonEmptyString(maxLen uint, value string) (BoundedString, error) {
 	return NewBoundedString(1, maxLen, value)
 }
 
 // TrimmedBoundedString creates a BoundedString after trimming whitespace.
 // Useful for user input where leading/trailing spaces should be ignored.
-func TrimmedBoundedString(minLen, maxLen int, value string) (BoundedString, error) {
+func TrimmedBoundedString(minLen, maxLen uint, value string) (BoundedString, error) {
 	return NewBoundedString(minLen, maxLen, strings.TrimSpace(value))
 }
 
@@ -138,7 +130,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	}
 	bs.value = value
 	bs.minLen = 0
-	bs.maxLen = utf8.RuneCountInString(value)
+	bs.maxLen = uint(utf8.RuneCountInString(value)) //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 	return nil
 }
 
@@ -150,12 +142,12 @@ func (bs *BoundedString) Scan(src any) error {
 	}
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
-			*bs = BoundedString{}
+			*bs = BoundedString{value: "", minLen: 0, maxLen: 0}
 			return nil
 		}
 		bs.value = v
 		bs.minLen = 0
-		bs.maxLen = utf8.RuneCountInString(v)
+		bs.maxLen = uint(utf8.RuneCountInString(v)) //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 		return nil
 	})
 	if err != nil {

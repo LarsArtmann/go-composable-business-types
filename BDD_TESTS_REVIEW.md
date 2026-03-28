@@ -18,17 +18,17 @@
 
 ## Current Test Coverage
 
-| Package      | Coverage | BDD Score | Notes                           |
-| ------------ | -------- | --------- | ------------------------------- |
-| actor        | 100.0%   | Low       | Implementation-focused tests    |
-| bounded      | 95.9%    | Low       | Good table tests, no scenarios  |
-| locale       | 87.5%    | Low       | Technical validation only       |
-| enums        | 60.0%    | Low       | Missing behavior descriptions   |
-| datapoint    | 54.0%    | Low       | Complex type needs BDD most     |
-| id           | 43.4%    | Low       | Generic types hard to test well |
-| money        | ~80%     | Low       | No currency scenarios           |
-| nanoid       | ~85%     | Low       | No generation scenarios         |
-| types        | ~75%     | Low       | Email/URL tests are technical   |
+| Package   | Coverage | BDD Score | Notes                           |
+| --------- | -------- | --------- | ------------------------------- |
+| actor     | 100.0%   | Low       | Implementation-focused tests    |
+| bounded   | 95.9%    | Low       | Good table tests, no scenarios  |
+| locale    | 87.5%    | Low       | Technical validation only       |
+| enums     | 60.0%    | Low       | Missing behavior descriptions   |
+| datapoint | 54.0%    | Low       | Complex type needs BDD most     |
+| id        | 43.4%    | Low       | Generic types hard to test well |
+| money     | ~80%     | Low       | No currency scenarios           |
+| nanoid    | ~85%     | Low       | No generation scenarios         |
+| types     | ~75%     | Low       | Email/URL tests are technical   |
 
 **Total Test Files:** 29
 **Total BDD-style Tests:** 0
@@ -50,6 +50,7 @@ go.mod dependencies:
 #### 2. No Scenario-Based Organization
 
 Current test naming:
+
 ```go
 func TestNewDataPoint(t *testing.T)           // ❌ Implementation-focused
 func TestDataPointWithMethods(t *testing.T)   // ❌ Technical
@@ -57,6 +58,7 @@ func TestActorChainOriginAndCurrent(t *testing.T) // ❌ Not user-focused
 ```
 
 BDD-style naming needed:
+
 ```go
 Describe("DataPoint audit trail", func() {
     When("a user creates an order", func() {
@@ -66,6 +68,7 @@ Describe("DataPoint audit trail", func() {
 #### 3. No Given/When/Then Structure
 
 Current tests lack:
+
 - **Given** (preconditions/context)
 - **When** (action taken)
 - **Then** (expected outcome)
@@ -73,6 +76,7 @@ Current tests lack:
 #### 4. No User Story Documentation
 
 Missing format:
+
 ```
 As a [developer using this library]
 I want to [create type-safe IDs for my domain]
@@ -82,6 +86,7 @@ So that [I can prevent mixing up different entity IDs at compile time]
 #### 5. No Integration Scenarios
 
 The `examples/` directory shows rich domain usage, but tests don't verify these real-world scenarios:
+
 - Order processing with audit trail
 - Customer checkout flow
 - Multi-service actor chains
@@ -93,16 +98,19 @@ The `examples/` directory shows rich domain usage, but tests don't verify these 
 ### 1. Business Domain Types
 
 This library provides **composable business types**. End users care about:
+
 - "How do I track who changed an order?"
 - "How do I ensure OrderID ≠ CustomerID?"
 - "How do I build a complete audit trail?"
 
 NOT:
+
 - "Does `ActorChain.HasKind()` return true?"
 
 ### 2. Complex Composition
 
 The library's power comes from composition:
+
 ```go
 dp := datapoint.NewDataPoint(order, actorEntry).
     WithTrigger(enums.TriggerWebhook).
@@ -125,6 +133,7 @@ BDD tests serve as executable documentation that never goes stale.
 The existing tests DO have strengths:
 
 ### ✅ Table-Driven Tests
+
 ```go
 tests := []struct {
     name    string
@@ -137,16 +146,19 @@ tests := []struct {
 ```
 
 ### ✅ Parallel Execution
+
 ```go
 t.Parallel()
 ```
 
 ### ✅ Helper Functions
+
 ```go
 func testValidation[T interface{ String() string }](...)
 ```
 
 ### ✅ Good Coverage on Core Packages
+
 - actor: 100%
 - bounded: 95.9%
 
@@ -427,26 +439,31 @@ var _ = Describe("Branded IDs", func() {
 ## Implementation Roadmap
 
 ### Week 1: Foundation
+
 - [ ] Add Ginkgo v2 + Gomega dependencies
 - [ ] Create test suite files for each package
 - [ ] Set up CI to run BDD tests
 
 ### Week 2: High-Value Conversions
+
 - [ ] Convert `datapoint` tests to BDD
 - [ ] Convert `actor` tests to BDD
 - [ ] Add user-focused scenarios
 
 ### Week 3: Core Types
+
 - [ ] Convert `id` tests to BDD
 - [ ] Convert `money` tests to BDD
 - [ ] Add currency handling scenarios
 
 ### Week 4: Supporting Types
+
 - [ ] Convert `types` tests to BDD
 - [ ] Convert `enums` tests to BDD
 - [ ] Convert `bounded` tests to BDD
 
 ### Week 5: Integration & Documentation
+
 - [ ] Add `scenarios/` integration tests
 - [ ] Create testing patterns documentation
 - [ ] Update README with BDD examples
@@ -455,13 +472,13 @@ var _ = Describe("Branded IDs", func() {
 
 ## Metrics for Success
 
-| Metric                           | Current | Target |
-| -------------------------------- | ------- | ------ |
-| BDD test coverage                | 0%      | 80%+   |
-| User-focused scenario tests      | 0       | 30+    |
-| Packages with BDD tests          | 0       | 10     |
-| Test documentation quality       | Low     | High   |
-| End-user comprehension           | Medium  | High   |
+| Metric                      | Current | Target |
+| --------------------------- | ------- | ------ |
+| BDD test coverage           | 0%      | 80%+   |
+| User-focused scenario tests | 0       | 30+    |
+| Packages with BDD tests     | 0       | 10     |
+| Test documentation quality  | Low     | High   |
+| End-user comprehension      | Medium  | High   |
 
 ---
 
@@ -470,6 +487,7 @@ var _ = Describe("Branded IDs", func() {
 The current test suite is **technically competent** but **not user-focused**. Tests verify API correctness but don't help end users understand business behavior.
 
 **Key Actions:**
+
 1. ✅ Add Ginkgo v2 + Gomega
 2. ✅ Convert high-value packages to BDD style
 3. ✅ Write user-focused scenarios with Given/When/Then
@@ -477,6 +495,7 @@ The current test suite is **technically competent** but **not user-focused**. Te
 5. ✅ Document testing patterns
 
 **Expected Outcome:**
+
 - Tests serve as living documentation
 - End users understand library behavior through test scenarios
 - Complex composition patterns are clearly demonstrated
@@ -484,4 +503,4 @@ The current test suite is **technically competent** but **not user-focused**. Te
 
 ---
 
-*Review completed. Action required: Implement BDD testing with Ginkgo.*
+_Review completed. Action required: Implement BDD testing with Ginkgo._

@@ -9,8 +9,8 @@ func TestNewBoundedString(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		minLen  int
-		maxLen  int
+		minLen  uint
+		maxLen  uint
 		value   string
 		wantErr bool
 	}{
@@ -20,7 +20,7 @@ func TestNewBoundedString(t *testing.T) {
 		{"empty when min 0", 0, 10, "", false},
 		{"too short", 10, 20, "hi", true},
 		{"too long", 1, 3, "hello", true},
-		{"negative min", -1, 10, "test", true},
+		{"negative min", 4294967295, 10, "test", true},
 		{"max less than min", 10, 5, "test", true},
 	}
 
@@ -315,7 +315,7 @@ func TestBoundedStringUnicodeLength(t *testing.T) {
 	tests := []struct {
 		name  string
 		value string
-		want  int
+		want  uint
 	}{
 		{"ascii", "hello", 5},
 		{"latin with accent", "héllo", 5},
@@ -416,7 +416,7 @@ func TestBoundedStringIsMinMaxLength(t *testing.T) {
 	})
 }
 
-func mustBoundedString(minLen, _ int, value string) BoundedString {
+func mustBoundedString(minLen, _ uint, value string) BoundedString {
 	bs, err := NewBoundedString(minLen, 100, value)
 	if err != nil {
 		panic(err)
