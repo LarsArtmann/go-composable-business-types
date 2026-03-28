@@ -46,7 +46,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 	length := uint(
 		utf8.RuneCountInString(value),
 	)
-	//nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+
 	if length < minLen {
 		return BoundedString{}, fmt.Errorf(
 			"string length %d is less than minimum %d: maxLen=%d, value=%q",
@@ -138,7 +138,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.maxLen = uint(
 		utf8.RuneCountInString(value),
 	)
-	//nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+
 	return nil
 }
 
@@ -159,7 +159,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.maxLen = uint(
 			utf8.RuneCountInString(v),
 		)
-		//nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+
 		return nil
 	})
 	if err != nil {

@@ -16,32 +16,32 @@ Comprehensive versioning infrastructure has been **FULLY IMPLEMENTED** and is re
 
 ### A) FULLY DONE ✅
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Version Package** | ✅ COMPLETE | `version/version.go` with auto-detection of git state |
-| **Git Dirty Detection** | ✅ COMPLETE | `isGitDirty()` using `git diff --stat` with 5s timeout |
-| **Version String Format** | ✅ COMPLETE | `development+abc1234+2026-03-28+dirty` format |
-| **Release Workflow** | ✅ COMPLETE | `.github/workflows/release.yml` with YYYY-MM-DD.N tags |
-| **Changelog Generation** | ✅ COMPLETE | `cliff.toml` with conventional commits support |
-| **Release Commands** | ✅ COMPLETE | `just release N`, `just changelog`, `just tags` |
-| **Linting Exclusions** | ✅ COMPLETE | `.golangci.yml` excludes for version package |
-| **Version Tests** | ✅ COMPLETE | `version/version_test.go` with race-safe tests |
-| **CI Workflow** | ✅ COMPLETE | Existing CI with tests/lint/security/generate jobs |
-| **BDD Review** | ✅ COMPLETE | `BDD_TESTS_REVIEW.md` documentation |
+| Component                 | Status      | Details                                                |
+| ------------------------- | ----------- | ------------------------------------------------------ |
+| **Version Package**       | ✅ COMPLETE | `version/version.go` with auto-detection of git state  |
+| **Git Dirty Detection**   | ✅ COMPLETE | `isGitDirty()` using `git diff --stat` with 5s timeout |
+| **Version String Format** | ✅ COMPLETE | `development+abc1234+2026-03-28+dirty` format          |
+| **Release Workflow**      | ✅ COMPLETE | `.github/workflows/release.yml` with YYYY-MM-DD.N tags |
+| **Changelog Generation**  | ✅ COMPLETE | `cliff.toml` with conventional commits support         |
+| **Release Commands**      | ✅ COMPLETE | `just release N`, `just changelog`, `just tags`        |
+| **Linting Exclusions**    | ✅ COMPLETE | `.golangci.yml` excludes for version package           |
+| **Version Tests**         | ✅ COMPLETE | `version/version_test.go` with race-safe tests         |
+| **CI Workflow**           | ✅ COMPLETE | Existing CI with tests/lint/security/generate jobs     |
+| **BDD Review**            | ✅ COMPLETE | `BDD_TESTS_REVIEW.md` documentation                    |
 
 ### B) PARTIALLY DONE ⚠️
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **Staged Changes** | ⚠️ STAGED | `bounded/bounded.go` and `bounded/bounded_test.go` ready to commit |
-| **Unstaged Changes** | ⚠️ MODIFIED | `.golangci.yml` and `BDD_TESTS_REVIEW.md` modified |
+| Component            | Status      | Details                                                            |
+| -------------------- | ----------- | ------------------------------------------------------------------ |
+| **Staged Changes**   | ⚠️ STAGED   | `bounded/bounded.go` and `bounded/bounded_test.go` ready to commit |
+| **Unstaged Changes** | ⚠️ MODIFIED | `.golangci.yml` and `BDD_TESTS_REVIEW.md` modified                 |
 
 ### C) NOT STARTED 🔲
 
-| Component | Status | Details |
-|-----------|--------|---------|
-| **First Release Tag** | 🔲 PENDING | No `YYYY-MM-DD.N` tag created yet |
-| **GitHub Release** | 🔲 PENDING | No GitHub release created yet |
+| Component               | Status     | Details                                 |
+| ----------------------- | ---------- | --------------------------------------- |
+| **First Release Tag**   | 🔲 PENDING | No `YYYY-MM-DD.N` tag created yet       |
+| **GitHub Release**      | 🔲 PENDING | No GitHub release created yet           |
 | **CHANGELOG.md Update** | 🔲 PENDING | Not regenerated with versioning changes |
 
 ### D) TOTALLY FUCKED UP ❌
@@ -66,6 +66,7 @@ func String() string // Returns: "development+abc1234+2026-03-28+dirty"
 ```
 
 **Features:**
+
 - Auto-reads build info via `debug.ReadBuildInfo()`
 - Detects git dirty state via `git diff --stat`
 - Uses `exec.CommandContext` with 5s timeout (linter-compliant)
@@ -76,6 +77,7 @@ func String() string // Returns: "development+abc1234+2026-03-28+dirty"
 **Trigger:** Push tag matching `[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9].[0-9]*`
 
 **Jobs:**
+
 1. Test (Go 1.26, 1.27, 1.28)
 2. Lint (golangci-lint)
 3. Generate (go generate)
@@ -90,12 +92,12 @@ func String() string // Returns: "development+abc1234+2026-03-28+dirty"
 
 ### 4. Just Commands
 
-| Command | Description |
-|---------|-------------|
-| `just install-cliff` | Install git-cliff |
-| `just changelog` | Generate CHANGELOG.md |
-| `just release N` | Create and push `YYYY-MM-DD.N` tag |
-| `just tags` | List recent release tags |
+| Command              | Description                        |
+| -------------------- | ---------------------------------- |
+| `just install-cliff` | Install git-cliff                  |
+| `just changelog`     | Generate CHANGELOG.md              |
+| `just release N`     | Create and push `YYYY-MM-DD.N` tag |
+| `just tags`          | List recent release tags           |
 
 ---
 
@@ -112,14 +114,17 @@ go build ./...          ✅ PASS
 ## Current Git State
 
 **Staged:**
+
 - `bounded/bounded.go`
 - `bounded/bounded_test.go`
 
 **Modified (unstaged):**
+
 - `.golangci.yml` - Linter config updates
 - `BDD_TESTS_REVIEW.md` - Documentation updates
 
 **Untracked:**
+
 - `version/` - Version package
 - `.github/workflows/release.yml` - Release workflow
 - `cliff.toml` - Changelog config
@@ -183,6 +188,7 @@ go build ./...          ✅ PASS
 **How should we handle the `v0.x` to `v1.0.0` transition?**
 
 Specifically:
+
 - The POLICY.md states `v0.x.x` has no stability guarantees
 - When do we bump to `v1.0.0`?
 - Do we need a "stability freeze" period before v1.0.0?
@@ -195,17 +201,17 @@ Specifically:
 
 ## Files Changed Summary
 
-| File | Lines Added | Lines Removed | Status |
-|------|------------|--------------|--------|
-| `version/version.go` | 81 | 0 | Untracked |
-| `version/version_test.go` | 65 | 0 | Untracked |
-| `.github/workflows/release.yml` | 63 | 0 | Untracked |
-| `cliff.toml` | 70 | 0 | Untracked |
-| `justfile` | 24 | 1 | Modified |
-| `.golangci.yml` | 7 | 1 | Modified |
-| `bounded/bounded.go` | ? | ? | Staged |
-| `bounded/bounded_test.go` | ? | ? | Staged |
-| `BDD_TESTS_REVIEW.md` | 57 | ? | Modified |
+| File                            | Lines Added | Lines Removed | Status    |
+| ------------------------------- | ----------- | ------------- | --------- |
+| `version/version.go`            | 81          | 0             | Untracked |
+| `version/version_test.go`       | 65          | 0             | Untracked |
+| `.github/workflows/release.yml` | 63          | 0             | Untracked |
+| `cliff.toml`                    | 70          | 0             | Untracked |
+| `justfile`                      | 24          | 1             | Modified  |
+| `.golangci.yml`                 | 7           | 1             | Modified  |
+| `bounded/bounded.go`            | ?           | ?             | Staged    |
+| `bounded/bounded_test.go`       | ?           | ?             | Staged    |
+| `BDD_TESTS_REVIEW.md`           | 57          | ?             | Modified  |
 
 ---
 
@@ -219,4 +225,4 @@ Specifically:
 
 ---
 
-*Report generated by Crush*
+_Report generated by Crush_
