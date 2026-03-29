@@ -15,6 +15,7 @@ package datapoint
 import (
 	"encoding/json"
 	"fmt"
+	"iter"
 	"maps"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
@@ -186,6 +187,39 @@ func (d DataPoint[T]) WithTemporal(t temporal.Bitemporal) DataPoint[T] {
 	return d
 }
 
+// AllReferences returns an iterator over all references.
+func (d DataPoint[T]) AllReferences() iter.Seq[Reference[string]] {
+	return func(yield func(Reference[string]) bool) {
+		for _, ref := range d.references {
+			if !yield(ref) {
+				return
+			}
+		}
+	}
+}
+
+// AllCauses returns an iterator over all causes.
+func (d DataPoint[T]) AllCauses() iter.Seq[Cause[string]] {
+	return func(yield func(Cause[string]) bool) {
+		for _, cause := range d.causes {
+			if !yield(cause) {
+				return
+			}
+		}
+	}
+}
+
+// AllTags returns an iterator over all tag key-value pairs.
+func (d DataPoint[T]) AllTags() iter.Seq2[string, string] {
+	return func(yield func(string, string) bool) {
+		for k, v := range d.tags {
+			if !yield(k, v) {
+				return
+			}
+		}
+	}
+}
+
 // jsonDataPoint is the JSON representation of DataPoint.
 type jsonDataPoint[T comparable] struct {
 	ID         nanoid.NanoID            `json:"id"`
@@ -193,12 +227,12 @@ type jsonDataPoint[T comparable] struct {
 	Actor      actor.ActorEntry[string] `json:"actor"`
 	Temporal   temporal.Bitemporal      `json:"temporal"`
 	Trigger    enums.Trigger            `json:"trigger"`
-	Reason     string                   `json:"reason,omitempty"`
+	Reason     string                   `json:"reason,omitzero"`
 	Context    Context                  `json:"context"`
 	Version    int                      `json:"version"`
-	Tags       map[string]string        `json:"tags,omitempty"`
-	References []Reference[string]      `json:"references,omitempty"`
-	Causes     []Cause[string]          `json:"causes,omitempty"`
+	Tags       map[string]string        `json:"tags,omitzero"`
+	References []Reference[string]      `json:"references,omitzero"`
+	Causes     []Cause[string]          `json:"causes,omitzero"`
 }
 
 // MarshalJSON implements json.Marshaler.

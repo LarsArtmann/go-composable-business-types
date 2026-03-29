@@ -74,8 +74,8 @@ func (r Reference[T]) WithTag(key, value string) Reference[T] {
 type jsonReference[T comparable] struct {
 	ID       T                 `json:"id"`
 	Relation string            `json:"relation"`
-	Version  int               `json:"version,omitempty"`
-	Tags     map[string]string `json:"tags,omitempty"`
+	Version  int               `json:"version,omitzero"`
+	Tags     map[string]string `json:"tags,omitzero"`
 }
 
 // MarshalJSON implements json.Marshaler.

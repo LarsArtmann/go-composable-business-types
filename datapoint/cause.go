@@ -94,7 +94,7 @@ type jsonCause struct {
 	ID     nanoid.NanoID   `json:"id"`
 	Kind   enums.CauseKind `json:"kind"`
 	Effect string          `json:"effect"`
-	Trace  []nanoid.NanoID `json:"trace,omitempty"`
+	Trace  []nanoid.NanoID `json:"trace,omitzero"`
 }
 
 // MarshalJSON implements json.Marshaler.

@@ -243,6 +243,30 @@ func WrapUnmarshal(err error, typeName, input string) error {
 }
 
 // =============================================================================
+// Generic Error Extraction - Go 1.26+ errors.AsType helpers
+// =============================================================================
+
+// AsUnmarshalError extracts an UnmarshalError from the error chain.
+func AsUnmarshalError(err error) (*UnmarshalError, bool) {
+	return errors.AsType[*UnmarshalError](err)
+}
+
+// AsValidationError extracts a ValidationError from the error chain.
+func AsValidationError(err error) (*ValidationError, bool) {
+	return errors.AsType[*ValidationError](err)
+}
+
+// AsRangeError extracts a RangeError from the error chain.
+func AsRangeError(err error) (*RangeError, bool) {
+	return errors.AsType[*RangeError](err)
+}
+
+// AsScanError extracts a ScanError from the error chain.
+func AsScanError(err error) (*ScanError, bool) {
+	return errors.AsType[*ScanError](err)
+}
+
+// =============================================================================
 // Error Checking Helpers
 // =============================================================================
 

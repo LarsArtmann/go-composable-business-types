@@ -47,7 +47,7 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 		return b, nil
 	case uint:
 		b := make([]byte, byteSizeInt64)
-		//nolint:gosec // G115: uint to uint64 is safe for binary serialization
+
 		binary.LittleEndian.PutUint64(b, uint64(v))
 		return b, nil
 	case uint8:

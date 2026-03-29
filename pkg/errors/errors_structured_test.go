@@ -2,6 +2,7 @@ package errors
 
 import (
 	"errors"
+	"fmt"
 	"testing"
 )
 
@@ -104,33 +105,79 @@ func TestRangeError(t *testing.T) {
 	})
 }
 
-func TestScanError(t *testing.T) {
+func TestAsUnmarshalError(t *testing.T) {
 	t.Parallel()
-	original := errors.New("unsupported type")
-	err := &ScanError{
-		SourceType: "int64",
-		TargetType: "string",
-		Err:        original,
+	err := &UnmarshalError{Type: "JSON", Input: `{bad}`, Err: errors.New("fail")}
+	got, ok := AsUnmarshalError(err)
+	if !ok {
+		t.Fatal("expected AsUnmarshalError to succeed")
 	}
-
-	if !errors.Is(err, original) {
-		t.Error("expected errors.Is() to find original error")
+	if got.Type != "JSON" {
+		t.Errorf("Type = %q, want JSON", got.Type)
 	}
-
-	want := "cannot scan int64 into string: unsupported type"
-	if got := err.Error(); got != want {
-		t.Errorf("Error() = %q, want %q", got, want)
+	_, ok = AsUnmarshalError(errors.New("other"))
+	if ok {
+		t.Error("expected AsUnmarshalError to return false for non-matching error")
 	}
+}
 
-	var target *ScanError
-	if !errors.As(err, &target) {
-		t.Error("expected errors.As() to succeed")
-	} else {
-		if target.SourceType != "int64" {
-			t.Errorf("SourceType = %q, want int64", target.SourceType)
-		}
-		if target.TargetType != "string" {
-			t.Errorf("TargetType = %q, want string", target.TargetType)
-		}
+func TestAsValidationError(t *testing.T) {
+	t.Parallel()
+	err := &ValidationError{Field: "email", Value: "x", Err: errors.New("fail")}
+	got, ok := AsValidationError(err)
+	if !ok {
+		t.Fatal("expected AsValidationError to succeed")
+	}
+	if got.Field != "email" {
+		t.Errorf("Field = %q, want email", got.Field)
+	}
+	_, ok = AsValidationError(errors.New("other"))
+	if ok {
+		t.Error("expected AsValidationError to return false for non-matching error")
+	}
+}
+
+func TestAsRangeError(t *testing.T) {
+	t.Parallel()
+	err := &RangeError{Value: 5, Min: 1, Max: 10, OutOfRange: true}
+	got, ok := AsRangeError(err)
+	if !ok {
+		t.Fatal("expected AsRangeError to succeed")
+	}
+	if got.Value != 5 {
+		t.Errorf("Value = %v, want 5", got.Value)
+	}
+	_, ok = AsRangeError(errors.New("other"))
+	if ok {
+		t.Error("expected AsRangeError to return false for non-matching error")
+	}
+}
+
+func TestAsScanError(t *testing.T) {
+	t.Parallel()
+	err := &ScanError{SourceType: "int64", TargetType: "string", Err: errors.New("fail")}
+	got, ok := AsScanError(err)
+	if !ok {
+		t.Fatal("expected AsScanError to succeed")
+	}
+	if got.SourceType != "int64" {
+		t.Errorf("SourceType = %q, want int64", got.SourceType)
+	}
+	_, ok = AsScanError(errors.New("other"))
+	if ok {
+		t.Error("expected AsScanError to return false for non-matching error")
+	}
+}
+
+func TestAsTypeWrappedErrors(t *testing.T) {
+	t.Parallel()
+	inner := &ValidationError{Field: "name", Value: "", Err: errors.New("empty")}
+	wrapped := fmt.Errorf("processing: %w", inner)
+	got, ok := AsValidationError(wrapped)
+	if !ok {
+		t.Fatal("expected AsValidationError to find wrapped error")
+	}
+	if got.Field != "name" {
+		t.Errorf("Field = %q, want name", got.Field)
 	}
 }

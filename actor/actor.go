@@ -13,6 +13,7 @@
 package actor
 
 import (
+	"iter"
 	"slices"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
@@ -48,6 +49,29 @@ func (c ActorChain[T]) Current() ActorEntry[T] { return c[len(c)-1] }
 
 // IsZero returns true if the chain is empty.
 func (c ActorChain[T]) IsZero() bool { return len(c) == 0 }
+
+// All returns an iterator over all actor entries in the chain, yielding index-value pairs.
+// Follows the Go 1.23+ range-over-func convention.
+func (c ActorChain[T]) All() iter.Seq2[int, ActorEntry[T]] {
+	return func(yield func(int, ActorEntry[T]) bool) {
+		for i, e := range c {
+			if !yield(i, e) {
+				return
+			}
+		}
+	}
+}
+
+// Entries returns an iterator over actor entries (values only).
+func (c ActorChain[T]) Entries() iter.Seq[ActorEntry[T]] {
+	return func(yield func(ActorEntry[T]) bool) {
+		for _, e := range c {
+			if !yield(e) {
+				return
+			}
+		}
+	}
+}
 
 // Append adds a new actor entry to the chain and returns the updated chain.
 func (c ActorChain[T]) Append(e ActorEntry[T]) ActorChain[T] { return append(c, e) }

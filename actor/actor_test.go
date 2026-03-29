@@ -143,3 +143,90 @@ func TestActorEntryOptionalName(t *testing.T) {
 		t.Errorf("expected 'John', got %s", actorWithName.Name)
 	}
 }
+
+func TestActorChainAll(t *testing.T) {
+	t.Parallel()
+	chain := newTestChain("Alice")
+
+	indices := make([]int, 0, len(chain))
+	names := make([]string, 0, len(chain))
+	for i, e := range chain.All() {
+		indices = append(indices, i)
+		names = append(names, e.Name)
+	}
+
+	if len(indices) != 3 {
+		t.Fatalf("expected 3 entries, got %d", len(indices))
+	}
+	for i, idx := range indices {
+		if idx != i {
+			t.Errorf("expected index %d, got %d", i, idx)
+		}
+	}
+	expected := []string{"Alice", "Service 1", "Service 2"}
+	for i, name := range expected {
+		if names[i] != name {
+			t.Errorf("entry[%d]: expected %q, got %q", i, name, names[i])
+		}
+	}
+}
+
+func TestActorChainAllBreak(t *testing.T) {
+	t.Parallel()
+	chain := newTestChain("Alice")
+
+	var count int
+	for range chain.All() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Errorf("expected break after 1 iteration, got %d", count)
+	}
+}
+
+func TestActorChainEntries(t *testing.T) {
+	t.Parallel()
+	chain := newTestChain("Alice")
+
+	names := make([]string, 0, len(chain))
+	for e := range chain.Entries() {
+		names = append(names, e.Name)
+	}
+
+	expected := []string{"Alice", "Service 1", "Service 2"}
+	if len(names) != len(expected) {
+		t.Fatalf("expected %d entries, got %d", len(expected), len(names))
+	}
+	for i, name := range expected {
+		if names[i] != name {
+			t.Errorf("entry[%d]: expected %q, got %q", i, name, names[i])
+		}
+	}
+}
+
+func TestActorChainEntriesBreak(t *testing.T) {
+	t.Parallel()
+	chain := newTestChain("Alice")
+
+	var count int
+	for range chain.Entries() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Errorf("expected break after 1 iteration, got %d", count)
+	}
+}
+
+func TestActorChainAllEmpty(t *testing.T) {
+	t.Parallel()
+	var chain ActorChain[string]
+	var count int
+	for range chain.All() {
+		count++
+	}
+	if count != 0 {
+		t.Errorf("expected 0 iterations on empty chain, got %d", count)
+	}
+}

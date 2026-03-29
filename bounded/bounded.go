@@ -43,7 +43,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 	}
 
 	//nolint:gofumpt
-	//nolint:gosec // G115: string length always fits in uint
+
 	length := uint(
 		utf8.RuneCountInString(value),
 	)
@@ -136,7 +136,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.value = value
 	bs.minLen = 0
 	//nolint:gofumpt
-	//nolint:gosec // G115: string length always fits in uint
+
 	bs.maxLen = uint(
 		utf8.RuneCountInString(value),
 	)
@@ -158,7 +158,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.value = v
 		bs.minLen = 0
 		//nolint:gofumpt
-		//nolint:gosec // G115: string length always fits in uint
+
 		bs.maxLen = uint(
 			utf8.RuneCountInString(v),
 		)

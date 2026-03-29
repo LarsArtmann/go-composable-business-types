@@ -289,3 +289,143 @@ func TestDataPointComplexChain(t *testing.T) {
 		t.Error("tag mismatch")
 	}
 }
+
+func TestDataPointAllReferences(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry).
+		WithReference(NewReference("ref-1", "parent")).
+		WithReference(NewReference("ref-2", "child"))
+
+	ids := make([]string, 0, 2)
+	for ref := range dp.AllReferences() {
+		ids = append(ids, ref.ID())
+	}
+	if len(ids) != 2 {
+		t.Fatalf("expected 2 references, got %d", len(ids))
+	}
+	if ids[0] != "ref-1" || ids[1] != "ref-2" {
+		t.Errorf("expected [ref-1, ref-2], got %v", ids)
+	}
+}
+
+func TestDataPointAllReferencesBreak(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry).
+		WithReference(NewReference("ref-1", "parent")).
+		WithReference(NewReference("ref-2", "child"))
+
+	var count int
+	for range dp.AllReferences() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Errorf("expected break after 1, got %d", count)
+	}
+}
+
+func TestDataPointAllCauses(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	cause1 := NewCauseDirect[string](nanoid.NewNanoID())
+	cause2 := NewCauseCommand[string](nanoid.NewNanoID(), "create")
+	dp := NewDataPoint("payload", actorEntry).
+		WithCause(cause1).
+		WithCause(cause2)
+
+	kinds := make([]string, 0, 2)
+	for c := range dp.AllCauses() {
+		kinds = append(kinds, c.Kind().String())
+	}
+	if len(kinds) != 2 {
+		t.Fatalf("expected 2 causes, got %d", len(kinds))
+	}
+}
+
+func TestDataPointAllTags(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry).
+		WithTag("env", "prod").
+		WithTag("region", "us-east-1")
+
+	tags := make(map[string]string)
+	for k, v := range dp.AllTags() {
+		tags[k] = v
+	}
+	if tags["env"] != "prod" {
+		t.Errorf("expected env=prod, got %s", tags["env"])
+	}
+	if tags["region"] != "us-east-1" {
+		t.Errorf("expected region=us-east-1, got %s", tags["region"])
+	}
+}
+
+func TestDataPointAllTagsBreak(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry).
+		WithTag("a", "1").
+		WithTag("b", "2")
+
+	var count int
+	for range dp.AllTags() {
+		count++
+		break
+	}
+	if count != 1 {
+		t.Errorf("expected break after 1, got %d", count)
+	}
+}
+
+func TestDataPointAllReferencesEmpty(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	var count int
+	for range dp.AllReferences() {
+		count++
+	}
+	if count != 0 {
+		t.Errorf("expected 0 iterations, got %d", count)
+	}
+}
+
+func TestDataPointAllCausesEmpty(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	var count int
+	for range dp.AllCauses() {
+		count++
+	}
+	if count != 0 {
+		t.Errorf("expected 0 iterations, got %d", count)
+	}
+}
+
+func TestDataPointAllTagsEmpty(t *testing.T) {
+	t.Parallel()
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	var count int
+	for range dp.AllTags() {
+		count++
+	}
+	if count != 0 {
+		t.Errorf("expected 0 iterations, got %d", count)
+	}
+}
