@@ -2,86 +2,130 @@ version: "2"
 run:
   timeout: 5m
   go: 1.26.1
-  build-tags: []
-  allow-parallel-runners: false
-  allow-serial-runners: false
+  build-tags:
+    - goexperiment.goroutineleakprofile
+    - goexperiment.jsonv2
+    - goexperiment.simd
+  allow-parallel-runners: true
+  allow-serial-runners: true
   tests: true
   concurrency: 4
 output:
   formats: {}
 linters:
   enable:
-    - bodyclose
-    - gochecknoglobals
-    - wrapcheck
-    - reassign
-    - exptostd
-    - nakedret
-    - goconst
-    - decorder
-    - exhaustive
-    - mirror
-    - recvcheck
-    - nilnesserr
-    - unconvert
-    - rowserrcheck
-    - noctx
+    - arangolint
+    - asasalint
+    - asciicheck
     - bidichk
-    - unparam
-    - testifylint
-    - usetesting
-    - errname
-    - copyloopvar
-    - spancheck
-    - errchkjson
-    - ginkgolinter
-    - gomoddirectives
-    - interfacebloat
-    - cyclop
+    - bodyclose
+    - canonicalheader
     - containedctx
-    - gomodguard
-    - gocheckcompilerdirectives
-    - loggercheck
-    - exhaustruct
-    - wastedassign
-    - paralleltest
-    - maintidx
-    - thelper
     - contextcheck
-    - nolintlint
-    - gocritic
-    - sloglint
-    - zerologlint
-    - misspell
-    - perfsprint
-    - intrange
-    - nilerr
-    - errorlint
-    - musttag
-    - durationcheck
-    - predeclared
-    - dupl
-    - gocyclo
-    - sqlclosecheck
-    - nestif
-    - protogetter
-    - gocognit
-    - funlen
-    - forcetypeassert
-    - gochecknoinits
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
     - dogsled
-    - gosec
-    - nilnil
-    - gochecksumtype
-    - prealloc
+    - dupl
     - dupword
+    - durationcheck
+    - embeddedstructfieldcheck
+    - err113
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exhaustruct
+    - exptostd
+    - fatcontext
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gochecksumtype
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godoclint
+    - godot
+    - godox
+    - goheader
+    - gomoddirectives
+    - gomodguard
+    - goprintffuncname
+    - gosec
     - gosmopolitan
+    - grouper
+    - iface
+    - importas
+    - inamedparam
+    - interfacebloat
+    - intrange
+    - iotamixing
+    - ireturn
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - misspell
+    - mnd
+    - modernize
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnesserr
+    - nilnil
+    - nlreturn
+    - noctx
+    - noinlineerr
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - perfsprint
+    - prealloc
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
     - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - tagalign
+    - tagliatelle
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - unqueryvet
+    - usestdlibvars
+    - usetesting
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl_v5
+    - zerologlint
   default: standard
   settings:
     cyclop:
       max-complexity: 40
 formatters:
   enable:
+    - gci
+    - goimports
+    - gofumpt
     - golines
 issues: {}
