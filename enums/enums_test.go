@@ -33,41 +33,14 @@ func TestActorKind(t *testing.T) {
 func TestParseActorKind(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		input   string
-		want    ActorKind
-		wantErr bool
-	}{
+	testParse(t, ParseActorKind, []enumParseCase[ActorKind]{
 		{"User", ActorKindUser, false},
 		{"Bot", ActorKindBot, false},
 		{"System", ActorKindSystem, false},
 		{"Service", ActorKindService, false},
 		{"Invalid", 0, true},
 		{"", 0, true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			t.Parallel()
-
-			got, err := ParseActorKind(tt.input)
-			if tt.wantErr {
-				if err == nil {
-					t.Error("expected error")
-				}
-
-				return
-			}
-
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-
-			if got != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, got)
-			}
-		})
-	}
+	})
 }
 
 func TestParseActorKindError(t *testing.T) {
@@ -134,56 +107,18 @@ func TestPriority(t *testing.T) {
 func TestParsePriority(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		input   string
-		want    Priority
-		wantErr bool
-	}{
+	testParse(t, ParsePriority, []enumParseCase[Priority]{
 		{"Low", PriorityLow, false},
 		{"Medium", PriorityMedium, false},
 		{"High", PriorityHigh, false},
 		{"Critical", PriorityCritical, false},
 		{"Invalid", 0, true},
 		{"", 0, true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			t.Parallel()
-
-			got, err := ParsePriority(tt.input)
-			if tt.wantErr {
-				if err == nil {
-					t.Error("expected error")
-				}
-
-				return
-			}
-
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-
-			if got != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, got)
-			}
-		})
-	}
+	})
 }
 
 func TestPriorityIsValid(t *testing.T) {
 	t.Parallel()
 
-	if !PriorityLow.IsValid() {
-		t.Error("PriorityLow should be valid")
-	}
-
-	if !PriorityCritical.IsValid() {
-		t.Error("PriorityCritical should be valid")
-	}
-
-	invalid := Priority(99)
-	if invalid.IsValid() {
-		t.Error("Priority(99) should not be valid")
-	}
+	testEnumIsValid(t, []Priority{PriorityLow, PriorityCritical}, Priority(99))
 }

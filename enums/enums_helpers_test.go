@@ -1,9 +1,41 @@
 package enums
 
 import (
+	"database/sql/driver"
 	"slices"
 	"testing"
 )
+
+// enumValueCase represents a test case for enum Value() method.
+type enumValueCase[T any] struct {
+	value    T
+	expected string
+}
+
+// valuer is an interface for types that implement the driver.Valuer interface.
+type valuer interface {
+	Value() (driver.Value, error)
+}
+
+// testEnumValue runs table-driven Value() tests for enum types.
+func testEnumValue[T valuer](t *testing.T, tests []enumValueCase[T]) {
+	t.Helper()
+
+	for _, tt := range tests {
+		t.Run(tt.expected, func(t *testing.T) {
+			t.Parallel()
+
+			v, err := tt.value.Value()
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+				return
+			}
+			if v != tt.expected {
+				t.Errorf("expected %s, got %v", tt.expected, v)
+			}
+		})
+	}
+}
 
 // enumStringCase represents a test case for enum String() method.
 type enumStringCase[T interface{ String() string }] struct {
@@ -23,6 +55,62 @@ func testEnumString[T interface{ String() string }](t *testing.T, tests []enumSt
 				t.Errorf("expected %s, got %s", tt.expected, tt.value.String())
 			}
 		})
+	}
+}
+
+// enumParseCase represents a test case for enum Parse() function.
+type enumParseCase[T any] struct {
+	input   string
+	want    T
+	wantErr bool
+}
+
+// testParse runs table-driven Parse() tests for enum types.
+func testParse[T comparable](t *testing.T, parse func(string) (T, error), tests []enumParseCase[T]) {
+	t.Helper()
+
+	for _, tt := range tests {
+		t.Run(tt.input, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := parse(tt.input)
+			if tt.wantErr {
+				if err == nil {
+					t.Error("expected error")
+				}
+				return
+			}
+
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if got != tt.want {
+				t.Errorf("expected %v, got %v", tt.want, got)
+			}
+		})
+	}
+}
+
+// enumIsValidCase represents a test case for enum IsValid() method.
+type enumIsValidCase[T any] struct {
+	value    T
+	expected bool
+}
+
+// testEnumIsValid tests that all provided valid values return true for IsValid()
+// and that the provided invalid value returns false.
+func testEnumIsValid[T interface{ IsValid() bool }](t *testing.T, validValues []T, invalidValue T) {
+	t.Helper()
+
+	for _, v := range validValues {
+		if !v.IsValid() {
+			t.Errorf("expected %v to be valid", v)
+		}
+	}
+
+	if invalidValue.IsValid() {
+		t.Error("invalid value should not be valid")
 	}
 }
 
@@ -112,55 +200,17 @@ func TestCauseKind(t *testing.T) {
 func TestParseCauseKind(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		input   string
-		want    CauseKind
-		wantErr bool
-	}{
+	testParse(t, ParseCauseKind, []enumParseCase[CauseKind]{
 		{"Direct", CauseKindDirect, false},
 		{"Command", CauseKindCommand, false},
 		{"Event", CauseKindEvent, false},
 		{"Invalid", 0, true},
 		{"", 0, true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.input, func(t *testing.T) {
-			t.Parallel()
-
-			got, err := ParseCauseKind(tt.input)
-			if tt.wantErr {
-				if err == nil {
-					t.Error("expected error")
-				}
-
-				return
-			}
-
-			if err != nil {
-				t.Errorf("unexpected error: %v", err)
-			}
-
-			if got != tt.want {
-				t.Errorf("expected %v, got %v", tt.want, got)
-			}
-		})
-	}
+	})
 }
 
 func TestCauseKindIsValid(t *testing.T) {
 	t.Parallel()
 
-	if !CauseKindDirect.IsValid() {
-		t.Error("CauseKindDirect should be valid")
-	}
-
-	if !CauseKindEvent.IsValid() {
-		t.Error("CauseKindEvent should be valid")
-	}
-
-	invalid := CauseKind(99)
-	if invalid.IsValid() {
-		t.Error("CauseKind(99) should not be valid")
-	}
+	testEnumIsValid(t, []CauseKind{CauseKindDirect, CauseKindEvent}, CauseKind(99))
 }

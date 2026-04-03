@@ -25,5 +25,14 @@
     "reason": "These three tests verify MarshalText/UnmarshalText for three semantically distinct enum types (Priority, Status, Trigger). While the test pattern is structurally identical, each test explicitly validates a specific enum type, maintaining clarity about which type is being tested. Refactoring into a generic helper would reduce readability without meaningful maintenance benefit, as enum types in Go are tested explicitly rather than generically.\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=29a48250-5038-4d68-94cd-1575f16c11cb\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 20s app duration in seconds 20]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
     "marked_at": "2026-04-03T22:49:28.557165+02:00",
     "marked_by": "auto-deduplicate"
+  },
+  {
+    "fingerprint": "31dc785f99dcf9c74953ba3de9528e8c654110996c7437a6942824eb78fccc4a",
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/pkg/errors/errors_check_test.go"
+    ],
+    "reason": "The `testErrorChecker` generic helper function (lines 9-24) already extracts the common pattern. Each test function merely calls this helper with different parameters specific to the error type being tested. The \"duplicates\" are just the unique test case slices for different error types — inherently different data, not repeated logic.\n\n```json\n{\"strategy\": \"false_positive\", \"files_modified\": [], \"new_abstraction\": null, \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=03ae9448-e0a1-4b00-ae97-0292bd806bd8\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/03 23:02:05 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 15s app duration in seconds 15]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
+    "marked_at": "2026-04-03T23:02:13.185568+02:00",
+    "marked_by": "auto-deduplicate"
   }
 ]

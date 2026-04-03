@@ -1,6 +1,7 @@
 package enums
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -391,60 +392,43 @@ func TestCauseKindAppendText(t *testing.T) {
 // Test invalid enum String() formatting.
 func TestInvalidEnumStrings(t *testing.T) {
 	t.Parallel()
-	t.Run("ActorKind", func(t *testing.T) {
-		t.Parallel()
 
-		invalid := ActorKind(99)
+	tests := []struct {
+		name         string
+		typeName     string
+		invalidValue uint8
+	}{
+		{"ActorKind", "ActorKind", 99},
+		{"Priority", "Priority", 99},
+		{"Status", "Status", 99},
+		{"Trigger", "Trigger", 99},
+		{"CauseKind", "CauseKind", 99},
+	}
 
-		expected := "ActorKind(99)"
-		if invalid.String() != expected {
-			t.Errorf("expected %s, got %s", expected, invalid.String())
-		}
-	})
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-	t.Run("Priority", func(t *testing.T) {
-		t.Parallel()
+			var invalid any
+			switch tt.name {
+			case "ActorKind":
+				invalid = ActorKind(tt.invalidValue)
+			case "Priority":
+				invalid = Priority(tt.invalidValue)
+			case "Status":
+				invalid = Status(tt.invalidValue)
+			case "Trigger":
+				invalid = Trigger(tt.invalidValue)
+			case "CauseKind":
+				invalid = CauseKind(tt.invalidValue)
+			}
 
-		invalid := Priority(99)
-
-		expected := "Priority(99)"
-		if invalid.String() != expected {
-			t.Errorf("expected %s, got %s", expected, invalid.String())
-		}
-	})
-
-	t.Run("Status", func(t *testing.T) {
-		t.Parallel()
-
-		invalid := Status(99)
-
-		expected := "Status(99)"
-		if invalid.String() != expected {
-			t.Errorf("expected %s, got %s", expected, invalid.String())
-		}
-	})
-
-	t.Run("Trigger", func(t *testing.T) {
-		t.Parallel()
-
-		invalid := Trigger(99)
-
-		expected := "Trigger(99)"
-		if invalid.String() != expected {
-			t.Errorf("expected %s, got %s", expected, invalid.String())
-		}
-	})
-
-	t.Run("CauseKind", func(t *testing.T) {
-		t.Parallel()
-
-		invalid := CauseKind(99)
-
-		expected := "CauseKind(99)"
-		if invalid.String() != expected {
-			t.Errorf("expected %s, got %s", expected, invalid.String())
-		}
-	})
+			expected := fmt.Sprintf("%s(%d)", tt.typeName, tt.invalidValue)
+			if invalid.(fmt.Stringer).String() != expected {
+				t.Errorf("expected %s, got %s", expected, invalid.(fmt.Stringer).String())
+			}
+		})
+	}
 }
 
 // Test UnmarshalText error cases.
@@ -510,68 +494,33 @@ func TestUnmarshalTextErrors(t *testing.T) {
 func TestValueMethods(t *testing.T) {
 	t.Parallel()
 	t.Run("ActorKind", func(t *testing.T) {
-		t.Parallel()
-
-		val, err := ActorKindSystem.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if val != "System" {
-			t.Errorf("expected System, got %v", val)
-		}
+		testEnumValue(t, []enumValueCase[ActorKind]{
+			{ActorKindSystem, "System"},
+		})
 	})
 
 	t.Run("Priority", func(t *testing.T) {
-		t.Parallel()
-
-		val, err := PriorityMedium.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if val != "Medium" {
-			t.Errorf("expected Medium, got %v", val)
-		}
+		testEnumValue(t, []enumValueCase[Priority]{
+			{PriorityMedium, "Medium"},
+		})
 	})
 
 	t.Run("Status", func(t *testing.T) {
-		t.Parallel()
-
-		val, err := StatusPaused.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if val != "Paused" {
-			t.Errorf("expected Paused, got %v", val)
-		}
+		testEnumValue(t, []enumValueCase[Status]{
+			{StatusPaused, "Paused"},
+		})
 	})
 
 	t.Run("Trigger", func(t *testing.T) {
-		t.Parallel()
-
-		val, err := TriggerImport.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if val != "Import" {
-			t.Errorf("expected Import, got %v", val)
-		}
+		testEnumValue(t, []enumValueCase[Trigger]{
+			{TriggerImport, "Import"},
+		})
 	})
 
 	t.Run("CauseKind", func(t *testing.T) {
-		t.Parallel()
-
-		val, err := CauseKindEvent.Value()
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if val != "Event" {
-			t.Errorf("expected Event, got %v", val)
-		}
+		testEnumValue(t, []enumValueCase[CauseKind]{
+			{CauseKindEvent, "Event"},
+		})
 	})
 }
 
