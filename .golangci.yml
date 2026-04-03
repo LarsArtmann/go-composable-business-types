@@ -128,4 +128,6 @@ formatters:
     - goimports
     - gofumpt
     - golines
-issues: {}
+issues:
+  exclude-files:
+    - enums/enums_enum\.go

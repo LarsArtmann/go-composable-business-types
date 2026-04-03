@@ -19,6 +19,7 @@ func TestStatus(t *testing.T) {
 
 func TestParseStatus(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input   string
 		want    Status
@@ -36,16 +37,20 @@ func TestParseStatus(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := ParseStatus(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -55,6 +60,7 @@ func TestParseStatus(t *testing.T) {
 
 func TestStatusIsValid(t *testing.T) {
 	t.Parallel()
+
 	validStatuses := []Status{
 		StatusDraft,
 		StatusActive,
@@ -67,6 +73,7 @@ func TestStatusIsValid(t *testing.T) {
 			t.Errorf("Status %v should be valid", s)
 		}
 	}
+
 	invalid := Status(99)
 	if invalid.IsValid() {
 		t.Error("Status(99) should not be valid")
@@ -92,6 +99,7 @@ func TestTrigger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
 			t.Parallel()
+
 			if tt.trigger.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.trigger.String())
 			}
@@ -101,6 +109,7 @@ func TestTrigger(t *testing.T) {
 
 func TestParseTrigger(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input   string
 		want    Trigger
@@ -120,16 +129,20 @@ func TestParseTrigger(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := ParseTrigger(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -139,6 +152,7 @@ func TestParseTrigger(t *testing.T) {
 
 func TestTriggerIsValid(t *testing.T) {
 	t.Parallel()
+
 	validTriggers := []Trigger{
 		TriggerManual, TriggerScheduled, TriggerWebhook, TriggerImport,
 		TriggerMigration, TriggerSystem, TriggerCorrection,
@@ -148,6 +162,7 @@ func TestTriggerIsValid(t *testing.T) {
 			t.Errorf("Trigger %v should be valid", tr)
 		}
 	}
+
 	invalid := Trigger(99)
 	if invalid.IsValid() {
 		t.Error("Trigger(99) should not be valid")

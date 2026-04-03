@@ -14,9 +14,11 @@ type enumStringCase[T interface{ String() string }] struct {
 // testEnumString runs table-driven String() tests for enum types.
 func testEnumString[T interface{ String() string }](t *testing.T, tests []enumStringCase[T]) {
 	t.Helper()
+
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
 			t.Parallel()
+
 			if tt.value.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.value.String())
 			}
@@ -64,6 +66,7 @@ func TestEnumNames(t *testing.T) {
 	if len(akNames) != 4 {
 		t.Errorf("expected 4 ActorKind names, got %d", len(akNames))
 	}
+
 	if !slices.Contains(akNames, "User") {
 		t.Error("ActorKindNames should include 'User'")
 	}
@@ -91,6 +94,7 @@ func TestEnumNames(t *testing.T) {
 	if len(ckNames) != 3 {
 		t.Errorf("expected 3 CauseKind names, got %d", len(ckNames))
 	}
+
 	if !slices.Contains(ckNames, "Direct") {
 		t.Error("CauseKindNames should include 'Direct'")
 	}
@@ -107,6 +111,7 @@ func TestCauseKind(t *testing.T) {
 
 func TestParseCauseKind(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input   string
 		want    CauseKind
@@ -122,16 +127,20 @@ func TestParseCauseKind(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := ParseCauseKind(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -141,12 +150,15 @@ func TestParseCauseKind(t *testing.T) {
 
 func TestCauseKindIsValid(t *testing.T) {
 	t.Parallel()
+
 	if !CauseKindDirect.IsValid() {
 		t.Error("CauseKindDirect should be valid")
 	}
+
 	if !CauseKindEvent.IsValid() {
 		t.Error("CauseKindEvent should be valid")
 	}
+
 	invalid := CauseKind(99)
 	if invalid.IsValid() {
 		t.Error("CauseKind(99) should not be valid")

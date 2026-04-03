@@ -6,13 +6,29 @@ import (
 	"testing"
 )
 
+// testErrorChecker is a table-driven test helper for error checking functions.
+func testErrorChecker[Fn func(error) bool](t *testing.T, name string, checker Fn, testCases []struct {
+	name string
+	err  error
+	want bool
+}) {
+	t.Helper()
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			if got := checker(tc.err); got != tc.want {
+				t.Errorf("%s() = %v, want %v", name, got, tc.want)
+			}
+		})
+	}
+}
+
 // =============================================================================
 // Error Checker Tests
 // =============================================================================
 
 func TestIsInvalidEmail(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsInvalidEmail", IsInvalidEmail, []struct {
 		name string
 		err  error
 		want bool
@@ -21,21 +37,11 @@ func TestIsInvalidEmail(t *testing.T) {
 		{"ErrEmailEmpty", ErrEmailEmpty, true},
 		{"other error", errors.New("other"), false},
 		{"wrapped email error", fmt.Errorf("wrapped: %w", ErrInvalidEmail), true},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsInvalidEmail(tt.err); got != tt.want {
-				t.Errorf("IsInvalidEmail() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestIsInvalidURL(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsInvalidURL", IsInvalidURL, []struct {
 		name string
 		err  error
 		want bool
@@ -45,21 +51,11 @@ func TestIsInvalidURL(t *testing.T) {
 		{"ErrURLScheme", ErrURLScheme, true},
 		{"ErrURLHost", ErrURLHost, true},
 		{"other error", errors.New("other"), false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsInvalidURL(tt.err); got != tt.want {
-				t.Errorf("IsInvalidURL() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestIsBoundedStringError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsBoundedStringError", IsBoundedStringError, []struct {
 		name string
 		err  error
 		want bool
@@ -69,21 +65,11 @@ func TestIsBoundedStringError(t *testing.T) {
 		{"ErrBoundedStringMinNegative", ErrBoundedStringMinNegative, true},
 		{"ErrBoundedStringMaxLessThanMin", ErrBoundedStringMaxLessThanMin, true},
 		{"other error", errors.New("other"), false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsBoundedStringError(tt.err); got != tt.want {
-				t.Errorf("IsBoundedStringError() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestIsNanoIDError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsNanoIDError", IsNanoIDError, []struct {
 		name string
 		err  error
 		want bool
@@ -93,21 +79,11 @@ func TestIsNanoIDError(t *testing.T) {
 		{"ErrNanoIDTooLong", ErrNanoIDTooLong, true},
 		{"ErrNanoIDInvalid", ErrNanoIDInvalid, true},
 		{"other error", errors.New("other"), false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsNanoIDError(tt.err); got != tt.want {
-				t.Errorf("IsNanoIDError() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestIsIDError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsIDError", IsIDError, []struct {
 		name string
 		err  error
 		want bool
@@ -116,21 +92,11 @@ func TestIsIDError(t *testing.T) {
 		{"ErrIDTypeNotSupported", ErrIDTypeNotSupported, true},
 		{"ErrIDInsufficientData", ErrIDInsufficientData, true},
 		{"other error", errors.New("other"), false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsIDError(tt.err); got != tt.want {
-				t.Errorf("IsIDError() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }
 
 func TestIsParseError(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
+	testErrorChecker(t, "IsParseError", IsParseError, []struct {
 		name string
 		err  error
 		want bool
@@ -139,14 +105,5 @@ func TestIsParseError(t *testing.T) {
 		{"ErrUnsupportedType", ErrUnsupportedType, true},
 		{"ErrInvalidJSON", ErrInvalidJSON, true},
 		{"other error", errors.New("other"), false},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			if got := IsParseError(tt.err); got != tt.want {
-				t.Errorf("IsParseError() = %v, want %v", got, tt.want)
-			}
-		})
-	}
+	})
 }

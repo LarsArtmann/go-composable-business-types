@@ -1,16 +1,29 @@
 [
   {
     "fingerprint": "e3dbaef09fd4dad61947fb4d5ab95798dc295e4969ef6491d515a94e1b4be318",
-    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"
+    ],
     "reason": "These test different types (string, int64, int32, uint64) with different expected values - intentionally distinct",
     "marked_at": "2026-03-15T11:53:36.184938+01:00",
     "marked_by": "auto-deduplicate"
   },
   {
     "fingerprint": "df955619de77923632b2e2f0434b1ba852d8d5c1a14eab2ab4c6d3970050683e",
-    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"
+    ],
     "reason": "These are table-driven test cases with different types that intentionally test different behavior (int64, int32, uint64)",
     "marked_at": "2026-03-15T11:53:36.186836+01:00",
+    "marked_by": "auto-deduplicate"
+  },
+  {
+    "fingerprint": "30546d891d765e14e8f44b9819d37f4bfd5af71d3e1005f9e30d72fee385eca8",
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/enums/enums_sql_test.go"
+    ],
+    "reason": "These three tests verify MarshalText/UnmarshalText for three semantically distinct enum types (Priority, Status, Trigger). While the test pattern is structurally identical, each test explicitly validates a specific enum type, maintaining clarity about which type is being tested. Refactoring into a generic helper would reduce readability without meaningful maintenance benefit, as enum types in Go are tested explicitly rather than generically.\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=29a48250-5038-4d68-94cd-1575f16c11cb\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 20s app duration in seconds 20]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
+    "marked_at": "2026-04-03T22:49:28.557165+02:00",
     "marked_by": "auto-deduplicate"
   }
 ]

@@ -16,6 +16,7 @@ func TestActorKind(t *testing.T) {
 	if ActorKindUser.String() != "User" {
 		t.Errorf("expected User, got %s", ActorKindUser.String())
 	}
+
 	if ActorKindSystem.String() != "System" {
 		t.Errorf("expected System, got %s", ActorKindSystem.String())
 	}
@@ -31,6 +32,7 @@ func TestActorKind(t *testing.T) {
 
 func TestParseActorKind(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input   string
 		want    ActorKind
@@ -47,16 +49,20 @@ func TestParseActorKind(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := ParseActorKind(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -66,6 +72,7 @@ func TestParseActorKind(t *testing.T) {
 
 func TestParseActorKindError(t *testing.T) {
 	t.Parallel()
+
 	_, err := ParseActorKind("Invalid")
 	if err == nil {
 		t.Error("expected error for invalid ActorKind")
@@ -74,9 +81,11 @@ func TestParseActorKindError(t *testing.T) {
 
 func TestActorKindIsValid(t *testing.T) {
 	t.Parallel()
+
 	if !ActorKindUser.IsValid() {
 		t.Error("ActorKindUser should be valid")
 	}
+
 	if !ActorKindService.IsValid() {
 		t.Error("ActorKindService should be valid")
 	}
@@ -114,6 +123,7 @@ func TestPriority(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.expected, func(t *testing.T) {
 			t.Parallel()
+
 			if tt.priority.String() != tt.expected {
 				t.Errorf("expected %s, got %s", tt.expected, tt.priority.String())
 			}
@@ -123,6 +133,7 @@ func TestPriority(t *testing.T) {
 
 func TestParsePriority(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input   string
 		want    Priority
@@ -139,16 +150,20 @@ func TestParsePriority(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.input, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := ParsePriority(tt.input)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -158,12 +173,15 @@ func TestParsePriority(t *testing.T) {
 
 func TestPriorityIsValid(t *testing.T) {
 	t.Parallel()
+
 	if !PriorityLow.IsValid() {
 		t.Error("PriorityLow should be valid")
 	}
+
 	if !PriorityCritical.IsValid() {
 		t.Error("PriorityCritical should be valid")
 	}
+
 	invalid := Priority(99)
 	if invalid.IsValid() {
 		t.Error("Priority(99) should not be valid")
