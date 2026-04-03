@@ -11,7 +11,8 @@ func testErrorChecker[Fn func(error) bool](t *testing.T, name string, checker Fn
 	name string
 	err  error
 	want bool
-}) {
+},
+) {
 	t.Helper()
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {

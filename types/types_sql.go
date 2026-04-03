@@ -10,72 +10,66 @@ import (
 	"github.com/larsartmann/go-composable-business-types/validate"
 )
 
-// Scan implements sql.Scanner for Email.
-// Supports string and []byte sources. Empty string/nil results in zero value.
-func (e *Email) Scan(src any) error {
-	if e == nil {
-		return errors.New("email: scan: receiver is nil")
+// scanStringType implements sql.Scanner for string-based types.
+// Handles nil receiver check, empty string (zero value), and type-specific parsing.
+func scanStringType[T ~string](ptr *T, name string, src any, parse func(string) (T, error)) error {
+	if ptr == nil {
+		return fmt.Errorf("%s: scan: receiver is nil", name)
 	}
-	err := scanutil.ScanString(src, func(v string) error {
-		if v == "" {
-			*e = ""
+	err := scanutil.ScanString(src, func(value string) error {
+		if value == "" {
+			*ptr = *new(T)
 			return nil
 		}
-		parsed, err := NewEmail(v)
-		if err != nil {
-			return fmt.Errorf("email: invalid value %q: %w", v, err)
+		parsed, parseErr := parse(value)
+		if parseErr != nil {
+			return fmt.Errorf("%s: invalid value %q: %w", name, value, parseErr)
 		}
-		*e = parsed
+		*ptr = parsed
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("email: scan: %w", err)
+		return fmt.Errorf("%s: scan: %w", name, err)
 	}
 	return nil
+}
+
+// valueStringType implements driver.Valuer for string-based types.
+// Returns nil for zero values, otherwise the string value.
+func valueStringType[T ~string](v T, name string) (driver.Value, error) {
+	val, err := scanutil.NullableValue(string(v))
+	if err != nil {
+		return nil, fmt.Errorf("%s: value: %w", name, err)
+	}
+	return val, nil
+}
+
+// Scan implements sql.Scanner for Email.
+// Supports string and []byte sources. Empty string/nil results in zero value.
+func (e *Email) Scan(src any) error {
+	return scanStringType(e, "email", src, func(value string) (Email, error) {
+		return NewEmail(value)
+	})
 }
 
 // Value implements driver.Valuer for Email.
 // Returns nil for empty Email, otherwise the string value.
 func (e Email) Value() (driver.Value, error) {
-	v, err := scanutil.NullableValue(string(e))
-	if err != nil {
-		return nil, fmt.Errorf("email: value: %w", err)
-	}
-	return v, nil
+	return valueStringType(e, "email")
 }
 
 // Scan implements sql.Scanner for URL.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (u *URL) Scan(src any) error {
-	if u == nil {
-		return errors.New("url: scan: receiver is nil")
-	}
-	err := scanutil.ScanString(src, func(v string) error {
-		if v == "" {
-			*u = ""
-			return nil
-		}
-		parsed, err := NewURL(v)
-		if err != nil {
-			return fmt.Errorf("url: invalid value %q: %w", v, err)
-		}
-		*u = parsed
-		return nil
+	return scanStringType(u, "url", src, func(value string) (URL, error) {
+		return NewURL(value)
 	})
-	if err != nil {
-		return fmt.Errorf("url: scan: %w", err)
-	}
-	return nil
 }
 
 // Value implements driver.Valuer for URL.
 // Returns nil for empty URL, otherwise the string value.
 func (u URL) Value() (driver.Value, error) {
-	v, err := scanutil.NullableValue(string(u))
-	if err != nil {
-		return nil, fmt.Errorf("url: value: %w", err)
-	}
-	return v, nil
+	return valueStringType(u, "url")
 }
 
 // Scan implements sql.Scanner for Cents.

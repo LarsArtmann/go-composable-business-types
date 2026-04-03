@@ -34,5 +34,14 @@
     "reason": "The `testErrorChecker` generic helper function (lines 9-24) already extracts the common pattern. Each test function merely calls this helper with different parameters specific to the error type being tested. The \"duplicates\" are just the unique test case slices for different error types — inherently different data, not repeated logic.\n\n```json\n{\"strategy\": \"false_positive\", \"files_modified\": [], \"new_abstraction\": null, \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=03ae9448-e0a1-4b00-ae97-0292bd806bd8\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/03 23:02:05 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 15s app duration in seconds 15]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
     "marked_at": "2026-04-03T23:02:13.185568+02:00",
     "marked_by": "auto-deduplicate"
+  },
+  {
+    "fingerprint": "228f0979b150dcbf1bddc4dc874ed468a34ec6ec2995529f540504c0ed63d36a",
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/pkg/errors/errors_test.go"
+    ],
+    "reason": "These test functions use the same helper function `testSentinelErrors` with a table-driven pattern, but they test semantically different things - error constants for Email, URL, BoundedString, NanoID, and ID types respectively. The \"duplication\" is structural coincidence from using Go's idiomatic table-driven test pattern. Each test has different test data (error constants) and tests different domain types.\n\n```json\n{\"strategy\": \"false_positive\", \"files_modified\": [], \"new_abstraction\": null, \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=73ee374f-c34b-4bb3-baa1-602aafa90859\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/03 23:05:00 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 39s app duration in seconds 39]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
+    "marked_at": "2026-04-03T23:05:29.586046+02:00",
+    "marked_by": "auto-deduplicate"
   }
 ]
