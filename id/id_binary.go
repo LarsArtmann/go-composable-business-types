@@ -30,6 +30,19 @@ func validateSize(data []byte, want int, typeName string, zero any) error {
 	return nil
 }
 
+// readUnsigned reads an unsigned integer from data and assigns it to id.
+func (id *ID[B, V]) readUnsigned(data []byte, byteSize int, typeName string, readFunc func([]byte) uint64) error {
+	err := validateSize(data, byteSize, typeName, *id)
+	if err != nil {
+		return err
+	}
+
+	n := readFunc(data)
+	*id = ID[B, V]{value: any(n).(V)}
+
+	return nil
+}
+
 // readUint16 reads a uint16 from data using LittleEndian.
 func readUint16(data []byte) uint16 {
 	return binary.LittleEndian.Uint16(data)
@@ -191,35 +204,11 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case uint16:
-		err := validateSize(data, byteSizeInt16, "uint16", zero)
-		if err != nil {
-			return err
-		}
-
-		n := readUint16(data)
-		*id = ID[B, V]{value: any(n).(V)}
-
-		return nil
+		return id.readUnsigned(data, byteSizeInt16, "uint16", func(d []byte) uint64 { return uint64(readUint16(d)) })
 	case uint32:
-		err := validateSize(data, byteSizeInt32, "uint32", zero)
-		if err != nil {
-			return err
-		}
-
-		n := readUint32(data)
-		*id = ID[B, V]{value: any(n).(V)}
-
-		return nil
+		return id.readUnsigned(data, byteSizeInt32, "uint32", func(d []byte) uint64 { return uint64(readUint32(d)) })
 	case uint64:
-		err := validateSize(data, byteSizeInt64, "uint64", zero)
-		if err != nil {
-			return err
-		}
-
-		n := readUint64(data)
-		*id = ID[B, V]{value: any(n).(V)}
-
-		return nil
+		return id.readUnsigned(data, byteSizeInt64, "uint64", readUint64)
 	default:
 		return fmt.Errorf("id: unsupported type %T for binary unmarshaling (data=%x)", zero, data)
 	}
