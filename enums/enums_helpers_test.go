@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
+	"github.com/larsartmann/go-composable-business-types/testutil"
 )
 
 // enumValueCase represents a test case for enum Value() method.
@@ -57,15 +58,12 @@ type enumStringCase[T interface{ String() string }] struct {
 func testEnumString[T interface{ String() string }](t *testing.T, tests []enumStringCase[T]) {
 	t.Helper()
 
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			t.Parallel()
-
-			if tt.value.String() != tt.expected {
-				t.Errorf("expected %s, got %s", tt.expected, tt.value.String())
-			}
-		})
+	cases := make([]testutil.StringCase[T], len(tests))
+	for i, tt := range tests {
+		cases[i] = testutil.StringCase[T]{Value: tt.value, Expected: tt.expected}
 	}
+
+	testutil.RunStringTests(t, "", cases)
 }
 
 // enumParseCase represents a test case for enum Parse() function.

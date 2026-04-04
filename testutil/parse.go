@@ -126,3 +126,24 @@ func RunPartsTest[T any](t *testing.T, val T, accessors []PartAccessor[T]) {
 		}
 	}
 }
+
+type StringCase[T any] struct {
+	Value    T
+	Expected string
+}
+
+type Stringer interface {
+	String() string
+}
+
+func RunStringTests[T Stringer](t *testing.T, name string, tests []StringCase[T]) {
+	t.Helper()
+	for _, tc := range tests {
+		t.Run(tc.Expected, func(t *testing.T) {
+			t.Parallel()
+			if tc.Value.String() != tc.Expected {
+				t.Errorf("expected %s, got %s", tc.Expected, tc.Value.String())
+			}
+		})
+	}
+}

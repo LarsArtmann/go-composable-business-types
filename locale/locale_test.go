@@ -59,11 +59,18 @@ func TestLocaleConstants(t *testing.T) {
 		if tt.locale.IsZero() {
 			t.Errorf("locale constant %s should not be zero", tt.name)
 		}
-
-		if tt.locale.String() != tt.name {
-			t.Errorf("expected %s, got %s", tt.name, tt.locale.String())
-		}
 	}
+
+	testutil.RunStringTests(t, "Locale", []testutil.StringCase[Locale]{
+		{LocaleEnUS, "en-US"},
+		{LocaleEnGB, "en-GB"},
+		{LocaleDeDE, "de-DE"},
+		{LocaleFrFR, "fr-FR"},
+		{LocaleEsES, "es-ES"},
+		{LocaleItIT, "it-IT"},
+		{LocaleJaJP, "ja-JP"},
+		{LocaleZhCN, "zh-CN"},
+	})
 }
 
 func TestNewLocale(t *testing.T) {
