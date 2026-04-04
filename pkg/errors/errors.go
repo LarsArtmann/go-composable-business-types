@@ -124,6 +124,12 @@ var (
 // Structured Error Types - Use errors.As() to extract details
 // =============================================================================
 
+// ContextualError is an error with additional context about what caused it.
+type ContextualError interface {
+	error
+	Wrapped() error
+}
+
 // UnmarshalError represents a failure to parse/unmarshal data.
 type UnmarshalError struct {
 	Type  string // The type that failed (e.g., "JSON", "XML", "Text")
@@ -136,6 +142,10 @@ func (e *UnmarshalError) Error() string {
 }
 
 func (e *UnmarshalError) Unwrap() error {
+	return e.Err
+}
+
+func (e *UnmarshalError) Wrapped() error {
 	return e.Err
 }
 
@@ -185,6 +195,10 @@ func (e *ScanError) Unwrap() error {
 	return e.Err
 }
 
+func (e *ScanError) Wrapped() error {
+	return e.Err
+}
+
 // =============================================================================
 // Error Wrapping Helpers
 // =============================================================================
@@ -221,8 +235,8 @@ func WrapRange(value, minVal, maxVal any, outOfRange bool) error {
 	}
 }
 
-// wrapError is a generic helper that wraps an error with additional context.
-func wrapError[T error](err error, constructor func(err error) T) error {
+// WrapContextual wraps err with context using constructor.
+func WrapContextual[T ContextualError](err error, constructor func(err error) T) error {
 	if err == nil {
 		return nil
 	}
@@ -232,14 +246,14 @@ func wrapError[T error](err error, constructor func(err error) T) error {
 
 // WrapScan wraps an error as a scan error.
 func WrapScan(err error, sourceType, targetType string) error {
-	return wrapError(err, func(e error) *ScanError {
+	return WrapContextual(err, func(e error) *ScanError {
 		return &ScanError{SourceType: sourceType, TargetType: targetType, Err: e}
 	})
 }
 
 // WrapUnmarshal wraps an error as an unmarshal error.
 func WrapUnmarshal(err error, typeName, input string) error {
-	return wrapError(err, func(e error) *UnmarshalError {
+	return WrapContextual(err, func(e error) *UnmarshalError {
 		return &UnmarshalError{Type: typeName, Input: input, Err: e}
 	})
 }
