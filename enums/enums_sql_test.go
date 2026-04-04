@@ -196,40 +196,34 @@ func testMarshalUnmarshal[T any](
 	}
 }
 
-func Testenums.PriorityMarshal(t *testing.T) {
+// testEnumMarshal is a helper for testing enum MarshalText/UnmarshalText with a single test case.
+func testEnumMarshal[T any](
+	t *testing.T,
+	marshalValue T,
+	marshalStr, unmarshalStr string,
+	unmarshalWant T,
+) {
 	t.Parallel()
-	testMarshalUnmarshal(t, []enumMarshalCase[enums.Priority]{
+	testMarshalUnmarshal(t, []enumMarshalCase[T]{
 		{
-			marshalValue:  enums.PriorityLow,
-			marshalStr:    "Low",
-			unmarshalStr:  "Medium",
-			unmarshalWant: enums.PriorityMedium,
+			marshalValue:  marshalValue,
+			marshalStr:    marshalStr,
+			unmarshalStr:  unmarshalStr,
+			unmarshalWant: unmarshalWant,
 		},
 	})
+}
+
+func Testenums_PriorityMarshal(t *testing.T) {
+	testEnumMarshal(t, enums.PriorityLow, "Low", "Medium", enums.PriorityMedium)
 }
 
 func TestStatusMarshal(t *testing.T) {
-	t.Parallel()
-	testMarshalUnmarshal(t, []enumMarshalCase[Status]{
-		{
-			marshalValue:  StatusDeleted,
-			marshalStr:    "Deleted",
-			unmarshalStr:  "Draft",
-			unmarshalWant: StatusDraft,
-		},
-	})
+	testEnumMarshal(t, StatusDeleted, "Deleted", "Draft", StatusDraft)
 }
 
 func TestTriggerMarshal(t *testing.T) {
-	t.Parallel()
-	testMarshalUnmarshal(t, []enumMarshalCase[Trigger]{
-		{
-			marshalValue:  TriggerCorrection,
-			marshalStr:    "Correction",
-			unmarshalStr:  "Scheduled",
-			unmarshalWant: TriggerScheduled,
-		},
-	})
+	testEnumMarshal(t, TriggerCorrection, "Correction", "Scheduled", TriggerScheduled)
 }
 
 func TestCauseKindSQL(t *testing.T) {
@@ -285,15 +279,7 @@ func TestCauseKindSQL(t *testing.T) {
 }
 
 func TestCauseKindMarshal(t *testing.T) {
-	t.Parallel()
-	testMarshalUnmarshal(t, []enumMarshalCase[CauseKind]{
-		{
-			marshalValue:  CauseKindEvent,
-			marshalStr:    "Event",
-			unmarshalStr:  "Direct",
-			unmarshalWant: CauseKindDirect,
-		},
-	})
+	testEnumMarshal(t, CauseKindEvent, "Event", "Direct", CauseKindDirect)
 }
 
 // TestAppendText tests AppendText for all enum types.
