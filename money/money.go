@@ -19,9 +19,9 @@ import (
 // Money wraps currency.Amount for domain clarity and type safety.
 type Money = currency.Amount
 
-// NewMoney creates a monetary amount from a numeric string and currency code.
-func NewMoney(amount, currencyCode string) (Money, error) {
-	m, err := currency.NewAmount(amount, currencyCode)
+// newMoney creates a monetary amount using the provided factory function.
+func newMoney(amount string, currencyCode string, factory func(string, string) (Money, error)) (Money, error) {
+	m, err := factory(amount, currencyCode)
 	if err != nil {
 		return Money{}, fmt.Errorf(
 			"money: new amount %q with currency %q: %w",
@@ -32,6 +32,11 @@ func NewMoney(amount, currencyCode string) (Money, error) {
 	}
 
 	return m, nil
+}
+
+// NewMoney creates a monetary amount from a numeric string and currency code.
+func NewMoney(amount, currencyCode string) (Money, error) {
+	return newMoney(amount, currencyCode, currency.NewAmount)
 }
 
 // NewMoneyFromCents creates a monetary amount from minor units (cents).
