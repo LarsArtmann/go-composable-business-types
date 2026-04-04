@@ -86,6 +86,7 @@ func (d DataPoint[T]) Tags() map[string]string {
 	if d.tags == nil {
 		return nil
 	}
+
 	return maps.Clone(d.tags)
 }
 
@@ -94,119 +95,129 @@ func (d DataPoint[T]) Tag(key string) string {
 	if d.tags == nil {
 		return ""
 	}
+
 	return d.tags[key]
+}
+
+// cloneSlice creates a copy of the given slice, returning nil if the input is nil.
+func cloneSlice[T any](s []T) []T {
+	if s == nil {
+		return nil
+	}
+
+	result := make([]T, len(s))
+	copy(result, s)
+
+	return result
 }
 
 // References returns all references.
 func (d DataPoint[T]) References() []Reference[string] {
-	if d.references == nil {
-		return nil
-	}
-	result := make([]Reference[string], len(d.references))
-	copy(result, d.references)
-	return result
+	return cloneSlice(d.references)
 }
 
 // Causes returns all causes.
 func (d DataPoint[T]) Causes() []Cause[string] {
-	if d.causes == nil {
-		return nil
-	}
-	result := make([]Cause[string], len(d.causes))
-	copy(result, d.causes)
-	return result
+	return cloneSlice(d.causes)
 }
 
 // IsZero returns true if this is the zero value.
 func (d DataPoint[T]) IsZero() bool {
-	var zeroPayload T
-	var zeroActor actor.ActorEntry[string]
+	var (
+		zeroPayload T
+		zeroActor   actor.ActorEntry[string]
+	)
+
 	return d.id.IsZero() && d.payload == zeroPayload && d.actor == zeroActor && d.temporal.IsZero()
 }
 
 // WithTrigger returns a copy with trigger set.
 func (d DataPoint[T]) WithTrigger(t enums.Trigger) DataPoint[T] {
 	d.trigger = t
+
 	return d
 }
 
 // WithReason returns a copy with reason set.
 func (d DataPoint[T]) WithReason(reason string) DataPoint[T] {
 	d.reason = reason
+
 	return d
 }
 
 // WithContext returns a copy with context set.
 func (d DataPoint[T]) WithContext(ctx Context) DataPoint[T] {
 	d.context = ctx
+
 	return d
 }
 
 // WithVersion returns a copy with version set.
 func (d DataPoint[T]) WithVersion(v int) DataPoint[T] {
 	d.version = v
+
 	return d
 }
 
 // WithTag returns a copy with a single tag added.
 func (d DataPoint[T]) WithTag(key, value string) DataPoint[T] {
-	if d.tags == nil {
-		d.tags = make(map[string]string)
-	}
-	d.tags[key] = value
+	addTag(&d.tags, key, value)
+
 	return d
 }
 
 // WithTags returns a copy with multiple tags merged.
 func (d DataPoint[T]) WithTags(tags map[string]string) DataPoint[T] {
-	if len(tags) == 0 {
-		return d
-	}
-	if d.tags == nil {
-		d.tags = make(map[string]string)
-	}
-	maps.Copy(d.tags, tags)
+	d.tags = mergeTags(d.tags, tags)
+
 	return d
 }
 
 // WithReference returns a copy with a reference appended.
 func (d DataPoint[T]) WithReference(ref Reference[string]) DataPoint[T] {
-	d.references = append(d.references, ref)
+	d.references = appendToSlice(d.references, ref)
+
 	return d
 }
 
 // WithCause returns a copy with a cause appended.
 func (d DataPoint[T]) WithCause(cause Cause[string]) DataPoint[T] {
-	d.causes = append(d.causes, cause)
+	d.causes = appendToSlice(d.causes, cause)
+
 	return d
+}
+
+// appendToSlice appends an item to a slice and returns the new slice.
+func appendToSlice[T any](slice []T, item T) []T {
+	return append(slice, item)
 }
 
 // WithTemporal returns a copy with temporal set.
 func (d DataPoint[T]) WithTemporal(t temporal.Bitemporal) DataPoint[T] {
 	d.temporal = t
+
 	return d
+}
+
+// sliceToSeq converts a slice to an iterator sequence.
+func sliceToSeq[T any](slice []T) iter.Seq[T] {
+	return func(yield func(T) bool) {
+		for _, item := range slice {
+			if !yield(item) {
+				return
+			}
+		}
+	}
 }
 
 // AllReferences returns an iterator over all references.
 func (d DataPoint[T]) AllReferences() iter.Seq[Reference[string]] {
-	return func(yield func(Reference[string]) bool) {
-		for _, ref := range d.references {
-			if !yield(ref) {
-				return
-			}
-		}
-	}
+	return sliceToSeq(d.references)
 }
 
 // AllCauses returns an iterator over all causes.
 func (d DataPoint[T]) AllCauses() iter.Seq[Cause[string]] {
-	return func(yield func(Cause[string]) bool) {
-		for _, cause := range d.causes {
-			if !yield(cause) {
-				return
-			}
-		}
-	}
+	return sliceToSeq(d.causes)
 }
 
 // AllTags returns an iterator over all tag key-value pairs.
@@ -253,13 +264,16 @@ func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("marshal datapoint: %w", err)
 	}
+
 	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonDataPoint[T]
-	if err := json.Unmarshal(data, &raw); err != nil {
+
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
 		return fmt.Errorf("unmarshal datapoint: invalid JSON %q: %w", string(data), err)
 	}
 

@@ -11,7 +11,7 @@ import (
 	"github.com/larsartmann/go-composable-business-types/types"
 )
 
-// Example values for demonstration purposes
+// Example values for demonstration purposes.
 const (
 	exampleCents      = 1099 // $10.99 in cents
 	examplePercentage = 75   // 75%
@@ -27,6 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("Email:", email.String())
 	fmt.Println("Local part:", email.LocalPart())
 	fmt.Println("Domain:", email.Domain())
@@ -44,6 +45,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	fmt.Println("URL:", url.String())
 	fmt.Println("Host:", url.Host())
 }

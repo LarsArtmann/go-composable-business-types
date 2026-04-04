@@ -58,6 +58,7 @@ func ScanInt64(src any, setValue func(int64) error) error {
 	if src == nil {
 		return setValue(0)
 	}
+
 	switch v := src.(type) {
 	case int64:
 		return setValue(v)
@@ -70,6 +71,7 @@ func ScanInt64(src any, setValue func(int64) error) error {
 		if err != nil {
 			return fmt.Errorf("cannot scan %T (len=%d) into int64 value: %w", src, len(v), err)
 		}
+
 		return setValue(parsed)
 	default:
 		return fmt.Errorf("cannot scan %T into int64 value", src)
@@ -81,10 +83,12 @@ func parseIntFromBytes(data []byte) (int64, error) {
 	if len(data) == 0 {
 		return 0, nil
 	}
+
 	v, err := strconv.ParseInt(string(data), 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("scanutil: parse int from bytes: %w", err)
 	}
+
 	return v, nil
 }
 
@@ -94,7 +98,18 @@ func NullableValue(v string) (any, error) {
 	if v == "" {
 		return nil, nil
 	}
+
 	return v, nil
+}
+
+// NullableValueWithError wraps NullableValue with error context for driver.Valuer implementations.
+func NullableValueWithError(v, errorPrefix string) (any, error) {
+	val, err := NullableValue(v)
+	if err != nil {
+		return nil, fmt.Errorf("%s: value: %w", errorPrefix, err)
+	}
+
+	return val, nil
 }
 
 // NonNullableValue returns the string as-is (for types that don't support null in SQL).
@@ -112,5 +127,6 @@ func ZeroAsNullValue(v int64) (any, error) {
 	if v == 0 {
 		return nil, nil
 	}
+
 	return v, nil
 }

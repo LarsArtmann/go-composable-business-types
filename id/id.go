@@ -55,12 +55,14 @@ func (id ID[B, V]) Get() V { return id.value }
 // IsZero returns true if the ID has its zero value.
 func (id ID[B, V]) IsZero() bool {
 	var zero V
+
 	return id.value == zero
 }
 
 // Reset sets the ID to its zero value.
 func (id *ID[B, V]) Reset() {
 	var zero V
+
 	*id = ID[B, V]{value: zero}
 }
 
@@ -123,6 +125,7 @@ func (id ID[B, V]) Or(defaultValue ID[B, V]) ID[B, V] {
 	if id.IsZero() {
 		return defaultValue
 	}
+
 	return id
 }
 

@@ -60,10 +60,12 @@ var _ActorKindMap = map[ActorKind]string{
 
 // String implements the Stringer interface.
 func (x ActorKind) String() string {
-	if str, ok := _ActorKindMap[x]; ok {
-		return str
-	}
-	return fmt.Sprintf("ActorKind(%d)", x)
+	return enumString(uint8(x), map[int]string{
+		int(ActorKindUser):    _ActorKindName[0:4],
+		int(ActorKindBot):     _ActorKindName[4:7],
+		int(ActorKindSystem):  _ActorKindName[7:13],
+		int(ActorKindService): _ActorKindName[13:20],
+	}, "ActorKind")
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -231,10 +233,11 @@ var _CauseKindMap = map[CauseKind]string{
 
 // String implements the Stringer interface.
 func (x CauseKind) String() string {
-	if str, ok := _CauseKindMap[x]; ok {
-		return str
-	}
-	return fmt.Sprintf("CauseKind(%d)", x)
+	return enumString(uint8(x), map[int]string{
+		int(CauseKindDirect):  _CauseKindName[0:6],
+		int(CauseKindCommand): _CauseKindName[6:13],
+		int(CauseKindEvent):   _CauseKindName[13:18],
+	}, "CauseKind")
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -403,10 +406,12 @@ var _PriorityMap = map[Priority]string{
 
 // String implements the Stringer interface.
 func (x Priority) String() string {
-	if str, ok := _PriorityMap[x]; ok {
-		return str
-	}
-	return fmt.Sprintf("Priority(%d)", x)
+	return enumString(uint8(x), map[int]string{
+		int(PriorityLow):      _PriorityName[0:3],
+		int(PriorityMedium):   _PriorityName[3:9],
+		int(PriorityHigh):     _PriorityName[9:13],
+		int(PriorityCritical): _PriorityName[13:21],
+	}, "Priority")
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -581,10 +586,13 @@ var _StatusMap = map[Status]string{
 
 // String implements the Stringer interface.
 func (x Status) String() string {
-	if str, ok := _StatusMap[x]; ok {
-		return str
-	}
-	return fmt.Sprintf("Status(%d)", x)
+	return enumString(uint8(x), map[int]string{
+		int(StatusDraft):    _StatusName[0:5],
+		int(StatusActive):   _StatusName[5:11],
+		int(StatusPaused):   _StatusName[11:17],
+		int(StatusArchived): _StatusName[17:25],
+		int(StatusDeleted):  _StatusName[25:32],
+	}, "Status")
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -777,10 +785,15 @@ var _TriggerMap = map[Trigger]string{
 
 // String implements the Stringer interface.
 func (x Trigger) String() string {
-	if str, ok := _TriggerMap[x]; ok {
-		return str
-	}
-	return fmt.Sprintf("Trigger(%d)", x)
+	return enumString(uint8(x), map[int]string{
+		int(TriggerManual):     _TriggerName[0:6],
+		int(TriggerScheduled):  _TriggerName[6:15],
+		int(TriggerWebhook):    _TriggerName[15:22],
+		int(TriggerImport):     _TriggerName[22:28],
+		int(TriggerMigration):  _TriggerName[28:37],
+		int(TriggerSystem):     _TriggerName[37:43],
+		int(TriggerCorrection): _TriggerName[43:53],
+	}, "Trigger")
 }
 
 // IsValid provides a quick way to determine if the typed value is

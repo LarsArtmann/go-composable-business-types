@@ -9,18 +9,22 @@ import (
 
 func TestNewBitemporal(t *testing.T) {
 	t.Parallel()
+
 	now := types.Now()
 	b := NewBitemporal(now)
 
 	if b.ValidFrom() != now {
 		t.Error("ValidFrom should equal recorded time")
 	}
+
 	if !b.ValidUntil().IsZero() {
 		t.Error("ValidUntil should be zero (indefinite)")
 	}
+
 	if b.Recorded() != now {
 		t.Error("Recorded should equal input")
 	}
+
 	if b.IsCorrection() != NoCorrection {
 		t.Error("NewBitemporal should not be a correction")
 	}
@@ -28,6 +32,7 @@ func TestNewBitemporal(t *testing.T) {
 
 func TestNewBitemporalWithRange(t *testing.T) {
 	t.Parallel()
+
 	from := types.NewTimestamp(time.Now())
 	until := types.NewTimestamp(time.Now().Add(time.Hour))
 	recorded := types.Now()
@@ -37,9 +42,11 @@ func TestNewBitemporalWithRange(t *testing.T) {
 	if b.ValidFrom() != from {
 		t.Error("ValidFrom mismatch")
 	}
+
 	if b.ValidUntil() != until {
 		t.Error("ValidUntil mismatch")
 	}
+
 	if b.IsCorrection() != NoCorrection {
 		t.Error("should not be a correction")
 	}
@@ -47,6 +54,7 @@ func TestNewBitemporalWithRange(t *testing.T) {
 
 func TestNewCorrection(t *testing.T) {
 	t.Parallel()
+
 	now := types.Now()
 	b := NewCorrection(now, types.Timestamp{Time: time.Time{}}, now)
 
@@ -57,6 +65,7 @@ func TestNewCorrection(t *testing.T) {
 
 func TestBitemporalIsZero(t *testing.T) {
 	t.Parallel()
+
 	var zero Bitemporal
 	if !zero.IsZero() {
 		t.Error("zero Bitemporal should be zero")
@@ -70,6 +79,7 @@ func TestBitemporalIsZero(t *testing.T) {
 
 func TestBitemporalIsValidAt(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
 	from := types.NewTimestamp(now.Add(-time.Hour))
 	until := types.NewTimestamp(now.Add(time.Hour))
@@ -95,6 +105,7 @@ func TestBitemporalIsValidAt(t *testing.T) {
 
 func TestBitemporalIsCurrentlyValid(t *testing.T) {
 	t.Parallel()
+
 	now := types.Now()
 	b := NewBitemporal(now)
 
@@ -114,6 +125,7 @@ func TestBitemporalIsCurrentlyValid(t *testing.T) {
 
 func TestBitemporalWithValidUntil(t *testing.T) {
 	t.Parallel()
+
 	b := NewBitemporal(types.Now())
 	newUntil := types.NewTimestamp(time.Now().Add(time.Hour))
 
@@ -130,6 +142,7 @@ func TestBitemporalWithValidUntil(t *testing.T) {
 
 func TestBitemporalJSON(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
 	b := NewBitemporalWithRange(
 		types.NewTimestamp(now),
@@ -149,6 +162,7 @@ func TestBitemporalJSON(t *testing.T) {
 
 	// Test unmarshal
 	var parsed Bitemporal
+
 	err = parsed.UnmarshalJSON(data)
 	if err != nil {
 		t.Fatalf("UnmarshalJSON failed: %v", err)
@@ -162,6 +176,7 @@ func TestBitemporalJSON(t *testing.T) {
 
 func TestCorrectionString(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name     string
 		c        Correction
@@ -173,6 +188,7 @@ func TestCorrectionString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := tt.c.String(); got != tt.expected {
 				t.Errorf("Correction.String() = %q, want %q", got, tt.expected)
 			}
@@ -182,6 +198,7 @@ func TestCorrectionString(t *testing.T) {
 
 func TestCorrectionJSON(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		c    Correction
@@ -193,10 +210,12 @@ func TestCorrectionJSON(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			data, err := tt.c.MarshalJSON()
 			if err != nil {
 				t.Fatalf("MarshalJSON failed: %v", err)
 			}
+
 			if string(data) != tt.want {
 				t.Errorf("MarshalJSON() = %s, want %s", string(data), tt.want)
 			}
@@ -206,6 +225,7 @@ func TestCorrectionJSON(t *testing.T) {
 			if err := parsed.UnmarshalJSON(data); err != nil {
 				t.Fatalf("UnmarshalJSON failed: %v", err)
 			}
+
 			if parsed != tt.c {
 				t.Errorf("round-trip failed: got %v, want %v", parsed, tt.c)
 			}
@@ -215,6 +235,7 @@ func TestCorrectionJSON(t *testing.T) {
 
 func TestCorrectionUnmarshalJSONErrors(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		data    string
@@ -226,7 +247,9 @@ func TestCorrectionUnmarshalJSONErrors(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			var c Correction
+
 			err := c.UnmarshalJSON([]byte(tt.data))
 			if (err != nil) != tt.wantErr {
 				t.Errorf("UnmarshalJSON() error = %v, wantErr %v", err, tt.wantErr)

@@ -42,8 +42,6 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 		)
 	}
 
-	//nolint:gofumpt
-
 	length := uint(
 		utf8.RuneCountInString(value),
 	)
@@ -57,6 +55,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 			value,
 		)
 	}
+
 	if length > maxLen {
 		return BoundedString{}, fmt.Errorf(
 			"string length %d exceeds maximum %d: minLen=%d, value=%q",
@@ -123,6 +122,7 @@ func (bs BoundedString) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("boundedstring: marshal JSON: %w", err)
 	}
+
 	return b, nil
 }
 
@@ -130,12 +130,14 @@ func (bs BoundedString) MarshalJSON() ([]byte, error) {
 // Validates the string against length constraints.
 func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	var value string
-	if err := json.Unmarshal(data, &value); err != nil {
+
+	err := json.Unmarshal(data, &value)
+	if err != nil {
 		return fmt.Errorf("boundedstring: unmarshal JSON %q: %w", string(data), err)
 	}
+
 	bs.value = value
 	bs.minLen = 0
-	//nolint:gofumpt
 
 	bs.maxLen = uint(
 		utf8.RuneCountInString(value),
@@ -150,14 +152,16 @@ func (bs *BoundedString) Scan(src any) error {
 	if bs == nil {
 		return errors.New("boundedstring: scan: receiver is nil")
 	}
+
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*bs = BoundedString{value: "", minLen: 0, maxLen: 0}
+
 			return nil
 		}
+
 		bs.value = v
 		bs.minLen = 0
-		//nolint:gofumpt
 
 		bs.maxLen = uint(
 			utf8.RuneCountInString(v),
@@ -168,15 +172,12 @@ func (bs *BoundedString) Scan(src any) error {
 	if err != nil {
 		return fmt.Errorf("boundedstring: scan: %w", err)
 	}
+
 	return nil
 }
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty BoundedString, otherwise the string value.
 func (bs BoundedString) Value() (driver.Value, error) {
-	v, err := scanutil.NullableValue(bs.value)
-	if err != nil {
-		return nil, fmt.Errorf("boundedstring: value: %w", err)
-	}
-	return v, nil
+	return scanutil.NullableValueWithError(bs.value, "boundedstring")
 }

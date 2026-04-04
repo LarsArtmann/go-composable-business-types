@@ -88,30 +88,41 @@ func (c ActorChain[T]) HasKind(kind enums.ActorKind) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
 // Constructor helpers
 
+// MakeActor creates an actor entry for the given kind.
+func MakeActor[T comparable](
+	kind enums.ActorKind,
+	id id.ID[struct{}, T],
+	name ...string,
+) ActorEntry[T] {
+	return newActorEntry(kind, id, name...)
+}
+
 // UserActor creates an actor entry for a human user.
 func UserActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(enums.ActorKindUser, id, name...)
+	return MakeActor(enums.ActorKindUser, id, name...)
 }
 
 // BotActor creates an actor entry for an automated bot.
 func BotActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(enums.ActorKindBot, id, name...)
+	return MakeActor(enums.ActorKindBot, id, name...)
 }
 
 // SystemActor creates an actor entry for system-initiated actions.
 func SystemActor[T comparable]() ActorEntry[T] {
 	var zeroID id.ID[struct{}, T]
+
 	return ActorEntry[T]{Kind: enums.ActorKindSystem, ID: zeroID, Name: ""}
 }
 
 // ServiceActor creates an actor entry for a service-to-service call.
 func ServiceActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
-	return newActorEntry(enums.ActorKindService, id, name...)
+	return MakeActor(enums.ActorKindService, id, name...)
 }
 
 // newActorEntry is a helper to create ActorEntry with optional name.
@@ -124,11 +135,13 @@ func newActorEntry[T comparable](
 	if len(name) > 0 {
 		n = name[0]
 	}
+
 	return ActorEntry[T]{Kind: kind, ID: id, Name: n}
 }
 
 // IsZero returns true if this is the zero value.
 func (e ActorEntry[T]) IsZero() bool {
 	var zeroID id.ID[struct{}, T]
+
 	return e.ID == zeroID && e.Name == ""
 }

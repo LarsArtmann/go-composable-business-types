@@ -44,28 +44,41 @@ func NewEmail(v string) (Email, error) {
 	if !emailRegex.MatchString(email) {
 		return "", pkgerrors.ErrInvalidEmail
 	}
+
 	return Email(email), nil
 }
 
-// Email methods
-func (e Email) String() string    { return string(e) }
-func (e Email) IsZero() bool      { return e == "" }
-func (e Email) LocalPart() string { s, _, _ := e.split(); return s }
-func (e Email) Domain() string    { _, d, _ := e.split(); return d }
+// Email methods.
+func (e Email) String() string { return string(e) }
+func (e Email) IsZero() bool   { return e == "" }
+func (e Email) LocalPart() string {
+	s, _, _ := e.split()
+
+	return s
+}
+
+func (e Email) Domain() string {
+	_, d, _ := e.split()
+
+	return d
+}
 
 // Validate implements validate.Validator for Email.
 func (e Email) Validate() error {
 	if e == "" {
 		return pkgerrors.ErrInvalidEmail
 	}
+
 	addr, err := mail.ParseAddress(string(e))
 	if err != nil {
 		return pkgerrors.ErrInvalidEmail
 	}
+
 	email := addr.Address
 	if !emailRegex.MatchString(email) {
 		return pkgerrors.ErrInvalidEmail
 	}
+
 	return nil
 }
 
@@ -76,6 +89,7 @@ func (e Email) Normalize() Email {
 	if !ok {
 		return e
 	}
+
 	return Email(local + "@" + strings.ToLower(domain))
 }
 
@@ -84,11 +98,14 @@ func (e Email) split() (local, domain string, ok bool) {
 	if e == "" {
 		return "", "", false
 	}
+
 	s := string(e)
+
 	idx := strings.IndexByte(s, '@')
 	if idx <= 0 || idx >= len(s)-1 {
 		return "", "", false
 	}
+
 	return s[:idx], s[idx+1:], true
 }
 
@@ -101,6 +118,7 @@ func NewURL(v string) (URL, error) {
 	if v == "" {
 		return "", pkgerrors.ErrInvalidURL
 	}
+
 	parsed, err := url.Parse(v)
 	if err != nil {
 		return "", pkgerrors.ErrInvalidURL
@@ -109,13 +127,15 @@ func NewURL(v string) (URL, error) {
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
 		return "", pkgerrors.ErrInvalidURL
 	}
+
 	if parsed.Host == "" {
 		return "", pkgerrors.ErrInvalidURL
 	}
+
 	return URL(v), nil
 }
 
-// URL constants
+// URL constants.
 func (u URL) String() string { return string(u) }
 
 // IsZero returns true if the URL is empty.
@@ -126,16 +146,20 @@ func (u URL) Validate() error {
 	if u == "" {
 		return pkgerrors.ErrInvalidURL
 	}
+
 	parsed, err := url.Parse(string(u))
 	if err != nil {
 		return pkgerrors.ErrInvalidURL
 	}
+
 	if parsed.Scheme != "http" && parsed.Scheme != "https" {
 		return pkgerrors.ErrInvalidURL
 	}
+
 	if parsed.Host == "" {
 		return pkgerrors.ErrInvalidURL
 	}
+
 	return nil
 }
 
@@ -146,6 +170,7 @@ func (u URL) Parse() (*url.URL, error) {
 	if err != nil {
 		return nil, fmt.Errorf("url: parse %q: %w", string(u), err)
 	}
+
 	return parsed, nil
 }
 
@@ -154,28 +179,32 @@ func (u URL) Scheme() string {
 	if u == "" {
 		return ""
 	}
+
 	s := string(u)
+
 	idx := strings.IndexByte(s, ':')
 	if idx <= 0 {
 		return ""
 	}
+
 	return s[:idx]
 }
 
 // Host returns the URL host (e.g., "example.com" or "example.com:8080").
 func (u URL) Host() string {
-	parsed, _ := u.Parse()
-	if parsed == nil {
-		return ""
-	}
-	return parsed.Host
+	return u.extractField(func(p *url.URL) string { return p.Host })
 }
 
 // Path returns the URL path (e.g., "/api/v1/users").
 func (u URL) Path() string {
+	return u.extractField(func(p *url.URL) string { return p.Path })
+}
+
+func (u URL) extractField(fn func(*url.URL) string) string {
 	parsed, _ := u.Parse()
 	if parsed == nil {
 		return ""
 	}
-	return parsed.Path
+
+	return fn(parsed)
 }

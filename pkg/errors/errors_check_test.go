@@ -7,16 +7,22 @@ import (
 )
 
 // testErrorChecker is a table-driven test helper for error checking functions.
-func testErrorChecker[Fn func(error) bool](t *testing.T, name string, checker Fn, testCases []struct {
-	name string
-	err  error
-	want bool
-},
+func testErrorChecker[Fn func(error) bool](
+	t *testing.T,
+	name string,
+	checker Fn,
+	testCases []struct {
+		name string
+		err  error
+		want bool
+	},
 ) {
 	t.Helper()
+
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := checker(tc.err); got != tc.want {
 				t.Errorf("%s() = %v, want %v", name, got, tc.want)
 			}

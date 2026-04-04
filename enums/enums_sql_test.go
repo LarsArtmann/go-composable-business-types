@@ -1,8 +1,10 @@
-package enums
+package enums_test
 
 import (
 	"fmt"
 	"testing"
+
+	"github.com/larsartmann/go-composable-business-types/testutil"
 )
 
 // Test SQL Scanner/Valuer interfaces.
@@ -69,159 +71,164 @@ func TestActorKindSQL(t *testing.T) {
 	}
 }
 
+// enumSQLCase holds test data for SQL Value/Scan tests.
+type enumSQLCase[T any] struct {
+	value    T
+	valueStr string
+	scanStr  string
+	scanWant T
+}
+
+// testEnumSQL tests Value() and Scan() methods for an enum type.
+func testEnumSQL[T comparable](
+	t *testing.T,
+	cases []enumSQLCase[T],
+	valueFunc func(T) (string, error),
+	scanFunc func(*T, any) error,
+) {
+	t.Helper()
+
+	for _, tc := range cases {
+		t.Run(tc.valueStr, func(t *testing.T) {
+			t.Parallel()
+
+			// Test Value
+			val, err := valueFunc(tc.value)
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if val != tc.valueStr {
+				t.Errorf("expected %s, got %v", tc.valueStr, val)
+			}
+
+			// Test Scan with string
+			var e T
+			if err := scanFunc(&e, tc.scanStr); err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if e != tc.scanWant {
+				t.Errorf("expected %v, got %v", tc.scanWant, e)
+			}
+		})
+	}
+}
+
 func TestPrioritySQL(t *testing.T) {
 	t.Parallel()
+	testEnumSQL(t, []enumSQLCase[Priority]{
+		{value: PriorityHigh, valueStr: "High", scanStr: "Critical", scanWant: PriorityCritical},
+	}, func(p Priority) (string, error) {
+		b, e := p.MarshalText()
 
-	val, err := PriorityHigh.Value()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if val != "High" {
-		t.Errorf("expected High, got %v", val)
-	}
-
-	var p Priority
-	if err := p.Scan("Critical"); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if p != PriorityCritical {
-		t.Errorf("expected Critical, got %v", p)
-	}
+		return string(b), e
+	}, (*Priority).Scan)
 }
 
 func TestStatusSQL(t *testing.T) {
 	t.Parallel()
+	testEnumSQL(t, []enumSQLCase[Status]{
+		{value: StatusActive, valueStr: "Active", scanStr: "Archived", scanWant: StatusArchived},
+	}, func(s Status) (string, error) {
+		b, e := s.MarshalText()
 
-	val, err := StatusActive.Value()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if val != "Active" {
-		t.Errorf("expected Active, got %v", val)
-	}
-
-	var s Status
-	if err := s.Scan("Archived"); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if s != StatusArchived {
-		t.Errorf("expected Archived, got %v", s)
-	}
+		return string(b), e
+	}, (*Status).Scan)
 }
 
 func TestTriggerSQL(t *testing.T) {
 	t.Parallel()
+	testEnumSQL(t, []enumSQLCase[Trigger]{
+		{
+			value:    TriggerWebhook,
+			valueStr: "Webhook",
+			scanStr:  "Migration",
+			scanWant: TriggerMigration,
+		},
+	}, func(tr Trigger) (string, error) {
+		b, e := tr.MarshalText()
 
-	val, err := TriggerWebhook.Value()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if val != "Webhook" {
-		t.Errorf("expected Webhook, got %v", val)
-	}
-
-	var tr Trigger
-	if err := tr.Scan("Migration"); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if tr != TriggerMigration {
-		t.Errorf("expected Migration, got %v", tr)
-	}
+		return string(b), e
+	}, (*Trigger).Scan)
 }
 
-// Test MarshalText/UnmarshalText.
-func TestActorKindMarshal(t *testing.T) {
-	t.Parallel()
+// enumMarshalCase holds test data for MarshalText/UnmarshalText tests.
+type enumMarshalCase[T any] struct {
+	marshalValue  T
+	marshalStr    string
+	unmarshalStr  string
+	unmarshalWant T
+}
 
-	data, err := ActorKindService.MarshalText()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
+// testMarshalUnmarshal tests MarshalText() and UnmarshalText() methods for an enum type.
+func testMarshalUnmarshal[T any](
+	t *testing.T,
+	cases []enumMarshalCase[T],
+) {
+	t.Helper()
 
-	if string(data) != "Service" {
-		t.Errorf("expected Service, got %s", string(data))
-	}
+	for _, tc := range cases {
+		t.Run(tc.marshalStr, func(t *testing.T) {
+			t.Parallel()
 
-	var ak ActorKind
-	if err := ak.UnmarshalText([]byte("User")); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
+			data, err := any(&tc.marshalValue).(interface{ MarshalText() ([]byte, error) }).MarshalText()
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
 
-	if ak != ActorKindUser {
-		t.Errorf("expected User, got %v", ak)
+			if string(data) != tc.marshalStr {
+				t.Errorf("expected %s, got %s", tc.marshalStr, string(data))
+			}
+
+			var e T
+			if err := any(&e).(interface{ UnmarshalText([]byte) error }).UnmarshalText(
+				[]byte(tc.unmarshalStr),
+			); err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
+
+			if any(e) != any(tc.unmarshalWant) {
+				t.Errorf("expected %v, got %v", tc.unmarshalWant, e)
+			}
+		})
 	}
 }
 
 func TestPriorityMarshal(t *testing.T) {
 	t.Parallel()
-
-	data, err := PriorityLow.MarshalText()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(data) != "Low" {
-		t.Errorf("expected Low, got %s", string(data))
-	}
-
-	var p Priority
-	if err := p.UnmarshalText([]byte("Medium")); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if p != PriorityMedium {
-		t.Errorf("expected Medium, got %v", p)
-	}
+	testMarshalUnmarshal(t, []enumMarshalCase[Priority]{
+		{
+			marshalValue:  PriorityLow,
+			marshalStr:    "Low",
+			unmarshalStr:  "Medium",
+			unmarshalWant: PriorityMedium,
+		},
+	})
 }
 
 func TestStatusMarshal(t *testing.T) {
 	t.Parallel()
-
-	data, err := StatusDeleted.MarshalText()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(data) != "Deleted" {
-		t.Errorf("expected Deleted, got %s", string(data))
-	}
-
-	var s Status
-	if err := s.UnmarshalText([]byte("Draft")); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if s != StatusDraft {
-		t.Errorf("expected Draft, got %v", s)
-	}
+	testMarshalUnmarshal(t, []enumMarshalCase[Status]{
+		{
+			marshalValue:  StatusDeleted,
+			marshalStr:    "Deleted",
+			unmarshalStr:  "Draft",
+			unmarshalWant: StatusDraft,
+		},
+	})
 }
 
 func TestTriggerMarshal(t *testing.T) {
 	t.Parallel()
-
-	data, err := TriggerCorrection.MarshalText()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(data) != "Correction" {
-		t.Errorf("expected Correction, got %s", string(data))
-	}
-
-	var tr Trigger
-	if err := tr.UnmarshalText([]byte("Scheduled")); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if tr != TriggerScheduled {
-		t.Errorf("expected Scheduled, got %v", tr)
-	}
+	testMarshalUnmarshal(t, []enumMarshalCase[Trigger]{
+		{
+			marshalValue:  TriggerCorrection,
+			marshalStr:    "Correction",
+			unmarshalStr:  "Scheduled",
+			unmarshalWant: TriggerScheduled,
+		},
+	})
 }
 
 func TestCauseKindSQL(t *testing.T) {
@@ -278,249 +285,130 @@ func TestCauseKindSQL(t *testing.T) {
 
 func TestCauseKindMarshal(t *testing.T) {
 	t.Parallel()
-
-	data, err := CauseKindEvent.MarshalText()
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(data) != "Event" {
-		t.Errorf("expected Event, got %s", string(data))
-	}
-
-	var ck CauseKind
-	if err := ck.UnmarshalText([]byte("Direct")); err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if ck != CauseKindDirect {
-		t.Errorf("expected Direct, got %v", ck)
-	}
+	testMarshalUnmarshal(t, []enumMarshalCase[CauseKind]{
+		{
+			marshalValue:  CauseKindEvent,
+			marshalStr:    "Event",
+			unmarshalStr:  "Direct",
+			unmarshalWant: CauseKindDirect,
+		},
+	})
 }
 
-// Test AppendText methods.
 func TestActorKindAppendText(t *testing.T) {
 	t.Parallel()
-
-	var buf []byte
-
-	ak := ActorKindUser
-
-	n, err := ak.AppendText(buf)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "User" {
-		t.Errorf("expected User, got %s", string(n))
-	}
-
-	// Test with existing buffer
-	buf = []byte("prefix:")
-	ak2 := ActorKindBot
-
-	n, err = ak2.AppendText(buf)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "prefix:Bot" {
-		t.Errorf("expected prefix:Bot, got %s", string(n))
-	}
+	testutil.RunAppendTextTest(
+		t,
+		"User",
+		func(v ActorKind) ([]byte, error) { return v.AppendText(nil) },
+		ActorKindUser,
+	)
 }
 
 func TestPriorityAppendText(t *testing.T) {
 	t.Parallel()
-
-	p := PriorityHigh
-
-	n, err := p.AppendText(nil)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "High" {
-		t.Errorf("expected High, got %s", string(n))
-	}
+	testutil.RunAppendTextTest(
+		t,
+		"High",
+		func(v Priority) ([]byte, error) { return v.AppendText(nil) },
+		PriorityHigh,
+	)
 }
 
 func TestStatusAppendText(t *testing.T) {
 	t.Parallel()
-
-	s := StatusActive
-
-	n, err := s.AppendText(nil)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "Active" {
-		t.Errorf("expected Active, got %s", string(n))
-	}
+	testutil.RunAppendTextTest(
+		t,
+		"Active",
+		func(v Status) ([]byte, error) { return v.AppendText(nil) },
+		StatusActive,
+	)
 }
 
 func TestTriggerAppendText(t *testing.T) {
 	t.Parallel()
-
-	tr := TriggerWebhook
-
-	n, err := tr.AppendText(nil)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "Webhook" {
-		t.Errorf("expected Webhook, got %s", string(n))
-	}
+	testutil.RunAppendTextTest(
+		t,
+		"Webhook",
+		func(v Trigger) ([]byte, error) { return v.AppendText(nil) },
+		TriggerWebhook,
+	)
 }
 
 func TestCauseKindAppendText(t *testing.T) {
 	t.Parallel()
+	testutil.RunAppendTextTest(
+		t,
+		"Direct",
+		func(v CauseKind) ([]byte, error) { return v.AppendText(nil) },
+		CauseKindDirect,
+	)
+}
 
-	ck := CauseKindDirect
+// testInvalidEnumString verifies that invalid enum values format correctly.
+func testInvalidEnumString[T any](t *testing.T, invalidValue T, typeName string, value int) {
+	t.Helper()
 
-	n, err := ck.AppendText(nil)
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	if string(n) != "Direct" {
-		t.Errorf("expected Direct, got %s", string(n))
+	expected := fmt.Sprintf("%s(%d)", typeName, value)
+	if any(invalidValue).(fmt.Stringer).String() != expected {
+		t.Errorf("expected %s, got %s", expected, any(invalidValue).(fmt.Stringer).String())
 	}
 }
 
-// Test invalid enum String() formatting.
+// TestInvalidEnumStrings verifies invalid enum String() formatting.
 func TestInvalidEnumStrings(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name         string
-		typeName     string
-		invalidValue uint8
-	}{
-		{"ActorKind", "ActorKind", 99},
-		{"Priority", "Priority", 99},
-		{"Status", "Status", 99},
-		{"Trigger", "Trigger", 99},
-		{"CauseKind", "CauseKind", 99},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			var invalid any
-			switch tt.name {
-			case "ActorKind":
-				invalid = ActorKind(tt.invalidValue)
-			case "Priority":
-				invalid = Priority(tt.invalidValue)
-			case "Status":
-				invalid = Status(tt.invalidValue)
-			case "Trigger":
-				invalid = Trigger(tt.invalidValue)
-			case "CauseKind":
-				invalid = CauseKind(tt.invalidValue)
-			}
-
-			expected := fmt.Sprintf("%s(%d)", tt.typeName, tt.invalidValue)
-			if invalid.(fmt.Stringer).String() != expected {
-				t.Errorf("expected %s, got %s", expected, invalid.(fmt.Stringer).String())
-			}
-		})
-	}
+	t.Run("ActorKind", func(t *testing.T) {
+		t.Parallel()
+		testInvalidEnumString(t, ActorKind(99), "ActorKind", 99)
+	})
+	t.Run("Priority", func(t *testing.T) {
+		t.Parallel()
+		testInvalidEnumString(t, Priority(99), "Priority", 99)
+	})
+	t.Run("Status", func(t *testing.T) {
+		t.Parallel()
+		testInvalidEnumString(t, Status(99), "Status", 99)
+	})
+	t.Run("Trigger", func(t *testing.T) {
+		t.Parallel()
+		testInvalidEnumString(t, Trigger(99), "Trigger", 99)
+	})
+	t.Run("CauseKind", func(t *testing.T) {
+		t.Parallel()
+		testInvalidEnumString(t, CauseKind(99), "CauseKind", 99)
+	})
 }
 
 // Test UnmarshalText error cases.
 func TestUnmarshalTextErrors(t *testing.T) {
-	t.Parallel()
-	t.Run("ActorKind", func(t *testing.T) {
-		t.Parallel()
-
-		var ak ActorKind
-
-		err := ak.UnmarshalText([]byte("Invalid"))
-		if err == nil {
-			t.Error("expected error for invalid ActorKind")
-		}
-	})
-
-	t.Run("Priority", func(t *testing.T) {
-		t.Parallel()
-
-		var p Priority
-
-		err := p.UnmarshalText([]byte("Invalid"))
-		if err == nil {
-			t.Error("expected error for invalid Priority")
-		}
-	})
-
-	t.Run("Status", func(t *testing.T) {
-		t.Parallel()
-
-		var s Status
-
-		err := s.UnmarshalText([]byte("Invalid"))
-		if err == nil {
-			t.Error("expected error for invalid Status")
-		}
-	})
-
-	t.Run("Trigger", func(t *testing.T) {
-		t.Parallel()
-
-		var tr Trigger
-
-		err := tr.UnmarshalText([]byte("Invalid"))
-		if err == nil {
-			t.Error("expected error for invalid Trigger")
-		}
-	})
-
-	t.Run("CauseKind", func(t *testing.T) {
-		t.Parallel()
-
-		var ck CauseKind
-
-		err := ck.UnmarshalText([]byte("Invalid"))
-		if err == nil {
-			t.Error("expected error for invalid CauseKind")
-		}
-	})
+	testUnmarshalTextErrorsAll(t,
+		[]enumUnmarshalTextErrorCase[ActorKind]{{"ActorKind"}},
+		[]enumUnmarshalTextErrorCase[Priority]{{"Priority"}},
+		[]enumUnmarshalTextErrorCase[Status]{{"Status"}},
+		[]enumUnmarshalTextErrorCase[Trigger]{{"Trigger"}},
+		[]enumUnmarshalTextErrorCase[CauseKind]{{"CauseKind"}},
+	)
 }
 
 // Test all Value methods.
 func TestValueMethods(t *testing.T) {
 	t.Parallel()
-	t.Run("ActorKind", func(t *testing.T) {
-		testEnumValue(t, []enumValueCase[ActorKind]{
-			{ActorKindSystem, "System"},
-		})
+	testEnumValue(t, []enumValueCase[ActorKind]{
+		{ActorKindSystem, "System"},
 	})
-
-	t.Run("Priority", func(t *testing.T) {
-		testEnumValue(t, []enumValueCase[Priority]{
-			{PriorityMedium, "Medium"},
-		})
+	testEnumValue(t, []enumValueCase[Priority]{
+		{PriorityMedium, "Medium"},
 	})
-
-	t.Run("Status", func(t *testing.T) {
-		testEnumValue(t, []enumValueCase[Status]{
-			{StatusPaused, "Paused"},
-		})
+	testEnumValue(t, []enumValueCase[Status]{
+		{StatusPaused, "Paused"},
 	})
-
-	t.Run("Trigger", func(t *testing.T) {
-		testEnumValue(t, []enumValueCase[Trigger]{
-			{TriggerImport, "Import"},
-		})
+	testEnumValue(t, []enumValueCase[Trigger]{
+		{TriggerImport, "Import"},
 	})
-
-	t.Run("CauseKind", func(t *testing.T) {
-		testEnumValue(t, []enumValueCase[CauseKind]{
-			{CauseKindEvent, "Event"},
-		})
+	testEnumValue(t, []enumValueCase[CauseKind]{
+		{CauseKindEvent, "Event"},
 	})
 }
 
@@ -559,72 +447,125 @@ func testScanAllTypes[T comparable](
 }
 
 // Test comprehensive Scan types for all enums.
-func TestActorKindScanAllTypes(t *testing.T) {
+func TestAllEnumScanAllTypes(t *testing.T) {
 	t.Parallel()
-	testScanAllTypes(t, []scanTestCase[ActorKind]{
-		{"int64", int64(1), ActorKindBot},
-		{"string", "System", ActorKindSystem},
-		{"bytes", []byte("Service"), ActorKindService},
-		{"int", int(0), ActorKindUser},
-		{"uint", uint(2), ActorKindSystem},
-		{"uint64", uint64(3), ActorKindService},
-		{"float64", float64(1), ActorKindBot},
-		{"nil", nil, ActorKind(0)},
-	}, (*ActorKind).Scan)
-}
 
-func TestPriorityScanAllTypes(t *testing.T) {
-	t.Parallel()
-	testScanAllTypes(t, []scanTestCase[Priority]{
-		{"int64", int64(2), PriorityHigh},
-		{"string", "Critical", PriorityCritical},
-		{"bytes", []byte("Low"), PriorityLow},
-		{"int", int(1), PriorityMedium},
-		{"uint", uint(0), PriorityLow},
-		{"uint64", uint64(3), PriorityCritical},
-		{"float64", float64(2), PriorityHigh},
-		{"nil", nil, Priority(0)},
-	}, (*Priority).Scan)
-}
+	tests := []struct {
+		typeName string
+		cases    []any
+		scanFunc any
+	}{
+		{
+			"ActorKind",
+			[]any{
+				scanTestCase[ActorKind]{"int64", int64(1), ActorKindBot},
+				scanTestCase[ActorKind]{"string", "System", ActorKindSystem},
+				scanTestCase[ActorKind]{"bytes", []byte("Service"), ActorKindService},
+				scanTestCase[ActorKind]{"int", int(0), ActorKindUser},
+				scanTestCase[ActorKind]{"uint", uint(2), ActorKindSystem},
+				scanTestCase[ActorKind]{"uint64", uint64(3), ActorKindService},
+				scanTestCase[ActorKind]{"float64", float64(1), ActorKindBot},
+				scanTestCase[ActorKind]{"nil", nil, ActorKind(0)},
+			},
+			(*ActorKind).Scan,
+		},
+		{
+			"Priority",
+			[]any{
+				scanTestCase[Priority]{"int64", int64(2), PriorityHigh},
+				scanTestCase[Priority]{"string", "Critical", PriorityCritical},
+				scanTestCase[Priority]{"bytes", []byte("Low"), PriorityLow},
+				scanTestCase[Priority]{"int", int(1), PriorityMedium},
+				scanTestCase[Priority]{"uint", uint(0), PriorityLow},
+				scanTestCase[Priority]{"uint64", uint64(3), PriorityCritical},
+				scanTestCase[Priority]{"float64", float64(2), PriorityHigh},
+				scanTestCase[Priority]{"nil", nil, Priority(0)},
+			},
+			(*Priority).Scan,
+		},
+		{
+			"Status",
+			[]any{
+				scanTestCase[Status]{"int64", int64(1), StatusActive},
+				scanTestCase[Status]{"string", "Archived", StatusArchived},
+				scanTestCase[Status]{"bytes", []byte("Deleted"), StatusDeleted},
+				scanTestCase[Status]{"int", int(0), StatusDraft},
+				scanTestCase[Status]{"uint", uint(2), StatusPaused},
+				scanTestCase[Status]{"uint64", uint64(4), StatusDeleted},
+				scanTestCase[Status]{"float64", float64(1), StatusActive},
+				scanTestCase[Status]{"nil", nil, Status(0)},
+			},
+			(*Status).Scan,
+		},
+		{
+			"Trigger",
+			[]any{
+				scanTestCase[Trigger]{"int64", int64(2), TriggerWebhook},
+				scanTestCase[Trigger]{"string", "Correction", TriggerCorrection},
+				scanTestCase[Trigger]{"bytes", []byte("Import"), TriggerImport},
+				scanTestCase[Trigger]{"int", int(0), TriggerManual},
+				scanTestCase[Trigger]{"uint", uint(5), TriggerSystem},
+				scanTestCase[Trigger]{"uint64", uint64(6), TriggerCorrection},
+				scanTestCase[Trigger]{"float64", float64(2), TriggerWebhook},
+				scanTestCase[Trigger]{"nil", nil, Trigger(0)},
+			},
+			(*Trigger).Scan,
+		},
+		{
+			"CauseKind",
+			[]any{
+				scanTestCase[CauseKind]{"int64", int64(1), CauseKindCommand},
+				scanTestCase[CauseKind]{"string", "Event", CauseKindEvent},
+				scanTestCase[CauseKind]{"bytes", []byte("Direct"), CauseKindDirect},
+				scanTestCase[CauseKind]{"int", int(0), CauseKindDirect},
+				scanTestCase[CauseKind]{"uint", uint(2), CauseKindEvent},
+				scanTestCase[CauseKind]{"uint64", uint64(1), CauseKindCommand},
+				scanTestCase[CauseKind]{"float64", float64(1), CauseKindCommand},
+				scanTestCase[CauseKind]{"nil", nil, CauseKind(0)},
+			},
+			(*CauseKind).Scan,
+		},
+	}
 
-func TestStatusScanAllTypes(t *testing.T) {
-	t.Parallel()
-	testScanAllTypes(t, []scanTestCase[Status]{
-		{"int64", int64(1), StatusActive},
-		{"string", "Archived", StatusArchived},
-		{"bytes", []byte("Deleted"), StatusDeleted},
-		{"int", int(0), StatusDraft},
-		{"uint", uint(2), StatusPaused},
-		{"uint64", uint64(4), StatusDeleted},
-		{"float64", float64(1), StatusActive},
-		{"nil", nil, Status(0)},
-	}, (*Status).Scan)
-}
+	for _, tt := range tests {
+		t.Run(tt.typeName, func(t *testing.T) {
+			switch f := tt.scanFunc.(type) {
+			case func(*ActorKind, any) error:
+				cases := make([]scanTestCase[ActorKind], len(tt.cases))
+				for i, c := range tt.cases {
+					cases[i] = c.(scanTestCase[ActorKind])
+				}
 
-func TestTriggerScanAllTypes(t *testing.T) {
-	t.Parallel()
-	testScanAllTypes(t, []scanTestCase[Trigger]{
-		{"int64", int64(2), TriggerWebhook},
-		{"string", "Correction", TriggerCorrection},
-		{"bytes", []byte("Import"), TriggerImport},
-		{"int", int(0), TriggerManual},
-		{"uint", uint(5), TriggerSystem},
-		{"uint64", uint64(6), TriggerCorrection},
-		{"float64", float64(2), TriggerWebhook},
-		{"nil", nil, Trigger(0)},
-	}, (*Trigger).Scan)
-}
+				testScanAllTypes(t, cases, f)
+			case func(*Priority, any) error:
+				cases := make([]scanTestCase[Priority], len(tt.cases))
+				for i, c := range tt.cases {
+					cases[i] = c.(scanTestCase[Priority])
+				}
 
-func TestCauseKindScanAllTypes(t *testing.T) {
-	t.Parallel()
-	testScanAllTypes(t, []scanTestCase[CauseKind]{
-		{"int64", int64(1), CauseKindCommand},
-		{"string", "Event", CauseKindEvent},
-		{"bytes", []byte("Direct"), CauseKindDirect},
-		{"int", int(0), CauseKindDirect},
-		{"uint", uint(2), CauseKindEvent},
-		{"uint64", uint64(1), CauseKindCommand},
-		{"float64", float64(1), CauseKindCommand},
-		{"nil", nil, CauseKind(0)},
-	}, (*CauseKind).Scan)
+				testScanAllTypes(t, cases, f)
+			case func(*Status, any) error:
+				cases := make([]scanTestCase[Status], len(tt.cases))
+				for i, c := range tt.cases {
+					cases[i] = c.(scanTestCase[Status])
+				}
+
+				testScanAllTypes(t, cases, f)
+			case func(*Trigger, any) error:
+				cases := make([]scanTestCase[Trigger], len(tt.cases))
+				for i, c := range tt.cases {
+					cases[i] = c.(scanTestCase[Trigger])
+				}
+
+				testScanAllTypes(t, cases, f)
+			case func(*CauseKind, any) error:
+				cases := make([]scanTestCase[CauseKind], len(tt.cases))
+				for i, c := range tt.cases {
+					cases[i] = c.(scanTestCase[CauseKind])
+				}
+
+				testScanAllTypes(t, cases, f)
+			}
+		})
+	}
 }

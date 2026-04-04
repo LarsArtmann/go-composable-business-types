@@ -2,17 +2,13 @@ package types
 
 import (
 	"database/sql/driver"
-	"encoding/json"
-	"errors"
 	"fmt"
-
-	"github.com/larsartmann/go-composable-business-types/scanutil"
 )
 
 // Percentage represents a value from 0-100.
 type Percentage uint8
 
-// Percentage constants for common values
+// Percentage constants for common values.
 const (
 	percentageDivisor  = 100 // Used for float64 conversion
 	percentageMaxValue = 100 // Maximum valid percentage
@@ -23,6 +19,7 @@ func NewPercentage(v uint8) Percentage {
 	if v > percentageMaxValue {
 		return percentageMaxValue
 	}
+
 	return Percentage(v)
 }
 
@@ -41,59 +38,59 @@ func (p Percentage) IsMin() bool { return p == 0 }
 // IsMax returns true if the percentage is 100 (maximum value).
 func (p Percentage) IsMax() bool { return p == percentageMaxValue }
 
-// Compare returns -1 if p < other, 0 if equal, 1 if p > other.
-func (p Percentage) Compare(other Percentage) int {
-	if p < other {
+// CompareOrdered defines the interface for types that support comparison.
+type CompareOrdered interface {
+	~int8 | ~int16 | ~int32 | ~int64 | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~float32 | ~float64
+}
+
+// compare compares two ordered values. Returns -1 if a < b, 0 if equal, 1 if a > b.
+func compare[T CompareOrdered](a, b T) int {
+	if a < b {
 		return -1
 	}
-	if p > other {
+
+	if a > b {
 		return 1
 	}
+
 	return 0
+}
+
+// Compare returns -1 if p < other, 0 if equal, 1 if p > other.
+func (p Percentage) Compare(other Percentage) int {
+	return compare(p, other)
 }
 
 // MarshalJSON implements json.Marshaler.
 func (p Percentage) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(uint8(p))
-	if err != nil {
-		return nil, fmt.Errorf("percentage: marshal JSON: %w", err)
-	}
-	return b, nil
+	return MarshalJSON("percentage", uint8(p))
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (p *Percentage) UnmarshalJSON(data []byte) error {
 	var v uint8
-	if err := json.Unmarshal(data, &v); err != nil {
-		return fmt.Errorf("percentage: invalid JSON %q: %w", string(data), err)
+
+	err := UnmarshalJSON("percentage", data, &v)
+	if err != nil {
+		return err
 	}
+
 	*p = Percentage(v)
+
 	return nil
 }
 
 // Scan implements sql.Scanner for Percentage.
 // Supports int64 and uint8 sources.
 func (p *Percentage) Scan(src any) error {
-	if p == nil {
-		return errors.New("percentage: scan: receiver is nil")
-	}
-	err := scanutil.ScanInt64(src, func(v int64) error {
-		*p = Percentage(v) //nolint:gosec // G115: int64 to uint8 for Percentage (0-100 range)
-		return nil
+	return scanInt64Type(p, "percentage", src, func(v int64) Percentage {
+		return Percentage(v) //nolint:gosec // G115: int64 to uint8 for Percentage (0-100 range)
 	})
-	if err != nil {
-		return fmt.Errorf("percentage: scan: %w", err)
-	}
-	return nil
 }
 
 // Value implements driver.Valuer for Percentage.
 func (p Percentage) Value() (driver.Value, error) {
-	v, err := scanutil.Int64Value(int64(p))
-	if err != nil {
-		return nil, fmt.Errorf("percentage: value: %w", err)
-	}
-	return v, nil
+	return valueInt64Type(int64(p), "percentage")
 }
 
 // Validate implements validate.Validator for Percentage.
@@ -102,7 +99,7 @@ func (p Percentage) Validate() error { return nil }
 // Cents represents monetary amounts in smallest currency unit (prevents float errors).
 type Cents int64
 
-// Cents conversion constant
+// Cents conversion constant.
 const centsDivisor = 100 // Used for float64 conversion
 
 // NewCents creates a new Cents value from an int64.
@@ -135,6 +132,7 @@ func (c Cents) Abs() Cents {
 	if c < 0 {
 		return -c
 	}
+
 	return c
 }
 
@@ -143,9 +141,11 @@ func (c Cents) Sign() int {
 	if c < 0 {
 		return -1
 	}
+
 	if c > 0 {
 		return 1
 	}
+
 	return 0
 }
 
@@ -163,11 +163,5 @@ func (c Cents) IsNegative() bool { return c < 0 }
 
 // Compare returns -1 if c < other, 0 if equal, 1 if c > other.
 func (c Cents) Compare(other Cents) int {
-	if c < other {
-		return -1
-	}
-	if c > other {
-		return 1
-	}
-	return 0
+	return compare(c, other)
 }

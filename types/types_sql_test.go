@@ -4,25 +4,29 @@ import (
 	"testing"
 )
 
-// SQL Scanner/Valuer tests for Email, URL, and Cents
+// SQL Scanner/Valuer tests for Email, URL, and Cents.
 func TestEmailSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
 	email, _ := NewEmail("test@example.com")
+
 	val, err := email.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if val != "test@example.com" {
 		t.Errorf("expected test@example.com, got %v", val)
 	}
 
 	// Test Value for zero
 	var zero Email
+
 	val, err = zero.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if val != nil {
 		t.Errorf("expected nil, got %v", val)
 	}
@@ -32,6 +36,7 @@ func TestEmailSQL(t *testing.T) {
 	if err := e.Scan("scanned@example.com"); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if e.String() != "scanned@example.com" {
 		t.Errorf("expected scanned@example.com, got %s", e.String())
 	}
@@ -41,16 +46,19 @@ func TestEmailSQL(t *testing.T) {
 	if err := e2.Scan([]byte("byte@example.com")); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if e2.String() != "byte@example.com" {
 		t.Errorf("expected byte@example.com, got %s", e2.String())
 	}
 
 	// Test Scan with nil
 	var e3 Email
+
 	e3, _ = NewEmail("test@example.com")
 	if err := e3.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if !e3.IsZero() {
 		t.Error("expected zero value after scanning nil")
 	}
@@ -60,6 +68,7 @@ func TestEmailSQL(t *testing.T) {
 	if err := e4.Scan(""); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if !e4.IsZero() {
 		t.Error("expected zero value after scanning empty string")
 	}
@@ -81,20 +90,24 @@ func TestURLSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
 	url, _ := NewURL("https://example.com")
+
 	val, err := url.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if val != "https://example.com" {
 		t.Errorf("expected https://example.com, got %v", val)
 	}
 
 	// Test Value for zero
 	var zero URL
+
 	val, err = zero.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if val != nil {
 		t.Errorf("expected nil, got %v", val)
 	}
@@ -104,6 +117,7 @@ func TestURLSQL(t *testing.T) {
 	if err := u.Scan("https://scanned.example.com"); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if u.String() != "https://scanned.example.com" {
 		t.Errorf("expected https://scanned.example.com, got %s", u.String())
 	}
@@ -113,6 +127,7 @@ func TestURLSQL(t *testing.T) {
 	if err := u2.Scan([]byte("https://byte.example.com")); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if u2.String() != "https://byte.example.com" {
 		t.Errorf("expected https://byte.example.com, got %s", u2.String())
 	}
@@ -122,6 +137,7 @@ func TestURLSQL(t *testing.T) {
 	if err := u3.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if !u3.IsZero() {
 		t.Error("expected zero value after scanning nil")
 	}
@@ -131,6 +147,7 @@ func TestURLSQL(t *testing.T) {
 	if err := u4.Scan(""); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if !u4.IsZero() {
 		t.Error("expected zero value after scanning empty string")
 	}
@@ -152,10 +169,12 @@ func TestCentsSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
 	c := NewCents(1099)
+
 	val, err := c.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if val != int64(1099) {
 		t.Errorf("expected 1099, got %v", val)
 	}
@@ -165,6 +184,7 @@ func TestCentsSQL(t *testing.T) {
 	if err := c2.Scan(int64(500)); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if c2 != 500 {
 		t.Errorf("expected 500, got %d", c2)
 	}
@@ -174,6 +194,7 @@ func TestCentsSQL(t *testing.T) {
 	if err := c3.Scan(float64(750)); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if c3 != 750 {
 		t.Errorf("expected 750, got %d", c3)
 	}
@@ -183,6 +204,7 @@ func TestCentsSQL(t *testing.T) {
 	if err := c4.Scan([]byte("999")); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if c4 != 999 {
 		t.Errorf("expected 999, got %d", c4)
 	}
@@ -192,6 +214,7 @@ func TestCentsSQL(t *testing.T) {
 	if err := c5.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if c5 != 0 {
 		t.Errorf("expected 0, got %d", c5)
 	}

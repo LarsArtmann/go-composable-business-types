@@ -42,7 +42,7 @@ import (
 // Sentinel Errors - Use errors.Is() to check
 // =============================================================================
 
-// Email errors
+// Email errors.
 var (
 	// ErrInvalidEmail is returned when an email address fails validation.
 	ErrInvalidEmail = errors.New("invalid email address")
@@ -51,7 +51,7 @@ var (
 	ErrEmailEmpty = errors.New("email cannot be empty")
 )
 
-// URL errors
+// URL errors.
 var (
 	// ErrInvalidURL is returned when a URL fails validation.
 	ErrInvalidURL = errors.New("invalid URL")
@@ -66,7 +66,7 @@ var (
 	ErrURLHost = errors.New("URL must have a host")
 )
 
-// BoundedString errors
+// BoundedString errors.
 var (
 	// ErrBoundedStringMinLength is returned when a string is too short.
 	ErrBoundedStringMinLength = errors.New("string below minimum length")
@@ -81,7 +81,7 @@ var (
 	ErrBoundedStringMaxLessThanMin = errors.New("maximum length cannot be less than minimum length")
 )
 
-// NanoID errors
+// NanoID errors.
 var (
 	// ErrNanoIDEmpty is returned when a NanoID is empty.
 	ErrNanoIDEmpty = errors.New("nanoid cannot be empty")
@@ -96,7 +96,7 @@ var (
 	ErrNanoIDInvalid = errors.New("nanoid contains invalid characters")
 )
 
-// ID errors
+// ID errors.
 var (
 	// ErrIDInvalid is returned when an ID value is invalid.
 	ErrIDInvalid = errors.New("invalid ID value")
@@ -108,7 +108,7 @@ var (
 	ErrIDInsufficientData = errors.New("insufficient data for ID type")
 )
 
-// Parse/Marshal errors - structured errors for detailed context
+// Parse/Marshal errors - structured errors for detailed context.
 var (
 	// ErrMalformedInput is returned when input cannot be parsed.
 	ErrMalformedInput = errors.New("malformed input")
@@ -166,6 +166,7 @@ func (e *RangeError) Error() string {
 	if e.OutOfRange {
 		return fmt.Sprintf("value %v exceeds maximum %v", e.Value, e.Max)
 	}
+
 	return fmt.Sprintf("value %v below minimum %v", e.Value, e.Min)
 }
 
@@ -193,6 +194,7 @@ func WrapMalformed(err error, typeName, input string) error {
 	if err == nil {
 		return nil
 	}
+
 	return fmt.Errorf("%w: malformed %s %q", ErrMalformedInput, typeName, input)
 }
 
@@ -201,6 +203,7 @@ func WrapInvalid(err error, field string, value any) error {
 	if err == nil {
 		return nil
 	}
+
 	return &ValidationError{
 		Field: field,
 		Value: value,
@@ -218,28 +221,27 @@ func WrapRange(value, minVal, maxVal any, outOfRange bool) error {
 	}
 }
 
-// WrapScan wraps an error as a scan error.
-func WrapScan(err error, sourceType, targetType string) error {
+// wrapError is a generic helper that wraps an error with additional context.
+func wrapError[T error](err error, constructor func(err error) T) error {
 	if err == nil {
 		return nil
 	}
-	return &ScanError{
-		SourceType: sourceType,
-		TargetType: targetType,
-		Err:        err,
-	}
+
+	return constructor(err)
+}
+
+// WrapScan wraps an error as a scan error.
+func WrapScan(err error, sourceType, targetType string) error {
+	return wrapError(err, func(e error) *ScanError {
+		return &ScanError{SourceType: sourceType, TargetType: targetType, Err: e}
+	})
 }
 
 // WrapUnmarshal wraps an error as an unmarshal error.
 func WrapUnmarshal(err error, typeName, input string) error {
-	if err == nil {
-		return nil
-	}
-	return &UnmarshalError{
-		Type:  typeName,
-		Input: input,
-		Err:   err,
-	}
+	return wrapError(err, func(e error) *UnmarshalError {
+		return &UnmarshalError{Type: typeName, Input: input, Err: e}
+	})
 }
 
 // =============================================================================
@@ -277,36 +279,37 @@ func IsInvalidEmail(err error) bool {
 
 // IsInvalidURL checks if the error is related to invalid URL.
 func IsInvalidURL(err error) bool {
-	return errors.Is(err, ErrInvalidURL) || errors.Is(err, ErrURLEmpty) ||
-		errors.Is(err, ErrURLScheme) || errors.Is(err, ErrURLHost)
+	return IsOneOf(err, ErrInvalidURL, ErrURLEmpty, ErrURLScheme, ErrURLHost)
 }
 
 // IsBoundedStringError checks if the error is related to bounded string validation.
 func IsBoundedStringError(err error) bool {
-	return errors.Is(err, ErrBoundedStringMinLength) ||
-		errors.Is(err, ErrBoundedStringMaxLength) ||
-		errors.Is(err, ErrBoundedStringMinNegative) ||
-		errors.Is(err, ErrBoundedStringMaxLessThanMin)
+	return IsOneOf(err, ErrBoundedStringMinLength, ErrBoundedStringMaxLength,
+		ErrBoundedStringMinNegative, ErrBoundedStringMaxLessThanMin)
 }
 
 // IsNanoIDError checks if the error is related to NanoID validation.
 func IsNanoIDError(err error) bool {
-	return errors.Is(err, ErrNanoIDEmpty) ||
-		errors.Is(err, ErrNanoIDTooShort) ||
-		errors.Is(err, ErrNanoIDTooLong) ||
-		errors.Is(err, ErrNanoIDInvalid)
+	return IsOneOf(err, ErrNanoIDEmpty, ErrNanoIDTooShort, ErrNanoIDTooLong, ErrNanoIDInvalid)
+}
+
+// IsOneOf checks if the error matches any of the provided sentinel errors.
+func IsOneOf(err error, sentinels ...error) bool {
+	for _, sentinel := range sentinels {
+		if errors.Is(err, sentinel) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // IsIDError checks if the error is related to ID validation.
 func IsIDError(err error) bool {
-	return errors.Is(err, ErrIDInvalid) ||
-		errors.Is(err, ErrIDTypeNotSupported) ||
-		errors.Is(err, ErrIDInsufficientData)
+	return IsOneOf(err, ErrIDInvalid, ErrIDTypeNotSupported, ErrIDInsufficientData)
 }
 
 // IsParseError checks if the error is a parse/marshal error.
 func IsParseError(err error) bool {
-	return errors.Is(err, ErrMalformedInput) ||
-		errors.Is(err, ErrUnsupportedType) ||
-		errors.Is(err, ErrInvalidJSON)
+	return IsOneOf(err, ErrMalformedInput, ErrUnsupportedType, ErrInvalidJSON)
 }

@@ -26,14 +26,14 @@ type OrderID = id.ID[OrderBrand, string]
 // CustomerID is a strong ID type for customer identifiers.
 type CustomerID = id.ID[CustomerBrand, string]
 
-// Order represents a business domain type
+// Order represents a business domain type.
 type Order struct {
 	OrderID    OrderID    `json:"order_id"`
 	CustomerID CustomerID `json:"customer_id"`
 	Amount     int64      `json:"amount"`
 }
 
-// Example values for demonstration purposes
+// Example values for demonstration purposes.
 const (
 	exampleOrderAmount = 10000 // $100.00 in cents
 	exampleRefVersion  = 5

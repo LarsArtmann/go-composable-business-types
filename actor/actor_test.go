@@ -1,4 +1,4 @@
-package actor
+package actor_test
 
 import (
 	"testing"
@@ -16,6 +16,7 @@ func newTestChain(userName string) ActorChain[string] {
 
 func TestNewActorChain(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-1")
 	entry := UserActor(userID, "Alice")
 	chain := NewActorChain(entry)
@@ -23,6 +24,7 @@ func TestNewActorChain(t *testing.T) {
 	if chain.IsZero() {
 		t.Error("chain should not be zero")
 	}
+
 	if len(chain) != 1 {
 		t.Errorf("expected length 1, got %d", len(chain))
 	}
@@ -30,11 +32,13 @@ func TestNewActorChain(t *testing.T) {
 
 func TestActorChainOriginAndCurrent(t *testing.T) {
 	t.Parallel()
+
 	chain := newTestChain("Alice")
 
 	if chain.Origin().Name != "Alice" {
 		t.Errorf("expected origin Alice, got %s", chain.Origin().Name)
 	}
+
 	if chain.Current().Name != "Service 2" {
 		t.Errorf("expected current 'Service 2', got %s", chain.Current().Name)
 	}
@@ -42,15 +46,18 @@ func TestActorChainOriginAndCurrent(t *testing.T) {
 
 func TestActorChainHasKind(t *testing.T) {
 	t.Parallel()
+
 	chain := NewActorChain(UserActor(id.NewID[struct{}, string]("u-1"), "Alice")).
 		Append(ServiceActor(id.NewID[struct{}, string]("svc-1"), "Service 1"))
 
 	if !chain.HasKind(enums.ActorKindUser) {
 		t.Error("chain should have user")
 	}
+
 	if !chain.HasKind(enums.ActorKindService) {
 		t.Error("chain should have service")
 	}
+
 	if chain.HasKind(enums.ActorKindBot) {
 		t.Error("chain should not have bot")
 	}
@@ -58,6 +65,7 @@ func TestActorChainHasKind(t *testing.T) {
 
 func TestActorChainByKind(t *testing.T) {
 	t.Parallel()
+
 	chain := newTestChain("User")
 
 	services := chain.ByKind(enums.ActorKindService)
@@ -73,51 +81,63 @@ func TestActorChainByKind(t *testing.T) {
 
 func TestUserActor(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-1")
 	actor := UserActor(userID, "John Doe")
 
 	if actor.Kind != enums.ActorKindUser {
 		t.Errorf("expected User kind, got %v", actor.Kind)
 	}
+
 	if actor.ID != userID {
 		t.Error("ID mismatch")
 	}
+
 	if actor.Name != "John Doe" {
 		t.Errorf("expected 'John Doe', got %s", actor.Name)
 	}
 }
 
-func TestBotActor(t *testing.T) {
+func TestActorKind(t *testing.T) {
 	t.Parallel()
+
 	botID := id.NewID[struct{}, string]("bot-1")
-	actor := BotActor(botID, "GitHub Bot")
-
-	if actor.Kind != enums.ActorKindBot {
-		t.Errorf("expected Bot kind, got %v", actor.Kind)
-	}
-}
-
-func TestSystemActor(t *testing.T) {
-	t.Parallel()
-	actor := SystemActor[string]()
-
-	if actor.Kind != enums.ActorKindSystem {
-		t.Errorf("expected System kind, got %v", actor.Kind)
-	}
-}
-
-func TestServiceActor(t *testing.T) {
-	t.Parallel()
 	serviceID := id.NewID[struct{}, string]("svc-1")
-	actor := ServiceActor(serviceID, "Order Service")
 
-	if actor.Kind != enums.ActorKindService {
-		t.Errorf("expected Service kind, got %v", actor.Kind)
+	tests := []struct {
+		name     string
+		actor    ActorEntry[string]
+		expected enums.ActorKind
+	}{
+		{
+			name:     "Bot",
+			actor:    BotActor(botID, "GitHub Bot"),
+			expected: enums.ActorKindBot,
+		},
+		{
+			name:     "System",
+			actor:    SystemActor[string](),
+			expected: enums.ActorKindSystem,
+		},
+		{
+			name:     "Service",
+			actor:    ServiceActor(serviceID, "Order Service"),
+			expected: enums.ActorKindService,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if tt.actor.Kind != tt.expected {
+				t.Errorf("expected %v kind, got %v", tt.expected, tt.actor.Kind)
+			}
+		})
 	}
 }
 
 func TestActorEntryIsZero(t *testing.T) {
 	t.Parallel()
+
 	var zero ActorEntry[string]
 	if !zero.IsZero() {
 		t.Error("zero ActorEntry should be zero")
@@ -146,9 +166,11 @@ func TestActorEntryOptionalName(t *testing.T) {
 
 func TestActorChainAll(t *testing.T) {
 	t.Parallel()
+
 	chain := newTestChain("Alice")
 
 	indices := make([]int, 0, len(chain))
+
 	names := make([]string, 0, len(chain))
 	for i, e := range chain.All() {
 		indices = append(indices, i)
@@ -158,11 +180,13 @@ func TestActorChainAll(t *testing.T) {
 	if len(indices) != 3 {
 		t.Fatalf("expected 3 entries, got %d", len(indices))
 	}
+
 	for i, idx := range indices {
 		if idx != i {
 			t.Errorf("expected index %d, got %d", i, idx)
 		}
 	}
+
 	expected := []string{"Alice", "Service 1", "Service 2"}
 	for i, name := range expected {
 		if names[i] != name {
@@ -173,13 +197,33 @@ func TestActorChainAll(t *testing.T) {
 
 func TestActorChainAllBreak(t *testing.T) {
 	t.Parallel()
+
 	chain := newTestChain("Alice")
 
 	var count int
 	for range chain.All() {
 		count++
+
 		break
 	}
+
+	if count != 1 {
+		t.Errorf("expected break after 1 iteration, got %d", count)
+	}
+}
+
+func TestActorChainEntriesBreak(t *testing.T) {
+	t.Parallel()
+
+	chain := newTestChain("Alice")
+
+	var count int
+	for range chain.Entries() {
+		count++
+
+		break
+	}
+
 	if count != 1 {
 		t.Errorf("expected break after 1 iteration, got %d", count)
 	}
@@ -187,6 +231,7 @@ func TestActorChainAllBreak(t *testing.T) {
 
 func TestActorChainEntries(t *testing.T) {
 	t.Parallel()
+
 	chain := newTestChain("Alice")
 
 	names := make([]string, 0, len(chain))
@@ -198,6 +243,7 @@ func TestActorChainEntries(t *testing.T) {
 	if len(names) != len(expected) {
 		t.Fatalf("expected %d entries, got %d", len(expected), len(names))
 	}
+
 	for i, name := range expected {
 		if names[i] != name {
 			t.Errorf("entry[%d]: expected %q, got %q", i, name, names[i])
@@ -205,27 +251,18 @@ func TestActorChainEntries(t *testing.T) {
 	}
 }
 
-func TestActorChainEntriesBreak(t *testing.T) {
-	t.Parallel()
-	chain := newTestChain("Alice")
-
-	var count int
-	for range chain.Entries() {
-		count++
-		break
-	}
-	if count != 1 {
-		t.Errorf("expected break after 1 iteration, got %d", count)
-	}
-}
-
 func TestActorChainAllEmpty(t *testing.T) {
 	t.Parallel()
-	var chain ActorChain[string]
-	var count int
+
+	var (
+		chain ActorChain[string]
+		count int
+	)
+
 	for range chain.All() {
 		count++
 	}
+
 	if count != 0 {
 		t.Errorf("expected 0 iterations on empty chain, got %d", count)
 	}

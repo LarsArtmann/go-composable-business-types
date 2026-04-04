@@ -1,4 +1,4 @@
-package bounded
+package bounded_test
 
 import (
 	"encoding/json"
@@ -7,6 +7,7 @@ import (
 
 func TestNewBoundedString(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		minLen  uint
@@ -27,16 +28,20 @@ func TestNewBoundedString(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			bs, err := NewBoundedString(tt.minLen, tt.maxLen, tt.value)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
 			}
+
 			if bs.String() != tt.value {
 				t.Errorf("expected %s, got %s", tt.value, bs.String())
 			}
@@ -46,6 +51,7 @@ func TestNewBoundedString(t *testing.T) {
 
 func TestBoundedStringLen(t *testing.T) {
 	t.Parallel()
+
 	bs, _ := NewBoundedString(1, 100, "hello")
 	if bs.Len() != 5 {
 		t.Errorf("expected length 5, got %d", bs.Len())
@@ -60,11 +66,14 @@ func TestBoundedStringLen(t *testing.T) {
 
 func TestBoundedStringOf(t *testing.T) {
 	t.Parallel()
+
 	NewName := BoundedStringOf(1, 100)
+
 	name, err := NewName("John Doe")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if name.String() != "John Doe" {
 		t.Errorf("expected 'John Doe', got %s", name.String())
 	}
@@ -78,10 +87,12 @@ func TestBoundedStringOf(t *testing.T) {
 
 func TestNonEmptyString(t *testing.T) {
 	t.Parallel()
+
 	s, err := NonEmptyString(100, "hello")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if s.String() != "hello" {
 		t.Errorf("expected 'hello', got %s", s.String())
 	}
@@ -95,10 +106,12 @@ func TestNonEmptyString(t *testing.T) {
 
 func TestTrimmedBoundedString(t *testing.T) {
 	t.Parallel()
+
 	s, err := TrimmedBoundedString(1, 100, "  hello  ")
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if s.String() != "hello" {
 		t.Errorf("expected 'hello' (trimmed), got %s", s.String())
 	}
@@ -106,6 +119,7 @@ func TestTrimmedBoundedString(t *testing.T) {
 
 func TestBoundedStringIsZero(t *testing.T) {
 	t.Parallel()
+
 	var zero BoundedString
 	if !zero.IsZero() {
 		t.Error("expected zero BoundedString to be zero")
@@ -119,10 +133,12 @@ func TestBoundedStringIsZero(t *testing.T) {
 
 func TestBoundedStringBounds(t *testing.T) {
 	t.Parallel()
+
 	bs, _ := NewBoundedString(5, 10, "hello")
 	if bs.MinLen() != 5 {
 		t.Errorf("expected MinLen 5, got %d", bs.MinLen())
 	}
+
 	if bs.MaxLen() != 10 {
 		t.Errorf("expected MaxLen 10, got %d", bs.MaxLen())
 	}
@@ -130,6 +146,7 @@ func TestBoundedStringBounds(t *testing.T) {
 	if !bs.IsMinLength() {
 		t.Error("expected to be at min")
 	}
+
 	if bs.IsMaxLength() {
 		t.Error("should not be at max")
 	}
@@ -137,6 +154,7 @@ func TestBoundedStringBounds(t *testing.T) {
 
 func TestBoundedStringMarshalJSON(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		bs      BoundedString
@@ -153,17 +171,22 @@ func TestBoundedStringMarshalJSON(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := json.Marshal(tt.bs)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
+
 				return
 			}
+
 			if string(got) != tt.want {
 				t.Errorf("expected %s, got %s", tt.want, string(got))
 			}
@@ -173,6 +196,7 @@ func TestBoundedStringMarshalJSON(t *testing.T) {
 
 func TestBoundedStringUnmarshalJSON(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		input   string
@@ -191,18 +215,24 @@ func TestBoundedStringUnmarshalJSON(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			var bs BoundedString
+
 			err := json.Unmarshal([]byte(tt.input), &bs)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
+
 				return
 			}
+
 			if bs.String() != tt.want {
 				t.Errorf("expected %q, got %q", tt.want, bs.String())
 			}
@@ -212,7 +242,9 @@ func TestBoundedStringUnmarshalJSON(t *testing.T) {
 
 func TestBoundedStringJSONRoundTrip(t *testing.T) {
 	t.Parallel()
+
 	original := mustBoundedString(1, 100, "test value")
+
 	data, err := json.Marshal(original)
 	if err != nil {
 		t.Fatalf("marshal error: %v", err)
@@ -230,6 +262,7 @@ func TestBoundedStringJSONRoundTrip(t *testing.T) {
 
 func TestBoundedStringScan(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		src     any
@@ -249,18 +282,24 @@ func TestBoundedStringScan(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			var bs BoundedString
+
 			err := bs.Scan(tt.src)
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
+
 				return
 			}
+
 			if bs.String() != tt.want {
 				t.Errorf("expected %q, got %q", tt.want, bs.String())
 			}
@@ -270,7 +309,9 @@ func TestBoundedStringScan(t *testing.T) {
 
 func TestBoundedStringScanNilReceiver(t *testing.T) {
 	t.Parallel()
+
 	var bs *BoundedString
+
 	err := bs.Scan("test")
 	if err == nil {
 		t.Error("expected error for nil receiver")
@@ -279,6 +320,7 @@ func TestBoundedStringScanNilReceiver(t *testing.T) {
 
 func TestBoundedStringValue(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		bs      BoundedString
@@ -292,17 +334,22 @@ func TestBoundedStringValue(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got, err := tt.bs.Value()
 			if tt.wantErr {
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
+
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
+
 				return
 			}
+
 			if got != tt.want {
 				t.Errorf("expected %v, got %v", tt.want, got)
 			}
@@ -312,6 +359,7 @@ func TestBoundedStringValue(t *testing.T) {
 
 func TestBoundedStringUnicodeLength(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name  string
 		value string
@@ -329,10 +377,12 @@ func TestBoundedStringUnicodeLength(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			bs, err := NewBoundedString(0, 100, tt.value)
 			if err != nil {
 				t.Fatalf("unexpected error: %v", err)
 			}
+
 			if bs.Len() != tt.want {
 				t.Errorf("expected length %d, got %d", tt.want, bs.Len())
 			}
@@ -344,10 +394,12 @@ func TestBoundedStringEdgeCases(t *testing.T) {
 	t.Parallel()
 	t.Run("min equals max", func(t *testing.T) {
 		t.Parallel()
+
 		bs, err := NewBoundedString(5, 5, "hello")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
+
 		if !bs.IsMinLength() || !bs.IsMaxLength() {
 			t.Error("expected to be at both min and max")
 		}
@@ -355,10 +407,12 @@ func TestBoundedStringEdgeCases(t *testing.T) {
 
 	t.Run("zero bounds", func(t *testing.T) {
 		t.Parallel()
+
 		bs, err := NewBoundedString(0, 0, "")
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
+
 		if !bs.IsZero() {
 			t.Error("expected zero value")
 		}
@@ -366,14 +420,17 @@ func TestBoundedStringEdgeCases(t *testing.T) {
 
 	t.Run("large max", func(t *testing.T) {
 		t.Parallel()
+
 		large := make([]byte, 10000)
 		for i := range large {
 			large[i] = 'a'
 		}
+
 		bs, err := NewBoundedString(0, 20000, string(large))
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
+
 		if bs.Len() != 10000 {
 			t.Errorf("expected length 10000, got %d", bs.Len())
 		}
@@ -384,10 +441,12 @@ func TestBoundedStringIsMinMaxLength(t *testing.T) {
 	t.Parallel()
 	t.Run("at min", func(t *testing.T) {
 		t.Parallel()
+
 		bs, _ := NewBoundedString(3, 10, "abc")
 		if !bs.IsMinLength() {
 			t.Error("expected to be at min length")
 		}
+
 		if bs.IsMaxLength() {
 			t.Error("should not be at max length")
 		}
@@ -395,10 +454,12 @@ func TestBoundedStringIsMinMaxLength(t *testing.T) {
 
 	t.Run("at max", func(t *testing.T) {
 		t.Parallel()
+
 		bs, _ := NewBoundedString(1, 5, "abcde")
 		if bs.IsMinLength() {
 			t.Error("should not be at min length")
 		}
+
 		if !bs.IsMaxLength() {
 			t.Error("expected to be at max length")
 		}
@@ -406,10 +467,12 @@ func TestBoundedStringIsMinMaxLength(t *testing.T) {
 
 	t.Run("in middle", func(t *testing.T) {
 		t.Parallel()
+
 		bs, _ := NewBoundedString(1, 10, "abc")
 		if bs.IsMinLength() {
 			t.Error("should not be at min length")
 		}
+
 		if bs.IsMaxLength() {
 			t.Error("should not be at max length")
 		}
@@ -421,5 +484,6 @@ func mustBoundedString(minLen, _ uint, value string) BoundedString {
 	if err != nil {
 		panic(err)
 	}
+
 	return bs
 }

@@ -36,25 +36,26 @@ func (c Correction) String() string {
 	if c {
 		return "correction"
 	}
+
 	return ""
 }
 
 // MarshalJSON implements json.Marshaler for Correction.
 func (c Correction) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(bool(c))
-	if err != nil {
-		return nil, fmt.Errorf("correction: marshal JSON: %w", err)
-	}
-	return b, nil
+	return types.MarshalJSON("correction", bool(c))
 }
 
 // UnmarshalJSON implements json.Unmarshaler for Correction.
 func (c *Correction) UnmarshalJSON(data []byte) error {
 	var b bool
-	if err := json.Unmarshal(data, &b); err != nil {
-		return fmt.Errorf("correction: invalid JSON %q: %w", string(data), err)
+
+	err := types.UnmarshalJSON("correction", data, &b)
+	if err != nil {
+		return err
 	}
+
 	*c = Correction(b)
+
 	return nil
 }
 
@@ -98,6 +99,7 @@ func NewCorrection(validFrom, validUntil, recorded types.Timestamp) Bitemporal {
 // withCorrection returns a copy with the correction flag set.
 func (b Bitemporal) withCorrection(c Correction) Bitemporal {
 	b.correction = c
+
 	return b
 }
 
@@ -123,9 +125,11 @@ func (b Bitemporal) IsValidAt(t types.Timestamp) bool {
 	if t.Before(b.validFrom.Time) {
 		return false
 	}
+
 	if b.validUntil.IsZero() {
 		return true
 	}
+
 	return t.Before(b.validUntil.Time) || t.Equal(b.validUntil.Time)
 }
 
@@ -137,6 +141,7 @@ func (b Bitemporal) IsCurrentlyValid() bool {
 // WithValidUntil returns a copy with validUntil set.
 func (b Bitemporal) WithValidUntil(until types.Timestamp) Bitemporal {
 	b.validUntil = until
+
 	return b
 }
 
@@ -159,18 +164,23 @@ func (b Bitemporal) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("bitemporal: marshal JSON: %w", err)
 	}
+
 	return bj, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (b *Bitemporal) UnmarshalJSON(data []byte) error {
 	var raw jsonBitemporal
-	if err := json.Unmarshal(data, &raw); err != nil {
+
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
 		return fmt.Errorf("unmarshal bitemporal: invalid JSON %q: %w", string(data), err)
 	}
+
 	b.validFrom = types.NewTimestamp(raw.ValidFrom)
 	b.validUntil = types.NewTimestamp(raw.ValidUntil)
 	b.recorded = types.NewTimestamp(raw.Recorded)
 	b.correction = raw.Correction
+
 	return nil
 }

@@ -6,6 +6,12 @@ import (
 	"maps"
 )
 
+// Taggable is an interface for types that support tagging.
+type Taggable interface {
+	Tags() map[string]string
+	Tag(key string) string
+}
+
 // Reference is a type-safe reference to another entity.
 type Reference[T comparable] struct {
 	id       T
@@ -38,6 +44,7 @@ func (r Reference[T]) Tags() map[string]string {
 	if r.tags == nil {
 		return nil
 	}
+
 	return maps.Clone(r.tags)
 }
 
@@ -46,28 +53,38 @@ func (r Reference[T]) Tag(key string) string {
 	if r.tags == nil {
 		return ""
 	}
+
 	return r.tags[key]
 }
 
 // IsZero returns true if this is the zero value.
 func (r Reference[T]) IsZero() bool {
 	var zero T
+
 	return r.id == zero && r.relation == "" && r.version == 0 && len(r.tags) == 0
 }
 
 // WithVersion returns a copy with version set.
 func (r Reference[T]) WithVersion(v int) Reference[T] {
 	r.version = v
+
 	return r
 }
 
 // WithTag returns a copy with a single tag added.
 func (r Reference[T]) WithTag(key, value string) Reference[T] {
-	if r.tags == nil {
-		r.tags = make(map[string]string)
-	}
-	r.tags[key] = value
+	addTag(&r.tags, key, value)
+
 	return r
+}
+
+// addTag adds a tag to the map, initializing it if nil.
+func addTag(tags *map[string]string, key, value string) {
+	if *tags == nil {
+		*tags = make(map[string]string)
+	}
+
+	(*tags)[key] = value
 }
 
 // jsonReference is the JSON representation of Reference.
@@ -89,18 +106,23 @@ func (r Reference[T]) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("reference: marshal JSON: %w", err)
 	}
+
 	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonReference[T]
-	if err := json.Unmarshal(data, &raw); err != nil {
+
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
 		return fmt.Errorf("unmarshal reference: invalid JSON %q: %w", string(data), err)
 	}
+
 	r.id = raw.ID
 	r.relation = raw.Relation
 	r.version = raw.Version
 	r.tags = raw.Tags
+
 	return nil
 }

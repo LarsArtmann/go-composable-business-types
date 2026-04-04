@@ -25,6 +25,7 @@ func NewCause[T comparable](
 ) Cause[T] {
 	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
+
 	return Cause[T]{
 		id:     id,
 		kind:   kind,
@@ -57,6 +58,7 @@ func NewCauseCommand[T comparable](id nanoid.NanoID, command string) Cause[T] {
 func NewCauseEvent[T comparable](id nanoid.NanoID, event string, trace ...nanoid.NanoID) Cause[T] {
 	t := make([]nanoid.NanoID, len(trace))
 	copy(t, trace)
+
 	return Cause[T]{
 		id:     id,
 		kind:   enums.CauseKindEvent,
@@ -79,8 +81,10 @@ func (c Cause[T]) Trace() []nanoid.NanoID {
 	if c.trace == nil {
 		return nil
 	}
+
 	result := make([]nanoid.NanoID, len(c.trace))
 	copy(result, c.trace)
+
 	return result
 }
 
@@ -108,15 +112,19 @@ func (c Cause[T]) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("marshal cause: %w", err)
 	}
+
 	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonCause
-	if err := json.Unmarshal(data, &raw); err != nil {
+
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
 		return fmt.Errorf("unmarshal cause: invalid JSON %q: %w", string(data), err)
 	}
+
 	c.kind = raw.Kind
 	c.effect = raw.Effect
 
@@ -126,5 +134,6 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	// Parse trace
 	c.trace = make([]nanoid.NanoID, len(raw.Trace))
 	copy(c.trace, raw.Trace)
+
 	return nil
 }

@@ -44,6 +44,7 @@ func mustNewLocale(s string) Locale {
 	if err != nil {
 		panic(fmt.Errorf("invalid locale constant %q: %w", s, err))
 	}
+
 	return loc
 }
 
@@ -54,6 +55,7 @@ func ParseLocale(s string) (Locale, error) {
 	if err != nil {
 		return Locale{}, fmt.Errorf("parse locale %q: %w", s, err)
 	}
+
 	return Locale{tag: tag}, nil
 }
 
@@ -80,6 +82,7 @@ func (l Locale) IsZero() bool {
 // Base returns the base language (e.g., "en" for "en-US").
 func (l Locale) Base() string {
 	base, _ := l.tag.Base()
+
 	return base.String()
 }
 
@@ -87,6 +90,7 @@ func (l Locale) Base() string {
 // Returns empty string if no region is specified.
 func (l Locale) Region() string {
 	region, _ := l.tag.Region()
+
 	return region.String()
 }
 
@@ -96,14 +100,17 @@ func (l Locale) MarshalText() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("locale: marshal text: %w", err)
 	}
+
 	return b, nil
 }
 
 // UnmarshalText implements encoding.TextUnmarshaler for JSON/XML deserialization.
 func (l *Locale) UnmarshalText(data []byte) error {
-	if err := l.tag.UnmarshalText(data); err != nil {
+	err := l.tag.UnmarshalText(data)
+	if err != nil {
 		return fmt.Errorf("locale: unmarshal text: %w", err)
 	}
+
 	return nil
 }
 
@@ -113,21 +120,27 @@ func (l *Locale) Scan(src any) error {
 	if l == nil {
 		return errors.New("locale: scan: receiver is nil")
 	}
+
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			l.tag = language.Und
+
 			return nil
 		}
+
 		parsed, err := ParseLocale(v)
 		if err != nil {
 			return fmt.Errorf("scan locale: %w", err)
 		}
+
 		*l = parsed
+
 		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("locale: scan: %w", err)
 	}
+
 	return nil
 }
 
@@ -137,5 +150,6 @@ func (l Locale) Value() (driver.Value, error) {
 	if l.IsZero() {
 		return nil, nil
 	}
+
 	return l.String(), nil
 }

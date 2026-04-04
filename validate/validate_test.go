@@ -35,6 +35,7 @@ func TestIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := IsValid(tt.validator); got != tt.want {
 				t.Errorf("IsValid() = %v, want %v", got, tt.want)
 			}
@@ -50,12 +51,16 @@ func TestValidatorInterface(t *testing.T) {
 
 	// Test that the interface is satisfied
 	var v Validator = mockValidator{err: nil}
-	if err := v.Validate(); err != nil {
+
+	err := v.Validate()
+	if err != nil {
 		t.Errorf("expected nil error, got %v", err)
 	}
 
 	v = mockValidator{err: errors.New("test error")}
-	if err := v.Validate(); err == nil {
+
+	err = v.Validate()
+	if err == nil {
 		t.Error("expected error, got nil")
 	}
 }

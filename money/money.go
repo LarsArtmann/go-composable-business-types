@@ -30,6 +30,7 @@ func NewMoney(amount, currencyCode string) (Money, error) {
 			err,
 		)
 	}
+
 	return m, nil
 }
 
@@ -44,6 +45,7 @@ func NewMoneyFromCents(cents int64, currencyCode string) (Money, error) {
 			err,
 		)
 	}
+
 	return m, nil
 }
 
@@ -75,12 +77,14 @@ func AllCurrencyCodes() []string {
 // FormatMoney formats a monetary amount for the given locale.
 func FormatMoney(money Money, locale string) string {
 	formatter := currency.NewFormatter(currency.NewLocale(locale))
+
 	return formatter.Format(money)
 }
 
 // FormatMoneyForLocale formats a monetary amount using the Locale type.
 func FormatMoneyForLocale(money Money, loc locale.Locale) string {
 	formatter := currency.NewFormatter(currency.NewLocale(loc.String()))
+
 	return formatter.Format(money)
 }
 

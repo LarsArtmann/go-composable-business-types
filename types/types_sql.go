@@ -16,21 +16,27 @@ func scanStringType[T ~string](ptr *T, name string, src any, parse func(string) 
 	if ptr == nil {
 		return fmt.Errorf("%s: scan: receiver is nil", name)
 	}
+
 	err := scanutil.ScanString(src, func(value string) error {
 		if value == "" {
 			*ptr = *new(T)
+
 			return nil
 		}
+
 		parsed, parseErr := parse(value)
 		if parseErr != nil {
 			return fmt.Errorf("%s: invalid value %q: %w", name, value, parseErr)
 		}
+
 		*ptr = parsed
+
 		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("%s: scan: %w", name, err)
 	}
+
 	return nil
 }
 
@@ -41,6 +47,18 @@ func valueStringType[T ~string](v T, name string) (driver.Value, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s: value: %w", name, err)
 	}
+
+	return val, nil
+}
+
+// valueInt64Type implements driver.Valuer for int64-based types.
+// Returns nil for zero values, otherwise the int64 value.
+func valueInt64Type(v int64, name string) (driver.Value, error) {
+	val, err := scanutil.Int64Value(v)
+	if err != nil {
+		return nil, fmt.Errorf("%s: value: %w", name, err)
+	}
+
 	return val, nil
 }
 
@@ -72,19 +90,22 @@ func (u URL) Value() (driver.Value, error) {
 	return valueStringType(u, "url")
 }
 
-// Scan implements sql.Scanner for Cents.
-// Supports int64, float64, and []byte sources.
-func (c *Cents) Scan(src any) error {
-	if c == nil {
-		return errors.New("cents: scan: receiver is nil")
+// scanInt64Type implements sql.Scanner for int64-based types.
+// Handles nil receiver check, int64 scanning, and type-specific conversion.
+func scanInt64Type[T any](ptr *T, name string, src any, convert func(int64) T) error {
+	if ptr == nil {
+		return fmt.Errorf("%s: scan: receiver is nil", name)
 	}
+
 	err := scanutil.ScanInt64(src, func(v int64) error {
-		*c = Cents(v)
+		*ptr = convert(v)
+
 		return nil
 	})
 	if err != nil {
-		return fmt.Errorf("cents: scan: %w", err)
+		return fmt.Errorf("%s: scan: %w", name, err)
 	}
+
 	return nil
 }
 
@@ -93,32 +114,47 @@ func (c Cents) Value() (driver.Value, error) {
 	return int64(c), nil
 }
 
+// Scan implements sql.Scanner for Cents.
+// Supports int64, float64, and []byte sources.
+func (c *Cents) Scan(src any) error {
+	return scanInt64Type(c, "cents", src, func(v int64) Cents {
+		return Cents(v)
+	})
+}
+
 // Scan implements sql.Scanner for Timestamp.
 // Supports time.Time, string (RFC3339), and []byte sources.
 func (t *Timestamp) Scan(src any) error {
 	if t == nil {
 		return errors.New("timestamp: scan: receiver is nil")
 	}
+
 	switch v := src.(type) {
 	case nil:
 		t.Time = time.Time{}
+
 		return nil
 	case time.Time:
 		t.Time = v
+
 		return nil
 	case string:
 		parsed, err := time.Parse(time.RFC3339Nano, v)
 		if err != nil {
 			return fmt.Errorf("timestamp: cannot parse %q from string: %w", v, err)
 		}
+
 		t.Time = parsed
+
 		return nil
 	case []byte:
 		parsed, err := time.Parse(time.RFC3339Nano, string(v))
 		if err != nil {
 			return fmt.Errorf("timestamp: cannot parse %q from []byte: %w", string(v), err)
 		}
+
 		t.Time = parsed
+
 		return nil
 	default:
 		return fmt.Errorf("timestamp: cannot scan value (got %T)", src)
@@ -130,6 +166,7 @@ func (t Timestamp) Value() (driver.Value, error) {
 	if t.Time.IsZero() {
 		return nil, nil
 	}
+
 	return t.Time, nil
 }
 

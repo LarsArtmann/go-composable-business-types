@@ -1,4 +1,4 @@
-package enums
+package enums_test
 
 import (
 	"database/sql/driver"
@@ -28,8 +28,10 @@ func testEnumValue[T valuer](t *testing.T, tests []enumValueCase[T]) {
 			v, err := tt.value.Value()
 			if err != nil {
 				t.Errorf("unexpected error: %v", err)
+
 				return
 			}
+
 			if v != tt.expected {
 				t.Errorf("expected %s, got %v", tt.expected, v)
 			}
@@ -66,7 +68,11 @@ type enumParseCase[T any] struct {
 }
 
 // testParse runs table-driven Parse() tests for enum types.
-func testParse[T comparable](t *testing.T, parse func(string) (T, error), tests []enumParseCase[T]) {
+func testParse[T comparable](
+	t *testing.T,
+	parse func(string) (T, error),
+	tests []enumParseCase[T],
+) {
 	t.Helper()
 
 	for _, tt := range tests {
@@ -78,6 +84,7 @@ func testParse[T comparable](t *testing.T, parse func(string) (T, error), tests 
 				if err == nil {
 					t.Error("expected error")
 				}
+
 				return
 			}
 
@@ -186,6 +193,48 @@ func TestEnumNames(t *testing.T) {
 	if !slices.Contains(ckNames, "Direct") {
 		t.Error("CauseKindNames should include 'Direct'")
 	}
+}
+
+// enumUnmarshalTextErrorCase represents a test case for enum UnmarshalText error.
+type enumUnmarshalTextErrorCase[T any] struct {
+	name string
+}
+
+// testUnmarshalTextError runs table-driven UnmarshalText error tests for enum types.
+func testUnmarshalTextError[T any](t *testing.T, tests []enumUnmarshalTextErrorCase[T]) {
+	t.Helper()
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var v T
+
+			err := any(&v).(interface{ UnmarshalText([]byte) error }).UnmarshalText(
+				[]byte("Invalid"),
+			)
+			if err == nil {
+				t.Error("expected error for invalid value")
+			}
+		})
+	}
+}
+
+// testUnmarshalTextErrorsAll tests UnmarshalText error cases for multiple enum types in one function.
+func testUnmarshalTextErrorsAll[T1, T2, T3, T4, T5 any](
+	t *testing.T,
+	tests1 []enumUnmarshalTextErrorCase[T1],
+	tests2 []enumUnmarshalTextErrorCase[T2],
+	tests3 []enumUnmarshalTextErrorCase[T3],
+	tests4 []enumUnmarshalTextErrorCase[T4],
+	tests5 []enumUnmarshalTextErrorCase[T5],
+) {
+	t.Parallel()
+	testUnmarshalTextError(t, tests1)
+	testUnmarshalTextError(t, tests2)
+	testUnmarshalTextError(t, tests3)
+	testUnmarshalTextError(t, tests4)
+	testUnmarshalTextError(t, tests5)
 }
 
 func TestCauseKind(t *testing.T) {

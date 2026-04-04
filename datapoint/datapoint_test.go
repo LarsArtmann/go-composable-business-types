@@ -1,7 +1,9 @@
-package datapoint
+package datapoint_test
 
 import (
 	"encoding/json"
+	"iter"
+	"maps"
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
@@ -12,6 +14,7 @@ import (
 
 func TestNewDataPoint(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	dp := NewDataPoint("test payload", actorEntry)
@@ -19,18 +22,23 @@ func TestNewDataPoint(t *testing.T) {
 	if dp.IsZero() {
 		t.Error("DataPoint should not be zero")
 	}
+
 	if dp.ID().IsZero() {
 		t.Error("DataPoint should have an ID")
 	}
+
 	if dp.Payload() != "test payload" {
 		t.Errorf("expected payload 'test payload', got %v", dp.Payload())
 	}
+
 	if dp.Actor().Name != "Test User" {
 		t.Errorf("expected actor name 'Test User', got %s", dp.Actor().Name)
 	}
+
 	if dp.Version() != 1 {
 		t.Errorf("expected version 1, got %d", dp.Version())
 	}
+
 	if dp.Trigger() != enums.TriggerManual {
 		t.Errorf("expected trigger Manual, got %v", dp.Trigger())
 	}
@@ -38,6 +46,7 @@ func TestNewDataPoint(t *testing.T) {
 
 func TestDataPointWithMethods(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -79,6 +88,7 @@ func TestDataPointWithMethods(t *testing.T) {
 
 func TestDataPointWithReference(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -90,6 +100,7 @@ func TestDataPointWithReference(t *testing.T) {
 	if len(refs) != 1 {
 		t.Errorf("expected 1 reference, got %d", len(refs))
 	}
+
 	if refs[0].Relation() != "parent" {
 		t.Errorf("expected relation 'parent', got %s", refs[0].Relation())
 	}
@@ -97,6 +108,7 @@ func TestDataPointWithReference(t *testing.T) {
 
 func TestDataPointWithCause(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -109,6 +121,7 @@ func TestDataPointWithCause(t *testing.T) {
 	if len(causes) != 1 {
 		t.Errorf("expected 1 cause, got %d", len(causes))
 	}
+
 	if causes[0].Kind() != enums.CauseKindDirect {
 		t.Errorf("expected kind 'direct', got %s", causes[0].Kind())
 	}
@@ -116,6 +129,7 @@ func TestDataPointWithCause(t *testing.T) {
 
 func TestDataPointWithContext(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
@@ -129,9 +143,11 @@ func TestDataPointWithContext(t *testing.T) {
 	if dp2.Context().Environment() != "production" {
 		t.Errorf("expected environment 'production', got %s", dp2.Context().Environment())
 	}
+
 	if dp2.Context().Source() != "test-service" {
 		t.Errorf("expected source 'test-service', got %s", dp2.Context().Source())
 	}
+
 	if dp2.Context().Tag("region") != "us-east-1" {
 		t.Error("context tag not set correctly")
 	}
@@ -139,6 +155,7 @@ func TestDataPointWithContext(t *testing.T) {
 
 func TestDataPointJSON(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	dp := NewDataPoint("test payload", actorEntry).
@@ -159,9 +176,11 @@ func TestDataPointJSON(t *testing.T) {
 	if _, ok := raw["id"]; !ok {
 		t.Error("JSON should contain 'id'")
 	}
+
 	if _, ok := raw["payload"]; !ok {
 		t.Error("JSON should contain 'payload'")
 	}
+
 	if _, ok := raw["actor"]; !ok {
 		t.Error("JSON should contain 'actor'")
 	}
@@ -169,6 +188,7 @@ func TestDataPointJSON(t *testing.T) {
 
 func TestDataPointUnmarshalJSON(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID, "Test User")
 	original := NewDataPoint("test payload", actorEntry).
@@ -188,12 +208,15 @@ func TestDataPointUnmarshalJSON(t *testing.T) {
 	if parsed.Payload() != "test payload" {
 		t.Errorf("expected payload 'test payload', got %v", parsed.Payload())
 	}
+
 	if parsed.Reason() != "test reason" {
 		t.Errorf("expected reason 'test reason', got %s", parsed.Reason())
 	}
+
 	if parsed.Version() != 42 {
 		t.Errorf("expected version 42, got %d", parsed.Version())
 	}
+
 	if parsed.ID().IsZero() {
 		t.Error("parsed DataPoint should have an ID")
 	}
@@ -201,6 +224,7 @@ func TestDataPointUnmarshalJSON(t *testing.T) {
 
 func TestDataPointIsZero(t *testing.T) {
 	t.Parallel()
+
 	var zero DataPoint[string]
 	if !zero.IsZero() {
 		t.Error("zero DataPoint should be zero")
@@ -208,6 +232,7 @@ func TestDataPointIsZero(t *testing.T) {
 
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
+
 	dp := NewDataPoint("payload", actorEntry)
 	if dp.IsZero() {
 		t.Error("non-zero DataPoint should not be zero")
@@ -216,6 +241,7 @@ func TestDataPointIsZero(t *testing.T) {
 
 func TestDataPointIntPayload(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint(42, actorEntry)
@@ -273,18 +299,23 @@ func TestDataPointComplexChain(t *testing.T) {
 	if dp.Trigger() != enums.TriggerWebhook {
 		t.Error("trigger mismatch")
 	}
+
 	if dp.Reason() != "Customer checkout" {
 		t.Error("reason mismatch")
 	}
+
 	if dp.Context().Environment() != "production" {
 		t.Error("environment mismatch")
 	}
+
 	if len(dp.References()) != 1 {
 		t.Errorf("expected 1 reference, got %d", len(dp.References()))
 	}
+
 	if len(dp.Causes()) != 1 {
 		t.Errorf("expected 1 cause, got %d", len(dp.Causes()))
 	}
+
 	if dp.Tag("priority") != "high" {
 		t.Error("tag mismatch")
 	}
@@ -292,6 +323,7 @@ func TestDataPointComplexChain(t *testing.T) {
 
 func TestDataPointAllReferences(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry).
@@ -302,9 +334,11 @@ func TestDataPointAllReferences(t *testing.T) {
 	for ref := range dp.AllReferences() {
 		ids = append(ids, ref.ID())
 	}
+
 	if len(ids) != 2 {
 		t.Fatalf("expected 2 references, got %d", len(ids))
 	}
+
 	if ids[0] != "ref-1" || ids[1] != "ref-2" {
 		t.Errorf("expected [ref-1, ref-2], got %v", ids)
 	}
@@ -312,6 +346,7 @@ func TestDataPointAllReferences(t *testing.T) {
 
 func TestDataPointAllReferencesBreak(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry).
@@ -321,8 +356,10 @@ func TestDataPointAllReferencesBreak(t *testing.T) {
 	var count int
 	for range dp.AllReferences() {
 		count++
+
 		break
 	}
+
 	if count != 1 {
 		t.Errorf("expected break after 1, got %d", count)
 	}
@@ -330,6 +367,7 @@ func TestDataPointAllReferencesBreak(t *testing.T) {
 
 func TestDataPointAllCauses(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	cause1 := NewCauseDirect[string](nanoid.NewNanoID())
@@ -342,6 +380,7 @@ func TestDataPointAllCauses(t *testing.T) {
 	for c := range dp.AllCauses() {
 		kinds = append(kinds, c.Kind().String())
 	}
+
 	if len(kinds) != 2 {
 		t.Fatalf("expected 2 causes, got %d", len(kinds))
 	}
@@ -349,19 +388,19 @@ func TestDataPointAllCauses(t *testing.T) {
 
 func TestDataPointAllTags(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry).
 		WithTag("env", "prod").
 		WithTag("region", "us-east-1")
 
-	tags := make(map[string]string)
-	for k, v := range dp.AllTags() {
-		tags[k] = v
-	}
+	tags := maps.Collect(dp.AllTags())
+
 	if tags["env"] != "prod" {
 		t.Errorf("expected env=prod, got %s", tags["env"])
 	}
+
 	if tags["region"] != "us-east-1" {
 		t.Errorf("expected region=us-east-1, got %s", tags["region"])
 	}
@@ -369,6 +408,7 @@ func TestDataPointAllTags(t *testing.T) {
 
 func TestDataPointAllTagsBreak(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry).
@@ -378,54 +418,65 @@ func TestDataPointAllTagsBreak(t *testing.T) {
 	var count int
 	for range dp.AllTags() {
 		count++
+
 		break
 	}
+
 	if count != 1 {
 		t.Errorf("expected break after 1, got %d", count)
 	}
 }
 
+func countIterator[T any](seq iter.Seq[T]) int {
+	var count int
+	for range seq {
+		count++
+	}
+
+	return count
+}
+
+func countSeq2Iterator[K, V any](seq iter.Seq2[K, V]) int {
+	var count int
+	for range seq {
+		count++
+	}
+
+	return count
+}
+
+func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
+	if count != 0 {
+		t.Errorf("expected 0 iterations for %s, got %d", name, count)
+	}
+}
+
 func TestDataPointAllReferencesEmpty(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
 
-	var count int
-	for range dp.AllReferences() {
-		count++
-	}
-	if count != 0 {
-		t.Errorf("expected 0 iterations, got %d", count)
-	}
+	testDataPointIteratorEmpty(t, "AllReferences", countIterator(dp.AllReferences()))
 }
 
 func TestDataPointAllCausesEmpty(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
 
-	var count int
-	for range dp.AllCauses() {
-		count++
-	}
-	if count != 0 {
-		t.Errorf("expected 0 iterations, got %d", count)
-	}
+	testDataPointIteratorEmpty(t, "AllCauses", countIterator(dp.AllCauses()))
 }
 
 func TestDataPointAllTagsEmpty(t *testing.T) {
 	t.Parallel()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
 	dp := NewDataPoint("payload", actorEntry)
 
-	var count int
-	for range dp.AllTags() {
-		count++
-	}
-	if count != 0 {
-		t.Errorf("expected 0 iterations, got %d", count)
-	}
+	testDataPointIteratorEmpty(t, "AllTags", countSeq2Iterator(dp.AllTags()))
 }

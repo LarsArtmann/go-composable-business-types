@@ -27,7 +27,7 @@ const (
 	// DefaultNanoIDLength is the default length for new NanoIDs (21 chars = 126 bits of entropy).
 	DefaultNanoIDLength = nanoid.DefaultLength
 
-	// Minimum length constraints
+	// Minimum length constraints.
 	minNanoIDLength = 8   // ErrNanoIDTooShort
 	maxNanoIDLength = 256 // ErrNanoIDTooLong
 )
@@ -58,9 +58,11 @@ func ParseNanoID(s string) (NanoID, error) {
 	if s == "" {
 		return NanoID{}, ErrNanoIDEmpty
 	}
+
 	if len(s) < minNanoIDLength {
 		return NanoID{}, ErrNanoIDTooShort
 	}
+
 	if len(s) > maxNanoIDLength {
 		return NanoID{}, ErrNanoIDTooLong
 	}
@@ -88,6 +90,7 @@ func (id NanoID) MarshalText() ([]byte, error) {
 	if id.IsZero() {
 		return nil, nil
 	}
+
 	return []byte(id.value), nil
 }
 
@@ -95,6 +98,7 @@ func (id NanoID) MarshalText() ([]byte, error) {
 func (id *NanoID) UnmarshalText(data []byte) error {
 	if len(data) == 0 {
 		*id = NanoID{value: ""}
+
 		return nil
 	}
 
@@ -102,7 +106,9 @@ func (id *NanoID) UnmarshalText(data []byte) error {
 	if err != nil {
 		return err
 	}
+
 	*id = parsed
+
 	return nil
 }
 
@@ -120,30 +126,32 @@ func (id *NanoID) Scan(src any) error {
 	if id == nil {
 		return errors.New("nanoid: scan: receiver is nil")
 	}
+
 	err := scanutil.ScanString(src, func(v string) error {
 		if v == "" {
 			*id = NanoID{value: ""}
+
 			return nil
 		}
+
 		parsed, err := ParseNanoID(v)
 		if err != nil {
 			return fmt.Errorf("nanoid: scan %q: %w", v, err)
 		}
+
 		*id = parsed
+
 		return nil
 	})
 	if err != nil {
 		return fmt.Errorf("nanoid: scan: %w", err)
 	}
+
 	return nil
 }
 
 // Value implements driver.Valuer for database serialization.
 // Returns nil for empty NanoID, otherwise the string value.
 func (id NanoID) Value() (driver.Value, error) {
-	v, err := scanutil.NullableValue(id.value)
-	if err != nil {
-		return nil, fmt.Errorf("nanoid: value: %w", err)
-	}
-	return v, nil
+	return scanutil.NullableValueWithError(id.value, "nanoid")
 }

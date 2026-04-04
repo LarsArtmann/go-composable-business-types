@@ -10,6 +10,8 @@
 //go:generate go tool go-enum --marshal --names --values --sql
 package enums
 
+import "fmt"
+
 // ActorKind represents the type of actor performing an action.
 // ENUM(User, Bot, System, Service).
 type ActorKind uint8
@@ -45,3 +47,12 @@ type Trigger uint8
 //
 // ).
 type CauseKind uint8
+
+// enumString returns the string representation of an enum value using its lookup map.
+func enumString(x uint8, m map[int]string, name string) string {
+	if str, ok := m[int(x)]; ok {
+		return str
+	}
+
+	return fmt.Sprintf("%s(%d)", name, x)
+}

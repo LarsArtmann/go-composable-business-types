@@ -24,12 +24,14 @@ func FuzzIDJSONString(f *testing.F) {
 		}
 
 		id := NewID[StringBrand](orig)
+
 		data, err := json.Marshal(id)
 		if err != nil {
 			t.Fatalf("Marshal failed: %v", err)
 		}
 
 		var restored ID[StringBrand, string]
+
 		err = json.Unmarshal(data, &restored)
 		if err != nil {
 			t.Fatalf("Unmarshal failed: %v", err)
@@ -49,12 +51,14 @@ func FuzzIDJSONInt64(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, orig int64) {
 		id := NewID[Int64Brand, int64](orig)
+
 		data, err := json.Marshal(id)
 		if err != nil {
 			t.Fatalf("Marshal failed: %v", err)
 		}
 
 		var restored ID[Int64Brand, int64]
+
 		err = json.Unmarshal(data, &restored)
 		if err != nil {
 			t.Fatalf("Unmarshal failed: %v", err)
@@ -76,13 +80,16 @@ func FuzzIDBinaryString(f *testing.F) {
 		if orig == "" {
 			return // empty string is zero value
 		}
+
 		id := NewID[StringBrand](orig)
+
 		data, err := id.MarshalBinary()
 		if err != nil {
 			t.Fatalf("MarshalBinary failed: %v", err)
 		}
 
 		var restored ID[StringBrand, string]
+
 		err = restored.UnmarshalBinary(data)
 		if err != nil {
 			t.Fatalf("UnmarshalBinary failed: %v", err)
@@ -132,6 +139,7 @@ func BenchmarkIDIsZero(b *testing.B) {
 
 func BenchmarkIDEqual(b *testing.B) {
 	id1 := NewID[StringBrand]("test-id")
+
 	id2 := NewID[StringBrand]("test-id")
 	for b.Loop() {
 		_ = id1.Equal(id2)
@@ -140,6 +148,7 @@ func BenchmarkIDEqual(b *testing.B) {
 
 func BenchmarkIDCompare(b *testing.B) {
 	id1 := NewID[Int64Brand, int64](100)
+
 	id2 := NewID[Int64Brand, int64](200)
 	for b.Loop() {
 		_, _ = id1.Compare(id2)
@@ -147,31 +156,31 @@ func BenchmarkIDCompare(b *testing.B) {
 }
 
 func BenchmarkIDMarshalJSON(b *testing.B) {
-	id := NewID[StringBrand]("test-id-12345")
-	for b.Loop() {
-		_, _ = id.MarshalJSON()
-	}
+	benchmarkIDMarshalJSON(b, NewID[StringBrand]("test-id-12345"))
 }
 
 func BenchmarkIDMarshalJSONInt64(b *testing.B) {
-	id := NewID[Int64Brand, int64](123456789)
+	benchmarkIDMarshalJSON(b, NewID[Int64Brand, int64](123456789))
+}
+
+func benchmarkIDMarshalJSON[B, V comparable](b *testing.B, id ID[B, V]) {
 	for b.Loop() {
 		_, _ = id.MarshalJSON()
 	}
 }
 
 func BenchmarkIDUnmarshalJSON(b *testing.B) {
-	data := []byte(`"test-id-12345"`)
-	for b.Loop() {
-		var id ID[StringBrand, string]
-		_ = id.UnmarshalJSON(data)
-	}
+	benchmarkIDUnmarshalJSON[StringBrand, string](b, []byte(`"test-id-12345"`))
 }
 
 func BenchmarkIDUnmarshalJSONInt64(b *testing.B) {
-	data := []byte(`123456789`)
+	benchmarkIDUnmarshalJSON[Int64Brand, int64](b, []byte(`123456789`))
+}
+
+func benchmarkIDUnmarshalJSON[B, V comparable](b *testing.B, data []byte) {
 	for b.Loop() {
-		var id ID[Int64Brand, int64]
+		var id ID[B, V]
+
 		_ = id.UnmarshalJSON(data)
 	}
 }
@@ -186,54 +195,58 @@ func BenchmarkIDMarshalBinary(b *testing.B) {
 func BenchmarkIDUnmarshalBinary(b *testing.B) {
 	id := NewID[Int64Brand, int64](123456789)
 	data, _ := id.MarshalBinary()
+
 	for b.Loop() {
 		var restored ID[Int64Brand, int64]
+
 		_ = restored.UnmarshalBinary(data)
 	}
 }
 
 func BenchmarkIDScan(b *testing.B) {
-	for b.Loop() {
-		var id ID[StringBrand, string]
-		_ = id.Scan("test-id-12345")
-	}
+	benchmarkIDScan[StringBrand, string](b, "test-id-12345")
 }
 
 func BenchmarkIDScanInt64(b *testing.B) {
+	benchmarkIDScan[Int64Brand, int64](b, int64(123456789))
+}
+
+func benchmarkIDScan[B, V comparable](b *testing.B, value V) {
 	for b.Loop() {
-		var id ID[Int64Brand, int64]
-		_ = id.Scan(int64(123456789))
+		var id ID[B, V]
+
+		_ = id.Scan(value)
 	}
 }
 
 func BenchmarkIDValue(b *testing.B) {
-	id := NewID[StringBrand]("test-id-12345")
-	for b.Loop() {
-		_, _ = id.Value()
-	}
+	benchmarkIDValue(b, NewID[StringBrand]("test-id-12345"))
 }
 
 func BenchmarkIDValueInt64(b *testing.B) {
-	id := NewID[Int64Brand, int64](123456789)
+	benchmarkIDValue(b, NewID[Int64Brand, int64](123456789))
+}
+
+func benchmarkIDValue[B, V comparable](b *testing.B, id ID[B, V]) {
 	for b.Loop() {
 		_, _ = id.Value()
 	}
 }
 
 func BenchmarkJSONRoundTrip(b *testing.B) {
-	id := NewID[StringBrand]("test-id-12345")
-	for b.Loop() {
-		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
-		var restored ID[StringBrand, string]
-		_ = json.Unmarshal(data, &restored)
-	}
+	benchmarkJSONRoundTrip(b, NewID[StringBrand]("test-id-12345"))
 }
 
 func BenchmarkJSONRoundTripInt64(b *testing.B) {
-	id := NewID[Int64Brand, int64](123456789)
+	benchmarkJSONRoundTrip(b, NewID[Int64Brand, int64](123456789))
+}
+
+func benchmarkJSONRoundTrip[B, V comparable](b *testing.B, id ID[B, V]) {
 	for b.Loop() {
 		data, _ := json.Marshal(id) //nolint:errchkjson // Benchmark: error check not needed
-		var restored ID[Int64Brand, int64]
+
+		var restored ID[B, V]
+
 		_ = json.Unmarshal(data, &restored)
 	}
 }
@@ -308,6 +321,7 @@ func ExampleID_IsZero() {
 	type UserBrand struct{}
 
 	id := NewID[UserBrand]("user-123")
+
 	var zeroID ID[UserBrand, string]
 
 	fmt.Println(id.IsZero())

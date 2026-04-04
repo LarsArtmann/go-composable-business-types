@@ -43,6 +43,7 @@ func (c Context) Tags() map[string]string {
 	if c.tags == nil {
 		return nil
 	}
+
 	return maps.Clone(c.tags)
 }
 
@@ -51,6 +52,7 @@ func (c Context) Tag(key string) string {
 	if c.tags == nil {
 		return ""
 	}
+
 	return c.tags[key]
 }
 
@@ -63,24 +65,28 @@ func (c Context) IsZero() bool {
 // WithEnvironment returns a copy with environment set.
 func (c Context) WithEnvironment(env string) Context {
 	c.environment = env
+
 	return c
 }
 
 // WithSession returns a copy with session set.
 func (c Context) WithSession(session string) Context {
 	c.session = session
+
 	return c
 }
 
 // WithRequest returns a copy with request set.
 func (c Context) WithRequest(request string) Context {
 	c.request = request
+
 	return c
 }
 
 // WithSource returns a copy with source set.
 func (c Context) WithSource(source string) Context {
 	c.source = source
+
 	return c
 }
 
@@ -89,20 +95,32 @@ func (c Context) WithTag(key, value string) Context {
 	if c.tags == nil {
 		c.tags = make(map[string]string)
 	}
+
 	c.tags[key] = value
+
 	return c
 }
 
 // WithTags returns a copy with multiple tags merged.
 func (c Context) WithTags(tags map[string]string) Context {
-	if len(tags) == 0 {
-		return c
-	}
-	if c.tags == nil {
-		c.tags = make(map[string]string)
-	}
-	maps.Copy(c.tags, tags)
+	c.tags = mergeTags(c.tags, tags)
+
 	return c
+}
+
+// mergeTags merges tags into the dest map and returns the result.
+func mergeTags(dest, tags map[string]string) map[string]string {
+	if len(tags) == 0 {
+		return dest
+	}
+
+	if dest == nil {
+		dest = make(map[string]string)
+	}
+
+	maps.Copy(dest, tags)
+
+	return dest
 }
 
 // jsonContext is the JSON representation of Context.
@@ -126,19 +144,24 @@ func (c Context) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("context: marshal JSON: %w", err)
 	}
+
 	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (c *Context) UnmarshalJSON(data []byte) error {
 	var raw jsonContext
-	if err := json.Unmarshal(data, &raw); err != nil {
+
+	err := json.Unmarshal(data, &raw)
+	if err != nil {
 		return fmt.Errorf("unmarshal context: invalid JSON %q: %w", string(data), err)
 	}
+
 	c.environment = raw.Environment
 	c.session = raw.Session
 	c.request = raw.Request
 	c.source = raw.Source
 	c.tags = raw.Tags
+
 	return nil
 }

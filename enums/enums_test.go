@@ -2,6 +2,8 @@ package enums
 
 import (
 	"testing"
+
+	"github.com/larsartmann/go-composable-business-types/testutil"
 )
 
 func TestActorKind(t *testing.T) {
@@ -45,28 +47,12 @@ func TestParseActorKind(t *testing.T) {
 
 func TestParseActorKindError(t *testing.T) {
 	t.Parallel()
-
-	_, err := ParseActorKind("Invalid")
-	if err == nil {
-		t.Error("expected error for invalid ActorKind")
-	}
+	testutil.RunParseTest(t, "ActorKind", "Invalid", ParseActorKind, true)
 }
 
 func TestActorKindIsValid(t *testing.T) {
 	t.Parallel()
-
-	if !ActorKindUser.IsValid() {
-		t.Error("ActorKindUser should be valid")
-	}
-
-	if !ActorKindService.IsValid() {
-		t.Error("ActorKindService should be valid")
-	}
-	// Invalid value
-	invalid := ActorKind(99)
-	if invalid.IsValid() {
-		t.Error("ActorKind(99) should not be valid")
-	}
+	testEnumIsValid(t, []ActorKind{ActorKindUser, ActorKindService}, ActorKind(99))
 }
 
 func TestPriority(t *testing.T) {
@@ -83,25 +69,12 @@ func TestPriority(t *testing.T) {
 	}
 
 	// Test String() for all values
-	tests := []struct {
-		priority Priority
-		expected string
-	}{
+	testEnumString(t, []enumStringCase[Priority]{
 		{PriorityLow, "Low"},
 		{PriorityMedium, "Medium"},
 		{PriorityHigh, "High"},
 		{PriorityCritical, "Critical"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.expected, func(t *testing.T) {
-			t.Parallel()
-
-			if tt.priority.String() != tt.expected {
-				t.Errorf("expected %s, got %s", tt.expected, tt.priority.String())
-			}
-		})
-	}
+	})
 }
 
 func TestParsePriority(t *testing.T) {

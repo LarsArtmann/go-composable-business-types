@@ -14,9 +14,11 @@ func testSentinelErrors(t *testing.T, tests []struct {
 },
 ) {
 	t.Helper()
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if !errors.Is(tt.err, tt.want) {
 				t.Errorf("errors.Is() = false, want true")
 			}

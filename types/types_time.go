@@ -51,9 +51,11 @@ func (d Duration) Compare(other Duration) int {
 	if d.Duration < other.Duration {
 		return -1
 	}
+
 	if d.Duration > other.Duration {
 		return 1
 	}
+
 	return 0
 }
 
@@ -63,37 +65,49 @@ func (d *Duration) Scan(src any) error {
 	if d == nil {
 		return errors.New("duration: scan: receiver is nil")
 	}
+
 	switch v := src.(type) {
 	case nil:
 		d.Duration = 0
+
 		return nil
 	case int64:
 		d.Duration = time.Duration(v)
+
 		return nil
 	case float64:
 		d.Duration = time.Duration(int64(v))
+
 		return nil
 	case string:
 		if v == "" {
 			d.Duration = 0
+
 			return nil
 		}
+
 		parsed, err := time.ParseDuration(v)
 		if err != nil {
 			return fmt.Errorf("duration: cannot parse %q from string: %w", v, err)
 		}
+
 		d.Duration = parsed
+
 		return nil
 	case []byte:
 		if len(v) == 0 {
 			d.Duration = 0
+
 			return nil
 		}
+
 		parsed, err := time.ParseDuration(string(v))
 		if err != nil {
 			return fmt.Errorf("duration: cannot parse %q from []byte: %w", string(v), err)
 		}
+
 		d.Duration = parsed
+
 		return nil
 	default:
 		return fmt.Errorf("duration: cannot scan non-numeric/string value (got %T)", src)
@@ -106,6 +120,7 @@ func (d Duration) Value() (driver.Value, error) {
 	if d.Duration == 0 {
 		return nil, nil
 	}
+
 	return int64(d.Duration), nil
 }
 
@@ -115,6 +130,7 @@ func (d Duration) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("duration: marshal JSON: %w", err)
 	}
+
 	return b, nil
 }
 
@@ -124,14 +140,19 @@ func (d *Duration) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &s); err != nil {
 		return fmt.Errorf("duration: invalid JSON %q: %w", string(data), err)
 	}
+
 	if s == "" {
 		d.Duration = 0
+
 		return nil
 	}
+
 	parsed, err := time.ParseDuration(s)
 	if err != nil {
 		return fmt.Errorf("duration: cannot parse %q: %w", s, err)
 	}
+
 	d.Duration = parsed
+
 	return nil
 }

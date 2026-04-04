@@ -17,6 +17,7 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("id: marshal JSON: %w", err)
 	}
+
 	return b, nil
 }
 
@@ -25,13 +26,18 @@ func (id ID[B, V]) MarshalJSON() ([]byte, error) {
 func (id *ID[B, V]) UnmarshalJSON(data []byte) error {
 	if string(data) == "null" {
 		id.Reset()
+
 		return nil
 	}
 
 	var zero V
-	if err := json.Unmarshal(data, &zero); err != nil {
+
+	err := json.Unmarshal(data, &zero)
+	if err != nil {
 		return fmt.Errorf("id: cannot unmarshal %s into %T: %w", string(data), zero, err)
 	}
+
 	*id = ID[B, V]{value: zero}
+
 	return nil
 }

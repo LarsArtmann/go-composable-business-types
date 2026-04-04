@@ -7,6 +7,7 @@ import (
 
 func TestTimestamp(t *testing.T) {
 	t.Parallel()
+
 	now := time.Now()
 	ts := NewTimestamp(now)
 
@@ -29,6 +30,7 @@ func TestTimestamp(t *testing.T) {
 
 func TestTimestampCompare(t *testing.T) {
 	t.Parallel()
+
 	t1 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
 	t2 := NewTimestamp(time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC))
 	t3 := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
@@ -36,9 +38,11 @@ func TestTimestampCompare(t *testing.T) {
 	if t1.Compare(t2) != -1 {
 		t.Error("t1 should be before t2")
 	}
+
 	if t2.Compare(t1) != 1 {
 		t.Error("t2 should be after t1")
 	}
+
 	if t1.Compare(t3) != 0 {
 		t.Error("t1 should equal t3")
 	}
@@ -46,6 +50,7 @@ func TestTimestampCompare(t *testing.T) {
 
 func TestDuration(t *testing.T) {
 	t.Parallel()
+
 	d := NewDuration(time.Hour)
 	if d.Duration != time.Hour {
 		t.Errorf("expected 1 hour, got %v", d.Duration)
@@ -59,6 +64,7 @@ func TestDuration(t *testing.T) {
 
 func TestDurationCompare(t *testing.T) {
 	t.Parallel()
+
 	d1 := NewDuration(time.Hour)
 	d2 := NewDuration(2 * time.Hour)
 	d3 := NewDuration(time.Hour)
@@ -66,9 +72,11 @@ func TestDurationCompare(t *testing.T) {
 	if d1.Compare(d2) != -1 {
 		t.Error("d1 should be less than d2")
 	}
+
 	if d2.Compare(d1) != 1 {
 		t.Error("d2 should be greater than d1")
 	}
+
 	if d1.Compare(d3) != 0 {
 		t.Error("d1 should equal d3")
 	}
@@ -78,10 +86,12 @@ func TestDurationJSON(t *testing.T) {
 	t.Parallel()
 	// Test MarshalJSON
 	d := NewDuration(time.Hour + 30*time.Minute)
+
 	data, err := d.MarshalJSON()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	expected := `"1h30m0s"`
 	if string(data) != expected {
 		t.Errorf("expected %s, got %s", expected, string(data))
@@ -92,6 +102,7 @@ func TestDurationJSON(t *testing.T) {
 	if err := d2.UnmarshalJSON([]byte(`"2h15m0s"`)); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if d2.Duration != 2*time.Hour+15*time.Minute {
 		t.Errorf("expected 2h15m0s, got %v", d2.Duration)
 	}
@@ -101,6 +112,7 @@ func TestDurationJSON(t *testing.T) {
 	if err := d3.UnmarshalJSON([]byte(`""`)); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if d3.Duration != 0 {
 		t.Errorf("expected 0, got %v", d3.Duration)
 	}
@@ -110,6 +122,7 @@ func TestDurationJSON(t *testing.T) {
 	if err := d4.UnmarshalJSON(data); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
+
 	if d4.Duration != d.Duration {
 		t.Errorf("round-trip failed: expected %v, got %v", d.Duration, d4.Duration)
 	}

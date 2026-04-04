@@ -16,6 +16,7 @@ func init() {
 	if !ok {
 		return
 	}
+
 	for _, setting := range info.Settings {
 		switch setting.Key {
 		case "vcs.revision":
@@ -36,21 +37,27 @@ var (
 
 func String() string {
 	var parts []string
+
 	parts = append(parts, Version)
+
 	if Revision != "" {
 		short := Revision
 		if len(short) > 7 {
 			short = short[:7]
 		}
+
 		parts = append(parts, short)
 	}
+
 	if Date != "" {
 		if iso, _, _ := strings.Cut(Date, "T"); iso != "" {
 			parts = append(parts, iso)
 		}
 	}
+
 	if Dirty {
 		parts = append(parts, "dirty")
 	}
+
 	return strings.Join(parts, "+")
 }

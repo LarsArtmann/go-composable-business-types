@@ -8,26 +8,64 @@ import (
 	"fmt"
 )
 
+// scanIntegerLikeID scans src into the appropriate integer type for the ID.
+// It handles int64, int, and float64 source types by converting them to V.
+func scanIntegerLikeID[B any, V comparable](
+	id *ID[B, V],
+	src any,
+	targetTypeName string,
+	fromInt64 func(int64) V,
+	fromInt func(int) V,
+	fromFloat func(float64) V,
+) error {
+	var zero V
+
+	switch v := src.(type) {
+	case int64:
+		*id = ID[B, V]{value: fromInt64(v)}
+
+		return nil
+	case int:
+		*id = ID[B, V]{value: fromInt(v)}
+
+		return nil
+	case float64:
+		*id = ID[B, V]{value: fromFloat(v)}
+
+		return nil
+	default:
+		return fmt.Errorf(
+			"id: cannot scan %T into %s-based ID (targetType=%T)",
+			src,
+			targetTypeName,
+			zero,
+		)
+	}
+}
+
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
 func (id *ID[B, V]) Scan(src any) error {
 	if id == nil {
 		return errors.New("id: scan: receiver is nil")
 	}
+
 	if src == nil {
 		id.Reset()
+
 		return nil
 	}
 
-	var zero V
-	switch any(zero).(type) {
+	switch any(*new(V)).(type) {
 	case string:
 		switch v := src.(type) {
 		case string:
 			*id = ID[B, V]{value: any(v).(V)}
+
 			return nil
 		case []byte:
 			*id = ID[B, V]{value: any(string(v)).(V)}
+
 			return nil
 		default:
 			return fmt.Errorf("id: cannot scan %T into string-based ID (src=%T)", src, src)
@@ -37,110 +75,68 @@ func (id *ID[B, V]) Scan(src any) error {
 		switch v := src.(type) {
 		case int64:
 			*id = ID[B, V]{value: any(int(v)).(V)}
+
 			return nil
 		case int:
 			*id = ID[B, V]{value: any(v).(V)}
+
 			return nil
 		case float64:
 			*id = ID[B, V]{value: any(int(v)).(V)}
+
 			return nil
 		default:
-			return fmt.Errorf("id: cannot scan %T into int-based ID (targetType=%T)", src, zero)
+			return fmt.Errorf("id: cannot scan %T into int-based ID (targetType=%T)", src, *new(V))
 		}
 
 	case int32:
-		switch v := src.(type) {
-		case int64:
-			*id = ID[B, V]{
-				value: any(int32(v)).(V),
-			}
-			return nil
-		case int:
-			*id = ID[B, V]{
-				value: any(int32(v)).(V),
-			}
-			return nil
-		case float64:
-			*id = ID[B, V]{value: any(int32(v)).(V)}
-			return nil
-		default:
-			return fmt.Errorf("id: cannot scan %T into int32-based ID (targetType=%T)", src, zero)
-		}
-
+		return scanIntegerLikeID(
+			id,
+			src,
+			"int32",
+			func(v int64) V { return any(int32(v)).(V) },
+			func(v int) V { return any(int32(v)).(V) },
+			func(v float64) V { return any(int32(v)).(V) },
+		)
 	case int64:
-		switch v := src.(type) {
-		case int64:
-			*id = ID[B, V]{value: any(v).(V)}
-			return nil
-		case int:
-			*id = ID[B, V]{value: any(int64(v)).(V)}
-			return nil
-		case float64:
-			*id = ID[B, V]{value: any(int64(v)).(V)}
-			return nil
-		default:
-			return fmt.Errorf("id: cannot scan %T into int64-based ID (targetType=%T)", src, zero)
-		}
-
+		return scanIntegerLikeID(
+			id,
+			src,
+			"int64",
+			func(v int64) V { return any(v).(V) },
+			func(v int) V { return any(int64(v)).(V) },
+			func(v float64) V { return any(int64(v)).(V) },
+		)
 	case uint:
-		switch v := src.(type) {
-		case int64:
-			*id = ID[B, V]{
-				value: any(uint(v)).(V),
-			}
-			return nil
-		case int:
-			*id = ID[B, V]{
-				value: any(uint(v)).(V),
-			}
-			return nil
-		case float64:
-			*id = ID[B, V]{value: any(uint(v)).(V)}
-			return nil
-		default:
-			return fmt.Errorf("id: cannot scan %T into uint-based ID (targetType=%T)", src, zero)
-		}
-
+		return scanIntegerLikeID(
+			id,
+			src,
+			"uint",
+			func(v int64) V { return any(uint(v)).(V) },
+			func(v int) V { return any(uint(v)).(V) },
+			func(v float64) V { return any(uint(v)).(V) },
+		)
 	case uint32:
-		switch v := src.(type) {
-		case int64:
-			*id = ID[B, V]{
-				value: any(uint32(v)).(V),
-			}
-			return nil
-		case int:
-			*id = ID[B, V]{
-				value: any(uint32(v)).(V),
-			}
-			return nil
-		case float64:
-			*id = ID[B, V]{value: any(uint32(v)).(V)}
-			return nil
-		default:
-			return fmt.Errorf("id: cannot scan %T into uint32-based ID (targetType=%T)", src, zero)
-		}
-
+		return scanIntegerLikeID(
+			id,
+			src,
+			"uint32",
+			func(v int64) V { return any(uint32(v)).(V) },
+			func(v int) V { return any(uint32(v)).(V) },
+			func(v float64) V { return any(uint32(v)).(V) },
+		)
 	case uint64:
-		switch v := src.(type) {
-		case int64:
-			*id = ID[B, V]{
-				value: any(uint64(v)).(V),
-			}
-			return nil
-		case int:
-			*id = ID[B, V]{
-				value: any(uint64(v)).(V),
-			}
-			return nil
-		case float64:
-			*id = ID[B, V]{value: any(uint64(v)).(V)}
-			return nil
-		default:
-			return fmt.Errorf("id: cannot scan %T into uint64-based ID (targetType=%T)", src, zero)
-		}
+		return scanIntegerLikeID(
+			id,
+			src,
+			"uint64",
+			func(v int64) V { return any(uint64(v)).(V) },
+			func(v int) V { return any(uint64(v)).(V) },
+			func(v float64) V { return any(uint64(v)).(V) },
+		)
 
 	default:
-		return fmt.Errorf("id: unsupported target type %T for SQL scanning (src=%T)", zero, src)
+		return fmt.Errorf("id: unsupported target type %T for SQL scanning (src=%T)", *new(V), src)
 	}
 }
 
@@ -179,7 +175,7 @@ func (id ID[B, V]) Value() (driver.Value, error) {
 	}
 }
 
-// Compile-time interface assertions
+// Compile-time interface assertions.
 var (
 	_ fmt.Stringer     = ID[struct{}, string]{value: ""}
 	_ fmt.GoStringer   = ID[struct{}, string]{value: ""}

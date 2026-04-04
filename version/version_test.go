@@ -17,6 +17,7 @@ func TestModulePath(t *testing.T) {
 	if ModulePath == "" {
 		t.Error("ModulePath should not be empty")
 	}
+
 	if !strings.Contains(ModulePath, "go-composable-business-types") {
 		t.Error("ModulePath should contain module name")
 	}
@@ -28,6 +29,7 @@ func TestString(t *testing.T) {
 	if s == "" {
 		t.Error("String() should not be empty")
 	}
+
 	if !strings.Contains(s, Version) {
 		t.Error("String() should contain Version")
 	}
@@ -35,36 +37,34 @@ func TestString(t *testing.T) {
 
 //nolint:paralleltest // Tests modify global state
 func TestStringWithRevision(t *testing.T) {
-	original := Revision
-	Revision = "abc1234567890"
-	defer func() { Revision = original }()
-
-	s := String()
-	if !strings.Contains(s, "abc1234") {
-		t.Error("String() should contain shortened revision")
-	}
+	testWithGlobal(t, &Revision, "abc1234567890", "abc1234", "shortened revision")
 }
 
 //nolint:paralleltest // Tests modify global state
 func TestStringWithDate(t *testing.T) {
-	original := Date
-	Date = "2026-03-27T10:00:00Z"
-	defer func() { Date = original }()
-
-	s := String()
-	if !strings.Contains(s, "2026-03-27") {
-		t.Error("String() should contain date")
-	}
+	testWithGlobal(t, &Date, "2026-03-27T10:00:00Z", "2026-03-27", "date")
 }
 
 //nolint:paralleltest // Tests modify global state
 func TestStringDirty(t *testing.T) {
-	original := Dirty
-	Dirty = true
-	defer func() { Dirty = original }()
+	testWithGlobal(t, &Dirty, true, "dirty", "'dirty' when Dirty is true")
+}
+
+// testWithGlobal saves the original value of a global variable, sets a new value,
+// runs a test using String(), then restores the original value.
+func testWithGlobal[T any](
+	t *testing.T,
+	global *T,
+	newValue T,
+	expectedSubstring, description string,
+) {
+	original := *global
+	*global = newValue
+
+	defer func() { *global = original }()
 
 	s := String()
-	if !strings.Contains(s, "dirty") {
-		t.Error("String() should contain 'dirty' when Dirty is true")
+	if !strings.Contains(s, expectedSubstring) {
+		t.Errorf("String() should contain %s", description)
 	}
 }

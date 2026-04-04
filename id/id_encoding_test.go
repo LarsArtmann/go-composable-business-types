@@ -10,11 +10,14 @@ func TestIDText(t *testing.T) {
 	t.Parallel()
 	t.Run("marshal non-zero string", func(t *testing.T) {
 		t.Parallel()
+
 		id := NewID[StringBrand]("test-id")
+
 		data, err := id.MarshalText()
 		if err != nil {
 			t.Fatalf("MarshalText failed: %v", err)
 		}
+
 		if string(data) != "test-id" {
 			t.Errorf("expected test-id, got %s", string(data))
 		}
@@ -22,11 +25,14 @@ func TestIDText(t *testing.T) {
 
 	t.Run("marshal zero string", func(t *testing.T) {
 		t.Parallel()
+
 		var id ID[StringBrand, string]
+
 		data, err := id.MarshalText()
 		if err != nil {
 			t.Fatalf("MarshalText failed: %v", err)
 		}
+
 		if data != nil {
 			t.Errorf("expected nil, got %s", string(data))
 		}
@@ -34,11 +40,14 @@ func TestIDText(t *testing.T) {
 
 	t.Run("marshal int64", func(t *testing.T) {
 		t.Parallel()
+
 		id := NewID[Int64Brand, int64](42)
+
 		data, err := id.MarshalText()
 		if err != nil {
 			t.Fatalf("MarshalText failed: %v", err)
 		}
+
 		if string(data) != "42" {
 			t.Errorf("expected 42, got %s", string(data))
 		}
@@ -51,11 +60,14 @@ func TestIDText(t *testing.T) {
 
 	t.Run("unmarshal empty", func(t *testing.T) {
 		t.Parallel()
+
 		var id ID[StringBrand, string]
+
 		err := id.UnmarshalText([]byte{})
 		if err != nil {
 			t.Fatalf("UnmarshalText failed: %v", err)
 		}
+
 		if !id.IsZero() {
 			t.Error("expected zero ID")
 		}
@@ -74,11 +86,14 @@ func TestIDText(t *testing.T) {
 
 func testUnmarshalTextRoundTrip[B any, V comparable](t *testing.T, input string, expected V) {
 	t.Helper()
+
 	var id ID[B, V]
+
 	err := id.UnmarshalText([]byte(input))
 	if err != nil {
 		t.Fatalf("UnmarshalText failed: %v", err)
 	}
+
 	if id.Get() != expected {
 		t.Errorf("expected %v, got %v", expected, id.Get())
 	}
@@ -86,17 +101,21 @@ func testUnmarshalTextRoundTrip[B any, V comparable](t *testing.T, input string,
 
 func testBinaryRoundTrip[B any, V comparable](t *testing.T, value V) {
 	t.Helper()
+
 	original := NewID[B, V](value)
+
 	data, err := original.MarshalBinary()
 	if err != nil {
 		t.Fatalf("MarshalBinary failed: %v", err)
 	}
 
 	var restored ID[B, V]
+
 	err = restored.UnmarshalBinary(data)
 	if err != nil {
 		t.Fatalf("UnmarshalBinary failed: %v", err)
 	}
+
 	if restored.Get() != original.Get() {
 		t.Errorf("expected %v, got %v", original.Get(), restored.Get())
 	}
@@ -126,20 +145,25 @@ func TestIDBinary(t *testing.T) {
 
 	t.Run("zero ID", func(t *testing.T) {
 		t.Parallel()
+
 		var original ID[StringBrand, string]
+
 		data, err := original.MarshalBinary()
 		if err != nil {
 			t.Fatalf("MarshalBinary failed: %v", err)
 		}
+
 		if data != nil {
 			t.Errorf("expected nil, got %v", data)
 		}
 
 		var restored ID[StringBrand, string]
+
 		err = restored.UnmarshalBinary(nil)
 		if err != nil {
 			t.Fatalf("UnmarshalBinary failed: %v", err)
 		}
+
 		if !restored.IsZero() {
 			t.Error("expected zero ID")
 		}
@@ -150,20 +174,27 @@ func TestIDGob(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID", func(t *testing.T) {
 		t.Parallel()
+
 		original := NewID[StringBrand]("test-id")
+
 		var buf bytes.Buffer
+
 		enc := gob.NewEncoder(&buf)
+
 		err := enc.Encode(original)
 		if err != nil {
 			t.Fatalf("GobEncode failed: %v", err)
 		}
 
 		var restored ID[StringBrand, string]
+
 		dec := gob.NewDecoder(&buf)
+
 		err = dec.Decode(&restored)
 		if err != nil {
 			t.Fatalf("GobDecode failed: %v", err)
 		}
+
 		if restored.Get() != original.Get() {
 			t.Errorf("expected %s, got %s", original.Get(), restored.Get())
 		}
@@ -171,20 +202,27 @@ func TestIDGob(t *testing.T) {
 
 	t.Run("int64 ID", func(t *testing.T) {
 		t.Parallel()
+
 		original := NewID[Int64Brand, int64](42)
+
 		var buf bytes.Buffer
+
 		enc := gob.NewEncoder(&buf)
+
 		err := enc.Encode(original)
 		if err != nil {
 			t.Fatalf("GobEncode failed: %v", err)
 		}
 
 		var restored ID[Int64Brand, int64]
+
 		dec := gob.NewDecoder(&buf)
+
 		err = dec.Decode(&restored)
 		if err != nil {
 			t.Fatalf("GobDecode failed: %v", err)
 		}
+
 		if restored.Get() != original.Get() {
 			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
 		}
