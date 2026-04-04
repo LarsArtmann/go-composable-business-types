@@ -195,37 +195,43 @@ func TestActorChainAll(t *testing.T) {
 	}
 }
 
-func TestActorChainAllBreak(t *testing.T) {
+func TestActorChainIterationBreak(t *testing.T) {
 	t.Parallel()
 
-	chain := newTestChain("Alice")
-
-	var count int
-	for range chain.All() {
-		count++
-
-		break
+	tests := []struct {
+		name string
+		iter func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool)
+	}{
+		{"All", func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool) {
+			return chain.All()
+		}},
+		{"Entries", func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool) {
+			return func(yield func(ActorEntry[string], int) bool) {
+				for e := range chain.Entries() {
+					if !yield(e, 0) {
+						return
+					}
+				}
+			}
+		}},
 	}
 
-	if count != 1 {
-		t.Errorf("expected break after 1 iteration, got %d", count)
-	}
-}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-func TestActorChainEntriesBreak(t *testing.T) {
-	t.Parallel()
+			chain := newTestChain("Alice")
 
-	chain := newTestChain("Alice")
+			var count int
+			for range tt.iter(chain) {
+				count++
+				break
+			}
 
-	var count int
-	for range chain.Entries() {
-		count++
-
-		break
-	}
-
-	if count != 1 {
-		t.Errorf("expected break after 1 iteration, got %d", count)
+			if count != 1 {
+				t.Errorf("expected break after 1 iteration, got %d", count)
+			}
+		})
 	}
 }
 

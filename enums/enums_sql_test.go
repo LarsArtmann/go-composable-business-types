@@ -431,9 +431,9 @@ func testScanAllTypes[T comparable](
 // enumScanTestCase defines input/output for Scan method testing.
 // The same enum value can be tested with different input types.
 type enumScanTestCase[T any] struct {
-	intVal    int64
-	strVal    string
-	want      T
+	intVal int64
+	strVal string
+	want   T
 }
 
 // makeScanTestCases generates all 8 scanTestCase variants from the provided test cases.
