@@ -107,6 +107,30 @@ func TestIDEqual(t *testing.T) {
 	}
 }
 
+func testIDCompareGeneric[B any, V comparable](t *testing.T, createID func(V) ID[B, V], tests []struct {
+	name     string
+	a, b     V
+	expected int
+}) {
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			idA := createID(tt.a)
+			idB := createID(tt.b)
+
+			result, err := idA.Compare(idB)
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			if result != tt.expected {
+				t.Errorf("expected %d, got %d", tt.expected, result)
+			}
+		})
+	}
+}
+
 func TestIDCompare(t *testing.T) {
 	t.Parallel()
 
@@ -120,23 +144,7 @@ func TestIDCompare(t *testing.T) {
 		{"greater", 3, 1, 1},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			idA := NewID[Int64Brand, int](tt.a)
-			idB := NewID[Int64Brand, int](tt.b)
-
-			result, err := idA.Compare(idB)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-
-			if result != tt.expected {
-				t.Errorf("expected %d, got %d", tt.expected, result)
-			}
-		})
-	}
+	testIDCompareGeneric(t, func(v int) ID[Int64Brand, int] { return NewID[Int64Brand, int](v) }, tests)
 }
 
 func TestIDCompareString(t *testing.T) {
@@ -187,23 +195,7 @@ func TestIDCompareInt64(t *testing.T) {
 		{"greater", 200, 100, 1},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			idA := NewID[Int64Brand, int64](tt.a)
-			idB := NewID[Int64Brand, int64](tt.b)
-
-			result, err := idA.Compare(idB)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-
-			if result != tt.expected {
-				t.Errorf("expected %d, got %d", tt.expected, result)
-			}
-		})
-	}
+	testIDCompareGeneric(t, func(v int64) ID[Int64Brand, int64] { return NewID[Int64Brand, int64](v) }, tests)
 }
 
 func TestIDCompareUint64(t *testing.T) {
@@ -219,23 +211,7 @@ func TestIDCompareUint64(t *testing.T) {
 		{"greater", 200, 100, 1},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			idA := NewID[Uint64Brand, uint64](tt.a)
-			idB := NewID[Uint64Brand, uint64](tt.b)
-
-			result, err := idA.Compare(idB)
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-
-			if result != tt.expected {
-				t.Errorf("expected %d, got %d", tt.expected, result)
-			}
-		})
-	}
+	testIDCompareGeneric(t, func(v uint64) ID[Uint64Brand, uint64] { return NewID[Uint64Brand, uint64](v) }, tests)
 }
 
 func TestIDOr(t *testing.T) {
