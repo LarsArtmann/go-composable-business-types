@@ -4,6 +4,8 @@ import (
 	"database/sql/driver"
 	"slices"
 	"testing"
+
+	"github.com/larsartmann/go-composable-business-types/enums"
 )
 
 // enumValueCase represents a test case for enum Value() method.
@@ -124,31 +126,31 @@ func testEnumIsValid[T interface{ IsValid() bool }](t *testing.T, validValues []
 func TestEnumValues(t *testing.T) {
 	t.Parallel()
 	// Test ActorKindValues
-	akValues := ActorKindValues()
+	akValues := enums.ActorKindValues()
 	if len(akValues) != 4 {
 		t.Errorf("expected 4 ActorKind values, got %d", len(akValues))
 	}
 
 	// Test PriorityValues
-	pValues := PriorityValues()
+	pValues := enums.PriorityValues()
 	if len(pValues) != 4 {
 		t.Errorf("expected 4 Priority values, got %d", len(pValues))
 	}
 
 	// Test StatusValues
-	sValues := StatusValues()
+	sValues := enums.StatusValues()
 	if len(sValues) != 5 {
 		t.Errorf("expected 5 Status values, got %d", len(sValues))
 	}
 
 	// Test TriggerValues
-	tValues := TriggerValues()
-	if len(tValues) != 7 {
-		t.Errorf("expected 7 Trigger values, got %d", len(tValues))
+	trigValues := enums.TriggerValues()
+	if len(trigValues) != 7 {
+		t.Errorf("expected 7 Trigger values, got %d", len(trigValues))
 	}
 
 	// Test CauseKindValues
-	ckValues := CauseKindValues()
+	ckValues := enums.CauseKindValues()
 	if len(ckValues) != 3 {
 		t.Errorf("expected 3 CauseKind values, got %d", len(ckValues))
 	}
@@ -157,7 +159,7 @@ func TestEnumValues(t *testing.T) {
 func TestEnumNames(t *testing.T) {
 	t.Parallel()
 	// Test ActorKindNames
-	akNames := ActorKindNames()
+	akNames := enums.ActorKindNames()
 	if len(akNames) != 4 {
 		t.Errorf("expected 4 ActorKind names, got %d", len(akNames))
 	}
@@ -167,25 +169,25 @@ func TestEnumNames(t *testing.T) {
 	}
 
 	// Test PriorityNames
-	pNames := PriorityNames()
+	pNames := enums.PriorityNames()
 	if len(pNames) != 4 {
 		t.Errorf("expected 4 Priority names, got %d", len(pNames))
 	}
 
 	// Test StatusNames
-	sNames := StatusNames()
+	sNames := enums.StatusNames()
 	if len(sNames) != 5 {
 		t.Errorf("expected 5 Status names, got %d", len(sNames))
 	}
 
 	// Test TriggerNames
-	tNames := TriggerNames()
-	if len(tNames) != 7 {
-		t.Errorf("expected 7 Trigger names, got %d", len(tNames))
+	trigNames := enums.TriggerNames()
+	if len(trigNames) != 7 {
+		t.Errorf("expected 7 Trigger names, got %d", len(trigNames))
 	}
 
 	// Test CauseKindNames
-	ckNames := CauseKindNames()
+	ckNames := enums.CauseKindNames()
 	if len(ckNames) != 3 {
 		t.Errorf("expected 3 CauseKind names, got %d", len(ckNames))
 	}
@@ -239,20 +241,20 @@ func testUnmarshalTextErrorsAll[T1, T2, T3, T4, T5 any](
 
 func TestCauseKind(t *testing.T) {
 	t.Parallel()
-	testEnumString(t, []enumStringCase[CauseKind]{
-		{CauseKindDirect, "Direct"},
-		{CauseKindCommand, "Command"},
-		{CauseKindEvent, "Event"},
+	testEnumString(t, []enumStringCase[enums.CauseKind]{
+		{enums.CauseKindDirect, "Direct"},
+		{enums.CauseKindCommand, "Command"},
+		{enums.CauseKindEvent, "Event"},
 	})
 }
 
 func TestParseCauseKind(t *testing.T) {
 	t.Parallel()
 
-	testParse(t, ParseCauseKind, []enumParseCase[CauseKind]{
-		{"Direct", CauseKindDirect, false},
-		{"Command", CauseKindCommand, false},
-		{"Event", CauseKindEvent, false},
+	testParse(t, enums.ParseCauseKind, []enumParseCase[enums.CauseKind]{
+		{"Direct", enums.CauseKindDirect, false},
+		{"Command", enums.CauseKindCommand, false},
+		{"Event", enums.CauseKindEvent, false},
 		{"Invalid", 0, true},
 		{"", 0, true},
 	})
@@ -261,5 +263,5 @@ func TestParseCauseKind(t *testing.T) {
 func TestCauseKindIsValid(t *testing.T) {
 	t.Parallel()
 
-	testEnumIsValid(t, []CauseKind{CauseKindDirect, CauseKindEvent}, CauseKind(99))
+	testEnumIsValid(t, []enums.CauseKind{enums.CauseKindDirect, enums.CauseKindEvent}, enums.CauseKind(99))
 }
