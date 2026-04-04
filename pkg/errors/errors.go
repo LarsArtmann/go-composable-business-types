@@ -130,23 +130,28 @@ type ContextualError interface {
 	Wrapped() error
 }
 
+// wrappedError provides shared Unwrap/Wrapped implementation.
+type wrappedError struct {
+	Err error
+}
+
+func (w *wrappedError) Unwrap() error {
+	return w.Err
+}
+
+func (w *wrappedError) Wrapped() error {
+	return w.Err
+}
+
 // UnmarshalError represents a failure to parse/unmarshal data.
 type UnmarshalError struct {
 	Type  string // The type that failed (e.g., "JSON", "XML", "Text")
 	Input string // The invalid input that caused the failure
-	Err   error  // The underlying error
+	wrappedError
 }
 
 func (e *UnmarshalError) Error() string {
 	return fmt.Sprintf("unmarshal %s: %s: %v", e.Type, e.Input, e.Err)
-}
-
-func (e *UnmarshalError) Unwrap() error {
-	return e.Err
-}
-
-func (e *UnmarshalError) Wrapped() error {
-	return e.Err
 }
 
 // ValidationError represents a validation failure.
@@ -184,19 +189,11 @@ func (e *RangeError) Error() string {
 type ScanError struct {
 	SourceType string // The type we're scanning from
 	TargetType string // The type we're scanning into
-	Err        error  // The underlying error
+	wrappedError
 }
 
 func (e *ScanError) Error() string {
 	return fmt.Sprintf("cannot scan %s into %s: %v", e.SourceType, e.TargetType, e.Err)
-}
-
-func (e *ScanError) Unwrap() error {
-	return e.Err
-}
-
-func (e *ScanError) Wrapped() error {
-	return e.Err
 }
 
 // =============================================================================
@@ -247,14 +244,14 @@ func WrapContextual[T ContextualError](err error, constructor func(err error) T)
 // WrapScan wraps an error as a scan error.
 func WrapScan(err error, sourceType, targetType string) error {
 	return WrapContextual(err, func(e error) *ScanError {
-		return &ScanError{SourceType: sourceType, TargetType: targetType, Err: e}
+		return &ScanError{SourceType: sourceType, TargetType: targetType, wrappedError: wrappedError{Err: e}}
 	})
 }
 
 // WrapUnmarshal wraps an error as an unmarshal error.
 func WrapUnmarshal(err error, typeName, input string) error {
 	return WrapContextual(err, func(e error) *UnmarshalError {
-		return &UnmarshalError{Type: typeName, Input: input, Err: e}
+		return &UnmarshalError{Type: typeName, Input: input, wrappedError: wrappedError{Err: e}}
 	})
 }
 

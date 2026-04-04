@@ -82,5 +82,14 @@
     "reason": "These are intentional fluent API methods following Go idioms. Each method operates on different fields (context, version, tags, references, causes), uses different helper functions (withVersion, withTag, mergeTags, appendToSlice), and has different type signatures. The structural similarity is intentional API consistency, not code duplication.\n\n```json\n{\"strategy\": \"false_positive\", \"files_modified\": [], \"new_abstraction\": null, \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=002d2025-1454-4ca2-a778-b7600bbdebf5\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/04 20:07:36 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 46s app duration in seconds 46]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
     "marked_at": "2026-04-04T20:08:10.270773+02:00",
     "marked_by": "auto-deduplicate"
+  },
+  {
+    "fingerprint": "4db2b526b6e887d75b682363e8ec6715c527ca623671c6832f26443260a3437f",
+    "files": [
+      "/Users/larsartmann/projects/go-composable-business-types/types/types_time.go"
+    ],
+    "reason": "These methods are structurally similar but semantically distinct—one tests for \"before\" relationship, the other for \"after\". Creating an interface or extracting to a common function would reduce readability without benefit. Each method delegates to the appropriate `time.Time` method with clear domain semantics.\n\n```json\n{\"strategy\": \"false_positive\",\n \"files_modified\": [],\n \"new_abstraction\": null,\n \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=87ccd84a-7ba1-40d8-883c-facd89c88662\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/04 21:14:02 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 15s app duration in seconds 15]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
+    "marked_at": "2026-04-04T21:14:11.797759+02:00",
+    "marked_by": "auto-deduplicate"
   }
 ]
