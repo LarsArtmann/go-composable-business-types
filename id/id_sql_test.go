@@ -4,12 +4,23 @@ import (
 	"testing"
 )
 
+func testScanSubTest[B any, V comparable](t *testing.T, name string, input any, expected V) {
+	t.Run(name, func(tx *testing.T) {
+		tx.Parallel()
+		testScanRoundTrip[B, V](tx, input, expected)
+	})
+}
+
+func testScanInvalidSubTest[B any, V comparable](t *testing.T, name string, typeName string, invalidValue any) {
+	t.Run(name, func(tx *testing.T) {
+		tx.Parallel()
+		testScanInvalidType[B, V](tx, typeName, invalidValue)
+	})
+}
+
 func TestIDScan(t *testing.T) {
 	t.Parallel()
-	t.Run("string ID from string", func(t *testing.T) {
-		t.Parallel()
-		testScanRoundTrip[StringBrand, string](t, "test-id", "test-id")
-	})
+	testScanSubTest[StringBrand, string](t, "string ID from string", "test-id", "test-id")
 
 	t.Run("string ID from []byte", func(t *testing.T) {
 		t.Parallel()
@@ -31,10 +42,7 @@ func TestIDScan(t *testing.T) {
 		testScanNil[StringBrand, string](t, "string ID")
 	})
 
-	t.Run("string ID from invalid type", func(t *testing.T) {
-		t.Parallel()
-		testScanInvalidType[StringBrand, string](t, "string ID", 123)
-	})
+	testScanInvalidSubTest[StringBrand, string](t, "string ID from invalid type", "string ID", 123)
 
 	testIDScanTests[Int64Brand, int64](t, "int64 ID", 42, int64(42))
 	testIDScanTests[Int32Brand, int32](t, "int32 ID", 42, int32(42))
