@@ -13,10 +13,8 @@ func testMoneyValidAmount(t *testing.T, m Money) {
 	}
 }
 
-func TestNewMoney(t *testing.T) {
-	t.Parallel()
-
-	m, err := NewMoney("10.99", "USD")
+func testMoneyCreation(t *testing.T, factory func() (Money, error)) {
+	m, err := factory()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -24,15 +22,20 @@ func TestNewMoney(t *testing.T) {
 	testMoneyValidAmount(t, m)
 }
 
+func TestNewMoney(t *testing.T) {
+	t.Parallel()
+
+	testMoneyCreation(t, func() (Money, error) {
+		return NewMoney("10.99", "USD")
+	})
+}
+
 func TestNewMoneyFromCents(t *testing.T) {
 	t.Parallel()
 
-	m, err := NewMoneyFromCents(1099, "USD")
-	if err != nil {
-		t.Errorf("unexpected error: %v", err)
-	}
-
-	testMoneyValidAmount(t, m)
+	testMoneyCreation(t, func() (Money, error) {
+		return NewMoneyFromCents(1099, "USD")
+	})
 }
 
 func TestIsValidCurrency(t *testing.T) {
