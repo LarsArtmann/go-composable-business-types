@@ -9,10 +9,10 @@ import (
 )
 
 // Test SQL Scanner/Valuer interfaces.
-func Testenums.ActorKindSQL(t *testing.T) {
+func TestActorKindSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value
-	val, err := enums.enums.ActorKindUser.Value()
+	val, err := enums.ActorKindUser.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -27,7 +27,7 @@ func Testenums.ActorKindSQL(t *testing.T) {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ak != enums.enums.ActorKindBot {
+	if ak != enums.ActorKindBot {
 		t.Errorf("expected Bot, got %v", ak)
 	}
 
@@ -37,12 +37,12 @@ func Testenums.ActorKindSQL(t *testing.T) {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ak2 != enums.enums.ActorKindSystem {
+	if ak2 != enums.ActorKindSystem {
 		t.Errorf("expected System, got %v", ak2)
 	}
 
 	// Test Scan with nil
-	ak3 := enums.enums.ActorKindUser
+	ak3 := enums.ActorKindUser
 	if err := ak3.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -57,8 +57,8 @@ func Testenums.ActorKindSQL(t *testing.T) {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ak4 != enums.enums.ActorKindSystem {
-		t.Errorf("expected enums.enums.ActorKindSystem(2), got %v", ak4)
+	if ak4 != enums.ActorKindSystem {
+		t.Errorf("expected enums.ActorKindSystem(2), got %v", ak4)
 	}
 
 	// Test Scan with int64 (supported type)
@@ -67,8 +67,8 @@ func Testenums.ActorKindSQL(t *testing.T) {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ak5 != enums.enums.ActorKindService {
-		t.Errorf("expected enums.enums.ActorKindService(3), got %v", ak5)
+	if ak5 != enums.ActorKindService {
+		t.Errorf("expected enums.ActorKindService(3), got %v", ak5)
 	}
 }
 
@@ -116,42 +116,36 @@ func testEnumSQL[T comparable](
 	}
 }
 
-func Testenums.PrioritySQL(t *testing.T) {
+// enumValueFunc returns the string representation of a value's MarshalText.
+func enumValueFunc[T interface{ MarshalText() ([]byte, error) }](v T) (string, error) {
+	b, err := v.MarshalText()
+	return string(b), err
+}
+
+func TestPrioritySQL(t *testing.T) {
 	t.Parallel()
 	testEnumSQL(t, []enumSQLCase[enums.Priority]{
-		{value: enums.enums.PriorityHigh, valueStr: "High", scanStr: "Critical", scanWant: enums.enums.PriorityCritical},
-	}, func(p enums.Priority) (string, error) {
-		b, e := p.MarshalText()
-
-		return string(b), e
-	}, (*enums.Priority).Scan)
+		{value: enums.PriorityHigh, valueStr: "High", scanStr: "Critical", scanWant: enums.PriorityCritical},
+	}, enumValueFunc, (*enums.Priority).Scan)
 }
 
 func TestStatusSQL(t *testing.T) {
 	t.Parallel()
-	testEnumSQL(t, []enumSQLCase[Status]{
-		{value: StatusActive, valueStr: "Active", scanStr: "Archived", scanWant: StatusArchived},
-	}, func(s Status) (string, error) {
-		b, e := s.MarshalText()
-
-		return string(b), e
-	}, (*Status).Scan)
+	testEnumSQL(t, []enumSQLCase[enums.Status]{
+		{value: enums.StatusActive, valueStr: "Active", scanStr: "Archived", scanWant: enums.StatusArchived},
+	}, enumValueFunc, (*enums.Status).Scan)
 }
 
 func TestTriggerSQL(t *testing.T) {
 	t.Parallel()
-	testEnumSQL(t, []enumSQLCase[Trigger]{
+	testEnumSQL(t, []enumSQLCase[enums.Trigger]{
 		{
-			value:    TriggerWebhook,
+			value:    enums.TriggerWebhook,
 			valueStr: "Webhook",
 			scanStr:  "Migration",
-			scanWant: TriggerMigration,
+			scanWant: enums.TriggerMigration,
 		},
-	}, func(tr Trigger) (string, error) {
-		b, e := tr.MarshalText()
-
-		return string(b), e
-	}, (*Trigger).Scan)
+	}, enumValueFunc, (*enums.Trigger).Scan)
 }
 
 // enumMarshalCase holds test data for MarshalText/UnmarshalText tests.
@@ -219,17 +213,17 @@ func Testenums_PriorityMarshal(t *testing.T) {
 }
 
 func TestStatusMarshal(t *testing.T) {
-	testEnumMarshal(t, StatusDeleted, "Deleted", "Draft", StatusDraft)
+	testEnumMarshal(t, enums.StatusDeleted, "Deleted", "Draft", enums.StatusDraft)
 }
 
 func TestTriggerMarshal(t *testing.T) {
-	testEnumMarshal(t, TriggerCorrection, "Correction", "Scheduled", TriggerScheduled)
+	testEnumMarshal(t, enums.TriggerCorrection, "Correction", "Scheduled", enums.TriggerScheduled)
 }
 
 func TestCauseKindSQL(t *testing.T) {
 	t.Parallel()
 
-	val, err := CauseKindDirect.Value()
+	val, err := enums.CauseKindDirect.Value()
 	if err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -238,27 +232,27 @@ func TestCauseKindSQL(t *testing.T) {
 		t.Errorf("expected Direct, got %v", val)
 	}
 
-	var ck CauseKind
+	var ck enums.CauseKind
 	if err := ck.Scan("Command"); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ck != CauseKindCommand {
+	if ck != enums.CauseKindCommand {
 		t.Errorf("expected Command, got %v", ck)
 	}
 
 	// Test Scan with []byte
-	var ck2 CauseKind
+	var ck2 enums.CauseKind
 	if err := ck2.Scan([]byte("Event")); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ck2 != CauseKindEvent {
+	if ck2 != enums.CauseKindEvent {
 		t.Errorf("expected Event, got %v", ck2)
 	}
 
 	// Test Scan with nil
-	ck3 := CauseKindDirect
+	ck3 := enums.CauseKindDirect
 	if err := ck3.Scan(nil); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
@@ -268,18 +262,18 @@ func TestCauseKindSQL(t *testing.T) {
 	}
 
 	// Test Scan with int
-	var ck4 CauseKind
+	var ck4 enums.CauseKind
 	if err := ck4.Scan(1); err != nil {
 		t.Errorf("unexpected error: %v", err)
 	}
 
-	if ck4 != CauseKindCommand {
-		t.Errorf("expected CauseKindCommand(1), got %v", ck4)
+	if ck4 != enums.CauseKindCommand {
+		t.Errorf("expected enums.CauseKindCommand(1), got %v", ck4)
 	}
 }
 
 func TestCauseKindMarshal(t *testing.T) {
-	testEnumMarshal(t, CauseKindEvent, "Event", "Direct", CauseKindDirect)
+	testEnumMarshal(t, enums.CauseKindEvent, "Event", "Direct", enums.CauseKindDirect)
 }
 
 // TestAppendText tests AppendText for all enum types.
@@ -289,11 +283,11 @@ func TestAppendText(t *testing.T) {
 		name  string
 		value any
 	}{
-		{"enums.enums.ActorKindUser", enums.enums.ActorKindUser},
-		{"enums.enums.PriorityHigh", enums.enums.PriorityHigh},
-		{"StatusActive", StatusActive},
-		{"TriggerWebhook", TriggerWebhook},
-		{"CauseKindDirect", CauseKindDirect},
+		{"enums.ActorKindUser", enums.ActorKindUser},
+		{"enums.PriorityHigh", enums.PriorityHigh},
+		{"enums.StatusActive", enums.StatusActive},
+		{"enums.TriggerWebhook", enums.TriggerWebhook},
+		{"enums.CauseKindDirect", enums.CauseKindDirect},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -303,12 +297,12 @@ func TestAppendText(t *testing.T) {
 				testutil.RunAppendTextTest(t, tt.name, func(enums.ActorKind) ([]byte, error) { return v.AppendText(nil) }, v)
 			case enums.Priority:
 				testutil.RunAppendTextTest(t, tt.name, func(enums.Priority) ([]byte, error) { return v.AppendText(nil) }, v)
-			case Status:
-				testutil.RunAppendTextTest(t, tt.name, func(Status) ([]byte, error) { return v.AppendText(nil) }, v)
-			case Trigger:
-				testutil.RunAppendTextTest(t, tt.name, func(Trigger) ([]byte, error) { return v.AppendText(nil) }, v)
-			case CauseKind:
-				testutil.RunAppendTextTest(t, tt.name, func(CauseKind) ([]byte, error) { return v.AppendText(nil) }, v)
+			case enums.Status:
+				testutil.RunAppendTextTest(t, tt.name, func(enums.Status) ([]byte, error) { return v.AppendText(nil) }, v)
+			case enums.Trigger:
+				testutil.RunAppendTextTest(t, tt.name, func(enums.Trigger) ([]byte, error) { return v.AppendText(nil) }, v)
+			case enums.CauseKind:
+				testutil.RunAppendTextTest(t, tt.name, func(enums.CauseKind) ([]byte, error) { return v.AppendText(nil) }, v)
 			}
 		})
 	}
@@ -336,17 +330,17 @@ func TestInvalidEnumStrings(t *testing.T) {
 		t.Parallel()
 		testInvalidEnumString(t, enums.Priority(99), "enums.Priority", 99)
 	})
-	t.Run("Status", func(t *testing.T) {
+	t.Run("enums.Status", func(t *testing.T) {
 		t.Parallel()
-		testInvalidEnumString(t, Status(99), "Status", 99)
+		testInvalidEnumString(t, enums.Status(99), "enums.Status", 99)
 	})
-	t.Run("Trigger", func(t *testing.T) {
+	t.Run("enums.Trigger", func(t *testing.T) {
 		t.Parallel()
-		testInvalidEnumString(t, Trigger(99), "Trigger", 99)
+		testInvalidEnumString(t, enums.Trigger(99), "enums.Trigger", 99)
 	})
-	t.Run("CauseKind", func(t *testing.T) {
+	t.Run("enums.CauseKind", func(t *testing.T) {
 		t.Parallel()
-		testInvalidEnumString(t, CauseKind(99), "CauseKind", 99)
+		testInvalidEnumString(t, enums.CauseKind(99), "enums.CauseKind", 99)
 	})
 }
 
@@ -355,9 +349,9 @@ func TestUnmarshalTextErrors(t *testing.T) {
 	testUnmarshalTextErrorsAll(t,
 		[]enumUnmarshalTextErrorCase[enums.ActorKind]{{"enums.ActorKind"}},
 		[]enumUnmarshalTextErrorCase[enums.Priority]{{"enums.Priority"}},
-		[]enumUnmarshalTextErrorCase[Status]{{"Status"}},
-		[]enumUnmarshalTextErrorCase[Trigger]{{"Trigger"}},
-		[]enumUnmarshalTextErrorCase[CauseKind]{{"CauseKind"}},
+		[]enumUnmarshalTextErrorCase[enums.Status]{{"enums.Status"}},
+		[]enumUnmarshalTextErrorCase[enums.Trigger]{{"enums.Trigger"}},
+		[]enumUnmarshalTextErrorCase[enums.CauseKind]{{"enums.CauseKind"}},
 	)
 }
 
@@ -365,19 +359,19 @@ func TestUnmarshalTextErrors(t *testing.T) {
 func TestValueMethods(t *testing.T) {
 	t.Parallel()
 	testEnumValue(t, []enumValueCase[enums.ActorKind]{
-		{enums.enums.ActorKindSystem, "System"},
+		{enums.ActorKindSystem, "System"},
 	})
 	testEnumValue(t, []enumValueCase[enums.Priority]{
 		{enums.PriorityMedium, "Medium"},
 	})
-	testEnumValue(t, []enumValueCase[Status]{
-		{StatusPaused, "Paused"},
+	testEnumValue(t, []enumValueCase[enums.Status]{
+		{enums.StatusPaused, "Paused"},
 	})
-	testEnumValue(t, []enumValueCase[Trigger]{
-		{TriggerImport, "Import"},
+	testEnumValue(t, []enumValueCase[enums.Trigger]{
+		{enums.TriggerImport, "Import"},
 	})
-	testEnumValue(t, []enumValueCase[CauseKind]{
-		{CauseKindEvent, "Event"},
+	testEnumValue(t, []enumValueCase[enums.CauseKind]{
+		{enums.CauseKindEvent, "Event"},
 	})
 }
 
@@ -462,52 +456,52 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 		{
 			"enums.ActorKind",
 			makeScanTestCases([]enumScanTestCase[enums.ActorKind]{
-				{1, "System", enums.enums.ActorKindSystem},
-				{2, "Service", enums.enums.ActorKindService},
-				{0, "User", enums.enums.ActorKindUser},
-				{3, "Bot", enums.enums.ActorKindBot},
+				{1, "System", enums.ActorKindSystem},
+				{2, "Service", enums.ActorKindService},
+				{0, "User", enums.ActorKindUser},
+				{3, "Bot", enums.ActorKindBot},
 			}),
 			(*enums.ActorKind).Scan,
 		},
 		{
 			"enums.Priority",
 			makeScanTestCases([]enumScanTestCase[enums.Priority]{
-				{2, "Critical", enums.enums.PriorityCritical},
+				{2, "Critical", enums.PriorityCritical},
 				{0, "Low", enums.PriorityLow},
 				{1, "Medium", enums.PriorityMedium},
-				{3, "High", enums.enums.PriorityHigh},
+				{3, "High", enums.PriorityHigh},
 			}),
 			(*enums.Priority).Scan,
 		},
 		{
-			"Status",
-			makeScanTestCases([]enumScanTestCase[Status]{
-				{1, "Archived", StatusArchived},
-				{4, "Deleted", StatusDeleted},
-				{0, "Draft", StatusDraft},
-				{2, "Paused", StatusPaused},
-				{3, "Active", StatusActive},
+			"enums.Status",
+			makeScanTestCases([]enumScanTestCase[enums.Status]{
+				{1, "Archived", enums.StatusArchived},
+				{4, "Deleted", enums.StatusDeleted},
+				{0, "Draft", enums.StatusDraft},
+				{2, "Paused", enums.StatusPaused},
+				{3, "Active", enums.StatusActive},
 			}),
-			(*Status).Scan,
+			(*enums.Status).Scan,
 		},
 		{
-			"Trigger",
-			makeScanTestCases([]enumScanTestCase[Trigger]{
-				{2, "Correction", TriggerCorrection},
-				{0, "Import", TriggerImport},
-				{5, "System", TriggerSystem},
-				{6, "Webhook", TriggerWebhook},
+			"enums.Trigger",
+			makeScanTestCases([]enumScanTestCase[enums.Trigger]{
+				{2, "Correction", enums.TriggerCorrection},
+				{0, "Import", enums.TriggerImport},
+				{5, "System", enums.TriggerSystem},
+				{6, "Webhook", enums.TriggerWebhook},
 			}),
-			(*Trigger).Scan,
+			(*enums.Trigger).Scan,
 		},
 		{
-			"CauseKind",
-			makeScanTestCases([]enumScanTestCase[CauseKind]{
-				{1, "Event", CauseKindEvent},
-				{0, "Direct", CauseKindDirect},
-				{2, "Command", CauseKindCommand},
+			"enums.CauseKind",
+			makeScanTestCases([]enumScanTestCase[enums.CauseKind]{
+				{1, "Event", enums.CauseKindEvent},
+				{0, "Direct", enums.CauseKindDirect},
+				{2, "Command", enums.CauseKindCommand},
 			}),
-			(*CauseKind).Scan,
+			(*enums.CauseKind).Scan,
 		},
 	}
 
@@ -518,11 +512,11 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 				convertAndTestScan(t, tt.cases, f)
 			case func(*enums.Priority, any) error:
 				convertAndTestScan(t, tt.cases, f)
-			case func(*Status, any) error:
+			case func(*enums.Status, any) error:
 				convertAndTestScan(t, tt.cases, f)
-			case func(*Trigger, any) error:
+			case func(*enums.Trigger, any) error:
 				convertAndTestScan(t, tt.cases, f)
-			case func(*CauseKind, any) error:
+			case func(*enums.CauseKind, any) error:
 				convertAndTestScan(t, tt.cases, f)
 			}
 		})
