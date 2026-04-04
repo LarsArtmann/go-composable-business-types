@@ -73,17 +73,7 @@ func TestIDJSON(t *testing.T) {
 
 	t.Run("string ID zero", func(t *testing.T) {
 		t.Parallel()
-
-		var id ID[StringBrand, string]
-
-		data, err := json.Marshal(id)
-		if err != nil {
-			t.Fatalf("MarshalJSON failed: %v", err)
-		}
-
-		if string(data) != "null" {
-			t.Errorf("expected null, got %s", string(data))
-		}
+		testMarshalZeroID[StringBrand, string](t)
 	})
 
 	t.Run("int64 ID non-zero", func(t *testing.T) {
