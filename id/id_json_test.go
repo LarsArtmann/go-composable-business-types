@@ -33,7 +33,7 @@ func testMarshalZeroID[B any, V comparable](t *testing.T) {
 	}
 }
 
-func testMarshalNonZeroID[B any, V comparable](t *testing.T, value V) {
+func testMarshalNonZeroID[B any, V comparable](t *testing.T, value V, format string) {
 	t.Helper()
 
 	id := NewID[B, V](value)
@@ -43,23 +43,7 @@ func testMarshalNonZeroID[B any, V comparable](t *testing.T, value V) {
 		t.Fatalf("MarshalJSON failed: %v", err)
 	}
 
-	expected := fmt.Sprintf("%v", value)
-	if string(data) != expected {
-		t.Errorf("expected %s, got %s", expected, string(data))
-	}
-}
-
-func testMarshalNonZeroStringID[B any](t *testing.T, value string) {
-	t.Helper()
-
-	id := NewID[B, string](value)
-
-	data, err := json.Marshal(id)
-	if err != nil {
-		t.Fatalf("MarshalJSON failed: %v", err)
-	}
-
-	expected := fmt.Sprintf("%q", value)
+	expected := fmt.Sprintf(format, value)
 	if string(data) != expected {
 		t.Errorf("expected %s, got %s", expected, string(data))
 	}
@@ -84,7 +68,7 @@ func TestIDJSON(t *testing.T) {
 	t.Parallel()
 	t.Run("string ID non-zero", func(t *testing.T) {
 		t.Parallel()
-		testMarshalNonZeroStringID[StringBrand](t, "abc123")
+		testMarshalNonZeroID[StringBrand, string](t, "abc123", "%q")
 	})
 
 	t.Run("string ID zero", func(t *testing.T) {
@@ -104,7 +88,7 @@ func TestIDJSON(t *testing.T) {
 
 	t.Run("int64 ID non-zero", func(t *testing.T) {
 		t.Parallel()
-		testMarshalNonZeroID[Int64Brand, int64](t, 42)
+		testMarshalNonZeroID[Int64Brand, int64](t, 42, "%v")
 	})
 
 	t.Run("int64 ID zero", func(t *testing.T) {
@@ -114,12 +98,12 @@ func TestIDJSON(t *testing.T) {
 
 	t.Run("int32 ID non-zero", func(t *testing.T) {
 		t.Parallel()
-		testMarshalNonZeroID[Int32Brand, int32](t, 42)
+		testMarshalNonZeroID[Int32Brand, int32](t, 42, "%v")
 	})
 
 	t.Run("uint64 ID non-zero", func(t *testing.T) {
 		t.Parallel()
-		testMarshalNonZeroID[Uint64Brand, uint64](t, 42)
+		testMarshalNonZeroID[Uint64Brand, uint64](t, 42, "%v")
 	})
 }
 
