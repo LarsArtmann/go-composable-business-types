@@ -43,6 +43,30 @@ func (id *ID[B, V]) readUnsigned(data []byte, byteSize int, typeName string, rea
 	return nil
 }
 
+// readSigned reads a signed integer from data.
+// IntType is the unsigned type used to read the bytes (uint16, uint32, or uint64).
+func readSigned[V, IntType any](data []byte, typeName string, readFunc func([]byte) IntType, convertFunc func(IntType) V, byteSize int) (V, error) {
+	var zero V
+	//nolint:gosec // G115: byteSize is always 1, 2, 4, or 8
+	if len(data) < byteSize {
+		return zero, fmt.Errorf("id: insufficient data for %s: got %d bytes, want %d", typeName, len(data), byteSize)
+	}
+
+	return convertFunc(readFunc(data)), nil
+}
+
+// readByte reads a single byte and assigns it to id.
+func (id *ID[B, V]) readByte(data []byte, typeName string, convertFunc func(byte) V) error {
+	err := validateSize(data, 1, typeName, *id)
+	if err != nil {
+		return err
+	}
+
+	*id = ID[B, V]{value: any(convertFunc(data[0])).(V)}
+
+	return nil
+}
+
 // readUint16 reads a uint16 from data using LittleEndian.
 func readUint16(data []byte) uint16 {
 	return binary.LittleEndian.Uint16(data)
@@ -136,73 +160,49 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case int:
-		err := validateSize(data, byteSizeInt64, "int", zero)
+		n, err := readSigned(data, "int", readUint64, func(n uint64) V { return any(int(n)).(V) }, byteSizeInt64)
 		if err != nil {
 			return err
 		}
-
-		n := int(readUint64(data))
-		*id = ID[B, V]{value: any(n).(V)}
+		*id = ID[B, V]{value: n}
 
 		return nil
 	case int8:
-		err := validateSize(data, 1, "int8", zero)
-		if err != nil {
-			return err
-		}
-
-		*id = ID[B, V]{value: any(int8(data[0])).(V)}
-
-		return nil
+		return id.readByte(data, "int8", func(b byte) V { return any(int8(b)).(V) })
 	case int16:
-		err := validateSize(data, byteSizeInt16, "int16", zero)
+		n, err := readSigned(data, "int16", readUint16, func(n uint16) V { return any(int16(n)).(V) }, byteSizeInt16)
 		if err != nil {
 			return err
 		}
-
-		n := int16(readUint16(data))
-		*id = ID[B, V]{value: any(n).(V)}
+		*id = ID[B, V]{value: n}
 
 		return nil
 	case int32:
-		err := validateSize(data, byteSizeInt32, "int32", zero)
+		n, err := readSigned(data, "int32", readUint32, func(n uint32) V { return any(int32(n)).(V) }, byteSizeInt32)
 		if err != nil {
 			return err
 		}
-
-		n := int32(readUint32(data))
-		*id = ID[B, V]{value: any(n).(V)}
+		*id = ID[B, V]{value: n}
 
 		return nil
 	case int64:
-		err := validateSize(data, byteSizeInt64, "int64", zero)
+		n, err := readSigned(data, "int64", readUint64, func(n uint64) V { return any(int64(n)).(V) }, byteSizeInt64)
 		if err != nil {
 			return err
 		}
-
-		n := int64(readUint64(data))
-		*id = ID[B, V]{value: any(n).(V)}
+		*id = ID[B, V]{value: n}
 
 		return nil
 	case uint:
-		err := validateSize(data, byteSizeInt64, "uint", zero)
+		n, err := readSigned(data, "uint", readUint64, func(n uint64) V { return any(uint(n)).(V) }, byteSizeInt64)
 		if err != nil {
 			return err
 		}
-
-		n := uint(readUint64(data))
-		*id = ID[B, V]{value: any(n).(V)}
+		*id = ID[B, V]{value: n}
 
 		return nil
 	case uint8:
-		err := validateSize(data, 1, "uint8", zero)
-		if err != nil {
-			return err
-		}
-
-		*id = ID[B, V]{value: any(data[0]).(V)}
-
-		return nil
+		return id.readByte(data, "uint8", func(b byte) V { return any(b).(V) })
 	case uint16:
 		return id.readUnsigned(data, byteSizeInt16, "uint16", func(d []byte) uint64 { return uint64(readUint16(d)) })
 	case uint32:
