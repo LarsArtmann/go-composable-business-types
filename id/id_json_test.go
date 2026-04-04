@@ -129,19 +129,8 @@ func TestIDUnmarshalJSON(t *testing.T) {
 		}
 	})
 
-	t.Run("int64 ID from number", func(t *testing.T) {
-		t.Parallel()
-		testUnmarshalNonZeroID[Int64Brand, int64](t, "42", 42)
-	})
-
-	t.Run("int32 ID from number", func(t *testing.T) {
-		t.Parallel()
-		testUnmarshalNonZeroID[Int32Brand, int32](t, "42", 42)
-	})
-
-	t.Run("uint64 ID from number", func(t *testing.T) {
-		t.Parallel()
-		testUnmarshalNonZeroID[Uint64Brand, uint64](t, "42", 42)
+	t.Run("numeric IDs", func(t *testing.T) {
+		testIDAllTypesUnmarshalJSON(t, jsonUnmarshalTestImpl{})
 	})
 
 	t.Run("invalid inputs", func(t *testing.T) {
@@ -161,6 +150,36 @@ func TestIDUnmarshalJSON(t *testing.T) {
 			assertUnmarshalError[Int64Brand, int64](t, `"not-a-number"`)
 		})
 	})
+}
+
+type jsonUnmarshalTestImpl struct{}
+
+func (j jsonUnmarshalTestImpl) TestInt64(t *testing.T) {
+	t.Parallel()
+	testUnmarshalNonZeroID[Int64Brand, int64](t, "42", 42)
+}
+
+func (j jsonUnmarshalTestImpl) TestInt32(t *testing.T) {
+	t.Parallel()
+	testUnmarshalNonZeroID[Int32Brand, int32](t, "42", 42)
+}
+
+func (j jsonUnmarshalTestImpl) TestUint64(t *testing.T) {
+	t.Parallel()
+	testUnmarshalNonZeroID[Uint64Brand, uint64](t, "42", 42)
+}
+
+type jsonUnmarshalTest interface {
+	TestInt64(t *testing.T)
+	TestInt32(t *testing.T)
+	TestUint64(t *testing.T)
+}
+
+func testIDAllTypesUnmarshalJSON(t *testing.T, ut jsonUnmarshalTest) {
+	t.Parallel()
+	t.Run("int64 ID", ut.TestInt64)
+	t.Run("int32 ID", ut.TestInt32)
+	t.Run("uint64 ID", ut.TestUint64)
 }
 
 func testJSONRoundTrip[B any, V comparable](t *testing.T, value V) {

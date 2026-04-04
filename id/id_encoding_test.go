@@ -73,15 +73,32 @@ func TestIDText(t *testing.T) {
 		}
 	})
 
-	t.Run("unmarshal int64", func(t *testing.T) {
-		t.Parallel()
-		testUnmarshalTextRoundTrip[Int64Brand, int64](t, "42", 42)
+	t.Run("numeric IDs", func(t *testing.T) {
+		testIDAllTypesUnmarshalText(t, textUnmarshalTestImpl{})
 	})
+}
 
-	t.Run("unmarshal uint64", func(t *testing.T) {
-		t.Parallel()
-		testUnmarshalTextRoundTrip[Uint64Brand, uint64](t, "42", 42)
-	})
+type textUnmarshalTest interface {
+	TestInt64(t *testing.T)
+	TestUint64(t *testing.T)
+}
+
+type textUnmarshalTestImpl struct{}
+
+func (t textUnmarshalTestImpl) TestInt64(tx *testing.T) {
+	tx.Parallel()
+	testUnmarshalTextRoundTrip[Int64Brand, int64](tx, "42", 42)
+}
+
+func (t textUnmarshalTestImpl) TestUint64(tx *testing.T) {
+	tx.Parallel()
+	testUnmarshalTextRoundTrip[Uint64Brand, uint64](tx, "42", 42)
+}
+
+func testIDAllTypesUnmarshalText(t *testing.T, ut textUnmarshalTest) {
+	t.Parallel()
+	t.Run("int64 ID", ut.TestInt64)
+	t.Run("uint64 ID", ut.TestUint64)
 }
 
 func testUnmarshalTextRoundTrip[B any, V comparable](t *testing.T, input string, expected V) {
