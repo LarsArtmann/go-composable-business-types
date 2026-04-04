@@ -110,17 +110,15 @@ func BenchmarkNewID(b *testing.B) {
 }
 
 func BenchmarkIDGet(b *testing.B) {
-	id := NewID[StringBrand]("test-id")
-	for b.Loop() {
+	benchmarkIDMethod(b, NewID[StringBrand]("test-id"), func(id ID[StringBrand, string]) {
 		_ = id.Get()
-	}
+	})
 }
 
 func BenchmarkIDString(b *testing.B) {
-	id := NewID[StringBrand]("test-id")
-	for b.Loop() {
+	benchmarkIDMethod(b, NewID[StringBrand]("test-id"), func(id ID[StringBrand, string]) {
 		_ = id.String()
-	}
+	})
 }
 
 func BenchmarkIDStringInt64(b *testing.B) {
@@ -131,9 +129,15 @@ func BenchmarkIDStringInt64(b *testing.B) {
 }
 
 func BenchmarkIDIsZero(b *testing.B) {
-	id := NewID[StringBrand]("test-id")
-	for b.Loop() {
+	benchmarkIDMethod(b, NewID[StringBrand]("test-id"), func(id ID[StringBrand, string]) {
 		_ = id.IsZero()
+	})
+}
+
+// Helper for benchmarking ID methods
+func benchmarkIDMethod[B, V comparable](b *testing.B, id ID[B, V], fn func(ID[B, V])) {
+	for b.Loop() {
+		fn(id)
 	}
 }
 

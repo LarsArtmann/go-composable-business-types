@@ -100,7 +100,12 @@ func MakeActor[T comparable](
 	id id.ID[struct{}, T],
 	name ...string,
 ) ActorEntry[T] {
-	return newActorEntry(kind, id, name...)
+	n := ""
+	if len(name) > 0 {
+		n = name[0]
+	}
+
+	return ActorEntry[T]{Kind: kind, ID: id, Name: n}
 }
 
 // UserActor creates an actor entry for a human user.
@@ -123,20 +128,6 @@ func SystemActor[T comparable]() ActorEntry[T] {
 // ServiceActor creates an actor entry for a service-to-service call.
 func ServiceActor[T comparable](id id.ID[struct{}, T], name ...string) ActorEntry[T] {
 	return MakeActor(enums.ActorKindService, id, name...)
-}
-
-// newActorEntry is a helper to create ActorEntry with optional name.
-func newActorEntry[T comparable](
-	kind enums.ActorKind,
-	id id.ID[struct{}, T],
-	name ...string,
-) ActorEntry[T] {
-	n := ""
-	if len(name) > 0 {
-		n = name[0]
-	}
-
-	return ActorEntry[T]{Kind: kind, ID: id, Name: n}
 }
 
 // IsZero returns true if this is the zero value.

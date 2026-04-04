@@ -17,11 +17,36 @@ func TestScanString(t *testing.T) {
 	scanTests(t, "ScanString", tests, ScanString)
 }
 
-func TestScanString_InvalidType(t *testing.T) {
+func TestScanInvalidType(t *testing.T) {
 	t.Parallel()
-	scanInvalidType(t, "string", 12345, func(fn func() error) error {
-		return ScanString(fn, func(_ string) error { return nil })
-	})
+
+	tests := []struct {
+		typeName   string
+		invalidSrc any
+		scanFn     func(fn func() error) error
+	}{
+		{
+			typeName:   "string",
+			invalidSrc: 12345,
+			scanFn: func(fn func() error) error {
+				return ScanString(fn, func(_ string) error { return nil })
+			},
+		},
+		{
+			typeName:   "int64",
+			invalidSrc: "not-a-number",
+			scanFn: func(fn func() error) error {
+				return ScanInt64(fn, func(_ int64) error { return nil })
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.typeName, func(t *testing.T) {
+			t.Parallel()
+			scanInvalidType(t, tt.typeName, tt.invalidSrc, tt.scanFn)
+		})
+	}
 }
 
 func TestScanInt64(t *testing.T) {
@@ -39,12 +64,7 @@ func TestScanInt64(t *testing.T) {
 	scanTests(t, "ScanInt64", tests, ScanInt64)
 }
 
-func TestScanInt64_InvalidType(t *testing.T) {
-	t.Parallel()
-	scanInvalidType(t, "int64", "not-a-number", func(fn func() error) error {
-		return ScanInt64(fn, func(_ int64) error { return nil })
-	})
-}
+
 
 type scanTestCase[T any] struct {
 	name      string

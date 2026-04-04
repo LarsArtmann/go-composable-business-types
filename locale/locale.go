@@ -79,11 +79,16 @@ func (l Locale) IsZero() bool {
 	return l.tag == language.Und
 }
 
+// tagString returns the string representation of a tag component.
+func tagString[T fmt.Stringer](v T) string {
+	return v.String()
+}
+
 // Base returns the base language (e.g., "en" for "en-US").
 func (l Locale) Base() string {
 	base, _ := l.tag.Base()
 
-	return base.String()
+	return tagString(base)
 }
 
 // Region returns the region code (e.g., "US" for "en-US").
@@ -91,7 +96,7 @@ func (l Locale) Base() string {
 func (l Locale) Region() string {
 	region, _ := l.tag.Region()
 
-	return region.String()
+	return tagString(region)
 }
 
 // MarshalText implements encoding.TextMarshaler for JSON/XML serialization.
