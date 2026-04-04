@@ -70,45 +70,6 @@ func TestValidation(t *testing.T) {
 	})
 }
 
-// testParseInvalidAndValid tests both invalid input (with specific error type) and valid input (with expected output).
-func testParseInvalidAndValid[T any](
-	t *testing.T,
-	name string,
-	constructor func(string) (T, error),
-	cases []struct {
-		input          string
-		expectedErr    error
-		expectedOutput string
-	},
-) {
-	t.Helper()
-
-	for _, c := range cases {
-		t.Run(name+"/"+c.input, func(t *testing.T) {
-			t.Parallel()
-
-			got, err := constructor(c.input)
-			if c.expectedErr != nil {
-				if err == nil {
-					t.Error("expected error")
-				} else if !errors.Is(err, c.expectedErr) {
-					t.Errorf("expected %v, got %v", c.expectedErr, err)
-				}
-
-				return
-			}
-
-			if err != nil {
-				t.Fatalf("unexpected error: %v", err)
-			}
-
-			if gotStr := any(got).(interface{ String() string }).String(); gotStr != c.expectedOutput {
-				t.Errorf("expected %s, got %s", c.expectedOutput, gotStr)
-			}
-		})
-	}
-}
-
 func TestEmailNormalize(t *testing.T) {
 	t.Parallel()
 
@@ -156,21 +117,41 @@ func TestURLIsZero(t *testing.T) {
 func TestParseURL(t *testing.T) {
 	t.Parallel()
 
-	testParseInvalidAndValid(t, "Email", NewEmail, []struct {
-		input          string
-		expectedErr    error
-		expectedOutput string
+	testParseURLCases := []struct {
+		name        string
+		constructor func(string) (any, error)
+		input       string
+		expectedErr error
+		expectedOut string
 	}{
-		{"invalid-email", pkgerrors.ErrInvalidEmail, ""},
-		{"test@example.com", nil, "test@example.com"},
-	})
+		{"Email/invalid", func(s string) (any, error) { return NewEmail(s) }, "invalid-email", pkgerrors.ErrInvalidEmail, ""},
+		{"Email/valid", func(s string) (any, error) { return NewEmail(s) }, "test@example.com", nil, "test@example.com"},
+		{"URL/invalid", func(s string) (any, error) { return NewURL(s) }, "not-a-valid-url", pkgerrors.ErrInvalidURL, ""},
+		{"URL/valid", func(s string) (any, error) { return NewURL(s) }, "https://example.com", nil, "https://example.com"},
+	}
 
-	testParseInvalidAndValid(t, "URL", NewURL, []struct {
-		input          string
-		expectedErr    error
-		expectedOutput string
-	}{
-		{"not-a-valid-url", pkgerrors.ErrInvalidURL, ""},
-		{"https://example.com", nil, "https://example.com"},
-	})
+	for _, tc := range testParseURLCases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			got, err := tc.constructor(tc.input)
+			if tc.expectedErr != nil {
+				if err == nil {
+					t.Error("expected error")
+				} else if !errors.Is(err, tc.expectedErr) {
+					t.Errorf("expected %v, got %v", tc.expectedErr, err)
+				}
+				return
+			}
+
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err)
+			}
+
+			gotStr := any(got).(interface{ String() string }).String()
+			if gotStr != tc.expectedOut {
+				t.Errorf("expected %s, got %s", tc.expectedOut, gotStr)
+			}
+		})
+	}
 }
