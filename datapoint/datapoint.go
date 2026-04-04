@@ -140,14 +140,14 @@ func (d DataPoint[T]) WithContext(ctx Context) DataPoint[T] {
 
 // WithVersion returns a copy with version set.
 func (d DataPoint[T]) WithVersion(v int) DataPoint[T] {
-	d.version = v
+	d.version = withVersion(v)
 
 	return d
 }
 
 // WithTag returns a copy with a single tag added.
 func (d DataPoint[T]) WithTag(key, value string) DataPoint[T] {
-	addTag(&d.tags, key, value)
+	d.tags = withTag(d.tags, key, value)
 
 	return d
 }

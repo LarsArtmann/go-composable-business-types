@@ -76,25 +76,34 @@ func (r Reference[T]) IsZero() bool {
 
 // WithVersion returns a copy with version set.
 func (r Reference[T]) WithVersion(v int) Reference[T] {
-	r.version = v
+	r.version = withVersion(v)
 
 	return r
 }
 
 // WithTag returns a copy with a single tag added.
 func (r Reference[T]) WithTag(key, value string) Reference[T] {
-	addTag(&r.tags, key, value)
+	r.tags = withTag(r.tags, key, value)
 
 	return r
 }
 
-// addTag adds a tag to the map, initializing it if nil.
-func addTag(tags *map[string]string, key, value string) {
-	if *tags == nil {
-		*tags = make(map[string]string)
+// withVersion returns the version value.
+func withVersion(v int) int {
+	return v
+}
+
+// withTag returns a new tag map with the key-value pair added.
+func withTag(tags map[string]string, key, value string) map[string]string {
+	if tags == nil {
+		tags = make(map[string]string)
+	} else {
+		tags = maps.Clone(tags)
 	}
 
-	(*tags)[key] = value
+	tags[key] = value
+
+	return tags
 }
 
 // jsonReference is the JSON representation of Reference.
