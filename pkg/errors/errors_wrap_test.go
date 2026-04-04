@@ -17,6 +17,15 @@ func nilReturnsNilHelper(t *testing.T, name string, wrapFunc func() error) {
 	})
 }
 
+const jsonType = "JSON"
+const incompleteInput = `{incomplete`
+
+func assertFieldValue(t *testing.T, fieldName, actual, want string) {
+	if actual != want {
+		t.Errorf("%s = %q, want %s", fieldName, actual, want)
+	}
+}
+
 // =============================================================================
 // Wrap Helper Tests
 // =============================================================================
@@ -151,21 +160,11 @@ func TestWrapScanUnmarshal(t *testing.T) {
 
 				switch e := target.(type) {
 				case *ScanError:
-					if e.SourceType != "JSON" {
-						t.Errorf("SourceType = %q, want JSON", e.SourceType)
-					}
-
-					if e.TargetType != `{incomplete` {
-						t.Errorf("TargetType = %q, want {incomplete", e.TargetType)
-					}
+					assertFieldValue(t, "SourceType", e.SourceType, jsonType)
+					assertFieldValue(t, "TargetType", e.TargetType, incompleteInput)
 				case *UnmarshalError:
-					if e.Type != "JSON" {
-						t.Errorf("Type = %q, want JSON", e.Type)
-					}
-
-					if e.Input != `{incomplete` {
-						t.Errorf("Input = %q, want {incomplete", e.Input)
-					}
+					assertFieldValue(t, "Type", e.Type, jsonType)
+					assertFieldValue(t, "Input", e.Input, incompleteInput)
 				}
 			})
 
