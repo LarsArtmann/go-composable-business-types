@@ -43,6 +43,24 @@ func scanIntegerLikeID[B any, V comparable](
 	}
 }
 
+// scanIntegerID is a helper that reduces boilerplate for integer ID scanning.
+// It wraps scanIntegerLikeID by deriving the int and float64 converters from the int64 converter.
+func scanIntegerID[B any, V comparable](
+	id *ID[B, V],
+	src any,
+	typeName string,
+	fromInt64 func(int64) V,
+) error {
+	return scanIntegerLikeID(
+		id,
+		src,
+		typeName,
+		fromInt64,
+		func(v int) V { return fromInt64(int64(v)) },
+		func(v float64) V { return fromInt64(int64(v)) },
+	)
+}
+
 // Scan implements sql.Scanner for database deserialization.
 // Supports string, []byte, int64, int, float64, and nil sources based on the underlying value type V.
 func (id *ID[B, V]) Scan(src any) error {
@@ -90,13 +108,11 @@ func (id *ID[B, V]) Scan(src any) error {
 		}
 
 	case int32:
-		return scanIntegerLikeID(
+		return scanIntegerID(
 			id,
 			src,
 			"int32",
 			func(v int64) V { return any(int32(v)).(V) },
-			func(v int) V { return any(int32(v)).(V) },
-			func(v float64) V { return any(int32(v)).(V) },
 		)
 	case int64:
 		return scanIntegerLikeID(
@@ -108,31 +124,25 @@ func (id *ID[B, V]) Scan(src any) error {
 			func(v float64) V { return any(int64(v)).(V) },
 		)
 	case uint:
-		return scanIntegerLikeID(
+		return scanIntegerID(
 			id,
 			src,
 			"uint",
 			func(v int64) V { return any(uint(v)).(V) },
-			func(v int) V { return any(uint(v)).(V) },
-			func(v float64) V { return any(uint(v)).(V) },
 		)
 	case uint32:
-		return scanIntegerLikeID(
+		return scanIntegerID(
 			id,
 			src,
 			"uint32",
 			func(v int64) V { return any(uint32(v)).(V) },
-			func(v int) V { return any(uint32(v)).(V) },
-			func(v float64) V { return any(uint32(v)).(V) },
 		)
 	case uint64:
-		return scanIntegerLikeID(
+		return scanIntegerID(
 			id,
 			src,
 			"uint64",
 			func(v int64) V { return any(uint64(v)).(V) },
-			func(v int) V { return any(uint64(v)).(V) },
-			func(v float64) V { return any(uint64(v)).(V) },
 		)
 
 	default:
