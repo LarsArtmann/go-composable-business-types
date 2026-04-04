@@ -446,6 +446,7 @@ func countSeq2Iterator[K, V any](seq iter.Seq2[K, V]) int {
 }
 
 func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
+	t.Helper()
 	if count != 0 {
 		t.Errorf("expected 0 iterations for %s, got %d", name, count)
 	}
@@ -458,16 +459,18 @@ func newTestDataPointEmpty(t *testing.T) *DataPoint {
 	return NewDataPoint("payload", actorEntry)
 }
 
-func TestDataPointAllReferencesEmpty(t *testing.T) {
+func testDataPointSeqIteratorEmpty[T any](t *testing.T, name string, iter func(*DataPoint) iter.Seq[T]) {
 	t.Parallel()
 	dp := newTestDataPointEmpty(t)
-	testDataPointIteratorEmpty(t, "AllReferences", countIterator(dp.AllReferences()))
+	testDataPointIteratorEmpty(t, name, countIterator(iter(dp)))
+}
+
+func TestDataPointAllReferencesEmpty(t *testing.T) {
+	testDataPointSeqIteratorEmpty(t, "AllReferences", func(dp *DataPoint) iter.Seq[Reference[string]] { return dp.AllReferences() })
 }
 
 func TestDataPointAllCausesEmpty(t *testing.T) {
-	t.Parallel()
-	dp := newTestDataPointEmpty(t)
-	testDataPointIteratorEmpty(t, "AllCauses", countIterator(dp.AllCauses()))
+	testDataPointSeqIteratorEmpty(t, "AllCauses", func(dp *DataPoint) iter.Seq[Cause[string]] { return dp.AllCauses() })
 }
 
 func TestDataPointAllTagsEmpty(t *testing.T) {
