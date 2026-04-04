@@ -161,21 +161,16 @@ func (d DataPoint[T]) WithTags(tags map[string]string) DataPoint[T] {
 
 // WithReference returns a copy with a reference appended.
 func (d DataPoint[T]) WithReference(ref Reference[string]) DataPoint[T] {
-	d.references = appendToSlice(d.references, ref)
+	d.references = append(d.references, ref)
 
 	return d
 }
 
 // WithCause returns a copy with a cause appended.
 func (d DataPoint[T]) WithCause(cause Cause[string]) DataPoint[T] {
-	d.causes = appendToSlice(d.causes, cause)
+	d.causes = append(d.causes, cause)
 
 	return d
-}
-
-// appendToSlice appends an item to a slice and returns the new slice.
-func appendToSlice[T any](slice []T, item T) []T {
-	return append(slice, item)
 }
 
 // WithTemporal returns a copy with temporal set.
