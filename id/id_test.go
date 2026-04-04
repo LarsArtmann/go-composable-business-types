@@ -21,6 +21,26 @@ func assertIDValue[B any, V comparable](t *testing.T, v V, expected V) {
 	}
 }
 
+func assertIDValueMatches(t *testing.T, v any, expected any) {
+	switch val := v.(type) {
+	case ID[Int64Brand, int64]:
+		if val.Get() != expected.(int64) {
+			t.Errorf("expected %v, got %v", expected, val.Get())
+		}
+	case ID[Uint64Brand, uint64]:
+		if val.Get() != expected.(uint64) {
+			t.Errorf("expected %v, got %v", expected, val.Get())
+		}
+	case ID[StringBrand, string]:
+		if val.Get() != expected.(string) {
+			t.Errorf("expected %v, got %v", expected, val.Get())
+		}
+		if !val.IsZero() {
+			t.Error("empty string should be zero")
+		}
+	}
+}
+
 func TestNewID(t *testing.T) {
 	t.Parallel()
 
@@ -410,24 +430,7 @@ func TestIDEdgeCases(t *testing.T) {
 			t.Parallel()
 
 			id := tt.brand(tt.value)
-			switch v := id.(type) {
-			case ID[Int64Brand, int64]:
-				if v.Get() != tt.expected.(int64) {
-					t.Errorf("expected %d, got %d", tt.expected, v.Get())
-				}
-			case ID[Uint64Brand, uint64]:
-				if v.Get() != tt.expected.(uint64) {
-					t.Errorf("expected %v, got %v", tt.expected, v.Get())
-				}
-			case ID[StringBrand, string]:
-				if v.Get() != tt.expected.(string) {
-					t.Errorf("expected %s, got %s", tt.expected, v.Get())
-				}
-
-				if !v.IsZero() {
-					t.Error("empty string should be zero")
-				}
-			}
+			assertIDValueMatches(t, id, tt.expected)
 		})
 	}
 }
