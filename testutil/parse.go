@@ -75,6 +75,21 @@ func RunAppendTextTest[T any](
 	}
 }
 
+type AppendTexter[T any] interface {
+	AppendText(b []byte) ([]byte, error)
+}
+
+func RunAppendTextTestSimple[T AppendTexter[T]](t *testing.T, expected string, val T) {
+	n, err := val.AppendText(nil)
+	if err != nil {
+		t.Errorf("unexpected error: %v", err)
+	}
+
+	if string(n) != expected {
+		t.Errorf("expected %s, got %s", expected, string(n))
+	}
+}
+
 type ZeroChecker interface {
 	IsZero() bool
 }

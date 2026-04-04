@@ -294,15 +294,15 @@ func TestAppendText(t *testing.T) {
 			t.Parallel()
 			switch v := tt.value.(type) {
 			case enums.ActorKind:
-				testutil.RunAppendTextTest(t, tt.name, func(enums.ActorKind) ([]byte, error) { return v.AppendText(nil) }, v)
+				testutil.RunAppendTextTestSimple(t, tt.name, &v)
 			case enums.Priority:
-				testutil.RunAppendTextTest(t, tt.name, func(enums.Priority) ([]byte, error) { return v.AppendText(nil) }, v)
+				testutil.RunAppendTextTestSimple(t, tt.name, &v)
 			case enums.Status:
-				testutil.RunAppendTextTest(t, tt.name, func(enums.Status) ([]byte, error) { return v.AppendText(nil) }, v)
+				testutil.RunAppendTextTestSimple(t, tt.name, &v)
 			case enums.Trigger:
-				testutil.RunAppendTextTest(t, tt.name, func(enums.Trigger) ([]byte, error) { return v.AppendText(nil) }, v)
+				testutil.RunAppendTextTestSimple(t, tt.name, &v)
 			case enums.CauseKind:
-				testutil.RunAppendTextTest(t, tt.name, func(enums.CauseKind) ([]byte, error) { return v.AppendText(nil) }, v)
+				testutil.RunAppendTextTestSimple(t, tt.name, &v)
 			}
 		})
 	}
