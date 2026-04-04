@@ -123,8 +123,9 @@ func testIDScanTests[B any, V comparable](t *testing.T, typeName string, source 
 
 	t.Run("from invalid type", func(t *testing.T) {
 		t.Parallel()
+
 		var zero V
-		switch interface{}(zero).(type) {
+		switch any(zero).(type) {
 		case int64, int32, uint64:
 			testScanInvalidType[B, V](t, typeName, "not-a-number")
 		case string:
@@ -166,47 +167,33 @@ func testValueZero[B any, V comparable](t *testing.T, id ID[B, V]) {
 	}
 }
 
+func testIDValueTests[B any, V comparable](
+	t *testing.T,
+	typeName string,
+	value V,
+	expectedValue any,
+) {
+	t.Helper()
+
+	t.Run(typeName+"/non-zero", func(t *testing.T) {
+		t.Parallel()
+
+		id := NewID[B, V](value)
+		testValueNonZero(t, id, expectedValue)
+	})
+
+	t.Run(typeName+"/zero", func(t *testing.T) {
+		t.Parallel()
+
+		var id ID[B, V]
+		testValueZero(t, id)
+	})
+}
+
 func TestIDValue(t *testing.T) {
 	t.Parallel()
-	t.Run("string ID non-zero", func(t *testing.T) {
-		t.Parallel()
-
-		id := NewID[StringBrand]("test-id")
-		testValueNonZero(t, id, "test-id")
-	})
-
-	t.Run("string ID zero", func(t *testing.T) {
-		t.Parallel()
-
-		var id ID[StringBrand, string]
-		testValueZero(t, id)
-	})
-
-	t.Run("int64 ID non-zero", func(t *testing.T) {
-		t.Parallel()
-
-		id := NewID[Int64Brand, int64](42)
-		testValueNonZero(t, id, int64(42))
-	})
-
-	t.Run("int64 ID zero", func(t *testing.T) {
-		t.Parallel()
-
-		var id ID[Int64Brand, int64]
-		testValueZero(t, id)
-	})
-
-	t.Run("int32 ID non-zero", func(t *testing.T) {
-		t.Parallel()
-
-		id := NewID[Int32Brand, int32](42)
-		testValueNonZero(t, id, int64(42))
-	})
-
-	t.Run("uint64 ID non-zero", func(t *testing.T) {
-		t.Parallel()
-
-		id := NewID[Uint64Brand, uint64](42)
-		testValueNonZero(t, id, int64(42))
-	})
+	testIDValueTests[StringBrand, string](t, "string ID", "test-id", "test-id")
+	testIDValueTests[Int64Brand, int64](t, "int64 ID", int64(42), int64(42))
+	testIDValueTests[Int32Brand, int32](t, "int32 ID", int32(42), int64(42))
+	testIDValueTests[Uint64Brand, uint64](t, "uint64 ID", uint64(42), int64(42))
 }

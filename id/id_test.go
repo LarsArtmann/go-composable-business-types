@@ -107,11 +107,14 @@ func TestIDEqual(t *testing.T) {
 	}
 }
 
-func testIDCompareGeneric[B any, V comparable](t *testing.T, createID func(V) ID[B, V], tests []struct {
-	name     string
-	a, b     V
-	expected int
-},
+func testIDCompareGeneric[B any, V comparable](
+	t *testing.T,
+	createID func(V) ID[B, V],
+	tests []struct {
+		name     string
+		a, b     V
+		expected int
+	},
 ) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -145,7 +148,11 @@ func TestIDCompare(t *testing.T) {
 		{"greater", 3, 1, 1},
 	}
 
-	testIDCompareGeneric(t, func(v int) ID[Int64Brand, int] { return NewID[Int64Brand, int](v) }, tests)
+	testIDCompareGeneric(
+		t,
+		func(v int) ID[Int64Brand, int] { return NewID[Int64Brand, int](v) },
+		tests,
+	)
 }
 
 func TestIDCompareString(t *testing.T) {
@@ -196,7 +203,11 @@ func TestIDCompareInt64(t *testing.T) {
 		{"greater", 200, 100, 1},
 	}
 
-	testIDCompareGeneric(t, func(v int64) ID[Int64Brand, int64] { return NewID[Int64Brand, int64](v) }, tests)
+	testIDCompareGeneric(
+		t,
+		func(v int64) ID[Int64Brand, int64] { return NewID[Int64Brand, int64](v) },
+		tests,
+	)
 }
 
 func TestIDCompareUint64(t *testing.T) {
@@ -212,7 +223,11 @@ func TestIDCompareUint64(t *testing.T) {
 		{"greater", 200, 100, 1},
 	}
 
-	testIDCompareGeneric(t, func(v uint64) ID[Uint64Brand, uint64] { return NewID[Uint64Brand, uint64](v) }, tests)
+	testIDCompareGeneric(
+		t,
+		func(v uint64) ID[Uint64Brand, uint64] { return NewID[Uint64Brand, uint64](v) },
+		tests,
+	)
 }
 
 func TestIDOr(t *testing.T) {

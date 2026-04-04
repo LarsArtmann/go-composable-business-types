@@ -62,8 +62,6 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 			string(data),
 		)
 	}
-
-	return nil
 }
 
 func parseSignedIntegerID[B any, V comparable](
