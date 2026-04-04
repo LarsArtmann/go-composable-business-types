@@ -133,9 +133,7 @@ func testBinaryRoundTrip[B any, V comparable](t *testing.T, value V) {
 		t.Fatalf("UnmarshalBinary failed: %v", err)
 	}
 
-	if restored.Get() != original.Get() {
-		t.Errorf("expected %v, got %v", original.Get(), restored.Get())
-	}
+	assertCmpEqual(t, original.Get(), restored.Get())
 }
 
 func TestIDBinary(t *testing.T) {
@@ -215,9 +213,7 @@ func TestIDGob(t *testing.T) {
 			t.Fatalf("GobDecode failed: %v", err)
 		}
 
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %s, got %s", original.Get(), restored.Get())
-		}
+		assertCmpEqual(t, original.Get(), restored.Get())
 	})
 
 	t.Run("int64 ID", func(t *testing.T) {
@@ -243,8 +239,6 @@ func TestIDGob(t *testing.T) {
 			t.Fatalf("GobDecode failed: %v", err)
 		}
 
-		if restored.Get() != original.Get() {
-			t.Errorf("expected %d, got %d", original.Get(), restored.Get())
-		}
+		assertCmpEqual(t, original.Get(), restored.Get())
 	})
 }

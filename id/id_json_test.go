@@ -209,9 +209,7 @@ func testJSONRoundTrip[B any, V comparable](t *testing.T, value V) {
 		t.Fatalf("Unmarshal failed: %v", err)
 	}
 
-	if restored.Get() != original.Get() {
-		t.Errorf("expected %v, got %v", original.Get(), restored.Get())
-	}
+	assertCmpEqual(t, original.Get(), restored.Get())
 }
 
 func TestIDJSONRoundTrip(t *testing.T) {

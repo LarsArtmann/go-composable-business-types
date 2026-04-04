@@ -255,9 +255,7 @@ func TestBoundedStringJSONRoundTrip(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	if original.String() != restored.String() {
-		t.Errorf("expected %q, got %q", original.String(), restored.String())
-	}
+	assertCmpEqual(t, original.String(), restored.String())
 }
 
 func TestBoundedStringScan(t *testing.T) {
