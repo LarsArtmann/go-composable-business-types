@@ -26,77 +26,49 @@ func testSentinelErrors(t *testing.T, tests []struct {
 	}
 }
 
+func testSentinelErrorSet(t *testing.T, errs ...error) {
+	t.Helper()
+	t.Parallel()
+
+	tests := make([]struct {
+		name string
+		err  error
+		want error
+	}, len(errs))
+	for i, err := range errs {
+		tests[i] = struct {
+			name string
+			err  error
+			want error
+		}{
+			name: err.Error(),
+			err:  err,
+			want: err,
+		}
+	}
+	testSentinelErrors(t, tests)
+}
+
 // =============================================================================
 // Sentinel Error Tests
 // =============================================================================
 
 func TestEmailSentinels(t *testing.T) {
-	t.Parallel()
-	testSentinelErrors(t, []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrInvalidEmail", ErrInvalidEmail, ErrInvalidEmail},
-		{"ErrEmailEmpty", ErrEmailEmpty, ErrEmailEmpty},
-	})
+	testSentinelErrorSet(t, ErrInvalidEmail, ErrEmailEmpty)
 }
 
 func TestURLSentinels(t *testing.T) {
-	t.Parallel()
-	testSentinelErrors(t, []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrInvalidURL", ErrInvalidURL, ErrInvalidURL},
-		{"ErrURLEmpty", ErrURLEmpty, ErrURLEmpty},
-		{"ErrURLScheme", ErrURLScheme, ErrURLScheme},
-		{"ErrURLHost", ErrURLHost, ErrURLHost},
-	})
+	testSentinelErrorSet(t, ErrInvalidURL, ErrURLEmpty, ErrURLScheme, ErrURLHost)
 }
 
 func TestBoundedStringSentinels(t *testing.T) {
-	t.Parallel()
-	testSentinelErrors(t, []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrBoundedStringMinLength", ErrBoundedStringMinLength, ErrBoundedStringMinLength},
-		{"ErrBoundedStringMaxLength", ErrBoundedStringMaxLength, ErrBoundedStringMaxLength},
-		{"ErrBoundedStringMinNegative", ErrBoundedStringMinNegative, ErrBoundedStringMinNegative},
-		{
-			"ErrBoundedStringMaxLessThanMin",
-			ErrBoundedStringMaxLessThanMin,
-			ErrBoundedStringMaxLessThanMin,
-		},
-	})
+	testSentinelErrorSet(t, ErrBoundedStringMinLength, ErrBoundedStringMaxLength, ErrBoundedStringMinNegative, ErrBoundedStringMaxLessThanMin)
 }
 
 func TestNanoIDSentinels(t *testing.T) {
-	t.Parallel()
-	testSentinelErrors(t, []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrNanoIDEmpty", ErrNanoIDEmpty, ErrNanoIDEmpty},
-		{"ErrNanoIDTooShort", ErrNanoIDTooShort, ErrNanoIDTooShort},
-		{"ErrNanoIDTooLong", ErrNanoIDTooLong, ErrNanoIDTooLong},
-		{"ErrNanoIDInvalid", ErrNanoIDInvalid, ErrNanoIDInvalid},
-	})
+	testSentinelErrorSet(t, ErrNanoIDEmpty, ErrNanoIDTooShort, ErrNanoIDTooLong, ErrNanoIDInvalid)
 }
 
 func TestIDSentinels(t *testing.T) {
-	t.Parallel()
-	testSentinelErrors(t, []struct {
-		name string
-		err  error
-		want error
-	}{
-		{"ErrIDInvalid", ErrIDInvalid, ErrIDInvalid},
-		{"ErrIDTypeNotSupported", ErrIDTypeNotSupported, ErrIDTypeNotSupported},
-		{"ErrIDInsufficientData", ErrIDInsufficientData, ErrIDInsufficientData},
-	})
+	testSentinelErrorSet(t, ErrIDInvalid, ErrIDTypeNotSupported, ErrIDInsufficientData)
 }
