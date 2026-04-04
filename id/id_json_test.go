@@ -144,19 +144,22 @@ func TestIDUnmarshalJSON(t *testing.T) {
 		testUnmarshalNonZeroID[Uint64Brand, uint64](t, "42", 42)
 	})
 
-	t.Run("invalid JSON", func(t *testing.T) {
+	t.Run("invalid inputs", func(t *testing.T) {
 		t.Parallel()
-		assertUnmarshalError[StringBrand, string](t, `invalid`)
-	})
+		t.Run("invalid JSON", func(t *testing.T) {
+			t.Parallel()
+			assertUnmarshalError[StringBrand, string](t, `invalid`)
+		})
 
-	t.Run("number into string ID", func(t *testing.T) {
-		t.Parallel()
-		assertUnmarshalError[StringBrand, string](t, "123")
-	})
+		t.Run("number into string ID", func(t *testing.T) {
+			t.Parallel()
+			assertUnmarshalError[StringBrand, string](t, "123")
+		})
 
-	t.Run("string into int64 ID", func(t *testing.T) {
-		t.Parallel()
-		assertUnmarshalError[Int64Brand, int64](t, `"not-a-number"`)
+		t.Run("string into int64 ID", func(t *testing.T) {
+			t.Parallel()
+			assertUnmarshalError[Int64Brand, int64](t, `"not-a-number"`)
+		})
 	})
 }
 

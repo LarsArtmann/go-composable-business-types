@@ -428,6 +428,15 @@ func testScanAllTypes[T comparable](
 	}
 }
 
+// convertAndTestScan converts []any cases to []scanTestCase[T] and runs tests.
+func convertAndTestScan[T comparable](t *testing.T, cases []any, scanFunc func(*T, any) error) {
+	converted := make([]scanTestCase[T], len(cases))
+	for i, c := range cases {
+		converted[i] = c.(scanTestCase[T])
+	}
+	testScanAllTypes(t, converted, scanFunc)
+}
+
 // enumScanTestCase defines input/output for Scan method testing.
 // The same enum value can be tested with different input types.
 type enumScanTestCase[T any] struct {
@@ -519,40 +528,15 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 		t.Run(tt.typeName, func(t *testing.T) {
 			switch f := tt.scanFunc.(type) {
 			case func(*ActorKind, any) error:
-				cases := make([]scanTestCase[ActorKind], len(tt.cases))
-				for i, c := range tt.cases {
-					cases[i] = c.(scanTestCase[ActorKind])
-				}
-
-				testScanAllTypes(t, cases, f)
+				convertAndTestScan(t, tt.cases, f)
 			case func(*Priority, any) error:
-				cases := make([]scanTestCase[Priority], len(tt.cases))
-				for i, c := range tt.cases {
-					cases[i] = c.(scanTestCase[Priority])
-				}
-
-				testScanAllTypes(t, cases, f)
+				convertAndTestScan(t, tt.cases, f)
 			case func(*Status, any) error:
-				cases := make([]scanTestCase[Status], len(tt.cases))
-				for i, c := range tt.cases {
-					cases[i] = c.(scanTestCase[Status])
-				}
-
-				testScanAllTypes(t, cases, f)
+				convertAndTestScan(t, tt.cases, f)
 			case func(*Trigger, any) error:
-				cases := make([]scanTestCase[Trigger], len(tt.cases))
-				for i, c := range tt.cases {
-					cases[i] = c.(scanTestCase[Trigger])
-				}
-
-				testScanAllTypes(t, cases, f)
+				convertAndTestScan(t, tt.cases, f)
 			case func(*CauseKind, any) error:
-				cases := make([]scanTestCase[CauseKind], len(tt.cases))
-				for i, c := range tt.cases {
-					cases[i] = c.(scanTestCase[CauseKind])
-				}
-
-				testScanAllTypes(t, cases, f)
+				convertAndTestScan(t, tt.cases, f)
 			}
 		})
 	}

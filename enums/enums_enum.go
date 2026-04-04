@@ -12,71 +12,6 @@ import (
 	"strings"
 )
 
-// scanEnum provides generic scanning logic for enum types.
-// It handles nil, int64, string, []byte, and various pointer types.
-func scanEnum[T any](x *T, zero T, parse func(string) (T, error), errNilPtr error, value interface{}) (err error) {
-	if value == nil {
-		*x = zero
-		return
-	}
-
-	switch v := value.(type) {
-	case int64:
-		*x = zero
-	case string:
-		*x, err = parse(v)
-	case []byte:
-		*x, err = parse(string(v))
-	case T:
-		*x = v
-	case int:
-		*x = zero
-	case *T:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = *v
-	case uint:
-		*x = zero
-	case uint64:
-		*x = zero
-	case *int:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = zero
-	case *int64:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = zero
-	case float64:
-		*x = zero
-	case *float64:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = zero
-	case *uint:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = zero
-	case *uint64:
-		if v == nil {
-			return errNilPtr
-		}
-		*x = zero
-	case *string:
-		if v == nil {
-			return errNilPtr
-		}
-		*x, err = parse(*v)
-	}
-
-	return
-}
-
 const (
 	// ActorKindUser is a ActorKind of type User.
 	ActorKindUser ActorKind = iota
@@ -125,12 +60,10 @@ var _ActorKindMap = map[ActorKind]string{
 
 // String implements the Stringer interface.
 func (x ActorKind) String() string {
-	return enumString(uint8(x), map[int]string{
-		int(ActorKindUser):    _ActorKindName[0:4],
-		int(ActorKindBot):     _ActorKindName[4:7],
-		int(ActorKindSystem):  _ActorKindName[7:13],
-		int(ActorKindService): _ActorKindName[13:20],
-	}, "ActorKind")
+	if str, ok := _ActorKindMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("ActorKind(%d)", x)
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -182,8 +115,69 @@ func (x *ActorKind) AppendText(b []byte) ([]byte, error) {
 var errActorKindNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 // Scan implements the Scanner interface.
-func (x *ActorKind) Scan(value interface{}) error {
-	return scanEnum(x, ActorKind(0), ParseActorKind, errActorKindNilPtr, value)
+func (x *ActorKind) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = ActorKind(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = ActorKind(v)
+	case string:
+		*x, err = ParseActorKind(v)
+	case []byte:
+		*x, err = ParseActorKind(string(v))
+	case ActorKind:
+		*x = v
+	case int:
+		*x = ActorKind(v)
+	case *ActorKind:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = ActorKind(v)
+	case uint64:
+		*x = ActorKind(v)
+	case *int:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *int64:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = ActorKind(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *uint:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *uint64:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x = ActorKind(*v)
+	case *string:
+		if v == nil {
+			return errActorKindNilPtr
+		}
+		*x, err = ParseActorKind(*v)
+	}
+
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -237,11 +231,10 @@ var _CauseKindMap = map[CauseKind]string{
 
 // String implements the Stringer interface.
 func (x CauseKind) String() string {
-	return enumString(uint8(x), map[int]string{
-		int(CauseKindDirect):  _CauseKindName[0:6],
-		int(CauseKindCommand): _CauseKindName[6:13],
-		int(CauseKindEvent):   _CauseKindName[13:18],
-	}, "CauseKind")
+	if str, ok := _CauseKindMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("CauseKind(%d)", x)
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -292,8 +285,69 @@ func (x *CauseKind) AppendText(b []byte) ([]byte, error) {
 var errCauseKindNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 // Scan implements the Scanner interface.
-func (x *CauseKind) Scan(value interface{}) error {
-	return scanEnum(x, CauseKind(0), ParseCauseKind, errCauseKindNilPtr, value)
+func (x *CauseKind) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = CauseKind(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = CauseKind(v)
+	case string:
+		*x, err = ParseCauseKind(v)
+	case []byte:
+		*x, err = ParseCauseKind(string(v))
+	case CauseKind:
+		*x = v
+	case int:
+		*x = CauseKind(v)
+	case *CauseKind:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = CauseKind(v)
+	case uint64:
+		*x = CauseKind(v)
+	case *int:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *int64:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = CauseKind(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *uint:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *uint64:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x = CauseKind(*v)
+	case *string:
+		if v == nil {
+			return errCauseKindNilPtr
+		}
+		*x, err = ParseCauseKind(*v)
+	}
+
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -349,12 +403,10 @@ var _PriorityMap = map[Priority]string{
 
 // String implements the Stringer interface.
 func (x Priority) String() string {
-	return enumString(uint8(x), map[int]string{
-		int(PriorityLow):      _PriorityName[0:3],
-		int(PriorityMedium):   _PriorityName[3:9],
-		int(PriorityHigh):     _PriorityName[9:13],
-		int(PriorityCritical): _PriorityName[13:21],
-	}, "Priority")
+	if str, ok := _PriorityMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("Priority(%d)", x)
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -406,8 +458,69 @@ func (x *Priority) AppendText(b []byte) ([]byte, error) {
 var errPriorityNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 // Scan implements the Scanner interface.
-func (x *Priority) Scan(value interface{}) error {
-	return scanEnum(x, Priority(0), ParsePriority, errPriorityNilPtr, value)
+func (x *Priority) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Priority(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Priority(v)
+	case string:
+		*x, err = ParsePriority(v)
+	case []byte:
+		*x, err = ParsePriority(string(v))
+	case Priority:
+		*x = v
+	case int:
+		*x = Priority(v)
+	case *Priority:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Priority(v)
+	case uint64:
+		*x = Priority(v)
+	case *int:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *int64:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Priority(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *uint:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *uint64:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x = Priority(*v)
+	case *string:
+		if v == nil {
+			return errPriorityNilPtr
+		}
+		*x, err = ParsePriority(*v)
+	}
+
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -468,13 +581,10 @@ var _StatusMap = map[Status]string{
 
 // String implements the Stringer interface.
 func (x Status) String() string {
-	return enumString(uint8(x), map[int]string{
-		int(StatusDraft):    _StatusName[0:5],
-		int(StatusActive):   _StatusName[5:11],
-		int(StatusPaused):   _StatusName[11:17],
-		int(StatusArchived): _StatusName[17:25],
-		int(StatusDeleted):  _StatusName[25:32],
-	}, "Status")
+	if str, ok := _StatusMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("Status(%d)", x)
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -527,8 +637,69 @@ func (x *Status) AppendText(b []byte) ([]byte, error) {
 var errStatusNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 // Scan implements the Scanner interface.
-func (x *Status) Scan(value interface{}) error {
-	return scanEnum(x, Status(0), ParseStatus, errStatusNilPtr, value)
+func (x *Status) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Status(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Status(v)
+	case string:
+		*x, err = ParseStatus(v)
+	case []byte:
+		*x, err = ParseStatus(string(v))
+	case Status:
+		*x = v
+	case int:
+		*x = Status(v)
+	case *Status:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Status(v)
+	case uint64:
+		*x = Status(v)
+	case *int:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *int64:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Status(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *uint:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *uint64:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x = Status(*v)
+	case *string:
+		if v == nil {
+			return errStatusNilPtr
+		}
+		*x, err = ParseStatus(*v)
+	}
+
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -606,15 +777,10 @@ var _TriggerMap = map[Trigger]string{
 
 // String implements the Stringer interface.
 func (x Trigger) String() string {
-	return enumString(uint8(x), map[int]string{
-		int(TriggerManual):     _TriggerName[0:6],
-		int(TriggerScheduled):  _TriggerName[6:15],
-		int(TriggerWebhook):    _TriggerName[15:22],
-		int(TriggerImport):     _TriggerName[22:28],
-		int(TriggerMigration):  _TriggerName[28:37],
-		int(TriggerSystem):     _TriggerName[37:43],
-		int(TriggerCorrection): _TriggerName[43:53],
-	}, "Trigger")
+	if str, ok := _TriggerMap[x]; ok {
+		return str
+	}
+	return fmt.Sprintf("Trigger(%d)", x)
 }
 
 // IsValid provides a quick way to determine if the typed value is
@@ -669,8 +835,69 @@ func (x *Trigger) AppendText(b []byte) ([]byte, error) {
 var errTriggerNilPtr = errors.New("value pointer is nil") // one per type for package clashes
 
 // Scan implements the Scanner interface.
-func (x *Trigger) Scan(value interface{}) error {
-	return scanEnum(x, Trigger(0), ParseTrigger, errTriggerNilPtr, value)
+func (x *Trigger) Scan(value interface{}) (err error) {
+	if value == nil {
+		*x = Trigger(0)
+		return
+	}
+
+	// A wider range of scannable types.
+	// driver.Value values at the top of the list for expediency
+	switch v := value.(type) {
+	case int64:
+		*x = Trigger(v)
+	case string:
+		*x, err = ParseTrigger(v)
+	case []byte:
+		*x, err = ParseTrigger(string(v))
+	case Trigger:
+		*x = v
+	case int:
+		*x = Trigger(v)
+	case *Trigger:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = *v
+	case uint:
+		*x = Trigger(v)
+	case uint64:
+		*x = Trigger(v)
+	case *int:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *int64:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case float64: // json marshals everything as a float64 if it's a number
+		*x = Trigger(v)
+	case *float64: // json marshals everything as a float64 if it's a number
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *uint:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *uint64:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x = Trigger(*v)
+	case *string:
+		if v == nil {
+			return errTriggerNilPtr
+		}
+		*x, err = ParseTrigger(*v)
+	}
+
+	return
 }
 
 // Value implements the driver Valuer interface.
