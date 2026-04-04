@@ -10,30 +10,16 @@ import (
 func TestParseLocale(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
+	testutil.RunParseTests(t, "Locale", []testutil.ParseTestCase[Locale]{
 		{"en-US", "en-US", false},
 		{"de-DE", "de-DE", false},
 		{"fr-FR", "fr-FR", false},
 		{"empty", "", true},
-		// Note: golang.org/x/text/language is very lenient and accepts many strings
-		// {"invalid", "not-a-locale", true},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			testutil.RunParseTest(t, "Locale", tc.input, ParseLocale, tc.wantErr)
-		})
-	}
+	}, ParseLocale)
 }
 
 func TestParseLocaleError(t *testing.T) {
-	t.Parallel()
-	testutil.RunParseTest(t, "Locale", "invalid-locale-code", ParseLocale, true)
+	testutil.RunParseErrorTest(t, "Locale", ParseLocale)
 }
 
 func TestLocaleParts(t *testing.T) {

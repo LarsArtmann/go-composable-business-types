@@ -31,29 +31,17 @@ func TestNewNanoIDWithLength(t *testing.T) {
 func TestParseNanoID(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
+	testutil.RunParseTests(t, "NanoID", []testutil.ParseTestCase[NanoID]{
 		{"valid", "V1StGXR8_Z5jdHi6B-myT", false},
 		{"empty", "", true},
 		{"too short", "abc", true},
 		{"too long", string(make([]byte, 257)), true},
 		{"invalid chars", "hello@world!", true},
-	}
-
-	for _, tc := range tests {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			testutil.RunParseTest(t, "NanoID", tc.input, ParseNanoID, tc.wantErr)
-		})
-	}
+	}, ParseNanoID)
 }
 
 func TestParseNanoIDError(t *testing.T) {
-	t.Parallel()
-	testutil.RunParseTest(t, "NanoID", "invalid", ParseNanoID, true)
+	testutil.RunParseErrorTest(t, "NanoID", ParseNanoID)
 }
 
 func TestNanoIDIsZero(t *testing.T) {

@@ -30,6 +30,35 @@ func RunParseTest[T ParseTester](
 	}
 }
 
+type ParseTestCase[T any] struct {
+	Name    string
+	Input   string
+	WantErr bool
+}
+
+func RunParseTests[T ParseTester](
+	t *testing.T,
+	typeName string,
+	tests []ParseTestCase[T],
+	parse func(string) (T, error),
+) {
+	for _, tc := range tests {
+		t.Run(tc.Name, func(t *testing.T) {
+			t.Parallel()
+			RunParseTest(t, typeName, tc.Input, parse, tc.WantErr)
+		})
+	}
+}
+
+func RunParseErrorTest[T ParseTester](
+	t *testing.T,
+	typeName string,
+	parse func(string) (T, error),
+) {
+	t.Parallel()
+	RunParseTest(t, typeName, "", parse, true)
+}
+
 func RunAppendTextTest[T any](
 	t *testing.T,
 	expected string,
