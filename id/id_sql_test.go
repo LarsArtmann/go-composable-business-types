@@ -36,22 +36,17 @@ func TestIDScan(t *testing.T) {
 		testScanInvalidType[StringBrand, string](t, "string ID", 123)
 	})
 
-	t.Run("int64 ID from int64", func(t *testing.T) {
-		t.Parallel()
-		testScanRoundTrip[Int64Brand, int64](t, int64(42), int64(42))
-	})
-
 	testIDScanTests[Int64Brand, int64](t, "int64 ID", 42, int64(42))
 	testIDScanTests[Int32Brand, int32](t, "int32 ID", 42, int32(42))
 
-	t.Run("uint64 ID from int64", func(t *testing.T) {
-		t.Parallel()
-		testScanRoundTrip[Uint64Brand, uint64](t, int64(42), uint64(42))
-	})
-
 	testScanRoundTripVariants[Int64Brand, any, int64](t, []scanTestCase[any, int64]{
+		{"int64 ID from int64", int64(42), int64(42)},
 		{"int64 ID from int", 42, 42},
 		{"int64 ID from float64", float64(42), 42},
+	})
+
+	testScanRoundTripVariants[Uint64Brand, any, uint64](t, []scanTestCase[any, uint64]{
+		{"uint64 ID from int64", int64(42), uint64(42)},
 	})
 }
 

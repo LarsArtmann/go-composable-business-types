@@ -41,6 +41,12 @@ func testEnumValue[T valuer](t *testing.T, tests []enumValueCase[T]) {
 	}
 }
 
+// testEnumValueOne tests a single enum Value() case.
+func testEnumValueOne[T valuer](t *testing.T, value T, expected string) {
+	t.Helper()
+	testEnumValue(t, []enumValueCase[T]{{value, expected}})
+}
+
 // enumStringCase represents a test case for enum String() method.
 type enumStringCase[T interface{ String() string }] struct {
 	value    T

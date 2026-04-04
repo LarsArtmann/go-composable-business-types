@@ -357,21 +357,25 @@ func TestUnmarshalTextErrors(t *testing.T) {
 
 // Test all Value methods.
 func TestValueMethods(t *testing.T) {
-	t.Parallel()
-	testEnumValue(t, []enumValueCase[enums.ActorKind]{
-		{enums.ActorKindSystem, "System"},
+	t.Run("ActorKind", func(t *testing.T) {
+		t.Parallel()
+		testEnumValueOne(t, enums.ActorKindSystem, "System")
 	})
-	testEnumValue(t, []enumValueCase[enums.Priority]{
-		{enums.PriorityMedium, "Medium"},
+	t.Run("Priority", func(t *testing.T) {
+		t.Parallel()
+		testEnumValueOne(t, enums.PriorityMedium, "Medium")
 	})
-	testEnumValue(t, []enumValueCase[enums.Status]{
-		{enums.StatusPaused, "Paused"},
+	t.Run("Status", func(t *testing.T) {
+		t.Parallel()
+		testEnumValueOne(t, enums.StatusPaused, "Paused")
 	})
-	testEnumValue(t, []enumValueCase[enums.Trigger]{
-		{enums.TriggerImport, "Import"},
+	t.Run("Trigger", func(t *testing.T) {
+		t.Parallel()
+		testEnumValueOne(t, enums.TriggerImport, "Import")
 	})
-	testEnumValue(t, []enumValueCase[enums.CauseKind]{
-		{enums.CauseKindEvent, "Event"},
+	t.Run("CauseKind", func(t *testing.T) {
+		t.Parallel()
+		testEnumValueOne(t, enums.CauseKindEvent, "Event")
 	})
 }
 
