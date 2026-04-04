@@ -41,20 +41,8 @@ func TestIDScan(t *testing.T) {
 		testScanRoundTrip[Int64Brand, int64](t, int64(42), int64(42))
 	})
 
-	t.Run("int64 ID from nil", func(t *testing.T) {
-		t.Parallel()
-		testScanNil[Int64Brand, int64](t, "int64 ID")
-	})
-
-	t.Run("int64 ID from invalid type", func(t *testing.T) {
-		t.Parallel()
-		testScanInvalidType[Int64Brand, int64](t, "int64 ID", "not-a-number")
-	})
-
-	t.Run("int32 ID from int64", func(t *testing.T) {
-		t.Parallel()
-		testScanRoundTrip[Int32Brand, int32](t, int64(42), int32(42))
-	})
+	testIDScanTests[Int64Brand, int64](t, "int64 ID", 42, int64(42))
+	testIDScanTests[Int32Brand, int32](t, "int32 ID", 42, int32(42))
 
 	t.Run("uint64 ID from int64", func(t *testing.T) {
 		t.Parallel()
@@ -123,6 +111,33 @@ func testScanInvalidType[B any, V comparable](t *testing.T, name string, invalid
 	if err == nil {
 		t.Errorf("%s should reject invalid type %T", name, invalidValue)
 	}
+}
+
+func testIDScanTests[B any, V comparable](t *testing.T, typeName string, source int64, expected V) {
+	t.Helper()
+
+	t.Run("from nil", func(t *testing.T) {
+		t.Parallel()
+		testScanNil[B, V](t, typeName)
+	})
+
+	t.Run("from invalid type", func(t *testing.T) {
+		t.Parallel()
+		var zero V
+		switch interface{}(zero).(type) {
+		case int64, int32, uint64:
+			testScanInvalidType[B, V](t, typeName, "not-a-number")
+		case string:
+			testScanInvalidType[B, V](t, typeName, 123)
+		default:
+			testScanInvalidType[B, V](t, typeName, nil)
+		}
+	})
+
+	t.Run("from int64", func(t *testing.T) {
+		t.Parallel()
+		testScanRoundTrip[B, V](t, source, expected)
+	})
 }
 
 func testValueNonZero[B any, V comparable](t *testing.T, id ID[B, V], expected any) {
