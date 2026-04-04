@@ -65,3 +65,19 @@ func RunIsZeroTest[T ZeroChecker](t *testing.T, makeNonZero func() (T, error)) {
 		t.Error("non-zero value should not be zero")
 	}
 }
+
+type PartAccessor[T any] struct {
+	Name     string
+	Get      func(T) string
+	Expected string
+}
+
+func RunPartsTest[T any](t *testing.T, val T, accessors []PartAccessor[T]) {
+	t.Helper()
+	for _, accessor := range accessors {
+		got := accessor.Get(val)
+		if got != accessor.Expected {
+			t.Errorf("expected %s '%s', got '%s'", accessor.Name, accessor.Expected, got)
+		}
+	}
+}

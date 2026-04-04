@@ -40,13 +40,10 @@ func TestLocaleParts(t *testing.T) {
 	t.Parallel()
 
 	loc, _ := ParseLocale("en-US")
-	if loc.Base() != "en" {
-		t.Errorf("expected base 'en', got %s", loc.Base())
-	}
-
-	if loc.Region() != "US" {
-		t.Errorf("expected region 'US', got %s", loc.Region())
-	}
+	testutil.RunPartsTest(t, loc, []testutil.PartAccessor[Locale]{
+		{"base", func(l Locale) string { return l.Base() }, "en"},
+		{"region", func(l Locale) string { return l.Region() }, "US"},
+	})
 }
 
 func TestLocaleIsZero(t *testing.T) {

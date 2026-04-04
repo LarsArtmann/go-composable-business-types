@@ -12,13 +12,10 @@ func TestEmailParts(t *testing.T) {
 	t.Parallel()
 
 	email, _ := NewEmail("user@example.com")
-	if email.LocalPart() != "user" {
-		t.Errorf("expected local part 'user', got %s", email.LocalPart())
-	}
-
-	if email.Domain() != "example.com" {
-		t.Errorf("expected domain 'example.com', got %s", email.Domain())
-	}
+	testutil.RunPartsTest(t, email, []testutil.PartAccessor[Email]{
+		{"local part", func(e Email) string { return e.LocalPart() }, "user"},
+		{"domain", func(e Email) string { return e.Domain() }, "example.com"},
+	})
 }
 
 func runParseValidationTest[T testutil.ParseTester](
