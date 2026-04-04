@@ -451,32 +451,27 @@ func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
 	}
 }
 
-func TestDataPointAllReferencesEmpty(t *testing.T) {
-	t.Parallel()
-
+func newTestDataPointEmpty(t *testing.T) *DataPoint {
+	t.Helper()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
-	dp := NewDataPoint("payload", actorEntry)
+	return NewDataPoint("payload", actorEntry)
+}
 
+func TestDataPointAllReferencesEmpty(t *testing.T) {
+	t.Parallel()
+	dp := newTestDataPointEmpty(t)
 	testDataPointIteratorEmpty(t, "AllReferences", countIterator(dp.AllReferences()))
 }
 
 func TestDataPointAllCausesEmpty(t *testing.T) {
 	t.Parallel()
-
-	userID := id.NewID[struct{}, string]("user-123")
-	actorEntry := actor.UserActor(userID)
-	dp := NewDataPoint("payload", actorEntry)
-
+	dp := newTestDataPointEmpty(t)
 	testDataPointIteratorEmpty(t, "AllCauses", countIterator(dp.AllCauses()))
 }
 
 func TestDataPointAllTagsEmpty(t *testing.T) {
 	t.Parallel()
-
-	userID := id.NewID[struct{}, string]("user-123")
-	actorEntry := actor.UserActor(userID)
-	dp := NewDataPoint("payload", actorEntry)
-
+	dp := newTestDataPointEmpty(t)
 	testDataPointIteratorEmpty(t, "AllTags", countSeq2Iterator(dp.AllTags()))
 }

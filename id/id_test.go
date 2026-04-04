@@ -413,3 +413,18 @@ func TestIDEdgeCases(t *testing.T) {
 		})
 	}
 }
+
+type roundTripTest interface {
+	TestString(t *testing.T)
+	TestInt64(t *testing.T)
+	TestInt32(t *testing.T)
+	TestUint64(t *testing.T)
+}
+
+func testIDAllTypesRoundTrip(t *testing.T, rt roundTripTest) {
+	t.Parallel()
+	t.Run("string ID", rt.TestString)
+	t.Run("int64 ID", rt.TestInt64)
+	t.Run("int32 ID", rt.TestInt32)
+	t.Run("uint64 ID", rt.TestUint64)
+}

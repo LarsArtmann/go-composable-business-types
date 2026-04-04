@@ -295,54 +295,36 @@ func TestCauseKindMarshal(t *testing.T) {
 	})
 }
 
-func TestActorKindAppendText(t *testing.T) {
+// TestAppendText tests AppendText for all enum types.
+func TestAppendText(t *testing.T) {
 	t.Parallel()
-	testutil.RunAppendTextTest(
-		t,
-		"User",
-		func(v ActorKind) ([]byte, error) { return v.AppendText(nil) },
-		ActorKindUser,
-	)
-}
-
-func TestPriorityAppendText(t *testing.T) {
-	t.Parallel()
-	testutil.RunAppendTextTest(
-		t,
-		"High",
-		func(v Priority) ([]byte, error) { return v.AppendText(nil) },
-		PriorityHigh,
-	)
-}
-
-func TestStatusAppendText(t *testing.T) {
-	t.Parallel()
-	testutil.RunAppendTextTest(
-		t,
-		"Active",
-		func(v Status) ([]byte, error) { return v.AppendText(nil) },
-		StatusActive,
-	)
-}
-
-func TestTriggerAppendText(t *testing.T) {
-	t.Parallel()
-	testutil.RunAppendTextTest(
-		t,
-		"Webhook",
-		func(v Trigger) ([]byte, error) { return v.AppendText(nil) },
-		TriggerWebhook,
-	)
-}
-
-func TestCauseKindAppendText(t *testing.T) {
-	t.Parallel()
-	testutil.RunAppendTextTest(
-		t,
-		"Direct",
-		func(v CauseKind) ([]byte, error) { return v.AppendText(nil) },
-		CauseKindDirect,
-	)
+	tests := []struct {
+		name  string
+		value any
+	}{
+		{"ActorKindUser", ActorKindUser},
+		{"PriorityHigh", PriorityHigh},
+		{"StatusActive", StatusActive},
+		{"TriggerWebhook", TriggerWebhook},
+		{"CauseKindDirect", CauseKindDirect},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			switch v := tt.value.(type) {
+			case ActorKind:
+				testutil.RunAppendTextTest(t, tt.name, func(ActorKind) ([]byte, error) { return v.AppendText(nil) }, v)
+			case Priority:
+				testutil.RunAppendTextTest(t, tt.name, func(Priority) ([]byte, error) { return v.AppendText(nil) }, v)
+			case Status:
+				testutil.RunAppendTextTest(t, tt.name, func(Status) ([]byte, error) { return v.AppendText(nil) }, v)
+			case Trigger:
+				testutil.RunAppendTextTest(t, tt.name, func(Trigger) ([]byte, error) { return v.AppendText(nil) }, v)
+			case CauseKind:
+				testutil.RunAppendTextTest(t, tt.name, func(CauseKind) ([]byte, error) { return v.AppendText(nil) }, v)
+			}
+		})
+	}
 }
 
 // testInvalidEnumString verifies that invalid enum values format correctly.
@@ -446,6 +428,32 @@ func testScanAllTypes[T comparable](
 	}
 }
 
+// enumScanTestCase defines input/output for Scan method testing.
+// The same enum value can be tested with different input types.
+type enumScanTestCase[T any] struct {
+	intVal    int64
+	strVal    string
+	want      T
+}
+
+// makeScanTestCases generates all 8 scanTestCase variants from the provided test cases.
+// This eliminates duplicate test case definitions for each enum type.
+func makeScanTestCases[T comparable](cases []enumScanTestCase[T]) []scanTestCase[T] {
+	result := make([]scanTestCase[T], 0, len(cases)*2+1)
+	for _, c := range cases {
+		result = append(result,
+			scanTestCase[T]{"int64", int64(c.intVal), c.want},
+			scanTestCase[T]{"string", c.strVal, c.want},
+			scanTestCase[T]{"bytes", []byte(c.strVal), c.want},
+			scanTestCase[T]{"int", int(c.intVal), c.want},
+			scanTestCase[T]{"uint", uint(c.intVal), c.want},
+			scanTestCase[T]{"uint64", uint64(c.intVal), c.want},
+			scanTestCase[T]{"float64", float64(c.intVal), c.want},
+		)
+	}
+	return append(result, scanTestCase[T]{"nil", nil, *new(T)})
+}
+
 // Test comprehensive Scan types for all enums.
 func TestAllEnumScanAllTypes(t *testing.T) {
 	t.Parallel()
@@ -457,72 +465,52 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 	}{
 		{
 			"ActorKind",
-			[]any{
-				scanTestCase[ActorKind]{"int64", int64(1), ActorKindBot},
-				scanTestCase[ActorKind]{"string", "System", ActorKindSystem},
-				scanTestCase[ActorKind]{"bytes", []byte("Service"), ActorKindService},
-				scanTestCase[ActorKind]{"int", int(0), ActorKindUser},
-				scanTestCase[ActorKind]{"uint", uint(2), ActorKindSystem},
-				scanTestCase[ActorKind]{"uint64", uint64(3), ActorKindService},
-				scanTestCase[ActorKind]{"float64", float64(1), ActorKindBot},
-				scanTestCase[ActorKind]{"nil", nil, ActorKind(0)},
-			},
+			makeScanTestCases([]enumScanTestCase[ActorKind]{
+				{1, "System", ActorKindSystem},
+				{2, "Service", ActorKindService},
+				{0, "User", ActorKindUser},
+				{3, "Bot", ActorKindBot},
+			}),
 			(*ActorKind).Scan,
 		},
 		{
 			"Priority",
-			[]any{
-				scanTestCase[Priority]{"int64", int64(2), PriorityHigh},
-				scanTestCase[Priority]{"string", "Critical", PriorityCritical},
-				scanTestCase[Priority]{"bytes", []byte("Low"), PriorityLow},
-				scanTestCase[Priority]{"int", int(1), PriorityMedium},
-				scanTestCase[Priority]{"uint", uint(0), PriorityLow},
-				scanTestCase[Priority]{"uint64", uint64(3), PriorityCritical},
-				scanTestCase[Priority]{"float64", float64(2), PriorityHigh},
-				scanTestCase[Priority]{"nil", nil, Priority(0)},
-			},
+			makeScanTestCases([]enumScanTestCase[Priority]{
+				{2, "Critical", PriorityCritical},
+				{0, "Low", PriorityLow},
+				{1, "Medium", PriorityMedium},
+				{3, "High", PriorityHigh},
+			}),
 			(*Priority).Scan,
 		},
 		{
 			"Status",
-			[]any{
-				scanTestCase[Status]{"int64", int64(1), StatusActive},
-				scanTestCase[Status]{"string", "Archived", StatusArchived},
-				scanTestCase[Status]{"bytes", []byte("Deleted"), StatusDeleted},
-				scanTestCase[Status]{"int", int(0), StatusDraft},
-				scanTestCase[Status]{"uint", uint(2), StatusPaused},
-				scanTestCase[Status]{"uint64", uint64(4), StatusDeleted},
-				scanTestCase[Status]{"float64", float64(1), StatusActive},
-				scanTestCase[Status]{"nil", nil, Status(0)},
-			},
+			makeScanTestCases([]enumScanTestCase[Status]{
+				{1, "Archived", StatusArchived},
+				{4, "Deleted", StatusDeleted},
+				{0, "Draft", StatusDraft},
+				{2, "Paused", StatusPaused},
+				{3, "Active", StatusActive},
+			}),
 			(*Status).Scan,
 		},
 		{
 			"Trigger",
-			[]any{
-				scanTestCase[Trigger]{"int64", int64(2), TriggerWebhook},
-				scanTestCase[Trigger]{"string", "Correction", TriggerCorrection},
-				scanTestCase[Trigger]{"bytes", []byte("Import"), TriggerImport},
-				scanTestCase[Trigger]{"int", int(0), TriggerManual},
-				scanTestCase[Trigger]{"uint", uint(5), TriggerSystem},
-				scanTestCase[Trigger]{"uint64", uint64(6), TriggerCorrection},
-				scanTestCase[Trigger]{"float64", float64(2), TriggerWebhook},
-				scanTestCase[Trigger]{"nil", nil, Trigger(0)},
-			},
+			makeScanTestCases([]enumScanTestCase[Trigger]{
+				{2, "Correction", TriggerCorrection},
+				{0, "Import", TriggerImport},
+				{5, "System", TriggerSystem},
+				{6, "Webhook", TriggerWebhook},
+			}),
 			(*Trigger).Scan,
 		},
 		{
 			"CauseKind",
-			[]any{
-				scanTestCase[CauseKind]{"int64", int64(1), CauseKindCommand},
-				scanTestCase[CauseKind]{"string", "Event", CauseKindEvent},
-				scanTestCase[CauseKind]{"bytes", []byte("Direct"), CauseKindDirect},
-				scanTestCase[CauseKind]{"int", int(0), CauseKindDirect},
-				scanTestCase[CauseKind]{"uint", uint(2), CauseKindEvent},
-				scanTestCase[CauseKind]{"uint64", uint64(1), CauseKindCommand},
-				scanTestCase[CauseKind]{"float64", float64(1), CauseKindCommand},
-				scanTestCase[CauseKind]{"nil", nil, CauseKind(0)},
-			},
+			makeScanTestCases([]enumScanTestCase[CauseKind]{
+				{1, "Event", CauseKindEvent},
+				{0, "Direct", CauseKindDirect},
+				{2, "Command", CauseKindCommand},
+			}),
 			(*CauseKind).Scan,
 		},
 	}

@@ -21,10 +21,30 @@ func TestEmailParts(t *testing.T) {
 	}
 }
 
+func runParseValidationTest[T testutil.ParseTester](
+	t *testing.T,
+	typeName string,
+	constructor func(string) (T, error),
+	cases []struct {
+		name    string
+		input   string
+		wantErr bool
+	},
+) {
+	t.Helper()
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			testutil.RunParseTest(t, typeName, tc.input, constructor, tc.wantErr)
+		})
+	}
+}
+
 func TestValidation(t *testing.T) {
 	t.Parallel()
 
-	for _, tc := range []struct {
+	runParseValidationTest(t, "Email", NewEmail, []struct {
 		name    string
 		input   string
 		wantErr bool
@@ -36,14 +56,9 @@ func TestValidation(t *testing.T) {
 		{"no at", "testexample.com", true},
 		{"no domain", "test@", true},
 		{"no local", "@example.com", true},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			testutil.RunParseTest(t, "Email", tc.input, NewEmail, tc.wantErr)
-		})
-	}
+	})
 
-	for _, tc := range []struct {
+	runParseValidationTest(t, "URL", NewURL, []struct {
 		name    string
 		input   string
 		wantErr bool
@@ -55,12 +70,7 @@ func TestValidation(t *testing.T) {
 		{"no scheme", "example.com", true},
 		{"ftp not allowed", "ftp://example.com", true},
 		{"no host", "https:///path", true},
-	} {
-		t.Run(tc.name, func(t *testing.T) {
-			t.Parallel()
-			testutil.RunParseTest(t, "URL", tc.input, NewURL, tc.wantErr)
-		})
-	}
+	})
 }
 
 // testParseInvalidAndValid tests both invalid input (with specific error type) and valid input (with expected output).

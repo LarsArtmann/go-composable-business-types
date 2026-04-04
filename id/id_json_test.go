@@ -209,24 +209,27 @@ func testJSONRoundTrip[B any, V comparable](t *testing.T, value V) {
 }
 
 func TestIDJSONRoundTrip(t *testing.T) {
+	testIDAllTypesRoundTrip(t, jsonRoundTripTest{})
+}
+
+type jsonRoundTripTest struct{}
+
+func (j jsonRoundTripTest) TestString(t *testing.T) {
 	t.Parallel()
-	t.Run("string ID", func(t *testing.T) {
-		t.Parallel()
-		testJSONRoundTrip[StringBrand, string](t, "test-id")
-	})
+	testJSONRoundTrip[StringBrand, string](t, "test-id")
+}
 
-	t.Run("int64 ID", func(t *testing.T) {
-		t.Parallel()
-		testJSONRoundTrip[Int64Brand, int64](t, 42)
-	})
+func (j jsonRoundTripTest) TestInt64(t *testing.T) {
+	t.Parallel()
+	testJSONRoundTrip[Int64Brand, int64](t, 42)
+}
 
-	t.Run("int32 ID", func(t *testing.T) {
-		t.Parallel()
-		testJSONRoundTrip[Int32Brand, int32](t, 42)
-	})
+func (j jsonRoundTripTest) TestInt32(t *testing.T) {
+	t.Parallel()
+	testJSONRoundTrip[Int32Brand, int32](t, 42)
+}
 
-	t.Run("uint64 ID", func(t *testing.T) {
-		t.Parallel()
-		testJSONRoundTrip[Uint64Brand, uint64](t, 42)
-	})
+func (j jsonRoundTripTest) TestUint64(t *testing.T) {
+	t.Parallel()
+	testJSONRoundTrip[Uint64Brand, uint64](t, 42)
 }

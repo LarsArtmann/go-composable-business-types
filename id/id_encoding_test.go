@@ -122,26 +122,7 @@ func testBinaryRoundTrip[B any, V comparable](t *testing.T, value V) {
 }
 
 func TestIDBinary(t *testing.T) {
-	t.Parallel()
-	t.Run("string ID", func(t *testing.T) {
-		t.Parallel()
-		testBinaryRoundTrip[StringBrand, string](t, "test-id")
-	})
-
-	t.Run("int64 ID", func(t *testing.T) {
-		t.Parallel()
-		testBinaryRoundTrip[Int64Brand, int64](t, 42)
-	})
-
-	t.Run("int32 ID", func(t *testing.T) {
-		t.Parallel()
-		testBinaryRoundTrip[Int32Brand, int32](t, 42)
-	})
-
-	t.Run("uint64 ID", func(t *testing.T) {
-		t.Parallel()
-		testBinaryRoundTrip[Uint64Brand, uint64](t, 42)
-	})
+	testIDAllTypesRoundTrip(t, binaryRoundTripTest{})
 
 	t.Run("zero ID", func(t *testing.T) {
 		t.Parallel()
@@ -168,6 +149,28 @@ func TestIDBinary(t *testing.T) {
 			t.Error("expected zero ID")
 		}
 	})
+}
+
+type binaryRoundTripTest struct{}
+
+func (b binaryRoundTripTest) TestString(t *testing.T) {
+	t.Parallel()
+	testBinaryRoundTrip[StringBrand, string](t, "test-id")
+}
+
+func (b binaryRoundTripTest) TestInt64(t *testing.T) {
+	t.Parallel()
+	testBinaryRoundTrip[Int64Brand, int64](t, 42)
+}
+
+func (b binaryRoundTripTest) TestInt32(t *testing.T) {
+	t.Parallel()
+	testBinaryRoundTrip[Int32Brand, int32](t, 42)
+}
+
+func (b binaryRoundTripTest) TestUint64(t *testing.T) {
+	t.Parallel()
+	testBinaryRoundTrip[Uint64Brand, uint64](t, 42)
 }
 
 func TestIDGob(t *testing.T) {

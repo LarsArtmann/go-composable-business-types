@@ -15,6 +15,7 @@ import (
 	"errors"
 	"fmt"
 
+	cberrors "github.com/larsartmann/go-composable-business-types/pkg/errors"
 	"github.com/larsartmann/go-composable-business-types/scanutil"
 	"github.com/sixafter/nanoid"
 )
@@ -32,15 +33,9 @@ const (
 	maxNanoIDLength = 256 // ErrNanoIDTooLong
 )
 
-var (
-	// ErrNanoIDEmpty is returned when a NanoID is empty.
-	ErrNanoIDEmpty    = errors.New("nanoid: cannot be empty")
-	ErrNanoIDTooShort = errors.New("nanoid: minimum length is 8 characters")
-	ErrNanoIDTooLong  = errors.New("nanoid: maximum length is 256 characters")
-	ErrNanoIDInvalid  = errors.New("nanoid: contains invalid characters")
-)
+var _ error = cberrors.ErrNanoIDEmpty
 
-// NewNanoID generates a new random NanoID with the default length (21 characters).
+// ParseNanoID validates and creates a NanoID from a string.
 func NewNanoID() NanoID {
 	return NewNanoIDWithLength(DefaultNanoIDLength)
 }
@@ -56,20 +51,20 @@ func NewNanoIDWithLength(length int) NanoID {
 // or contains characters outside the URL-safe alphabet.
 func ParseNanoID(s string) (NanoID, error) {
 	if s == "" {
-		return NanoID{}, ErrNanoIDEmpty
+		return NanoID{}, cberrors.ErrNanoIDEmpty
 	}
 
 	if len(s) < minNanoIDLength {
-		return NanoID{}, ErrNanoIDTooShort
+		return NanoID{}, cberrors.ErrNanoIDTooShort
 	}
 
 	if len(s) > maxNanoIDLength {
-		return NanoID{}, ErrNanoIDTooLong
+		return NanoID{}, cberrors.ErrNanoIDTooLong
 	}
 
 	for _, r := range s {
 		if !isNanoIDChar(r) {
-			return NanoID{}, ErrNanoIDInvalid
+			return NanoID{}, cberrors.ErrNanoIDInvalid
 		}
 	}
 

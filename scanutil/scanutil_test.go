@@ -14,7 +14,7 @@ func TestScanString(t *testing.T) {
 		{name: "byte slice", src: []byte("world"), wantValue: "world", wantErr: false},
 	}
 
-	scanStringTests(t, tests)
+	scanTests(t, "ScanString", tests, ScanString)
 }
 
 func TestScanString_InvalidType(t *testing.T) {
@@ -36,7 +36,7 @@ func TestScanInt64(t *testing.T) {
 		{name: "empty byte slice", src: []byte{}, wantValue: 0, wantErr: false},
 	}
 
-	scanInt64Tests(t, tests)
+	scanTests(t, "ScanInt64", tests, ScanInt64)
 }
 
 func TestScanInt64_InvalidType(t *testing.T) {
@@ -53,51 +53,31 @@ type scanTestCase[T any] struct {
 	wantErr   bool
 }
 
-func scanStringTests(t *testing.T, tests []scanTestCase[string]) {
+func scanTests[T comparable, F func(src any, setValue func(T) error) error](
+	t *testing.T,
+	name string,
+	tests []scanTestCase[T],
+	scanFn F,
+) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			var got string
+			var got T
 
-			err := ScanString(tt.src, func(v string) error {
+			err := scanFn(tt.src, func(v T) error {
 				got = v
 
 				return nil
 			})
 			if (err != nil) != tt.wantErr {
-				t.Errorf("ScanString() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("%s() error = %v, wantErr %v", name, err, tt.wantErr)
 
 				return
 			}
 
 			if got != tt.wantValue {
-				t.Errorf("ScanString() got = %v, want %v", got, tt.wantValue)
-			}
-		})
-	}
-}
-
-func scanInt64Tests(t *testing.T, tests []scanTestCase[int64]) {
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			var got int64
-
-			err := ScanInt64(tt.src, func(v int64) error {
-				got = v
-
-				return nil
-			})
-			if (err != nil) != tt.wantErr {
-				t.Errorf("ScanInt64() error = %v, wantErr %v", err, tt.wantErr)
-
-				return
-			}
-
-			if got != tt.wantValue {
-				t.Errorf("ScanInt64() got = %v, want %v", got, tt.wantValue)
+				t.Errorf("%s() got = %v, want %v", name, got, tt.wantValue)
 			}
 		})
 	}
@@ -163,8 +143,35 @@ func TestZeroAsNullValue(t *testing.T) {
 	}
 
 	for _, testCase := range tests {
-		testNullableInt64Value(t, testCase.name, testCase.input, testCase.wantNil, ZeroAsNullValue)
+		testNullable(t, testCase.name, testCase.input, testCase.wantNil, ZeroAsNullValue)
 	}
+}
+
+func testNullable[T comparable](
+	t *testing.T,
+	name string,
+	input T,
+	wantNil bool,
+	fn func(T) (any, error),
+) {
+	t.Run(name, func(t *testing.T) {
+		t.Parallel()
+
+		got, err := fn(input)
+		if err != nil {
+			t.Errorf("error = %v", err)
+
+			return
+		}
+
+		if wantNil && got != nil {
+			t.Errorf("got nil = false, want nil = true")
+		}
+
+		if !wantNil && got != any(input) {
+			t.Errorf("got = %v, want %v", got, input)
+		}
+	})
 }
 
 func testNullableString(
@@ -190,33 +197,6 @@ func testNullableString(
 
 		if !wantNil && got != wantVal {
 			t.Errorf("got = %v, want %v", got, wantVal)
-		}
-	})
-}
-
-func testNullableInt64Value(
-	t *testing.T,
-	name string,
-	input int64,
-	wantNil bool,
-	fn func(int64) (any, error),
-) {
-	t.Run(name, func(t *testing.T) {
-		t.Parallel()
-
-		got, err := fn(input)
-		if err != nil {
-			t.Errorf("error = %v", err)
-
-			return
-		}
-
-		if wantNil && got != nil {
-			t.Errorf("got nil = false, want nil = true")
-		}
-
-		if !wantNil && got != input {
-			t.Errorf("got = %v, want %v", got, input)
 		}
 	})
 }

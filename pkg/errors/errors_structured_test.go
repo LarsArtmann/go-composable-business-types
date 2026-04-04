@@ -22,6 +22,15 @@ func testStructuredError(err, original error, want string, checkFn func()) {
 	checkFn()
 }
 
+func testAs[E any](t *testing.T, err error, checkFn func(E)) {
+	var target E
+	if !errors.As(err, &target) {
+		t.Error("expected errors.As() to succeed")
+	} else {
+		checkFn(target)
+	}
+}
+
 func TestUnmarshalError(t *testing.T) {
 	t.Parallel()
 
@@ -32,18 +41,14 @@ func TestUnmarshalError(t *testing.T) {
 		Err:   original,
 	}
 	testStructuredError(err, original, "unmarshal JSON: {invalid}: parse failed", func() {
-		var target *UnmarshalError
-		if !errors.As(err, &target) {
-			t.Error("expected errors.As() to succeed")
-		} else {
+		testAs[*UnmarshalError](t, err, func(target *UnmarshalError) {
 			if target.Type != "JSON" {
 				t.Errorf("Type = %q, want JSON", target.Type)
 			}
-
 			if target.Input != `{invalid}` {
 				t.Errorf("Input = %q, want {invalid}", target.Input)
 			}
-		}
+		})
 	})
 }
 
@@ -61,18 +66,14 @@ func TestValidationError(t *testing.T) {
 		original,
 		"validation failed for email=not-an-email: invalid format",
 		func() {
-			var target *ValidationError
-			if !errors.As(err, &target) {
-				t.Error("expected errors.As() to succeed")
-			} else {
+			testAs[*ValidationError](t, err, func(target *ValidationError) {
 				if target.Field != "email" {
 					t.Errorf("Field = %q, want email", target.Field)
 				}
-
 				if target.Value != "not-an-email" {
 					t.Errorf("Value = %v, want not-an-email", target.Value)
 				}
-			}
+			})
 		},
 	)
 }
@@ -97,14 +98,15 @@ func testRangeError(t *testing.T, value, min, max int, outOfRange bool, want str
 	}
 }
 
-// testAsErrorHelper tests that an As*Error function correctly extracts
-// the expected error type and returns false for non-matching errors.
-func testAsErrorHelper[E any](
+// testAsErrorField tests that an As*Error function extracts the correct field value.
+func testAsErrorField(
 	t *testing.T,
 	err error,
-	asFn func(error) (E, bool),
-	checkFn func(E),
+	asFn func(error) (any, bool),
 	fnName string,
+	fieldName string,
+	wantValue any,
+	getField func(any) any,
 ) {
 	t.Helper()
 
@@ -113,7 +115,9 @@ func testAsErrorHelper[E any](
 		t.Fatalf("expected %s to succeed", fnName)
 	}
 
-	checkFn(got)
+	if gotField := getField(got); gotField != wantValue {
+		t.Errorf("%s = %v, want %v", fieldName, gotField, wantValue)
+	}
 
 	_, ok = asFn(errors.New("other"))
 	if ok {
@@ -121,52 +125,61 @@ func testAsErrorHelper[E any](
 	}
 }
 
-func TestAsUnmarshalError(t *testing.T) {
+func TestAsErrors(t *testing.T) {
 	t.Parallel()
 
-	err := &UnmarshalError{Type: "JSON", Input: `{bad}`, Err: errors.New("fail")}
+	tests := []struct {
+		name      string
+		err       error
+		asFn      func(error) (any, bool)
+		fnName    string
+		fieldName string
+		wantValue any
+		getField  func(any) any
+	}{
+		{
+			name:      "UnmarshalError",
+			err:       &UnmarshalError{Type: "JSON", Input: `{bad}`, Err: errors.New("fail")},
+			asFn:      func(err error) (any, bool) { return AsUnmarshalError(err) },
+			fnName:    "AsUnmarshalError",
+			fieldName: "Type",
+			wantValue: "JSON",
+			getField:  func(e any) any { return e.(*UnmarshalError).Type },
+		},
+		{
+			name:      "ValidationError",
+			err:       &ValidationError{Field: "email", Value: "x", Err: errors.New("fail")},
+			asFn:      func(err error) (any, bool) { return AsValidationError(err) },
+			fnName:    "AsValidationError",
+			fieldName: "Field",
+			wantValue: "email",
+			getField:  func(e any) any { return e.(*ValidationError).Field },
+		},
+		{
+			name:      "RangeError",
+			err:       &RangeError{Value: 5, Min: 1, Max: 10, OutOfRange: true},
+			asFn:      func(err error) (any, bool) { return AsRangeError(err) },
+			fnName:    "AsRangeError",
+			fieldName: "Value",
+			wantValue: 5,
+			getField:  func(e any) any { return e.(*RangeError).Value },
+		},
+		{
+			name:      "ScanError",
+			err:       &ScanError{SourceType: "int64", TargetType: "string", Err: errors.New("fail")},
+			asFn:      func(err error) (any, bool) { return AsScanError(err) },
+			fnName:    "AsScanError",
+			fieldName: "SourceType",
+			wantValue: "int64",
+			getField:  func(e any) any { return e.(*ScanError).SourceType },
+		},
+	}
 
-	testAsErrorHelper(t, err, AsUnmarshalError, func(got *UnmarshalError) {
-		if got.Type != "JSON" {
-			t.Errorf("Type = %q, want JSON", got.Type)
-		}
-	}, "AsUnmarshalError")
-}
-
-func TestAsValidationError(t *testing.T) {
-	t.Parallel()
-
-	err := &ValidationError{Field: "email", Value: "x", Err: errors.New("fail")}
-
-	testAsErrorHelper(t, err, AsValidationError, func(got *ValidationError) {
-		if got.Field != "email" {
-			t.Errorf("Field = %q, want email", got.Field)
-		}
-	}, "AsValidationError")
-}
-
-func TestAsRangeError(t *testing.T) {
-	t.Parallel()
-
-	err := &RangeError{Value: 5, Min: 1, Max: 10, OutOfRange: true}
-
-	testAsErrorHelper(t, err, AsRangeError, func(got *RangeError) {
-		if got.Value != 5 {
-			t.Errorf("Value = %v, want 5", got.Value)
-		}
-	}, "AsRangeError")
-}
-
-func TestAsScanError(t *testing.T) {
-	t.Parallel()
-
-	err := &ScanError{SourceType: "int64", TargetType: "string", Err: errors.New("fail")}
-
-	testAsErrorHelper(t, err, AsScanError, func(got *ScanError) {
-		if got.SourceType != "int64" {
-			t.Errorf("SourceType = %q, want int64", got.SourceType)
-		}
-	}, "AsScanError")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			testAsErrorField(t, tt.err, tt.asFn, tt.fnName, tt.fieldName, tt.wantValue, tt.getField)
+		})
+	}
 }
 
 func TestAsTypeWrappedErrors(t *testing.T) {
