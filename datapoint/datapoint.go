@@ -16,7 +16,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"iter"
-	"maps"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
 	"github.com/larsartmann/go-composable-business-types/enums"
@@ -81,23 +80,10 @@ func (d DataPoint[T]) Context() Context { return d.context }
 // Version returns the version number.
 func (d DataPoint[T]) Version() int { return d.version }
 
-// Tags returns all tags.
-func (d DataPoint[T]) Tags() map[string]string {
-	if d.tags == nil {
-		return nil
-	}
-
-	return maps.Clone(d.tags)
-}
+func (d DataPoint[T]) Tags() map[string]string { return getTags(d.tags) }
 
 // Tag returns a specific tag value.
-func (d DataPoint[T]) Tag(key string) string {
-	if d.tags == nil {
-		return ""
-	}
-
-	return d.tags[key]
-}
+func (d DataPoint[T]) Tag(key string) string { return getTag(d.tags, key) }
 
 // cloneSlice creates a copy of the given slice, returning nil if the input is nil.
 func cloneSlice[T any](s []T) []T {

@@ -39,22 +39,32 @@ func (r Reference[T]) Relation() string { return r.relation }
 // Version returns the expected version of the referenced entity.
 func (r Reference[T]) Version() int { return r.version }
 
-// Tags returns all reference tags.
-func (r Reference[T]) Tags() map[string]string {
-	if r.tags == nil {
+// getTags returns all tags from a map, returning nil if the map is nil.
+func getTags(tags map[string]string) map[string]string {
+	if tags == nil {
 		return nil
 	}
 
-	return maps.Clone(r.tags)
+	return maps.Clone(tags)
+}
+
+// getTag returns a specific tag value, returning "" if tags is nil.
+func getTag(tags map[string]string, key string) string {
+	if tags == nil {
+		return ""
+	}
+
+	return tags[key]
+}
+
+// Tags returns all reference tags.
+func (r Reference[T]) Tags() map[string]string {
+	return getTags(r.tags)
 }
 
 // Tag returns a specific tag value.
 func (r Reference[T]) Tag(key string) string {
-	if r.tags == nil {
-		return ""
-	}
-
-	return r.tags[key]
+	return getTag(r.tags, key)
 }
 
 // IsZero returns true if this is the zero value.
