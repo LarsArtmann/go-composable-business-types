@@ -52,33 +52,9 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 
 		return nil
 	case int64:
-		n, err := strconv.ParseInt(string(data), 10, 64)
-		if err != nil {
-			return fmt.Errorf("id: cannot parse %q as int64: %w", data, err)
-		}
-
-		v, ok := any(n).(V)
-		if !ok {
-			return errors.New("id: internal error: type assertion failed for int64")
-		}
-
-		*id = ID[B, V]{value: v}
-
-		return nil
+		return parseSignedIntegerID(id, data, strconv.ParseInt, "int64")
 	case uint64:
-		n, err := strconv.ParseUint(string(data), 10, 64)
-		if err != nil {
-			return fmt.Errorf("id: cannot parse %q as uint64: %w", data, err)
-		}
-
-		v, ok := any(n).(V)
-		if !ok {
-			return errors.New("id: internal error: type assertion failed for uint64")
-		}
-
-		*id = ID[B, V]{value: v}
-
-		return nil
+		return parseUnsignedIntegerID(id, data, strconv.ParseUint, "uint64")
 	default:
 		return fmt.Errorf(
 			"id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)",
@@ -86,6 +62,50 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 			string(data),
 		)
 	}
+
+	return nil
+}
+
+func parseSignedIntegerID[B any, V comparable](
+	id *ID[B, V],
+	data []byte,
+	parse func(string, int, int) (int64, error),
+	typeName string,
+) error {
+	n, err := parse(string(data), 10, 64)
+	if err != nil {
+		return fmt.Errorf("id: cannot parse %q as %s: %w", data, typeName, err)
+	}
+
+	v, ok := any(n).(V)
+	if !ok {
+		return errors.New("id: internal error: type assertion failed for " + typeName)
+	}
+
+	*id = ID[B, V]{value: v}
+
+	return nil
+}
+
+func parseUnsignedIntegerID[B any, V comparable](
+	id *ID[B, V],
+	data []byte,
+	parse func(string, int, int) (uint64, error),
+	typeName string,
+) error {
+	n, err := parse(string(data), 10, 64)
+	if err != nil {
+		return fmt.Errorf("id: cannot parse %q as %s: %w", data, typeName, err)
+	}
+
+	v, ok := any(n).(V)
+	if !ok {
+		return errors.New("id: internal error: type assertion failed for " + typeName)
+	}
+
+	*id = ID[B, V]{value: v}
+
+	return nil
 }
 
 // Compile-time interface assertions for text marshaling.
