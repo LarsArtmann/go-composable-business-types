@@ -95,6 +95,7 @@ type ZeroChecker interface {
 }
 
 func RunIsZeroTest[T ZeroChecker](t *testing.T, makeNonZero func() (T, error)) {
+	t.Parallel()
 	var zero T
 	if !zero.IsZero() {
 		t.Error("zero value should be zero")

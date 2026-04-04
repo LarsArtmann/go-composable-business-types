@@ -33,8 +33,6 @@ func TestLocaleParts(t *testing.T) {
 }
 
 func TestLocaleIsZero(t *testing.T) {
-	t.Parallel()
-
 	testutil.RunIsZeroTest(t, func() (Locale, error) {
 		return ParseLocale("en-US")
 	})

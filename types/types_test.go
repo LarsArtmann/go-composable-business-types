@@ -82,8 +82,6 @@ func TestEmailNormalize(t *testing.T) {
 }
 
 func TestEmailIsZero(t *testing.T) {
-	t.Parallel()
-
 	testutil.RunIsZeroTest(t, func() (Email, error) {
 		return NewEmail("test@example.com")
 	})
@@ -107,8 +105,6 @@ func TestURLParts(t *testing.T) {
 }
 
 func TestURLIsZero(t *testing.T) {
-	t.Parallel()
-
 	testutil.RunIsZeroTest(t, func() (URL, error) {
 		return NewURL("https://example.com")
 	})
