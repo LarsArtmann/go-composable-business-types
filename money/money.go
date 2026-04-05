@@ -20,7 +20,10 @@ import (
 type Money = currency.Amount
 
 // newMoney creates a monetary amount using the provided factory function.
-func newMoney(amount string, currencyCode string, factory func(string, string) (Money, error)) (Money, error) {
+func newMoney(
+	amount, currencyCode string,
+	factory func(string, string) (Money, error),
+) (Money, error) {
 	m, err := factory(amount, currencyCode)
 	if err != nil {
 		return Money{}, fmt.Errorf(

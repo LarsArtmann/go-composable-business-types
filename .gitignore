@@ -9,3 +9,9 @@ coverage.out
 *.png
 # Dependencies
 node_modules/
+# Test coverage
+/coverage
+# Build artifacts
+/go-composable-business-types
+
+.DS_Store

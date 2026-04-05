@@ -244,7 +244,11 @@ func WrapContextual[T ContextualError](err error, constructor func(err error) T)
 // WrapScan wraps an error as a scan error.
 func WrapScan(err error, sourceType, targetType string) error {
 	return WrapContextual(err, func(e error) *ScanError {
-		return &ScanError{SourceType: sourceType, TargetType: targetType, wrappedError: wrappedError{Err: e}}
+		return &ScanError{
+			SourceType:   sourceType,
+			TargetType:   targetType,
+			wrappedError: wrappedError{Err: e},
+		}
 	})
 }
 

@@ -62,7 +62,13 @@ func TestURLSentinels(t *testing.T) {
 }
 
 func TestBoundedStringSentinels(t *testing.T) {
-	testSentinelErrorSet(t, ErrBoundedStringMinLength, ErrBoundedStringMaxLength, ErrBoundedStringMinNegative, ErrBoundedStringMaxLessThanMin)
+	testSentinelErrorSet(
+		t,
+		ErrBoundedStringMinLength,
+		ErrBoundedStringMaxLength,
+		ErrBoundedStringMinNegative,
+		ErrBoundedStringMaxLessThanMin,
+	)
 }
 
 func TestNanoIDSentinels(t *testing.T) {

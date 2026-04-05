@@ -17,8 +17,10 @@ func nilReturnsNilHelper(t *testing.T, name string, wrapFunc func() error) {
 	})
 }
 
-const jsonType = "JSON"
-const incompleteInput = `{incomplete`
+const (
+	jsonType        = "JSON"
+	incompleteInput = `{incomplete`
+)
 
 func assertFieldValue(t *testing.T, fieldName, actual, want string) {
 	if actual != want {

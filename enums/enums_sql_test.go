@@ -125,14 +125,24 @@ func enumValueFunc[T interface{ MarshalText() ([]byte, error) }](v T) (string, e
 func TestPrioritySQL(t *testing.T) {
 	t.Parallel()
 	testEnumSQL(t, []enumSQLCase[enums.Priority]{
-		{value: enums.PriorityHigh, valueStr: "High", scanStr: "Critical", scanWant: enums.PriorityCritical},
+		{
+			value:    enums.PriorityHigh,
+			valueStr: "High",
+			scanStr:  "Critical",
+			scanWant: enums.PriorityCritical,
+		},
 	}, enumValueFunc, (*enums.Priority).Scan)
 }
 
 func TestStatusSQL(t *testing.T) {
 	t.Parallel()
 	testEnumSQL(t, []enumSQLCase[enums.Status]{
-		{value: enums.StatusActive, valueStr: "Active", scanStr: "Archived", scanWant: enums.StatusArchived},
+		{
+			value:    enums.StatusActive,
+			valueStr: "Active",
+			scanStr:  "Archived",
+			scanWant: enums.StatusArchived,
+		},
 	}, enumValueFunc, (*enums.Status).Scan)
 }
 

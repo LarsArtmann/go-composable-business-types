@@ -161,18 +161,30 @@ func BenchmarkIDCompare(b *testing.B) {
 }
 
 func BenchmarkIDMarshalJSON(b *testing.B) {
-	benchmarkIDMethodWithError(b, NewID[StringBrand]("test-id-12345"), func(id ID[StringBrand, string]) ([]byte, error) {
-		return id.MarshalJSON()
-	})
+	benchmarkIDMethodWithError(
+		b,
+		NewID[StringBrand]("test-id-12345"),
+		func(id ID[StringBrand, string]) ([]byte, error) {
+			return id.MarshalJSON()
+		},
+	)
 }
 
 func BenchmarkIDMarshalJSONInt64(b *testing.B) {
-	benchmarkIDMethodWithError(b, NewID[Int64Brand, int64](123456789), func(id ID[Int64Brand, int64]) ([]byte, error) {
-		return id.MarshalJSON()
-	})
+	benchmarkIDMethodWithError(
+		b,
+		NewID[Int64Brand, int64](123456789),
+		func(id ID[Int64Brand, int64]) ([]byte, error) {
+			return id.MarshalJSON()
+		},
+	)
 }
 
-func benchmarkIDMethodWithError[B, V comparable, R any](b *testing.B, id ID[B, V], fn func(ID[B, V]) (R, error)) {
+func benchmarkIDMethodWithError[B, V comparable, R any](
+	b *testing.B,
+	id ID[B, V],
+	fn func(ID[B, V]) (R, error),
+) {
 	for b.Loop() {
 		_, _ = fn(id)
 	}
@@ -229,15 +241,23 @@ func benchmarkIDScan[B, V comparable](b *testing.B, value V) {
 }
 
 func BenchmarkIDValue(b *testing.B) {
-	benchmarkIDMethodWithError(b, NewID[StringBrand]("test-id-12345"), func(id ID[StringBrand, string]) (driver.Value, error) {
-		return id.Value()
-	})
+	benchmarkIDMethodWithError(
+		b,
+		NewID[StringBrand]("test-id-12345"),
+		func(id ID[StringBrand, string]) (driver.Value, error) {
+			return id.Value()
+		},
+	)
 }
 
 func BenchmarkIDValueInt64(b *testing.B) {
-	benchmarkIDMethodWithError(b, NewID[Int64Brand, int64](123456789), func(id ID[Int64Brand, int64]) (driver.Value, error) {
-		return id.Value()
-	})
+	benchmarkIDMethodWithError(
+		b,
+		NewID[Int64Brand, int64](123456789),
+		func(id ID[Int64Brand, int64]) (driver.Value, error) {
+			return id.Value()
+		},
+	)
 }
 
 func BenchmarkJSONRoundTrip(b *testing.B) {

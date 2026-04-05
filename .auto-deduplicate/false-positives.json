@@ -21,36 +21,28 @@
   },
   {
     "fingerprint": "benchmark-id-duplicate-20260404",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/id/id_bench_test.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_bench_test.go"],
     "reason": "False positive - BenchmarkNewID, BenchmarkIDGet, and BenchmarkIDStringInt64 test fundamentally different operations (creation vs Get() vs String()). The structural similarity is coincidental - benchmarks naturally follow a setup+loop pattern. Adding a shared helper would introduce function call overhead that distorts benchmark accuracy. Each benchmark must be inline to measure its specific operation without abstraction overhead.",
     "marked_at": "0001-01-01T00:00:00Z",
     "marked_by": ""
   },
   {
     "fingerprint": "e3dbaef09fd4dad61947fb4d5ab95798dc295e4969ef6491d515a94e1b4be318",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
     "reason": "These test different types (string, int64, int32, uint64) with different expected values - intentionally distinct",
     "marked_at": "2026-03-15T11:53:36.184938+01:00",
     "marked_by": "auto-deduplicate"
   },
   {
     "fingerprint": "df955619de77923632b2e2f0434b1ba852d8d5c1a14eab2ab4c6d3970050683e",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/id/id_test.go"],
     "reason": "These are table-driven test cases with different types that intentionally test different behavior (int64, int32, uint64)",
     "marked_at": "2026-03-15T11:53:36.186836+01:00",
     "marked_by": "auto-deduplicate"
   },
   {
     "fingerprint": "30546d891d765e14e8f44b9819d37f4bfd5af71d3e1005f9e30d72fee385eca8",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/enums/enums_sql_test.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/enums/enums_sql_test.go"],
     "reason": "These three tests verify MarshalText/UnmarshalText for three semantically distinct enum types (Priority, Status, Trigger). While the test pattern is structurally identical, each test explicitly validates a specific enum type, maintaining clarity about which type is being tested. Refactoring into a generic helper would reduce readability without meaningful maintenance benefit, as enum types in Go are tested explicitly rather than generically.\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=29a48250-5038-4d68-94cd-1575f16c11cb\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 20s app duration in seconds 20]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
     "marked_at": "2026-04-03T22:49:28.557165+02:00",
     "marked_by": "auto-deduplicate"
@@ -66,9 +58,7 @@
   },
   {
     "fingerprint": "228f0979b150dcbf1bddc4dc874ed468a34ec6ec2995529f540504c0ed63d36a",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/pkg/errors/errors_test.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/pkg/errors/errors_test.go"],
     "reason": "These test functions use the same helper function `testSentinelErrors` with a table-driven pattern, but they test semantically different things - error constants for Email, URL, BoundedString, NanoID, and ID types respectively. The \"duplication\" is structural coincidence from using Go's idiomatic table-driven test pattern. Each test has different test data (error constants) and tests different domain types.",
     "marked_at": "2026-04-03T23:05:29.586046+02:00",
     "marked_by": "auto-deduplicate"
@@ -85,9 +75,7 @@
   },
   {
     "fingerprint": "4db2b526b6e887d75b682363e8ec6715c527ca623671c6832f26443260a3437f",
-    "files": [
-      "/Users/larsartmann/projects/go-composable-business-types/types/types_time.go"
-    ],
+    "files": ["/Users/larsartmann/projects/go-composable-business-types/types/types_time.go"],
     "reason": "These methods are structurally similar but semantically distinct—one tests for \"before\" relationship, the other for \"after\". Creating an interface or extracting to a common function would reduce readability without benefit. Each method delegates to the appropriate `time.Time` method with clear domain semantics.\n\n```json\n{\"strategy\": \"false_positive\",\n \"files_modified\": [],\n \"new_abstraction\": null,\n \"confidence\": 1.0}\n```\nINFO Running in non-interactive mode\nINFO Overriding large model for non-interactive run provider=minimax model=MiniMax-M2.7-highspeed\nINFO Using provider default small model provider=minimax model=MiniMax-M2.7\nINFO Created session for non-interactive run session_id=87ccd84a-7ba1-40d8-883c-facd89c88662\nERRO Language server stderr command=golangci-lint-langserver\n  output=\n  │ 2026/04/04 21:14:02 golangci-lint-langserver: connections opened\n\nERRO Failed to enqueue PostHog event event=\"app exited\" props=\"[app duration pretty 15s app duration in seconds 15]\" error=\"the client was already closed\"\nERRO Failed to flush PostHog events error=\"the client was already closed\"",
     "marked_at": "2026-04-04T21:14:11.797759+02:00",
     "marked_by": "auto-deduplicate"

@@ -165,8 +165,12 @@ func TestAsErrors(t *testing.T) {
 			getField:  func(e any) any { return e.(*RangeError).Value },
 		},
 		{
-			name:      "ScanError",
-			err:       &ScanError{SourceType: "int64", TargetType: "string", Err: errors.New("fail")},
+			name: "ScanError",
+			err: &ScanError{
+				SourceType: "int64",
+				TargetType: "string",
+				Err:        errors.New("fail"),
+			},
 			asFn:      func(err error) (any, bool) { return AsScanError(err) },
 			fnName:    "AsScanError",
 			fieldName: "SourceType",

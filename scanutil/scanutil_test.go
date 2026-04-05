@@ -64,8 +64,6 @@ func TestScanInt64(t *testing.T) {
 	scanTests(t, "ScanInt64", tests, ScanInt64)
 }
 
-
-
 type scanTestCase[T any] struct {
 	name      string
 	src       any

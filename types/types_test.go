@@ -120,10 +120,34 @@ func TestParseURL(t *testing.T) {
 		expectedErr error
 		expectedOut string
 	}{
-		{"Email/invalid", func(s string) (any, error) { return NewEmail(s) }, "invalid-email", pkgerrors.ErrInvalidEmail, ""},
-		{"Email/valid", func(s string) (any, error) { return NewEmail(s) }, "test@example.com", nil, "test@example.com"},
-		{"URL/invalid", func(s string) (any, error) { return NewURL(s) }, "not-a-valid-url", pkgerrors.ErrInvalidURL, ""},
-		{"URL/valid", func(s string) (any, error) { return NewURL(s) }, "https://example.com", nil, "https://example.com"},
+		{
+			"Email/invalid",
+			func(s string) (any, error) { return NewEmail(s) },
+			"invalid-email",
+			pkgerrors.ErrInvalidEmail,
+			"",
+		},
+		{
+			"Email/valid",
+			func(s string) (any, error) { return NewEmail(s) },
+			"test@example.com",
+			nil,
+			"test@example.com",
+		},
+		{
+			"URL/invalid",
+			func(s string) (any, error) { return NewURL(s) },
+			"not-a-valid-url",
+			pkgerrors.ErrInvalidURL,
+			"",
+		},
+		{
+			"URL/valid",
+			func(s string) (any, error) { return NewURL(s) },
+			"https://example.com",
+			nil,
+			"https://example.com",
+		},
 	}
 
 	for _, tc := range testParseURLCases {

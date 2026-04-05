@@ -11,7 +11,11 @@ func testScanSubTest[B any, V comparable](t *testing.T, name string, input any, 
 	})
 }
 
-func testScanInvalidSubTest[B any, V comparable](t *testing.T, name string, typeName string, invalidValue any) {
+func testScanInvalidSubTest[B any, V comparable](
+	t *testing.T,
+	name, typeName string,
+	invalidValue any,
+) {
 	t.Run(name, func(tx *testing.T) {
 		tx.Parallel()
 		testScanInvalidType[B, V](tx, typeName, invalidValue)

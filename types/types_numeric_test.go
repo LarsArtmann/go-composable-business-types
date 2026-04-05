@@ -53,7 +53,12 @@ func TestPercentageHelpers(t *testing.T) {
 }
 
 // testNumericCompare runs comparison tests for numeric types.
-func testNumericCompare[T any](t *testing.T, name string, newVal func(int64) T, compare func(T, T) int) {
+func testNumericCompare[T any](
+	t *testing.T,
+	name string,
+	newVal func(int64) T,
+	compare func(T, T) int,
+) {
 	t.Run(name, func(t *testing.T) {
 		t.Parallel()
 		testCompare(t, []struct {
@@ -68,7 +73,12 @@ func testNumericCompare[T any](t *testing.T, name string, newVal func(int64) T, 
 }
 
 func TestPercentageCompare(t *testing.T) {
-	testNumericCompare(t, "Percentage", func(v int64) Percentage { return NewPercentage(uint8(v)) }, Percentage.Compare)
+	testNumericCompare(
+		t,
+		"Percentage",
+		func(v int64) Percentage { return NewPercentage(uint8(v)) },
+		Percentage.Compare,
+	)
 }
 
 func TestPercentageJSON(t *testing.T) {

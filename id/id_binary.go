@@ -31,7 +31,12 @@ func validateSize(data []byte, want int, typeName string, zero any) error {
 }
 
 // readUnsigned reads an unsigned integer from data and assigns it to id.
-func (id *ID[B, V]) readUnsigned(data []byte, byteSize int, typeName string, readFunc func([]byte) uint64) error {
+func (id *ID[B, V]) readUnsigned(
+	data []byte,
+	byteSize int,
+	typeName string,
+	readFunc func([]byte) uint64,
+) error {
 	err := validateSize(data, byteSize, typeName, *id)
 	if err != nil {
 		return err
@@ -45,11 +50,22 @@ func (id *ID[B, V]) readUnsigned(data []byte, byteSize int, typeName string, rea
 
 // readSigned reads a signed integer from data.
 // IntType is the unsigned type used to read the bytes (uint16, uint32, or uint64).
-func readSigned[V, IntType any](data []byte, typeName string, readFunc func([]byte) IntType, convertFunc func(IntType) V, byteSize int) (V, error) {
+func readSigned[V, IntType any](
+	data []byte,
+	typeName string,
+	readFunc func([]byte) IntType,
+	convertFunc func(IntType) V,
+	byteSize int,
+) (V, error) {
 	var zero V
 	//nolint:gosec // G115: byteSize is always 1, 2, 4, or 8
 	if len(data) < byteSize {
-		return zero, fmt.Errorf("id: insufficient data for %s: got %d bytes, want %d", typeName, len(data), byteSize)
+		return zero, fmt.Errorf(
+			"id: insufficient data for %s: got %d bytes, want %d",
+			typeName,
+			len(data),
+			byteSize,
+		)
 	}
 
 	return convertFunc(readFunc(data)), nil
@@ -160,7 +176,13 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case int:
-		n, err := readSigned(data, "int", readUint64, func(n uint64) V { return any(int(n)).(V) }, byteSizeInt64)
+		n, err := readSigned(
+			data,
+			"int",
+			readUint64,
+			func(n uint64) V { return any(int(n)).(V) },
+			byteSizeInt64,
+		)
 		if err != nil {
 			return err
 		}
@@ -170,7 +192,13 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case int8:
 		return id.readByte(data, "int8", func(b byte) V { return any(int8(b)).(V) })
 	case int16:
-		n, err := readSigned(data, "int16", readUint16, func(n uint16) V { return any(int16(n)).(V) }, byteSizeInt16)
+		n, err := readSigned(
+			data,
+			"int16",
+			readUint16,
+			func(n uint16) V { return any(int16(n)).(V) },
+			byteSizeInt16,
+		)
 		if err != nil {
 			return err
 		}
@@ -178,7 +206,13 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case int32:
-		n, err := readSigned(data, "int32", readUint32, func(n uint32) V { return any(int32(n)).(V) }, byteSizeInt32)
+		n, err := readSigned(
+			data,
+			"int32",
+			readUint32,
+			func(n uint32) V { return any(int32(n)).(V) },
+			byteSizeInt32,
+		)
 		if err != nil {
 			return err
 		}
@@ -186,7 +220,13 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case int64:
-		n, err := readSigned(data, "int64", readUint64, func(n uint64) V { return any(int64(n)).(V) }, byteSizeInt64)
+		n, err := readSigned(
+			data,
+			"int64",
+			readUint64,
+			func(n uint64) V { return any(int64(n)).(V) },
+			byteSizeInt64,
+		)
 		if err != nil {
 			return err
 		}
@@ -194,7 +234,13 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 
 		return nil
 	case uint:
-		n, err := readSigned(data, "uint", readUint64, func(n uint64) V { return any(uint(n)).(V) }, byteSizeInt64)
+		n, err := readSigned(
+			data,
+			"uint",
+			readUint64,
+			func(n uint64) V { return any(uint(n)).(V) },
+			byteSizeInt64,
+		)
 		if err != nil {
 			return err
 		}
@@ -204,9 +250,19 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case uint8:
 		return id.readByte(data, "uint8", func(b byte) V { return any(b).(V) })
 	case uint16:
-		return id.readUnsigned(data, byteSizeInt16, "uint16", func(d []byte) uint64 { return uint64(readUint16(d)) })
+		return id.readUnsigned(
+			data,
+			byteSizeInt16,
+			"uint16",
+			func(d []byte) uint64 { return uint64(readUint16(d)) },
+		)
 	case uint32:
-		return id.readUnsigned(data, byteSizeInt32, "uint32", func(d []byte) uint64 { return uint64(readUint32(d)) })
+		return id.readUnsigned(
+			data,
+			byteSizeInt32,
+			"uint32",
+			func(d []byte) uint64 { return uint64(readUint32(d)) },
+		)
 	case uint64:
 		return id.readUnsigned(data, byteSizeInt64, "uint64", readUint64)
 	default:

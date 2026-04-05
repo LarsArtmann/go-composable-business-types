@@ -459,18 +459,30 @@ func newTestDataPointEmpty(t *testing.T) *DataPoint {
 	return NewDataPoint("payload", actorEntry)
 }
 
-func testDataPointSeqIteratorEmpty[T any](t *testing.T, name string, iter func(*DataPoint) iter.Seq[T]) {
+func testDataPointSeqIteratorEmpty[T any](
+	t *testing.T,
+	name string,
+	iter func(*DataPoint) iter.Seq[T],
+) {
 	t.Parallel()
 	dp := newTestDataPointEmpty(t)
 	testDataPointIteratorEmpty(t, name, countIterator(iter(dp)))
 }
 
 func TestDataPointAllReferencesEmpty(t *testing.T) {
-	testDataPointSeqIteratorEmpty(t, "AllReferences", func(dp *DataPoint) iter.Seq[Reference[string]] { return dp.AllReferences() })
+	testDataPointSeqIteratorEmpty(
+		t,
+		"AllReferences",
+		func(dp *DataPoint) iter.Seq[Reference[string]] { return dp.AllReferences() },
+	)
 }
 
 func TestDataPointAllCausesEmpty(t *testing.T) {
-	testDataPointSeqIteratorEmpty(t, "AllCauses", func(dp *DataPoint) iter.Seq[Cause[string]] { return dp.AllCauses() })
+	testDataPointSeqIteratorEmpty(
+		t,
+		"AllCauses",
+		func(dp *DataPoint) iter.Seq[Cause[string]] { return dp.AllCauses() },
+	)
 }
 
 func TestDataPointAllTagsEmpty(t *testing.T) {

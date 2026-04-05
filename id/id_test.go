@@ -14,14 +14,14 @@ type (
 	Uint64Brand struct{}
 )
 
-func assertIDValue[B any, V comparable](t *testing.T, v V, expected V) {
+func assertIDValue[B any, V comparable](t *testing.T, v, expected V) {
 	id := NewID[B](v)
 	if id.Get() != expected {
 		t.Errorf("expected %v, got %v", expected, id.Get())
 	}
 }
 
-func assertIDValueMatches(t *testing.T, v any, expected any) {
+func assertIDValueMatches(t *testing.T, v, expected any) {
 	switch val := v.(type) {
 	case ID[Int64Brand, int64]:
 		if val.Get() != expected.(int64) {
@@ -392,23 +392,23 @@ func TestIDSorting(t *testing.T) {
 }
 
 func newIDTestCase(name string, brandFunc func(v any) any, value any) struct {
+	name     string
+	brand    func(v any) any
+	value    any
+	expected any
+} {
+	return struct {
 		name     string
 		brand    func(v any) any
 		value    any
 		expected any
-	} {
-		return struct {
-			name     string
-			brand    func(v any) any
-			value    any
-			expected any
-		}{
-			name:     name,
-			brand:    brandFunc,
-			value:    value,
-			expected: value,
-		}
+	}{
+		name:     name,
+		brand:    brandFunc,
+		value:    value,
+		expected: value,
 	}
+}
 
 func TestIDEdgeCases(t *testing.T) {
 	t.Parallel()
@@ -419,9 +419,21 @@ func TestIDEdgeCases(t *testing.T) {
 		value    any
 		expected any
 	}{
-		newIDTestCase("max int64", func(v any) any { return NewID[Int64Brand](v.(int64)) }, int64(math.MaxInt64)),
-		newIDTestCase("min int64", func(v any) any { return NewID[Int64Brand](v.(int64)) }, int64(math.MinInt64)),
-		newIDTestCase("max uint64", func(v any) any { return NewID[Uint64Brand](v.(uint64)) }, uint64(math.MaxUint64)),
+		newIDTestCase(
+			"max int64",
+			func(v any) any { return NewID[Int64Brand](v.(int64)) },
+			int64(math.MaxInt64),
+		),
+		newIDTestCase(
+			"min int64",
+			func(v any) any { return NewID[Int64Brand](v.(int64)) },
+			int64(math.MinInt64),
+		),
+		newIDTestCase(
+			"max uint64",
+			func(v any) any { return NewID[Uint64Brand](v.(uint64)) },
+			uint64(math.MaxUint64),
+		),
 		{"empty string", func(v any) any { return NewID[StringBrand](v.(string)) }, "", ""},
 	}
 

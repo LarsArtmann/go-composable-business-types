@@ -267,5 +267,9 @@ func TestParseCauseKind(t *testing.T) {
 func TestCauseKindIsValid(t *testing.T) {
 	t.Parallel()
 
-	testEnumIsValid(t, []enums.CauseKind{enums.CauseKindDirect, enums.CauseKindEvent}, enums.CauseKind(99))
+	testEnumIsValid(
+		t,
+		[]enums.CauseKind{enums.CauseKindDirect, enums.CauseKindEvent},
+		enums.CauseKind(99),
+	)
 }
