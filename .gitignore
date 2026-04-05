@@ -15,3 +15,5 @@ node_modules/
 /go-composable-business-types
 
 .DS_Store
+# Sensitive files
+*.db
