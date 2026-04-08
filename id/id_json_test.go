@@ -135,20 +135,33 @@ func TestIDUnmarshalJSON(t *testing.T) {
 
 	t.Run("invalid inputs", func(t *testing.T) {
 		t.Parallel()
-		t.Run("invalid JSON", func(t *testing.T) {
-			t.Parallel()
-			assertUnmarshalError[StringBrand, string](t, `invalid`)
-		})
 
-		t.Run("number into string ID", func(t *testing.T) {
-			t.Parallel()
-			assertUnmarshalError[StringBrand, string](t, "123")
-		})
+		stringInvalidTests := []struct {
+			name  string
+			input string
+		}{
+			{"invalid JSON", `invalid`},
+			{"number into string ID", "123"},
+		}
+		for _, tc := range stringInvalidTests {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Parallel()
+				assertUnmarshalError[StringBrand, string](t, tc.input)
+			})
+		}
 
-		t.Run("string into int64 ID", func(t *testing.T) {
-			t.Parallel()
-			assertUnmarshalError[Int64Brand, int64](t, `"not-a-number"`)
-		})
+		int64InvalidTests := []struct {
+			name  string
+			input string
+		}{
+			{"string into int64 ID", `"not-a-number"`},
+		}
+		for _, tc := range int64InvalidTests {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Parallel()
+				assertUnmarshalError[Int64Brand, int64](t, tc.input)
+			})
+		}
 	})
 }
 

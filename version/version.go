@@ -8,6 +8,8 @@ import (
 const (
 	Version    = "development"
 	ModulePath = "github.com/larsartmann/go-composable-business-types"
+
+	shortRevisionLength = 7
 )
 
 //nolint:gochecknoinits // init is required to read build info at runtime
@@ -42,8 +44,8 @@ func String() string {
 
 	if Revision != "" {
 		short := Revision
-		if len(short) > 7 {
-			short = short[:7]
+		if len(short) > shortRevisionLength {
+			short = short[:shortRevisionLength]
 		}
 
 		parts = append(parts, short)

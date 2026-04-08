@@ -63,7 +63,7 @@ import "github.com/larsartmann/go-composable-business-types/nanoid"
 import "github.com/larsartmann/go-composable-business-types/types"
 
 func main() {
-    id := nanoid.NewNanoID()
+    id := nanoid.New()
     email, _ := types.NewEmail("test@example.com")
 }
 ```

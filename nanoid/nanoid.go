@@ -6,8 +6,8 @@
 //
 // Basic usage:
 //
-//	id := nanoid.NewNanoID()  // 21 chars
-//	id := nanoid.NewNanoIDWithLength(32)
+//	id := nanoid.New()  // 21 chars
+//	id := nanoid.NewWithLength(32)
 package nanoid
 
 import (
@@ -35,21 +35,21 @@ const (
 
 var _ error = cberrors.ErrNanoIDEmpty
 
-// ParseNanoID validates and creates a NanoID from a string.
-func NewNanoID() NanoID {
-	return NewNanoIDWithLength(DefaultNanoIDLength)
+// New generates a new random NanoID with the default length (21 characters).
+func New() NanoID {
+	return NewWithLength(DefaultNanoIDLength)
 }
 
-// NewNanoIDWithLength generates a new random NanoID with a custom length.
+// NewWithLength generates a new random NanoID with a custom length.
 // Panics if generation fails (should never happen with valid length).
-func NewNanoIDWithLength(length int) NanoID {
+func NewWithLength(length int) NanoID {
 	return NanoID{value: string(nanoid.MustWithLength(length))}
 }
 
-// ParseNanoID validates and creates a NanoID from a string.
+// Parse validates and creates a NanoID from a string.
 // Returns an error if the string is empty, too short (<8), too long (>256),
 // or contains characters outside the URL-safe alphabet.
-func ParseNanoID(s string) (NanoID, error) {
+func Parse(s string) (NanoID, error) {
 	if s == "" {
 		return NanoID{}, cberrors.ErrNanoIDEmpty
 	}
@@ -97,7 +97,7 @@ func (id *NanoID) UnmarshalText(data []byte) error {
 		return nil
 	}
 
-	parsed, err := ParseNanoID(string(data))
+	parsed, err := Parse(string(data))
 	if err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ func (id *NanoID) Scan(src any) error {
 			return nil
 		}
 
-		parsed, err := ParseNanoID(v)
+		parsed, err := Parse(v)
 		if err != nil {
 			return fmt.Errorf("nanoid: scan %q: %w", v, err)
 		}

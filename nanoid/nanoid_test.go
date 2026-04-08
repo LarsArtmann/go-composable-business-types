@@ -6,10 +6,10 @@ import (
 	"github.com/larsartmann/go-composable-business-types/testutil"
 )
 
-func TestNewNanoID(t *testing.T) {
+func TestNew(t *testing.T) {
 	t.Parallel()
 
-	id := NewNanoID()
+	id := New()
 	if id.IsZero() {
 		t.Error("expected non-zero NanoID")
 	}
@@ -19,16 +19,16 @@ func TestNewNanoID(t *testing.T) {
 	}
 }
 
-func TestNewNanoIDWithLength(t *testing.T) {
+func TestNewWithLength(t *testing.T) {
 	t.Parallel()
 
-	id := NewNanoIDWithLength(10)
+	id := NewWithLength(10)
 	if len(id.String()) != 10 {
 		t.Errorf("expected length 10, got %d", len(id.String()))
 	}
 }
 
-func TestParseNanoID(t *testing.T) {
+func TestParse(t *testing.T) {
 	t.Parallel()
 
 	testutil.RunParseTests(t, "NanoID", []testutil.ParseTestCase[NanoID]{
@@ -37,11 +37,11 @@ func TestParseNanoID(t *testing.T) {
 		{"too short", "abc", true},
 		{"too long", string(make([]byte, 257)), true},
 		{"invalid chars", "hello@world!", true},
-	}, ParseNanoID)
+	}, Parse)
 }
 
-func TestParseNanoIDError(t *testing.T) {
-	testutil.RunParseErrorTest(t, "NanoID", ParseNanoID)
+func TestParseError(t *testing.T) {
+	testutil.RunParseErrorTest(t, "NanoID", Parse)
 }
 
 func TestNanoIDIsZero(t *testing.T) {
@@ -52,7 +52,7 @@ func TestNanoIDIsZero(t *testing.T) {
 		t.Error("expected zero NanoID to be zero")
 	}
 
-	nonZero := NewNanoID()
+	nonZero := New()
 	if nonZero.IsZero() {
 		t.Error("expected non-zero NanoID to not be zero")
 	}
@@ -61,7 +61,7 @@ func TestNanoIDIsZero(t *testing.T) {
 func TestNanoIDJSON(t *testing.T) {
 	t.Parallel()
 
-	id, _ := ParseNanoID("V1StGXR8_Z5jdHi6B-myT")
+	id, _ := Parse("V1StGXR8_Z5jdHi6B-myT")
 
 	data, err := id.MarshalText()
 	if err != nil {

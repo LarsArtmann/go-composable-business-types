@@ -122,9 +122,9 @@ type UserBrand struct{}
 type UserID = id.ID[UserBrand, nanoid.NanoID]
 
 func main() {
-    userID := id.NewID[UserBrand](nanoid.NewNanoID())
+    userID := id.NewID[UserBrand](nanoid.New())
     // or from existing nanoid:
-    existing := nanoid.ParseNanoID("abc123def456ghi789")
+    existing, _ := nanoid.Parse("abc123def456ghi789")
     userID := id.NewID[UserBrand](existing)
 }
 ```

@@ -278,7 +278,7 @@ The 4 `As*Error` helpers in `pkg/errors` may be unnecessary indirection since Go
 
 | #   | Task                                                                                                                                   | Effort | Impact    | Package      |
 | --- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------- | ------------ |
-| 4   | **Increase `nanoid/` coverage** from 48.9% → 80%+ (test `ParseNanoID` edge cases, error paths, `Scan`/`Value`)                         | M      | 🔴 High   | `nanoid/`    |
+| 4   | **Increase `nanoid/` coverage** from 48.9% → 80%+ (test `Parse` edge cases, error paths, `Scan`/`Value`)                               | M      | 🔴 High   | `nanoid/`    |
 | 5   | **Increase `id/` coverage** from 49.8% → 75%+ (test `Compare` all type branches, `Format`, `GobEncode`/`GobDecode`, more `Scan` types) | M      | 🔴 High   | `id/`        |
 | 6   | **Increase `datapoint/` coverage** from 57.0% → 80%+ (test `UnmarshalJSON` error paths, `Context` methods, `With*` chains)             | M      | 🔴 High   | `datapoint/` |
 | 7   | **Increase `types/` coverage** from 78.4% → 90%+ (test `Cents` arithmetic, `URL.Parse`, `Percentage` JSON round-trip)                  | S      | 🟡 Medium | `types/`     |

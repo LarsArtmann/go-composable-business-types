@@ -36,7 +36,7 @@ All `Must*` functions that could cause runtime panics have been eliminated from 
 | `types`   | `MustParseEmail()`     | `NewEmail()` (returns error)                  |
 | `types`   | `MustParseURL()`       | `NewURL()` (returns error)                    |
 | `locale`  | `MustParseLocale()`    | Internal `mustNewLocale()` for constants only |
-| `nanoid`  | `MustParseNanoId()`    | `ParseNanoID()` (returns error)               |
+| `nanoid`  | `MustParseNanoId()`    | `Parse()` (returns error)                     |
 | `enums`   | `MustParseActorKind()` | `ParseActorKind()` (returns error)            |
 
 **Impact:** Library consumers now have explicit error handling for all parsing operations, eliminating surprise panics in production.
@@ -86,8 +86,8 @@ Fixed inconsistent naming between type and functions:
 | Old (Incorrect)       | New (Correct)         |
 | --------------------- | --------------------- |
 | `NanoId` type         | `NanoID` type         |
-| `NewNanoId()`         | `NewNanoID()`         |
-| `ParseNanoId()`       | `ParseNanoID()`       |
+| `NewNanoId()`         | `New()`               |
+| `ParseNanoId()`       | `Parse()`             |
 | `DefaultNanoIdLength` | `DefaultNanoIDLength` |
 
 This aligns with Go naming conventions (acronyms stay uppercase) and ensures consistency across the entire API.
@@ -157,7 +157,7 @@ This is the idiomatic Go way to check for specific errors, supporting error wrap
 - Most are false positives (nil dereference warnings on value types)
 - ~10 explicit panics remain in codebase:
   - 1 in `locale/mustNewLocale()` (acceptable - package constants)
-  - ~3 in `nanoid.NewNanoIDWithLength()` (external library panic)
+  - ~3 in `nanoid.NewWithLength()` (external library panic)
   - Others in generated code and examples
 
 **Note:** The tool flags many value receiver methods as "nil dereference" risks, which are false positives for our value type design.

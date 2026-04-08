@@ -492,7 +492,7 @@ govulncheck ./...
 | Package      | Benchmark                | Target    |
 | ------------ | ------------------------ | --------- |
 | `id/`        | `BenchmarkIDCompare`     | < 50ns/op |
-| `nanoid/`    | `BenchmarkNewNanoID`     | < 1μs/op  |
+| `nanoid/`    | `BenchmarkNew`           | < 1μs/op  |
 | `datapoint/` | `BenchmarkDataPointJSON` | < 5μs/op  |
 
 ### 9.4 Continuous Integration

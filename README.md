@@ -187,7 +187,7 @@ dp := datapoint.NewDataPoint(payload, actorEntry).
     WithVersion(3).
     WithTag("correlation_id", "corr-123").
     WithReference(datapoint.NewReference("order-456", "parent")).
-    WithCause(datapoint.NewCauseCommand[string](nanoid.NewNanoID(), "approved"))
+    WithCause(datapoint.NewCauseCommand[string](nanoid.New(), "approved"))
 ```
 
 ### Bitemporal Tracking
@@ -229,7 +229,7 @@ ref := datapoint.NewReference("doc-123", "source").
     WithTag("department", "legal")
 
 // Cause tracking (event-triggered)
-causeID := nanoid.NewNanoID()
+causeID := nanoid.New()
 trace := []nanoid.NanoID{intermediateId}
 cause := datapoint.NewCauseEvent[string](causeID, "created", trace...)
 

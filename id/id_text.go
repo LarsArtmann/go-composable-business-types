@@ -7,6 +7,11 @@ import (
 	"strconv"
 )
 
+const (
+	parseBaseDecimal = 10
+	parseBitSize64   = 64
+)
+
 // MarshalText implements encoding.TextMarshaler for text-based encoding (e.g., XML, TOML).
 // For JSON, prefer the json.Marshaler implementation which handles null properly.
 func (id ID[B, V]) MarshalText() ([]byte, error) {
@@ -52,9 +57,15 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 
 		return nil
 	case int64:
-		return parseSignedIntegerID(id, data, strconv.ParseInt, "int64")
+		return parseIntegerID(id, data, func(s string, base, bits int) (signedInt, error) {
+			n, err := strconv.ParseInt(s, base, bits)
+			return signedInt(n), err
+		}, "int64")
 	case uint64:
-		return parseUnsignedIntegerID(id, data, strconv.ParseUint, "uint64")
+		return parseIntegerID(id, data, func(s string, base, bits int) (unsignedInt, error) {
+			n, err := strconv.ParseUint(s, base, bits)
+			return unsignedInt(n), err
+		}, "uint64")
 	default:
 		return fmt.Errorf(
 			"id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)",
@@ -64,41 +75,28 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	}
 }
 
-func parseSignedIntegerID[B any, V comparable](
+type (
+	signedInt   int64
+	unsignedInt uint64
+)
+
+func parseIntegerID[B any, V comparable, I signedInt | unsignedInt](
 	id *ID[B, V],
 	data []byte,
-	parse func(string, int, int) (int64, error),
+	parse func(string, int, int) (I, error),
 	typeName string,
 ) error {
-	n, err := parse(string(data), 10, 64)
+	n, err := parse(string(data), parseBaseDecimal, parseBitSize64)
 	if err != nil {
 		return fmt.Errorf("id: cannot parse %q as %s: %w", data, typeName, err)
 	}
 
-	v, ok := any(n).(V)
-	if !ok {
-		return errors.New("id: internal error: type assertion failed for " + typeName)
-	}
-
-	*id = ID[B, V]{value: v}
-
-	return nil
-}
-
-func parseUnsignedIntegerID[B any, V comparable](
-	id *ID[B, V],
-	data []byte,
-	parse func(string, int, int) (uint64, error),
-	typeName string,
-) error {
-	n, err := parse(string(data), 10, 64)
-	if err != nil {
-		return fmt.Errorf("id: cannot parse %q as %s: %w", data, typeName, err)
-	}
-
-	v, ok := any(n).(V)
-	if !ok {
-		return errors.New("id: internal error: type assertion failed for " + typeName)
+	var v V
+	switch any(n).(type) {
+	case signedInt:
+		v = any(int64(n)).(V)
+	case unsignedInt:
+		v = any(uint64(n)).(V)
 	}
 
 	*id = ID[B, V]{value: v}

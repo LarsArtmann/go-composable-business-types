@@ -249,8 +249,8 @@ We have inconsistent naming across the codebase:
 | `NanoId`                 | `NanoID`              | nanoid/nanoid.go |
 | `DefaultNanoIdLength`    | `DefaultNanoIDLength` | nanoid/nanoid.go |
 | `ErrNanoIdEmpty`         | `ErrNanoIDEmpty`      | nanoid/nanoid.go |
-| `ParseNanoId`            | `ParseNanoID`         | nanoid/nanoid.go |
-| `NewNanoId`              | `NewNanoID`           | nanoid/nanoid.go |
+| `ParseNanoId`            | `Parse`               | nanoid/nanoid.go |
+| `NewNanoId`              | `New`                 | nanoid/nanoid.go |
 | `Id()` → `ID()` ✅ FIXED | `ID()`                | datapoint/       |
 
 **The Tradeoffs:**

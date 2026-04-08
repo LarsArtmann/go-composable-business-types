@@ -42,7 +42,7 @@ type DataPoint[T comparable] struct {
 // NewDataPoint creates a new DataPoint with the given payload and actor.
 func NewDataPoint[T comparable](payload T, actorEntry actor.ActorEntry[string]) DataPoint[T] {
 	return DataPoint[T]{
-		id:         nanoid.NewNanoID(),
+		id:         nanoid.New(),
 		payload:    payload,
 		actor:      actorEntry,
 		temporal:   temporal.NewBitemporal(types.Now()),
