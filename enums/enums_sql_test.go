@@ -218,7 +218,7 @@ func testEnumMarshal[T any](
 	})
 }
 
-func Testenums_PriorityMarshal(t *testing.T) {
+func TestPriorityMarshal(t *testing.T) {
 	testEnumMarshal(t, enums.PriorityLow, "Low", "Medium", enums.PriorityMedium)
 }
 
@@ -462,77 +462,53 @@ func makeScanTestCases[T comparable](cases []enumScanTestCase[T]) []scanTestCase
 func TestAllEnumScanAllTypes(t *testing.T) {
 	t.Parallel()
 
-	tests := []struct {
-		typeName string
-		cases    []any
-		scanFunc any
-	}{
-		{
-			"enums.ActorKind",
-			makeScanTestCases([]enumScanTestCase[enums.ActorKind]{
-				{1, "System", enums.ActorKindSystem},
-				{2, "Service", enums.ActorKindService},
-				{0, "User", enums.ActorKindUser},
-				{3, "Bot", enums.ActorKindBot},
-			}),
-			(*enums.ActorKind).Scan,
-		},
-		{
-			"enums.Priority",
-			makeScanTestCases([]enumScanTestCase[enums.Priority]{
-				{2, "Critical", enums.PriorityCritical},
-				{0, "Low", enums.PriorityLow},
-				{1, "Medium", enums.PriorityMedium},
-				{3, "High", enums.PriorityHigh},
-			}),
-			(*enums.Priority).Scan,
-		},
-		{
-			"enums.Status",
-			makeScanTestCases([]enumScanTestCase[enums.Status]{
-				{1, "Archived", enums.StatusArchived},
-				{4, "Deleted", enums.StatusDeleted},
-				{0, "Draft", enums.StatusDraft},
-				{2, "Paused", enums.StatusPaused},
-				{3, "Active", enums.StatusActive},
-			}),
-			(*enums.Status).Scan,
-		},
-		{
-			"enums.Trigger",
-			makeScanTestCases([]enumScanTestCase[enums.Trigger]{
-				{2, "Correction", enums.TriggerCorrection},
-				{0, "Import", enums.TriggerImport},
-				{5, "System", enums.TriggerSystem},
-				{6, "Webhook", enums.TriggerWebhook},
-			}),
-			(*enums.Trigger).Scan,
-		},
-		{
-			"enums.CauseKind",
-			makeScanTestCases([]enumScanTestCase[enums.CauseKind]{
-				{1, "Event", enums.CauseKindEvent},
-				{0, "Direct", enums.CauseKindDirect},
-				{2, "Command", enums.CauseKindCommand},
-			}),
-			(*enums.CauseKind).Scan,
-		},
-	}
+	t.Run("ActorKind", func(t *testing.T) {
+		t.Parallel()
+		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.ActorKind]{
+			{1, "System", enums.ActorKindSystem},
+			{2, "Service", enums.ActorKindService},
+			{0, "User", enums.ActorKindUser},
+			{3, "Bot", enums.ActorKindBot},
+		}), (*enums.ActorKind).Scan)
+	})
 
-	for _, tt := range tests {
-		t.Run(tt.typeName, func(t *testing.T) {
-			switch f := tt.scanFunc.(type) {
-			case func(*enums.ActorKind, any) error:
-				convertAndTestScan(t, tt.cases, f)
-			case func(*enums.Priority, any) error:
-				convertAndTestScan(t, tt.cases, f)
-			case func(*enums.Status, any) error:
-				convertAndTestScan(t, tt.cases, f)
-			case func(*enums.Trigger, any) error:
-				convertAndTestScan(t, tt.cases, f)
-			case func(*enums.CauseKind, any) error:
-				convertAndTestScan(t, tt.cases, f)
-			}
-		})
-	}
+	t.Run("Priority", func(t *testing.T) {
+		t.Parallel()
+		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Priority]{
+			{2, "Critical", enums.PriorityCritical},
+			{0, "Low", enums.PriorityLow},
+			{1, "Medium", enums.PriorityMedium},
+			{3, "High", enums.PriorityHigh},
+		}), (*enums.Priority).Scan)
+	})
+
+	t.Run("Status", func(t *testing.T) {
+		t.Parallel()
+		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Status]{
+			{1, "Archived", enums.StatusArchived},
+			{4, "Deleted", enums.StatusDeleted},
+			{0, "Draft", enums.StatusDraft},
+			{2, "Paused", enums.StatusPaused},
+			{3, "Active", enums.StatusActive},
+		}), (*enums.Status).Scan)
+	})
+
+	t.Run("Trigger", func(t *testing.T) {
+		t.Parallel()
+		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Trigger]{
+			{2, "Correction", enums.TriggerCorrection},
+			{0, "Import", enums.TriggerImport},
+			{5, "System", enums.TriggerSystem},
+			{6, "Webhook", enums.TriggerWebhook},
+		}), (*enums.Trigger).Scan)
+	})
+
+	t.Run("CauseKind", func(t *testing.T) {
+		t.Parallel()
+		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.CauseKind]{
+			{1, "Event", enums.CauseKindEvent},
+			{0, "Direct", enums.CauseKindDirect},
+			{2, "Command", enums.CauseKindCommand},
+		}), (*enums.CauseKind).Scan)
+	})
 }

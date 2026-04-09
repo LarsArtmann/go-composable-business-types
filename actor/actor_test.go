@@ -1,4 +1,4 @@
-package actor_test
+package actor
 
 import (
 	"testing"
@@ -203,7 +203,13 @@ func TestActorChainIterationBreak(t *testing.T) {
 		iter func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool)
 	}{
 		{"All", func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool) {
-			return chain.All()
+			return func(yield func(ActorEntry[string], int) bool) {
+				for i, e := range chain.All() {
+					if !yield(e, i) {
+						return
+					}
+				}
+			}
 		}},
 		{"Entries", func(chain ActorChain[string]) func(func(ActorEntry[string], int) bool) {
 			return func(yield func(ActorEntry[string], int) bool) {

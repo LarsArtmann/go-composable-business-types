@@ -1,4 +1,4 @@
-package datapoint_test
+package datapoint
 
 import (
 	"encoding/json"
@@ -452,7 +452,7 @@ func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
 	}
 }
 
-func newTestDataPointEmpty(t *testing.T) *DataPoint {
+func newTestDataPointEmpty(t *testing.T) DataPoint[string] {
 	t.Helper()
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
@@ -462,7 +462,7 @@ func newTestDataPointEmpty(t *testing.T) *DataPoint {
 func testDataPointSeqIteratorEmpty[T any](
 	t *testing.T,
 	name string,
-	iter func(*DataPoint) iter.Seq[T],
+	iter func(DataPoint[string]) iter.Seq[T],
 ) {
 	t.Parallel()
 	dp := newTestDataPointEmpty(t)
@@ -473,7 +473,7 @@ func TestDataPointAllReferencesEmpty(t *testing.T) {
 	testDataPointSeqIteratorEmpty(
 		t,
 		"AllReferences",
-		func(dp *DataPoint) iter.Seq[Reference[string]] { return dp.AllReferences() },
+		func(dp DataPoint[string]) iter.Seq[Reference[string]] { return dp.AllReferences() },
 	)
 }
 
@@ -481,7 +481,7 @@ func TestDataPointAllCausesEmpty(t *testing.T) {
 	testDataPointSeqIteratorEmpty(
 		t,
 		"AllCauses",
-		func(dp *DataPoint) iter.Seq[Cause[string]] { return dp.AllCauses() },
+		func(dp DataPoint[string]) iter.Seq[Cause[string]] { return dp.AllCauses() },
 	)
 }
 

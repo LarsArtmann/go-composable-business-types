@@ -1,4 +1,4 @@
-package bounded_test
+package bounded
 
 import (
 	"encoding/json"
@@ -255,7 +255,9 @@ func TestBoundedStringJSONRoundTrip(t *testing.T) {
 		t.Fatalf("unmarshal error: %v", err)
 	}
 
-	assertCmpEqual(t, original.String(), restored.String())
+	if original.String() != restored.String() {
+		t.Errorf("expected %v, got %v", original.String(), restored.String())
+	}
 }
 
 func TestBoundedStringScan(t *testing.T) {

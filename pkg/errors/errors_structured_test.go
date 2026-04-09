@@ -36,9 +36,9 @@ func TestUnmarshalError(t *testing.T) {
 
 	original := errors.New("parse failed")
 	err := &UnmarshalError{
-		Type:  "JSON",
-		Input: `{invalid}`,
-		Err:   original,
+		Type:        "JSON",
+		Input:       `{invalid}`,
+		wrappedError: wrappedError{Err: original},
 	}
 	testStructuredError(err, original, "unmarshal JSON: {invalid}: parse failed", func() {
 		testAs[*UnmarshalError](t, err, func(target *UnmarshalError) {
@@ -139,7 +139,7 @@ func TestAsErrors(t *testing.T) {
 	}{
 		{
 			name:      "UnmarshalError",
-			err:       &UnmarshalError{Type: "JSON", Input: `{bad}`, Err: errors.New("fail")},
+			err:       &UnmarshalError{Type: "JSON", Input: `{bad}`, wrappedError: wrappedError{Err: errors.New("fail")}},
 			asFn:      func(err error) (any, bool) { return AsUnmarshalError(err) },
 			fnName:    "AsUnmarshalError",
 			fieldName: "Type",
@@ -167,9 +167,9 @@ func TestAsErrors(t *testing.T) {
 		{
 			name: "ScanError",
 			err: &ScanError{
-				SourceType: "int64",
-				TargetType: "string",
-				Err:        errors.New("fail"),
+				SourceType:   "int64",
+				TargetType:   "string",
+				wrappedError: wrappedError{Err: errors.New("fail")},
 			},
 			asFn:      func(err error) (any, bool) { return AsScanError(err) },
 			fnName:    "AsScanError",
