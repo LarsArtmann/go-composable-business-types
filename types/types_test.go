@@ -8,6 +8,83 @@ import (
 	"github.com/larsartmann/go-composable-business-types/testutil"
 )
 
+type parseTestCase struct {
+	name    string
+	input   string
+	wantErr bool
+}
+
+var emailValidationCases []parseTestCase
+
+func init() {
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "valid simple", input: "test@example.com"},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "valid with dots", input: "first.last@example.com"},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "valid with plus", input: "user+tag@example.com"},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "empty", input: "", wantErr: true},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "no at", input: "testexample.com", wantErr: true},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "no domain", input: "test@", wantErr: true},
+	)
+	emailValidationCases = append(
+		emailValidationCases,
+		parseTestCase{name: "no local", input: "@example.com", wantErr: true},
+	)
+}
+
+var urlValidationCases []parseTestCase
+
+func init() {
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "valid https", input: "https://example.com"},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "valid http", input: "http://example.com"},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "valid with path", input: "https://example.com/path"},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "empty", input: "", wantErr: true},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "no scheme", input: "example.com", wantErr: true},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "ftp not allowed", input: "ftp://example.com", wantErr: true},
+	)
+	urlValidationCases = append(
+		urlValidationCases,
+		parseTestCase{name: "no host", input: "https:///path", wantErr: true},
+	)
+}
+
+var validationTestCases = map[string][]parseTestCase{
+	"Email": emailValidationCases,
+	"URL":   urlValidationCases,
+}
+
 func TestEmailParts(t *testing.T) {
 	t.Parallel()
 
@@ -22,11 +99,7 @@ func runParseValidationTest[T testutil.ParseTester](
 	t *testing.T,
 	typeName string,
 	constructor func(string) (T, error),
-	cases []struct {
-		name    string
-		input   string
-		wantErr bool
-	},
+	cases []parseTestCase,
 ) {
 	t.Helper()
 
@@ -41,33 +114,8 @@ func runParseValidationTest[T testutil.ParseTester](
 func TestValidation(t *testing.T) {
 	t.Parallel()
 
-	runParseValidationTest(t, "Email", NewEmail, []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
-		{"valid simple", "test@example.com", false},
-		{"valid with dots", "first.last@example.com", false},
-		{"valid with plus", "user+tag@example.com", false},
-		{"empty", "", true},
-		{"no at", "testexample.com", true},
-		{"no domain", "test@", true},
-		{"no local", "@example.com", true},
-	})
-
-	runParseValidationTest(t, "URL", NewURL, []struct {
-		name    string
-		input   string
-		wantErr bool
-	}{
-		{"valid https", "https://example.com", false},
-		{"valid http", "http://example.com", false},
-		{"valid with path", "https://example.com/path", false},
-		{"empty", "", true},
-		{"no scheme", "example.com", true},
-		{"ftp not allowed", "ftp://example.com", true},
-		{"no host", "https:///path", true},
-	})
+	runParseValidationTest(t, "Email", NewEmail, validationTestCases["Email"])
+	runParseValidationTest(t, "URL", NewURL, validationTestCases["URL"])
 }
 
 func TestEmailNormalize(t *testing.T) {
