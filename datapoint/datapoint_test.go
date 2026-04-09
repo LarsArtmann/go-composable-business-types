@@ -447,6 +447,7 @@ func countSeq2Iterator[K, V any](seq iter.Seq2[K, V]) int {
 
 func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
 	t.Helper()
+
 	if count != 0 {
 		t.Errorf("expected 0 iterations for %s, got %d", name, count)
 	}
@@ -454,8 +455,10 @@ func testDataPointIteratorEmpty(t *testing.T, name string, count int) {
 
 func newTestDataPointEmpty(t *testing.T) DataPoint[string] {
 	t.Helper()
+
 	userID := id.NewID[struct{}, string]("user-123")
 	actorEntry := actor.UserActor(userID)
+
 	return NewDataPoint("payload", actorEntry)
 }
 

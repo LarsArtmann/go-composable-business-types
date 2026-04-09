@@ -31,31 +31,31 @@ The migration is **non-breaking**: existing workflows (`just test`, `just lint`,
 
 ### 2.1 Project Characteristics
 
-| Aspect | Detail |
-|---|---|
-| **Type** | Go library (no `main` binary, no `cmd/` entrypoint) |
-| **Go version** | 1.26.0 (`go.mod`), 1.26.1 (`.golangci.yml`) |
-| **CI Go matrix** | 1.26, 1.27, 1.28 |
-| **Module path** | `github.com/larsartmann/go-composable-business-types` |
-| **Key experiment** | `GOEXPERIMENT=jsonv2` used everywhere (justfile, CI, linting) |
-| **Code generation** | `go-enum` via `//go:generate go tool go-enum` |
+| Aspect              | Detail                                                        |
+| ------------------- | ------------------------------------------------------------- |
+| **Type**            | Go library (no `main` binary, no `cmd/` entrypoint)           |
+| **Go version**      | 1.26.0 (`go.mod`), 1.26.1 (`.golangci.yml`)                   |
+| **CI Go matrix**    | 1.26, 1.27, 1.28                                              |
+| **Module path**     | `github.com/larsartmann/go-composable-business-types`         |
+| **Key experiment**  | `GOEXPERIMENT=jsonv2` used everywhere (justfile, CI, linting) |
+| **Code generation** | `go-enum` via `//go:generate go tool go-enum`                 |
 
 ### 2.2 Tool Inventory
 
 Every tool listed below must be version-pinned in the Nix flake:
 
-| Tool | Current Source | Version | Used By |
-|---|---|---|---|
-| **Go** | `actions/setup-go@v5` | 1.26 / 1.27 / 1.28 matrix | build, test, generate |
-| **golangci-lint** | `golangci-lint-action@v6` | v1.64 | `just lint`, CI |
-| **go-enum** | `go.mod` tool directive | v0.9.2 | `just generate`, CI |
-| **govulncheck** | `go install @latest` | unpinned | CI security job |
-| **git-cliff** | `go install @latest` | unpinned | `just changelog`, release workflow |
-| **just** | Not managed | system-dependent | all justfile commands |
-| **gotools** (goimports, etc.) | implicit with Go | Go 1.26 bundled | `.golangci.yml` formatters |
-| **gofumpt** | via golangci-lint | follows golangci-lint | `.golangci.yml` formatters |
-| **gci** | via golangci-lint | follows golangci-lint | `.golangci.yml` formatters |
-| **golines** | via golangci-lint | follows golangci-lint | `.golangci.yml` formatters |
+| Tool                          | Current Source            | Version                   | Used By                            |
+| ----------------------------- | ------------------------- | ------------------------- | ---------------------------------- |
+| **Go**                        | `actions/setup-go@v5`     | 1.26 / 1.27 / 1.28 matrix | build, test, generate              |
+| **golangci-lint**             | `golangci-lint-action@v6` | v1.64                     | `just lint`, CI                    |
+| **go-enum**                   | `go.mod` tool directive   | v0.9.2                    | `just generate`, CI                |
+| **govulncheck**               | `go install @latest`      | unpinned                  | CI security job                    |
+| **git-cliff**                 | `go install @latest`      | unpinned                  | `just changelog`, release workflow |
+| **just**                      | Not managed               | system-dependent          | all justfile commands              |
+| **gotools** (goimports, etc.) | implicit with Go          | Go 1.26 bundled           | `.golangci.yml` formatters         |
+| **gofumpt**                   | via golangci-lint         | follows golangci-lint     | `.golangci.yml` formatters         |
+| **gci**                       | via golangci-lint         | follows golangci-lint     | `.golangci.yml` formatters         |
+| **golines**                   | via golangci-lint         | follows golangci-lint     | `.golangci.yml` formatters         |
 
 ### 2.3 Environment Variables
 
@@ -101,19 +101,19 @@ Release (tag push: YYYY-MM-DD.N)
 
 ### 3.1 Problems Solved
 
-| Problem | Current Impact | Nix Solution |
-|---|---|---|
-| **Unpinned govulncheck** | `go install @latest` → non-reproducible CI | Pinned in flake.lock |
-| **Unpinned git-cliff** | `go install @latest` → drift between runs | Pinned in flake.lock |
-| **No local tool isolation** | Tools pollute `$GOPATH/bin` globally | Hermetic `nix develop` shell |
-| **Onboarding friction** | "Install Go 1.26, golangci-lint, just, ..." | `nix develop` — done |
-| **Platform inconsistency** | macOS vs Linux tool version mismatches | Same flake.lock, same versions |
-| **No direnv integration** | Manual shell activation | `.envrc` → automatic |
+| Problem                     | Current Impact                              | Nix Solution                   |
+| --------------------------- | ------------------------------------------- | ------------------------------ |
+| **Unpinned govulncheck**    | `go install @latest` → non-reproducible CI  | Pinned in flake.lock           |
+| **Unpinned git-cliff**      | `go install @latest` → drift between runs   | Pinned in flake.lock           |
+| **No local tool isolation** | Tools pollute `$GOPATH/bin` globally        | Hermetic `nix develop` shell   |
+| **Onboarding friction**     | "Install Go 1.26, golangci-lint, just, ..." | `nix develop` — done           |
+| **Platform inconsistency**  | macOS vs Linux tool version mismatches      | Same flake.lock, same versions |
+| **No direnv integration**   | Manual shell activation                     | `.envrc` → automatic           |
 
 ### 3.2 What Nix Flakes Will NOT Replace
 
 - **GitHub Actions CI/CD** — CI continues using `actions/setup-go` and `golangci-lint-action` (these are well-maintained, fast, and CI-native)
-- **justfile** — remains the canonical task runner; Nix provides the *environment*, just provides the *commands*
+- **justfile** — remains the canonical task runner; Nix provides the _environment_, just provides the _commands_
 - **go.mod / go.sum** — Go's own dependency management is untouched
 - **Codecov integration** — unchanged
 
@@ -177,12 +177,12 @@ supportedSystems = [
 
 **Recommendation: `flake-utils`** (not `flake-parts`)
 
-| Factor | flake-utils | flake-parts |
-|---|---|---|
-| Complexity | Minimal | Module system, more to learn |
-| This project's needs | devShell + checks only | Overkill for a Go library |
-| Maintenance | Near-zero | Requires understanding module system |
-| Ecosystem prevalence | Extremely common for Go projects | Better for multi-output repos |
+| Factor               | flake-utils                      | flake-parts                          |
+| -------------------- | -------------------------------- | ------------------------------------ |
+| Complexity           | Minimal                          | Module system, more to learn         |
+| This project's needs | devShell + checks only           | Overkill for a Go library            |
+| Maintenance          | Near-zero                        | Requires understanding module system |
+| Ecosystem prevalence | Extremely common for Go projects | Better for multi-output repos        |
 
 `flake-parts` adds value for repos with NixOS modules, Home Manager configs, or many packages. This project needs exactly one devShell. `flake-utils` is the right tool.
 
@@ -195,6 +195,7 @@ supportedSystems = [
 **Goal:** `nix develop` gives you a complete, reproducible development environment.
 
 **New files:**
+
 - `flake.nix`
 - `.envrc`
 
@@ -344,7 +345,7 @@ checks = {
 };
 ```
 
-**Note on checks:** Nix checks copy source into the Nix store, which means they don't see uncommitted changes. They verify the *committed* state. For day-to-day development, `just check` remains the primary workflow. `nix flake check` is useful as a pre-push gate or CI alternative.
+**Note on checks:** Nix checks copy source into the Nix store, which means they don't see uncommitted changes. They verify the _committed_ state. For day-to-day development, `just check` remains the primary workflow. `nix flake check` is useful as a pre-push gate or CI alternative.
 
 **Consideration:** Go's module system reads `go.sum` and may need network access. Nix builds are sandboxed by default. The `__noChroot` pattern or `buildGoModule` with vendorHash may be needed for fully sandboxed builds. This is why checks are **optional** — the devShell is the primary value.
 
@@ -385,11 +386,13 @@ Enables `nix fmt` to format `flake.nix` consistently.
 **Option A (Recommended): Keep CI as-is**
 
 GitHub Actions CI remains unchanged. It already uses well-maintained actions:
+
 - `actions/setup-go@v5` — fast, cached Go installation
 - `golangci-lint-action@v6` — optimized linting with caching
 - `codecov/codecov-action@v4` — coverage reporting
 
 These are **better suited for CI** than Nix-based builds because:
+
 - GitHub-hosted runners have warm caches for popular actions
 - `setup-go` caching is faster than Nix sandbox builds
 - The CI matrix (Go 1.26/1.27/1.28) is trivially expressed with the matrix strategy
@@ -417,16 +420,16 @@ This is **not recommended** for this project — the current CI is cleaner and f
 
 ### 6.1 Risks and Mitigations
 
-| Risk | Severity | Likelihood | Mitigation |
-|---|---|---|---|
-| **nixpkgs Go 1.26 not yet available** | High | Low | Use `go_1_26` from nixpkgs-unstable; fallback: overlay with custom Go build |
-| **golangci-lint version mismatch** | Medium | Medium | Pin via `nixpkgs` revision or use `buildGoModule` for exact version |
-| **govulncheck version drift in nixpkgs** | Low | Medium | govulncheck is simple; version differences rarely matter |
-| **git-cliff not in nixpkgs** | Medium | Low | `git-cliff` is packaged in nixpkgs; if missing, `buildGoModule` fallback |
-| **GOEXPERIMENT not respected by Nix Go** | High | Low | Go from nixpkgs respects `GOEXPERIMENT` env var like any Go install |
-| **flake.lock grows stale** | Low | High | Add `nix flake update` to monthly maintenance; Dependabot doesn't manage flake.lock |
-| **Team unfamiliarity with Nix** | Medium | High | Proposal includes `.envrc` for transparent activation; justfile unchanged |
-| **macOS aarch64-darwin build issues** | Low | Low | nixpkgs has excellent Apple Silicon support since 2021 |
+| Risk                                     | Severity | Likelihood | Mitigation                                                                          |
+| ---------------------------------------- | -------- | ---------- | ----------------------------------------------------------------------------------- |
+| **nixpkgs Go 1.26 not yet available**    | High     | Low        | Use `go_1_26` from nixpkgs-unstable; fallback: overlay with custom Go build         |
+| **golangci-lint version mismatch**       | Medium   | Medium     | Pin via `nixpkgs` revision or use `buildGoModule` for exact version                 |
+| **govulncheck version drift in nixpkgs** | Low      | Medium     | govulncheck is simple; version differences rarely matter                            |
+| **git-cliff not in nixpkgs**             | Medium   | Low        | `git-cliff` is packaged in nixpkgs; if missing, `buildGoModule` fallback            |
+| **GOEXPERIMENT not respected by Nix Go** | High     | Low        | Go from nixpkgs respects `GOEXPERIMENT` env var like any Go install                 |
+| **flake.lock grows stale**               | Low      | High       | Add `nix flake update` to monthly maintenance; Dependabot doesn't manage flake.lock |
+| **Team unfamiliarity with Nix**          | Medium   | High       | Proposal includes `.envrc` for transparent activation; justfile unchanged           |
+| **macOS aarch64-darwin build issues**    | Low      | Low        | nixpkgs has excellent Apple Silicon support since 2021                              |
 
 ### 6.2 Rollback Plan
 
@@ -590,14 +593,14 @@ This is the complete, production-ready `flake.nix` for Phase 1 + Phase 3:
 
 ## Summary of Decisions
 
-| Decision | Choice | Rationale |
-|---|---|---|
-| **Flake framework** | `flake-utils` | Minimal, sufficient for a Go library |
-| **Primary output** | `devShells.default` | Library has no binary to ship |
-| **Package output** | Deferred | No downstream Nix consumer; `go get` is the distribution mechanism |
-| **Go version** | `go_1_26` (explicit) | Matches `go.mod`; prevents accidental upgrades |
-| **GOEXPERIMENT** | Shell-level env var | Single source of truth; all tools inherit it |
-| **go-enum** | Via `go tool` | Already in `go.mod` tool directive; no Nix package needed |
-| **CI migration** | None | Current GitHub Actions CI is optimal |
-| **direnv** | Recommended | Transparent activation; no manual `nix develop` |
-| **Rollback** | `rm flake.nix flake.lock .envrc` | Additive migration; zero risk |
+| Decision            | Choice                           | Rationale                                                          |
+| ------------------- | -------------------------------- | ------------------------------------------------------------------ |
+| **Flake framework** | `flake-utils`                    | Minimal, sufficient for a Go library                               |
+| **Primary output**  | `devShells.default`              | Library has no binary to ship                                      |
+| **Package output**  | Deferred                         | No downstream Nix consumer; `go get` is the distribution mechanism |
+| **Go version**      | `go_1_26` (explicit)             | Matches `go.mod`; prevents accidental upgrades                     |
+| **GOEXPERIMENT**    | Shell-level env var              | Single source of truth; all tools inherit it                       |
+| **go-enum**         | Via `go tool`                    | Already in `go.mod` tool directive; no Nix package needed          |
+| **CI migration**    | None                             | Current GitHub Actions CI is optimal                               |
+| **direnv**          | Recommended                      | Transparent activation; no manual `nix develop`                    |
+| **Rollback**        | `rm flake.nix flake.lock .envrc` | Additive migration; zero risk                                      |

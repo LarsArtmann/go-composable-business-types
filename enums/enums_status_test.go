@@ -9,7 +9,13 @@ import (
 func TestStatus(t *testing.T) {
 	t.Parallel()
 	// Test all statuses exist
-	statuses := []enums.Status{enums.StatusDraft, enums.StatusActive, enums.StatusPaused, enums.StatusArchived, enums.StatusDeleted}
+	statuses := []enums.Status{
+		enums.StatusDraft,
+		enums.StatusActive,
+		enums.StatusPaused,
+		enums.StatusArchived,
+		enums.StatusDeleted,
+	}
 	expected := []string{"Draft", "Active", "Paused", "Archived", "Deleted"}
 
 	for i, s := range statuses {
@@ -37,7 +43,13 @@ func TestStatusIsValid(t *testing.T) {
 	t.Parallel()
 	testEnumIsValid(
 		t,
-		[]enums.Status{enums.StatusDraft, enums.StatusActive, enums.StatusPaused, enums.StatusArchived, enums.StatusDeleted},
+		[]enums.Status{
+			enums.StatusDraft,
+			enums.StatusActive,
+			enums.StatusPaused,
+			enums.StatusArchived,
+			enums.StatusDeleted,
+		},
 		enums.Status(99),
 	)
 }

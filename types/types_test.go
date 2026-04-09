@@ -90,8 +90,8 @@ func TestEmailParts(t *testing.T) {
 
 	email, _ := NewEmail("user@example.com")
 	testutil.RunPartsTest(t, email, []testutil.PartAccessor[Email]{
-		{"local part", func(e Email) string { return e.LocalPart() }, "user"},
-		{"domain", func(e Email) string { return e.Domain() }, "example.com"},
+		{Name: "local part", Get: func(e Email) string { return e.LocalPart() }, Expected: "user"},
+		{Name: "domain", Get: func(e Email) string { return e.Domain() }, Expected: "example.com"},
 	})
 }
 
@@ -209,6 +209,7 @@ func TestParseURL(t *testing.T) {
 				} else if !errors.Is(err, tc.expectedErr) {
 					t.Errorf("expected %v, got %v", tc.expectedErr, err)
 				}
+
 				return
 			}
 

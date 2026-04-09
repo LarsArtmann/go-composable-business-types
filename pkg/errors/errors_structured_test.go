@@ -36,8 +36,8 @@ func TestUnmarshalError(t *testing.T) {
 
 	original := errors.New("parse failed")
 	err := &UnmarshalError{
-		Type:        "JSON",
-		Input:       `{invalid}`,
+		Type:         "JSON",
+		Input:        `{invalid}`,
 		wrappedError: wrappedError{Err: original},
 	}
 	testStructuredError(err, original, "unmarshal JSON: {invalid}: parse failed", func() {
@@ -45,6 +45,7 @@ func TestUnmarshalError(t *testing.T) {
 			if target.Type != "JSON" {
 				t.Errorf("Type = %q, want JSON", target.Type)
 			}
+
 			if target.Input != `{invalid}` {
 				t.Errorf("Input = %q, want {invalid}", target.Input)
 			}
@@ -70,6 +71,7 @@ func TestValidationError(t *testing.T) {
 				if target.Field != "email" {
 					t.Errorf("Field = %q, want email", target.Field)
 				}
+
 				if target.Value != "not-an-email" {
 					t.Errorf("Value = %v, want not-an-email", target.Value)
 				}
@@ -138,8 +140,12 @@ func TestAsErrors(t *testing.T) {
 		getField  func(any) any
 	}{
 		{
-			name:      "UnmarshalError",
-			err:       &UnmarshalError{Type: "JSON", Input: `{bad}`, wrappedError: wrappedError{Err: errors.New("fail")}},
+			name: "UnmarshalError",
+			err: &UnmarshalError{
+				Type:         "JSON",
+				Input:        `{bad}`,
+				wrappedError: wrappedError{Err: errors.New("fail")},
+			},
 			asFn:      func(err error) (any, bool) { return AsUnmarshalError(err) },
 			fnName:    "AsUnmarshalError",
 			fieldName: "Type",

@@ -58,7 +58,7 @@ func readSigned[V, IntType any](
 	byteSize int,
 ) (V, error) {
 	var zero V
-	//nolint:gosec // G115: byteSize is always 1, 2, 4, or 8
+
 	if len(data) < byteSize {
 		return zero, fmt.Errorf(
 			"id: insufficient data for %s: got %d bytes, want %d",
@@ -186,6 +186,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		if err != nil {
 			return err
 		}
+
 		*id = ID[B, V]{value: n}
 
 		return nil
@@ -202,6 +203,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		if err != nil {
 			return err
 		}
+
 		*id = ID[B, V]{value: n}
 
 		return nil
@@ -216,6 +218,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		if err != nil {
 			return err
 		}
+
 		*id = ID[B, V]{value: n}
 
 		return nil
@@ -230,6 +233,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		if err != nil {
 			return err
 		}
+
 		*id = ID[B, V]{value: n}
 
 		return nil
@@ -244,6 +248,7 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 		if err != nil {
 			return err
 		}
+
 		*id = ID[B, V]{value: n}
 
 		return nil

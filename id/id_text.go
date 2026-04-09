@@ -59,11 +59,13 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 	case int64:
 		return parseIntegerID(id, data, func(s string, base, bits int) (signedInt, error) {
 			n, err := strconv.ParseInt(s, base, bits)
+
 			return signedInt(n), err
 		}, "int64")
 	case uint64:
 		return parseIntegerID(id, data, func(s string, base, bits int) (unsignedInt, error) {
 			n, err := strconv.ParseUint(s, base, bits)
+
 			return unsignedInt(n), err
 		}, "uint64")
 	default:
@@ -92,6 +94,7 @@ func parseIntegerID[B any, V comparable, I signedInt | unsignedInt](
 	}
 
 	var v V
+
 	switch any(n).(type) {
 	case signedInt:
 		v = any(int64(n)).(V)

@@ -231,6 +231,7 @@ func TestActorChainIterationBreak(t *testing.T) {
 			var count int
 			for range tt.iter(chain) {
 				count++
+
 				break
 			}
 

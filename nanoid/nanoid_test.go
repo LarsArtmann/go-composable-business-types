@@ -32,11 +32,11 @@ func TestParse(t *testing.T) {
 	t.Parallel()
 
 	testutil.RunParseTests(t, "NanoID", []testutil.ParseTestCase[NanoID]{
-		{"valid", "V1StGXR8_Z5jdHi6B-myT", false},
-		{"empty", "", true},
-		{"too short", "abc", true},
-		{"too long", string(make([]byte, 257)), true},
-		{"invalid chars", "hello@world!", true},
+		{Name: "valid", Input: "V1StGXR8_Z5jdHi6B-myT", WantErr: false},
+		{Name: "empty", Input: "", WantErr: true},
+		{Name: "too short", Input: "abc", WantErr: true},
+		{Name: "too long", Input: string(make([]byte, 257)), WantErr: true},
+		{Name: "invalid chars", Input: "hello@world!", WantErr: true},
 	}, Parse)
 }
 

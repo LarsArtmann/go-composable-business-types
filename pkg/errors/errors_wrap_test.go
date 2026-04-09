@@ -133,6 +133,7 @@ func assertErrorAs[T error](t *testing.T, err error) T {
 	if !errors.As(err, &target) {
 		t.Error("expected errors.As() to succeed")
 	}
+
 	return target
 }
 

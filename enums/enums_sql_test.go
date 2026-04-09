@@ -119,6 +119,7 @@ func testEnumSQL[T comparable](
 // enumValueFunc returns the string representation of a value's MarshalText.
 func enumValueFunc[T interface{ MarshalText() ([]byte, error) }](v T) (string, error) {
 	b, err := v.MarshalText()
+
 	return string(b), err
 }
 
@@ -289,6 +290,7 @@ func TestCauseKindMarshal(t *testing.T) {
 // TestAppendText tests AppendText for all enum types.
 func TestAppendText(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name  string
 		value any
@@ -302,6 +304,7 @@ func TestAppendText(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			switch v := tt.value.(type) {
 			case enums.ActorKind:
 				testutil.RunAppendTextTestSimple(t, tt.name, &v)
@@ -429,6 +432,7 @@ func convertAndTestScan[T comparable](t *testing.T, cases []any, scanFunc func(*
 	for i, c := range cases {
 		converted[i] = c.(scanTestCase[T])
 	}
+
 	testScanAllTypes(t, converted, scanFunc)
 }
 
@@ -455,6 +459,7 @@ func makeScanTestCases[T comparable](cases []enumScanTestCase[T]) []scanTestCase
 			scanTestCase[T]{"float64", float64(c.intVal), c.want},
 		)
 	}
+
 	return append(result, scanTestCase[T]{"nil", nil, *new(T)})
 }
 

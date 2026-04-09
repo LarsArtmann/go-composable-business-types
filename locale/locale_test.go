@@ -11,10 +11,10 @@ func TestParseLocale(t *testing.T) {
 	t.Parallel()
 
 	testutil.RunParseTests(t, "Locale", []testutil.ParseTestCase[Locale]{
-		{"en-US", "en-US", false},
-		{"de-DE", "de-DE", false},
-		{"fr-FR", "fr-FR", false},
-		{"empty", "", true},
+		{Name: "en-US", Input: "en-US", WantErr: false},
+		{Name: "de-DE", Input: "de-DE", WantErr: false},
+		{Name: "fr-FR", Input: "fr-FR", WantErr: false},
+		{Name: "empty", Input: "", WantErr: true},
 	}, ParseLocale)
 }
 
@@ -27,8 +27,8 @@ func TestLocaleParts(t *testing.T) {
 
 	loc, _ := ParseLocale("en-US")
 	testutil.RunPartsTest(t, loc, []testutil.PartAccessor[Locale]{
-		{"base", func(l Locale) string { return l.Base() }, "en"},
-		{"region", func(l Locale) string { return l.Region() }, "US"},
+		{Name: "base", Get: func(l Locale) string { return l.Base() }, Expected: "en"},
+		{Name: "region", Get: func(l Locale) string { return l.Region() }, Expected: "US"},
 	})
 }
 
@@ -62,14 +62,14 @@ func TestLocaleConstants(t *testing.T) {
 	}
 
 	testutil.RunStringTests(t, "Locale", []testutil.StringCase[Locale]{
-		{LocaleEnUS, "en-US"},
-		{LocaleEnGB, "en-GB"},
-		{LocaleDeDE, "de-DE"},
-		{LocaleFrFR, "fr-FR"},
-		{LocaleEsES, "es-ES"},
-		{LocaleItIT, "it-IT"},
-		{LocaleJaJP, "ja-JP"},
-		{LocaleZhCN, "zh-CN"},
+		{Value: LocaleEnUS, Expected: "en-US"},
+		{Value: LocaleEnGB, Expected: "en-GB"},
+		{Value: LocaleDeDE, Expected: "de-DE"},
+		{Value: LocaleFrFR, Expected: "fr-FR"},
+		{Value: LocaleEsES, Expected: "es-ES"},
+		{Value: LocaleItIT, Expected: "it-IT"},
+		{Value: LocaleJaJP, Expected: "ja-JP"},
+		{Value: LocaleZhCN, Expected: "zh-CN"},
 	})
 }
 

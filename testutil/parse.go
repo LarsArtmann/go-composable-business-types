@@ -96,6 +96,7 @@ type ZeroChecker interface {
 
 func RunIsZeroTest[T ZeroChecker](t *testing.T, makeNonZero func() (T, error)) {
 	t.Parallel()
+
 	var zero T
 	if !zero.IsZero() {
 		t.Error("zero value should be zero")
@@ -119,6 +120,7 @@ type PartAccessor[T any] struct {
 
 func RunPartsTest[T any](t *testing.T, val T, accessors []PartAccessor[T]) {
 	t.Helper()
+
 	for _, accessor := range accessors {
 		got := accessor.Get(val)
 		if got != accessor.Expected {
@@ -138,9 +140,11 @@ type Stringer interface {
 
 func RunStringTests[T Stringer](t *testing.T, name string, tests []StringCase[T]) {
 	t.Helper()
+
 	for _, tc := range tests {
 		t.Run(tc.Expected, func(t *testing.T) {
 			t.Parallel()
+
 			if tc.Value.String() != tc.Expected {
 				t.Errorf("expected %s, got %s", tc.Expected, tc.Value.String())
 			}

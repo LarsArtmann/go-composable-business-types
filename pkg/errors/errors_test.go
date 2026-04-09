@@ -46,6 +46,7 @@ func testSentinelErrorSet(t *testing.T, errs ...error) {
 			want: err,
 		}
 	}
+
 	testSentinelErrors(t, tests)
 }
 

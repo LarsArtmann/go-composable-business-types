@@ -35,6 +35,7 @@ func assertIDValueMatches(t *testing.T, v, expected any) {
 		if val.Get() != expected.(string) {
 			t.Errorf("expected %v, got %v", expected, val.Get())
 		}
+
 		if !val.IsZero() {
 			t.Error("empty string should be zero")
 		}

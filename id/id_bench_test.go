@@ -135,7 +135,7 @@ func BenchmarkIDIsZero(b *testing.B) {
 	})
 }
 
-// Helper for benchmarking ID methods
+// Helper for benchmarking ID methods.
 func benchmarkIDMethod[B, V comparable](b *testing.B, id ID[B, V], fn func(ID[B, V])) {
 	for b.Loop() {
 		fn(id)
