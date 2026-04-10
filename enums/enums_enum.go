@@ -12,12 +12,6 @@ import (
 	"strings"
 )
 
-func cloneStringSlice[T any](src []T) []T {
-	tmp := make([]T, len(src))
-	copy(tmp, src)
-	return tmp
-}
-
 const (
 	// ActorKindUser is a ActorKind of type User.
 	ActorKindUser ActorKind = iota
@@ -42,7 +36,9 @@ var _ActorKindNames = []string{
 
 // ActorKindNames returns a list of possible string values of ActorKind.
 func ActorKindNames() []string {
-	return cloneStringSlice(_ActorKindNames)
+	tmp := make([]string, len(_ActorKindNames))
+	copy(tmp, _ActorKindNames)
+	return tmp
 }
 
 // ActorKindValues returns a list of the values for ActorKind
@@ -213,7 +209,9 @@ var _CauseKindNames = []string{
 
 // CauseKindNames returns a list of possible string values of CauseKind.
 func CauseKindNames() []string {
-	return cloneStringSlice(_CauseKindNames)
+	tmp := make([]string, len(_CauseKindNames))
+	copy(tmp, _CauseKindNames)
+	return tmp
 }
 
 // CauseKindValues returns a list of the values for CauseKind
@@ -381,7 +379,9 @@ var _PriorityNames = []string{
 
 // PriorityNames returns a list of possible string values of Priority.
 func PriorityNames() []string {
-	return cloneStringSlice(_PriorityNames)
+	tmp := make([]string, len(_PriorityNames))
+	copy(tmp, _PriorityNames)
+	return tmp
 }
 
 // PriorityValues returns a list of the values for Priority
@@ -555,7 +555,9 @@ var _StatusNames = []string{
 
 // StatusNames returns a list of possible string values of Status.
 func StatusNames() []string {
-	return cloneStringSlice(_StatusNames)
+	tmp := make([]string, len(_StatusNames))
+	copy(tmp, _StatusNames)
+	return tmp
 }
 
 // StatusValues returns a list of the values for Status
@@ -745,7 +747,9 @@ var _TriggerNames = []string{
 
 // TriggerNames returns a list of possible string values of Trigger.
 func TriggerNames() []string {
-	return cloneStringSlice(_TriggerNames)
+	tmp := make([]string, len(_TriggerNames))
+	copy(tmp, _TriggerNames)
+	return tmp
 }
 
 // TriggerValues returns a list of the values for Trigger
