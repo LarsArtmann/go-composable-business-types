@@ -3,6 +3,7 @@ package id
 import (
 	"database/sql"
 	"database/sql/driver"
+	"encoding"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -146,6 +147,34 @@ func (id *ID[B, V]) Scan(src any) error {
 		)
 
 	default:
+		// Check if V implements TextUnmarshaler for text-based scanning.
+		var zero V
+		if unmarshaler, ok := any(&zero).(encoding.TextUnmarshaler); ok {
+			var text []byte
+
+			switch v := src.(type) {
+			case string:
+				text = []byte(v)
+			case []byte:
+				text = v
+			default:
+				return fmt.Errorf(
+					"id: cannot scan %T into text-unmarshalable ID (targetType=%T)",
+					src,
+					zero,
+				)
+			}
+
+			err := unmarshaler.UnmarshalText(text)
+			if err != nil {
+				return fmt.Errorf("id: cannot scan text into %T: %w", zero, err)
+			}
+
+			*id = ID[B, V]{value: zero}
+
+			return nil
+		}
+
 		return fmt.Errorf("id: unsupported target type %T for SQL scanning (src=%T)", *new(V), src)
 	}
 }
@@ -181,6 +210,20 @@ func (id ID[B, V]) Value() (driver.Value, error) {
 	case uint64:
 		return int64(v), nil //nolint:gosec // G115: uint64 to int64 for SQL value
 	default:
+		// Check if V implements TextMarshaler for text-based value conversion.
+		if marshaler, ok := any(id.value).(encoding.TextMarshaler); ok {
+			text, err := marshaler.MarshalText()
+			if err != nil {
+				return nil, fmt.Errorf(
+					"id: cannot marshal %T to text for SQL value: %w",
+					id.value,
+					err,
+				)
+			}
+
+			return string(text), nil
+		}
+
 		return nil, fmt.Errorf("id: unsupported type %T for SQL value", id.value)
 	}
 }

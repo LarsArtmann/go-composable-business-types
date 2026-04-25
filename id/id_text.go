@@ -69,6 +69,18 @@ func (id *ID[B, V]) UnmarshalText(data []byte) error {
 			return unsignedInt(n), err
 		}, "uint64")
 	default:
+		var zero V
+		if unmarshaler, ok := any(&zero).(encoding.TextUnmarshaler); ok {
+			err := unmarshaler.UnmarshalText(data)
+			if err != nil {
+				return fmt.Errorf("id: cannot unmarshal text into %T: %w", zero, err)
+			}
+
+			*id = ID[B, V]{value: zero}
+
+			return nil
+		}
+
 		return fmt.Errorf(
 			"id: cannot unmarshal text into %T (only string and numeric IDs supported, got data=%q)",
 			zero,

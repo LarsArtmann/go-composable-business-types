@@ -157,6 +157,10 @@ func (id ID[B, V]) MarshalBinary() ([]byte, error) {
 
 		return b, nil
 	default:
+		if marshaler, ok := any(id.value).(encoding.BinaryMarshaler); ok {
+			return marshaler.MarshalBinary()
+		}
+
 		return nil, fmt.Errorf("id: unsupported type %T for binary marshaling", id.value)
 	}
 }
@@ -271,6 +275,18 @@ func (id *ID[B, V]) UnmarshalBinary(data []byte) error {
 	case uint64:
 		return id.readUnsigned(data, byteSizeInt64, "uint64", readUint64)
 	default:
+		var zero V
+		if unmarshaler, ok := any(&zero).(encoding.BinaryUnmarshaler); ok {
+			err := unmarshaler.UnmarshalBinary(data)
+			if err != nil {
+				return fmt.Errorf("id: cannot unmarshal binary into %T: %w", zero, err)
+			}
+
+			*id = ID[B, V]{value: zero}
+
+			return nil
+		}
+
 		return fmt.Errorf("id: unsupported type %T for binary unmarshaling (data=%x)", zero, data)
 	}
 }

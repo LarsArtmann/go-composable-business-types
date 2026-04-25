@@ -32,6 +32,7 @@ package id
 
 import (
 	"cmp"
+	"encoding"
 	"errors"
 	"fmt"
 	"strconv"
@@ -155,6 +156,15 @@ func (id ID[B, V]) String() string {
 	case uint64:
 		return strconv.FormatUint(v, 10)
 	default:
+		if marshaler, ok := any(id.value).(encoding.TextMarshaler); ok {
+			text, err := marshaler.MarshalText()
+			if err != nil {
+				return fmt.Sprintf("id:%v", id.value)
+			}
+
+			return string(text)
+		}
+
 		return fmt.Sprintf("%v", id.value)
 	}
 }
