@@ -29,6 +29,7 @@ golangci-lint run --fix
 
 - `github.com/abice/go-enum` - Enum code generation (`//go:generate go-enum`)
 - `github.com/bojanz/currency` - ISO 4217 currency handling
+- `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers (extracted from this project, uses `replace` directive for local development)
 - `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
 
 ## Package Structure (Go 1.26 Selective Imports)
@@ -46,7 +47,6 @@ This library uses a single Go module with subpackages for selective imports:
 │   └── cause.go        # Cause[T] causal relationships
 ├── enums/              # ActorKind, Priority, Status, Trigger enums
 │   └── enum_enum.go    # Generated enum code (do not edit)
-├── id/                 # ID[B,V] - branded/phantom type identifiers
 ├── locale/             # Locale - BCP 47 language tags
 ├── money/              # Money - ISO 4217 currency wrapper
 ├── nanoid/             # NanoID - URL-safe unique identifiers
@@ -71,7 +71,7 @@ func main() {
 ```go
 // Import generic types with type parameters
 import (
-    "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-branded-id"
     "github.com/larsartmann/go-composable-business-types/actor"
 )
 
@@ -100,7 +100,7 @@ import (
     "github.com/larsartmann/go-composable-business-types/datapoint"
     "github.com/larsartmann/go-composable-business-types/actor"
     "github.com/larsartmann/go-composable-business-types/enums"
-    "github.com/larsartmann/go-composable-business-types/id"
+    "github.com/larsartmann/go-branded-id"
 )
 
 func main() {
@@ -130,4 +130,5 @@ func main() {
 
 - `enums/enum_enum.go` is auto-generated - do not edit manually
 - Run `go generate ./...` after modifying `enums/enums.go`
-- Generic types (ID, ActorEntry, ActorChain) must be imported from subpackages
+- Generic types (ActorEntry, ActorChain) must be imported from subpackages
+- ID types now live in `github.com/larsartmann/go-branded-id` (separate module)

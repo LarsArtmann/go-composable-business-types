@@ -1,14 +1,17 @@
 module github.com/larsartmann/go-composable-business-types
 
-go 1.26.0
+go 1.26.2
 
 tool github.com/abice/go-enum
 
 require (
 	github.com/bojanz/currency v1.4.3
+	github.com/larsartmann/go-branded-id v0.0.0
 	github.com/sixafter/nanoid v1.64.1
 	golang.org/x/text v0.36.0
 )
+
+replace github.com/larsartmann/go-branded-id => ../go-branded-id
 
 require (
 	dario.cat/mergo v1.0.2 // indirect

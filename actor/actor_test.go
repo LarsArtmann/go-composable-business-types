@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
-	"github.com/larsartmann/go-composable-business-types/id"
+	"github.com/larsartmann/go-branded-id"
 )
 
 // newTestChain creates a test actor chain with a user and two services.

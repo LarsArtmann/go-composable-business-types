@@ -17,7 +17,7 @@ import (
 	"slices"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
-	"github.com/larsartmann/go-composable-business-types/id"
+	"github.com/larsartmann/go-branded-id"
 )
 
 // ActorEntry represents a single actor in an actor chain.
