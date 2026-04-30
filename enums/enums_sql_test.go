@@ -295,11 +295,11 @@ func TestAppendText(t *testing.T) {
 		name  string
 		value any
 	}{
-		{"enums.ActorKindUser", enums.ActorKindUser},
-		{"enums.PriorityHigh", enums.PriorityHigh},
-		{"enums.StatusActive", enums.StatusActive},
-		{"enums.TriggerWebhook", enums.TriggerWebhook},
-		{"enums.CauseKindDirect", enums.CauseKindDirect},
+		{"User", enums.ActorKindUser},
+		{"High", enums.PriorityHigh},
+		{"Active", enums.StatusActive},
+		{"Webhook", enums.TriggerWebhook},
+		{"Direct", enums.CauseKindDirect},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
