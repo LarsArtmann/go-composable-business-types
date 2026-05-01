@@ -6,9 +6,9 @@ import (
 	"maps"
 	"testing"
 
+	id "github.com/larsartmann/go-branded-id"
 	"github.com/larsartmann/go-composable-business-types/actor"
 	"github.com/larsartmann/go-composable-business-types/enums"
-	"github.com/larsartmann/go-branded-id"
 	"github.com/larsartmann/go-composable-business-types/nanoid"
 )
 
