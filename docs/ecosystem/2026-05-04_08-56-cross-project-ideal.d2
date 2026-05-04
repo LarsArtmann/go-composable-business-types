@@ -1,0 +1,213 @@
+title: Four-Project Ecosystem — IDEAL STATE (v3, May 2026)
+direction: down
+
+kernel: "go-composable-business-types (extended)" {
+  shape: rectangle
+  style.fill: "#E8EAF6"
+  style.stroke: "#3F51B5"
+  style.bold: true
+
+  existing: "Existing Types" {
+    shape: rectangle
+    style.fill: "#C5CAE9"
+
+    percentage: "Percentage (uint8) 0-100 clamped" {
+      shape: cylinder
+    }
+    bounded: "BoundedString (min/max length)" {
+      shape: cylinder
+    }
+    email: "Email, URL (validated strings)" {
+      shape: cylinder
+    }
+    locale: "Locale (BCP 47 human languages)" {
+      shape: cylinder
+    }
+    money: "Cents, Money (ISO 4217)" {
+      shape: cylinder
+    }
+    nanoid_t: "NanoID (URL-safe random)" {
+      shape: cylinder
+    }
+  }
+
+  new_types: "NEW Types for Project Ecosystem" {
+    shape: rectangle
+    style.fill: "#A5D6A7"
+    style.bold: true
+
+    importance: "importance.Importance (uint8)\n0-100, error on overflow\nClassification: VeryLow <=20 Low 21-40\nMedium 41-60 High 61-80 VeryHigh 81-100\nParse(String) + String() + Validate()" {
+      shape: cylinder
+      style.fill: "#81C784"
+    }
+    tag: "tag.Tag (string)\nRegex: ^[A-Za-z0-9-]+ (no special chars)\nMax 50 chars, reject invalid\nNew() + Validate()" {
+      shape: cylinder
+      style.fill: "#81C784"
+    }
+    language: "programminglanguage.Language\n= id.ID[languageBrand, string]\nNO enum. go-enry is the authority.\nNormalize() for alias resolution\nLanguages []Language with helpers" {
+      shape: cylinder
+      style.fill: "#81C784"
+    }
+    project_core: "projectcore.ProjectCore\nName Path Languages\nImportance Tags\nValidate() via validate.Validator" {
+      shape: cylinder
+      style.fill: "#81C784"
+    }
+  }
+
+  shared_infra_internal: "Shared Internal Infrastructure" {
+    shape: rectangle
+    style.fill: "#C5CAE9"
+
+    validator: "validate.Validator interface\nValidate() error" {
+      shape: rectangle
+    }
+    errors: "pkg/errors/ sentinel + structured errors" {
+      shape: rectangle
+    }
+    scanutil: "scanutil/ SQL Scan/Value helpers" {
+      shape: rectangle
+    }
+    json_helpers: "JSON marshal/unmarshal helpers" {
+      shape: rectangle
+    }
+  }
+}
+
+pds: "project-discovery-sdk (Detection Authority)" {
+  shape: rectangle
+  style.fill: "#FFF3E0"
+  style.stroke: "#FF9800"
+
+  pds_api: "SDK API\nDiscover() DiscoverStream()\nWatchObservable()\nreturns projectcore types directly" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+  pds_detection: "detection/ (go-enry)\nNormalizeEnryLanguage()\nUses programminglanguage.Normalize()\nfrom business-types" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+  pds_hooks: "Hook Middleware\nMetadataEnricher from project-meta\nplugs in here" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+}
+
+pm: "project-meta (Metadata Authority)" {
+  shape: rectangle
+  style.fill: "#F3E5F5"
+  style.stroke: "#9C27B0"
+
+  pm_api: "API (pkg/meta)\nUses importance.Importance uint8\nUses tag.Tag\nNo duplicated type definitions" {
+    shape: rectangle
+    style.fill: "#E1BEE7"
+  }
+  pm_storage: "Storage\nYAML per-project .config/metadata.yaml\natomic writes" {
+    shape: cylinder
+    style.fill: "#CE93D8"
+  }
+  pm_cli: "CLI (meta)\ndoctor --fix-tags for migration" {
+    shape: rectangle
+    style.fill: "#E1BEE7"
+  }
+  pm_hook: "SDK MetadataEnricher\nimplements sdk.Hook\nadds tags + importance" {
+    shape: hexagon
+    style.fill: "#E1BEE7"
+    style.stroke-dash: 3
+    style.stroke: "#FF9800"
+  }
+}
+
+pdg: "project-dependency-graph (Dependency Intelligence)" {
+  shape: rectangle
+  style.fill: "#E3F2FD"
+  style.stroke: "#2196F3"
+
+  pdg_lib: "pkg/graph/ (IMPORTABLE LIBRARY)\nBuildGraph() Render()\nuses programminglanguage.Language" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+  }
+  pdg_cli: "cmd/pdg/ (thin CLI wrapper)" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+  }
+  pdg_meta: "Metadata Annotations\nreads project-meta for\nimportance coloring, tag filtering" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+    style.stroke-dash: 3
+    style.stroke: "#9C27B0"
+  }
+}
+
+pma: "projects-management-automation (Orchestration Hub)" {
+  shape: rectangle
+  style.fill: "#E8F5E9"
+  style.stroke: "#4CAF50"
+
+  pma_cli: "CLI (21 commands)" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_domain: "Domain\nextends projectcore with:\nStatus, Changes, Health, Workflow\nNO redefined Importance/Tag/Language" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_discovery: "Discovery\nthin adapter, NO type conversion\n(same types from business-types)" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_meta: "Metadata\nNO adapter.go needed\n(same Importance/Tag types)" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+    style.bold: true
+  }
+  pma_deps: "Deps commands\nimports pdg as library" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+    style.stroke-dash: 3
+    style.stroke: "#2196F3"
+  }
+  pma_categories: "ProjectType (PMA-only)\napp library cli web mobile desktop\nSEPARATED from Language" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+}
+
+external_deps: "External Dependencies" {
+  shape: rectangle
+  style.fill: "#ECEFF1"
+
+  go_branded_id: "go-branded-id\n(phantom-typed IDs)" {
+    shape: rectangle
+    style.fill: "#CFD8DC"
+  }
+  go_enry: "go-enry\n(language detection)\n400+ languages, zero maintenance" {
+    shape: rectangle
+    style.fill: "#CFD8DC"
+  }
+  cmdguard: "cmdguard\n(CLI framework)" {
+    shape: rectangle
+    style.fill: "#CFD8DC"
+  }
+}
+
+kernel.new_types -> kernel.shared_infra_internal: "uses validate.Validator,\npkg/errors, scanutil"
+kernel -> go_branded_id: "already depends on\n(for ID types)"
+
+pds.pds_api -> kernel.new_types: "returns Importance, Tag,\nLanguage, ProjectCore"
+pds.pds_detection -> kernel.new_types.language: "uses Normalize()"
+pds.pds_detection -> go_enry: "GetLanguage()"
+
+pm.pm_api -> kernel.new_types: "uses Importance uint8,\nTag string"
+pm.pm_hook -> pm.pm_api: "reads metadata"
+
+pdg.pdg_lib -> kernel.new_types.language: "uses Language for filtering"
+pdg.pdg_meta -> pm.pm_api: "enriches nodes"
+
+pma.pma_domain -> kernel.new_types: "ALL shared types"
+pma.pma_cli -> pma.pma_discovery: "discovers"
+pma.pma_discovery -> pds.pds_api: "sdk.Discover()"
+pma.pma_meta -> pm.pm_api: "meta.API (same types)"
+pma.pma_deps -> pdg.pdg_lib: "graph.Build()"
+pma.pma_domain -> pma.pma_categories: "uses ProjectType\n(not Language)"
+pma.pma_cli -> cmdguard: "imports"
+pdg.pdg_cli -> cmdguard: "imports"

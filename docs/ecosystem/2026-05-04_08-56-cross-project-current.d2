@@ -1,0 +1,191 @@
+title: Four-Project Ecosystem — CURRENT STATE (May 2026)
+direction: down
+
+pma: "projects-management-automation" {
+  shape: rectangle
+  style.fill: "#E8F5E9"
+  style.stroke: "#4CAF50"
+
+  pma_cli: "CLI (21 commands)\nlist, git, ai, deps, stats, scc,\nworkflow, meta-sync, ..." {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_domain: "pkg/domain\nProject, Importance (int32),\nTag, Language (uint8 enum),\nGitStatus, Health, 90+ errors" {
+    shape: cylinder
+    style.fill: "#A5D6A7"
+  }
+  pma_discovery_adapter: "SDKDiscoverer (55 lines)\nconverts sdk.Project → domain.Project" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_meta_adapter: "meta/adapter.go\nConvertTag, ConvertImportance\nraw int32 casts, string round-trips" {
+    shape: rectangle
+    style.fill: "#FFCDD2"
+    style.stroke: "#F44336"
+  }
+  pma_meta_service: "MetadataService\nwraps project-meta API\nEnrichProject, FilterByTags" {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_services: "Services (100+ files)\nGitService, AIService,\nAnalysisService, ..." {
+    shape: rectangle
+    style.fill: "#C8E6C9"
+  }
+  pma_coreutils: "pkg/coreutils\nstringutils, pathutil,\nvalidation, syncutils" {
+    shape: cylinder
+    style.fill: "#A5D6A7"
+  }
+}
+
+pdg: "project-dependency-graph" {
+  shape: rectangle
+  style.fill: "#E3F2FD"
+  style.stroke: "#2196F3"
+
+  pdg_cli: "CLI\nscan dir → deps → graph → diagram" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+  }
+  pdg_discover: "sdkDiscoverer\ncalls sdk.Discover()\nLanguages: [go]" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+  }
+  pdg_graph: "Graph Domain\nDepGraph, Module, Dep, DepCategory\nSCC cycle detection" {
+    shape: cylinder
+    style.fill: "#90CAF9"
+  }
+  pdg_render: "Rendering\nD2, JSON, Mermaid, DOT" {
+    shape: rectangle
+    style.fill: "#BBDEFB"
+  }
+}
+
+pds: "project-discovery-sdk" {
+  shape: rectangle
+  style.fill: "#FFF3E0"
+  style.stroke: "#FF9800"
+
+  pds_api: "SDK API\nDiscover(), DiscoverStream(),\nWatchObservable()" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+  pds_pipeline: "Pipeline\nScan → Identify → Detect → Filter → Enrich → Emit" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+  pds_types: "Types\nProject (15 string/bool fields)\nImportance (int), Tags ([]string)\nLanguages ([]string)" {
+    shape: cylinder
+    style.fill: "#FFCC80"
+  }
+  pds_branded: "Branded Types\nProjectPath, ProjectName,\nLanguage, RemoteURL, Org, Repo" {
+    shape: cylinder
+    style.fill: "#FFCC80"
+  }
+  pds_detection: "detection/\ngo-enry, marker registry\nlanguage detection" {
+    shape: rectangle
+    style.fill: "#FFE0B2"
+  }
+}
+
+pm: "project-meta" {
+  shape: rectangle
+  style.fill: "#F3E5F5"
+  style.stroke: "#9C27B0"
+
+  pm_cli: "CLI (meta)\nlist, get, set, tags, importance,\ndoctor, validate, export" {
+    shape: rectangle
+    style.fill: "#E1BEE7"
+  }
+  pm_api: "API (pkg/meta)\nNewDefaultAPI, Get, Set,\nList, Filter, DiscoverNewProjects" {
+    shape: rectangle
+    style.fill: "#E1BEE7"
+  }
+  pm_domain: "Domain\nMetadata, Importance (int32), Tag\nDIFFERENT thresholds from PMA" {
+    shape: cylinder
+    style.fill: "#CE93D8"
+  }
+  pm_storage: "Storage\nYAML in <project>/.config/metadata.yaml\natomic writes" {
+    shape: cylinder
+    style.fill: "#CE93D8"
+  }
+}
+
+shared_libs: "Shared Libraries" {
+  shape: rectangle
+  style.fill: "#ECEFF1"
+
+  go_branded_id: "go-branded-id\nphantom-typed IDs" {
+    shape: rectangle
+    style.fill: "#CFD8DC"
+  }
+  cmdguard: "cmdguard\nCLI framework" {
+    shape: rectangle
+    style.fill: "#CFD8DC"
+  }
+  go_filewatcher: "go-filewatcher\n(v0.1.0 vs v0.2.0 MISMATCH)" {
+    shape: rectangle
+    style.fill: "#FFCDD2"
+    style.stroke: "#F44336"
+  }
+}
+
+problems: "⚠️ Cross-Project Problems" {
+  shape: rectangle
+  style.fill: "#FFCDD2"
+  style.stroke: "#D32F2F"
+
+  importance_split: "Importance thresholds differ\nPMA: low=21-40, meta: low=26-49" {
+    shape: rectangle
+    style.fill: "#EF9A9A"
+  }
+  tag_split: "Tag construction differs\nPMA: normalize silently, meta: reject invalid" {
+    shape: rectangle
+    style.fill: "#EF9A9A"
+  }
+  no_pdg_link: "project-dependency-graph has\nNO connection to PMA or project-meta" {
+    shape: rectangle
+    style.fill: "#EF9A9A"
+  }
+  type_babel: "4 different Project types\nSDK: 15 string/bool fields\nPMA: 8 strong-typed fields\nPDG: Module struct\nMeta: no Project entity" {
+    shape: rectangle
+    style.fill: "#EF9A9A"
+  }
+}
+
+pma.pma_cli -> pma.pma_discovery_adapter: "discovers projects"
+pma.pma_cli -> pma.pma_meta_service: "meta-sync"
+pma.pma_discovery_adapter -> pds.pds_api: "sdk.Discover()"
+pma.pma_meta_service -> pm.pm_api: "meta.API calls"
+pma.pma_meta_adapter -> pm.pm_domain: "type conversion"
+pma.pma_domain -> pma.pma_coreutils: "uses"
+pma.pma_services -> pma.pma_domain: "operates on"
+
+pdg.pdg_cli -> pdg.pdg_discover: "step 1"
+pdg.pdg_discover -> pds.pds_api: "sdk.Discover()"
+pdg.pdg_cli -> pdg.pdg_graph: "step 2"
+pdg.pdg_cli -> pdg.pdg_render: "step 3"
+
+pds.pds_api -> pds.pds_pipeline: "executes"
+pds.pds_pipeline -> pds.pds_types: "produces"
+pds.pds_pipeline -> pds.pds_detection: "detects"
+pds.pds_pipeline -> pds.pds_branded: "validates"
+
+pm.pm_cli -> pm.pm_api: "calls"
+pm.pm_api -> pm.pm_domain: "operates on"
+pm.pm_domain -> pm.pm_storage: "persists"
+
+pds -> shared_libs.go_branded_id: "imports"
+pm -> shared_libs.go_branded_id: "imports"
+pma.pma_cli -> shared_libs.cmdguard: "imports"
+pdg.pdg_cli -> shared_libs.cmdguard: "imports"
+pds.pds_pipeline -> shared_libs.go_filewatcher: "imports"
+pma.pma_services -> shared_libs.go_filewatcher: "imports"
+
+problems.importance_split -> pma.pma_domain: "conflicts with"
+problems.importance_split -> pm.pm_domain: "conflicts with"
+problems.tag_split -> pma.pma_domain: "conflicts with"
+problems.tag_split -> pm.pm_domain: "conflicts with"
+problems.no_pdg_link -> pdg: "isolated from"
+problems.type_babel -> pds.pds_types: "different from"
+problems.type_babel -> pma.pma_domain: "different from"
+problems.type_babel -> pdg.pdg_graph: "different from"
