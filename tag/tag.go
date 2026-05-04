@@ -128,3 +128,42 @@ func (t Tag) Value() (driver.Value, error) {
 }
 
 var _ validate.Validator = Tag("")
+
+type Tags []Tag
+
+func NewTagsFromString(ss ...string) (Tags, error) {
+	tags := make(Tags, 0, len(ss))
+	for _, s := range ss {
+		t, err := New(s)
+		if err != nil {
+			return nil, fmt.Errorf("tag at index %d: %w", len(tags), err)
+		}
+
+		tags = append(tags, t)
+	}
+
+	return tags, nil
+}
+
+func (ts Tags) Strings() []string {
+	result := make([]string, len(ts))
+	for i, t := range ts {
+		result[i] = t.String()
+	}
+
+	return result
+}
+
+func (ts Tags) IsEmpty() bool {
+	return len(ts) == 0
+}
+
+func (ts Tags) Contains(t Tag) bool {
+	for _, tag := range ts {
+		if tag == t {
+			return true
+		}
+	}
+
+	return false
+}
