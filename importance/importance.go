@@ -120,6 +120,58 @@ func (i Importance) Compare(other Importance) int {
 	return 0
 }
 
+func (i Importance) IsNone() bool     { return i == None }
+func (i Importance) IsDefault() bool  { return i == Medium }
+
+func (i Importance) Clamp() Importance {
+	if i < None {
+		return None
+	}
+
+	if i > Max {
+		return Max
+	}
+
+	return i
+}
+
+func (i Importance) Add(other Importance) Importance {
+	result := i + other
+	if result > Max || result < i {
+		return Max
+	}
+
+	return result
+}
+
+func (i Importance) Sub(other Importance) Importance {
+	if other > i {
+		return None
+	}
+
+	return i - other
+}
+
+func (i Importance) Max(other Importance) Importance {
+	if i > other {
+		return i
+	}
+
+	return other
+}
+
+func (i Importance) Min(other Importance) Importance {
+	if i < other {
+		return i
+	}
+
+	return other
+}
+
+func (i Importance) PercentString() string {
+	return fmt.Sprintf("%d%%", i)
+}
+
 func (i Importance) Validate() error {
 	if i > maxValue {
 		return fmt.Errorf("importance: value %d exceeds maximum %d", i, maxValue)

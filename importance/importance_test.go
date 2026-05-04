@@ -305,3 +305,72 @@ func TestConstants(t *testing.T) {
 	assert.Equal(t, Importance(90), VeryHigh)
 	assert.Equal(t, Importance(100), Max)
 }
+
+func TestIsNone(t *testing.T) {
+	t.Parallel()
+
+	assert.True(t, None.IsNone())
+	assert.False(t, Medium.IsNone())
+	assert.False(t, Max.IsNone())
+}
+
+func TestIsDefault(t *testing.T) {
+	t.Parallel()
+
+	assert.True(t, Medium.IsDefault())
+	assert.False(t, None.IsDefault())
+	assert.False(t, Max.IsDefault())
+}
+
+func TestClamp(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, Importance(50), Importance(50).Clamp())
+	assert.Equal(t, None, None.Clamp())
+	assert.Equal(t, Max, Max.Clamp())
+	assert.Equal(t, Max, Importance(150).Clamp())
+}
+
+func TestAdd(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, Importance(70), Importance(30).Add(Importance(40)))
+	assert.Equal(t, Max, Importance(80).Add(Importance(30)))
+	assert.Equal(t, None, None.Add(None))
+}
+
+func TestSub(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, Importance(30), Importance(70).Sub(Importance(40)))
+	assert.Equal(t, None, Importance(30).Sub(Importance(50)))
+	assert.Equal(t, None, None.Sub(None))
+}
+
+func TestMax(t *testing.T) {
+	t.Parallel()
+
+	low, high := Importance(30), Importance(70)
+
+	assert.Equal(t, high, low.Max(high))
+	assert.Equal(t, high, high.Max(low))
+	assert.Equal(t, low, low.Max(low))
+}
+
+func TestMin(t *testing.T) {
+	t.Parallel()
+
+	low, high := Importance(30), Importance(70)
+
+	assert.Equal(t, low, low.Min(high))
+	assert.Equal(t, low, high.Min(low))
+	assert.Equal(t, high, high.Min(high))
+}
+
+func TestPercentString(t *testing.T) {
+	t.Parallel()
+
+	assert.Equal(t, "0%", None.PercentString())
+	assert.Equal(t, "50%", Medium.PercentString())
+	assert.Equal(t, "100%", Max.PercentString())
+}
