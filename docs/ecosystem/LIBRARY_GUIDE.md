@@ -8,22 +8,22 @@
 
 ## Quick Decision Matrix
 
-| If you need... | Use this |
-|---|---|
-| Event sourcing / CQRS architecture | [go-cqrs-lite](#go-cqrs-lite) |
-| Strongly typed business data with audit trails | [go-composable-business-types](#go-composable-business-types) |
+| If you need...                                                           | Use this                                                      |
+| ------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| Event sourcing / CQRS architecture                                       | [go-cqrs-lite](#go-cqrs-lite)                                 |
+| Strongly typed business data with audit trails                           | [go-composable-business-types](#go-composable-business-types) |
 | Shared project types (Importance, Tag, ProgrammingLanguage, ProjectCore) | [go-composable-business-types](#go-composable-business-types) |
-| Unified static analysis findings / SARIF | [go-finding](#go-finding) |
-| Severity-aware business rule validation | [go-business-rules](#go-business-rules) |
-| Type-safe CLI construction with DI | [cmdguard](#cmdguard) |
-| File system watching with debouncing | [go-filewatcher](#go-filewatcher) |
-| AI-generated git commit messages | [go-commit](#go-commit) |
-| Smart configuration with actionable error messages | [smart-configs](#smart-configs) |
-| In-memory actor model (Erlang-style) | [ActaFlow](#actaflow) |
-| Dependency-aware workflow orchestration | [universal-workflow](#universal-workflow) |
-| Multi-format structured data output | [go-output](#go-output) |
-| Offline-first app framework with CRDT sync | [go-localfirst](#go-localfirst) |
-| Sync external APIs into local SQLite | [go-localsync](#go-localsync) |
+| Unified static analysis findings / SARIF                                 | [go-finding](#go-finding)                                     |
+| Severity-aware business rule validation                                  | [go-business-rules](#go-business-rules)                       |
+| Type-safe CLI construction with DI                                       | [cmdguard](#cmdguard)                                         |
+| File system watching with debouncing                                     | [go-filewatcher](#go-filewatcher)                             |
+| AI-generated git commit messages                                         | [go-commit](#go-commit)                                       |
+| Smart configuration with actionable error messages                       | [smart-configs](#smart-configs)                               |
+| In-memory actor model (Erlang-style)                                     | [ActaFlow](#actaflow)                                         |
+| Dependency-aware workflow orchestration                                  | [universal-workflow](#universal-workflow)                     |
+| Multi-format structured data output                                      | [go-output](#go-output)                                       |
+| Offline-first app framework with CRDT sync                               | [go-localfirst](#go-localfirst)                               |
+| Sync external APIs into local SQLite                                     | [go-localsync](#go-localsync)                                 |
 
 ---
 
@@ -56,14 +56,14 @@
 
 ## Combinations That Work Well Together
 
-| Pattern | Libraries |
-|---|---|
-| Full CLI app | cmdguard + smart-configs + go-output + go-business-rules |
-| Event-sourced microservice | go-cqrs-lite + go-composable-business-types + smart-configs |
-| Offline-first app with sync | go-localfirst + go-localsync + go-cqrs-lite |
-| Static analysis pipeline | go-finding + go-output + go-filewatcher |
-| Complex workflow engine | universal-workflow + go-composable-business-types + go-output |
-| Developer tooling CLI | cmdguard + go-filewatcher + go-commit + go-output |
+| Pattern                     | Libraries                                                     |
+| --------------------------- | ------------------------------------------------------------- |
+| Full CLI app                | cmdguard + smart-configs + go-output + go-business-rules      |
+| Event-sourced microservice  | go-cqrs-lite + go-composable-business-types + smart-configs   |
+| Offline-first app with sync | go-localfirst + go-localsync + go-cqrs-lite                   |
+| Static analysis pipeline    | go-finding + go-output + go-filewatcher                       |
+| Complex workflow engine     | universal-workflow + go-composable-business-types + go-output |
+| Developer tooling CLI       | cmdguard + go-filewatcher + go-commit + go-output             |
 
 ---
 
@@ -88,28 +88,28 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `command.Dispatcher` | Type-safe command routing with middleware |
-| `query.Dispatcher` | Type-safe query routing with `DispatchTyped[T]` |
-| `event.Store` | Append-only event storage with optimistic concurrency |
-| `event.Bus` | Publisher/Subscriber split with middleware |
-| `aggregate.Root` | Event-sourced aggregate with `RecordEvent` / `LoadFromHistory` |
+| Type                     | Purpose                                                        |
+| ------------------------ | -------------------------------------------------------------- |
+| `command.Dispatcher`     | Type-safe command routing with middleware                      |
+| `query.Dispatcher`       | Type-safe query routing with `DispatchTyped[T]`                |
+| `event.Store`            | Append-only event storage with optimistic concurrency          |
+| `event.Bus`              | Publisher/Subscriber split with middleware                     |
+| `aggregate.Root`         | Event-sourced aggregate with `RecordEvent` / `LoadFromHistory` |
 | `decider.Decider[State]` | Functional approach: `Initial` + `Fold` + `Repository.Execute` |
-| `id.Of[T]` | Branded ULID-backed IDs — compile-time prevention of ID mixing |
-| `projection.Runner` | Replay + live subscription with checkpoints |
+| `id.Of[T]`               | Branded ULID-backed IDs — compile-time prevention of ID mixing |
+| `projection.Runner`      | Replay + live subscription with checkpoints                    |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full overview, quick start, architecture diagram |
-| `FEATURES.md` | Honest feature inventory with maturity matrix |
-| `core/event/event.go` | Central `Event` interface and `Core` struct |
-| `core/event/store.go` | `Store` interface — the persistence contract |
-| `core/command/dispatcher.go` | Command dispatcher |
-| `core/decider/decider.go` | Functional `Decider[State]` pattern |
-| `example/user/main.go` | Minimal end-to-end demo |
+| File                         | Why                                              |
+| ---------------------------- | ------------------------------------------------ |
+| `README.md`                  | Full overview, quick start, architecture diagram |
+| `FEATURES.md`                | Honest feature inventory with maturity matrix    |
+| `core/event/event.go`        | Central `Event` interface and `Core` struct      |
+| `core/event/store.go`        | `Store` interface — the persistence contract     |
+| `core/command/dispatcher.go` | Command dispatcher                               |
+| `core/decider/decider.go`    | Functional `Decider[State]` pattern              |
+| `example/user/main.go`       | Minimal end-to-end demo                          |
 
 ---
 
@@ -131,34 +131,34 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `DataPoint[T]` | Generic wrapper with NanoID, bitemporal tracking, actor, trigger, context, references, causes, tags, version |
-| `Bitemporal` | Two time axes: valid-time and transaction-time with point-in-time queries |
-| `ActorChain[T]` | Ordered chain of actors for full audit trail |
-| `ID[B, V]` | Branded/phantom IDs — compile-time safety |
-| `Cents` / `Money` | Float-free monetary arithmetic |
-| `Email` / `URL` / `Percentage` | Validated domain primitives |
-| `Importance` | `uint8` 0–100 with classification levels (VeryLow/Low/Medium/High/VeryHigh) |
-| `Tag` | Validated string `^[A-Za-z0-9-]+$`, max 50 chars |
-| `Language` | Branded string via go-branded-id, go-enry authority, no closed enum |
-| `ProjectCore` | Shared base entity: Name, Path, Languages, Importance, Tags |
+| Type                           | Purpose                                                                                                      |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `DataPoint[T]`                 | Generic wrapper with NanoID, bitemporal tracking, actor, trigger, context, references, causes, tags, version |
+| `Bitemporal`                   | Two time axes: valid-time and transaction-time with point-in-time queries                                    |
+| `ActorChain[T]`                | Ordered chain of actors for full audit trail                                                                 |
+| `ID[B, V]`                     | Branded/phantom IDs — compile-time safety                                                                    |
+| `Cents` / `Money`              | Float-free monetary arithmetic                                                                               |
+| `Email` / `URL` / `Percentage` | Validated domain primitives                                                                                  |
+| `Importance`                   | `uint8` 0–100 with classification levels (VeryLow/Low/Medium/High/VeryHigh)                                  |
+| `Tag`                          | Validated string `^[A-Za-z0-9-]+$`, max 50 chars                                                             |
+| `Language`                     | Branded string via go-branded-id, go-enry authority, no closed enum                                          |
+| `ProjectCore`                  | Shared base entity: Name, Path, Languages, Importance, Tags                                                  |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full usage guide with examples |
-| `PARTS.md` | Component analysis — rates each type's uniqueness |
-| `importance/importance.go` | `Importance` — bounded uint8 with classification |
-| `tag/tag.go` | `Tag` — regex-validated identifier |
-| `programminglanguage/language.go` | `Language` — branded string, go-enry compatible |
-| `projectcore/project_core.go` | `ProjectCore` — shared base entity |
-| `datapoint/datapoint.go` | `DataPoint[T]` — the main abstraction |
-| `temporal/temporal.go` | `Bitemporal` — bitemporal tracking |
-| `actor/actor.go` | `ActorChain[T]`, `ActorEntry[T]` |
-| `types/types.go` | `Email`, `URL` domain primitives |
-| `types/types_numeric.go` | `Percentage`, `Cents` with arithmetic |
+| File                              | Why                                               |
+| --------------------------------- | ------------------------------------------------- |
+| `README.md`                       | Full usage guide with examples                    |
+| `PARTS.md`                        | Component analysis — rates each type's uniqueness |
+| `importance/importance.go`        | `Importance` — bounded uint8 with classification  |
+| `tag/tag.go`                      | `Tag` — regex-validated identifier                |
+| `programminglanguage/language.go` | `Language` — branded string, go-enry compatible   |
+| `projectcore/project_core.go`     | `ProjectCore` — shared base entity                |
+| `datapoint/datapoint.go`          | `DataPoint[T]` — the main abstraction             |
+| `temporal/temporal.go`            | `Bitemporal` — bitemporal tracking                |
+| `actor/actor.go`                  | `ActorChain[T]`, `ActorEntry[T]`                  |
+| `types/types.go`                  | `Email`, `URL` domain primitives                  |
+| `types/types_numeric.go`          | `Percentage`, `Cents` with arithmetic             |
 
 ---
 
@@ -178,25 +178,25 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Finding` | Unified finding model: ID, rule, severity, position, fix strategy, before/after code |
-| `Report` | Thread-safe container for findings with SARIF/JSON export |
-| `pipeline.Detector` | Interface for pluggable analysis tools |
-| `pipeline.Pipeline` | Orchestrates detect → triage → fix → verify loop |
-| `pipeline.FixEngine` | Pure in-memory fix application with conflict detection |
-| `LSPDiagnostic` | Bidirectional LSP conversion |
+| Type                 | Purpose                                                                              |
+| -------------------- | ------------------------------------------------------------------------------------ |
+| `Finding`            | Unified finding model: ID, rule, severity, position, fix strategy, before/after code |
+| `Report`             | Thread-safe container for findings with SARIF/JSON export                            |
+| `pipeline.Detector`  | Interface for pluggable analysis tools                                               |
+| `pipeline.Pipeline`  | Orchestrates detect → triage → fix → verify loop                                     |
+| `pipeline.FixEngine` | Pure in-memory fix application with conflict detection                               |
+| `LSPDiagnostic`      | Bidirectional LSP conversion                                                         |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Overview, quick start, API examples |
-| `FEATURES.md` | Definitive feature reference |
-| `docs/USAGE_GUIDE.md` | Comprehensive usage with code examples |
-| `finding.go` | The `Finding` struct — the heart of the library |
-| `pipeline/pipeline.go` | Pipeline orchestration and `Detector` interface |
-| `examples/pipeline/main.go` | Pipeline with custom Detector |
+| File                        | Why                                             |
+| --------------------------- | ----------------------------------------------- |
+| `README.md`                 | Overview, quick start, API examples             |
+| `FEATURES.md`               | Definitive feature reference                    |
+| `docs/USAGE_GUIDE.md`       | Comprehensive usage with code examples          |
+| `finding.go`                | The `Finding` struct — the heart of the library |
+| `pipeline/pipeline.go`      | Pipeline orchestration and `Detector` interface |
+| `examples/pipeline/main.go` | Pipeline with custom Detector                   |
 
 ---
 
@@ -216,24 +216,24 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Rule` (interface) | `Name()`, `Check() error`, `Severity()`, `Message()` |
-| `Severity` | 4-level: Info → Warning → Error → Critical |
-| `ValidatorBuilder` | Fluent builder: `AddRule().AddRules().Build()` |
+| Type                    | Purpose                                                |
+| ----------------------- | ------------------------------------------------------ |
+| `Rule` (interface)      | `Name()`, `Check() error`, `Severity()`, `Message()`   |
+| `Severity`              | 4-level: Info → Warning → Error → Critical             |
+| `ValidatorBuilder`      | Fluent builder: `AddRule().AddRules().Build()`         |
 | `ValidationResultError` | Rich result with filtering by severity, merge, forEach |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full API reference and philosophy |
-| `rule.go` | Core `Rule` interface and `NewRule()` constructor |
-| `severity.go` | The `Severity` type — foundational |
-| `validator.go` | `ValidatorBuilder` — the entry point |
-| `validation_result.go` | `ValidationResultError` — the rich result |
-| `builders_composite.go` | `All`, `Any`, `When` combinators |
-| `example_test.go` | Runnable examples |
+| File                    | Why                                               |
+| ----------------------- | ------------------------------------------------- |
+| `README.md`             | Full API reference and philosophy                 |
+| `rule.go`               | Core `Rule` interface and `NewRule()` constructor |
+| `severity.go`           | The `Severity` type — foundational                |
+| `validator.go`          | `ValidatorBuilder` — the entry point              |
+| `validation_result.go`  | `ValidationResultError` — the rich result         |
+| `builders_composite.go` | `All`, `Any`, `When` combinators                  |
+| `example_test.go`       | Runnable examples                                 |
 
 ---
 
@@ -254,27 +254,27 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `CLI[T]` | Main entry point. `T` = app config type |
-| `Command[T, F]` | Type-safe command with config `T` and flags `F` |
-| `Scope` | DI scope with `Provide`/`Invoke`, health checks, shutdown |
-| `FlagRegistry` | Struct-tag-driven flag registration, parsing, validation |
-| `TypeHandler` | Extensible dispatch for custom flag types |
-| `Middleware[T]` | Chainable cross-cutting concerns (timing, recovery) |
-| `BranchingFlowContext` | Tree-shaped context through the command hierarchy |
+| Type                   | Purpose                                                   |
+| ---------------------- | --------------------------------------------------------- |
+| `CLI[T]`               | Main entry point. `T` = app config type                   |
+| `Command[T, F]`        | Type-safe command with config `T` and flags `F`           |
+| `Scope`                | DI scope with `Provide`/`Invoke`, health checks, shutdown |
+| `FlagRegistry`         | Struct-tag-driven flag registration, parsing, validation  |
+| `TypeHandler`          | Extensible dispatch for custom flag types                 |
+| `Middleware[T]`        | Chainable cross-cutting concerns (timing, recovery)       |
+| `BranchingFlowContext` | Tree-shaped context through the command hierarchy         |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full API reference, quick start |
-| `docs/QUICKSTART.md` | 5-minute getting started guide |
-| `docs/CLI_DESIGN_PRINCIPLES.md` | Design philosophy |
-| `pkg/cmdguard/v2/cli.go` | `CLI[T]` — the heart of the library |
-| `pkg/cmdguard/v2/command.go` | `Command[T,F]`, options, validation |
-| `pkg/cmdguard/v2/scope.go` | DI `Scope` |
-| `examples/typed/main.go` | Full example with all features |
+| File                            | Why                                 |
+| ------------------------------- | ----------------------------------- |
+| `README.md`                     | Full API reference, quick start     |
+| `docs/QUICKSTART.md`            | 5-minute getting started guide      |
+| `docs/CLI_DESIGN_PRINCIPLES.md` | Design philosophy                   |
+| `pkg/cmdguard/v2/cli.go`        | `CLI[T]` — the heart of the library |
+| `pkg/cmdguard/v2/command.go`    | `Command[T,F]`, options, validation |
+| `pkg/cmdguard/v2/scope.go`      | DI `Scope`                          |
+| `examples/typed/main.go`        | Full example with all features      |
 
 ---
 
@@ -294,25 +294,25 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Watcher` | Central struct with config, state, debouncer — implements `io.Closer` |
-| `Filter` | `func(Event) bool` — composable via `FilterAnd/Or/Not` |
-| `Middleware` | `func(Handler) Handler` — wraps handlers for cross-cutting concerns |
-| `Debouncer` / `GlobalDebouncer` | Per-path or global debouncing strategies |
-| `EventPath` / `RootPath` / `DebounceKey` | Phantom-typed paths — compile-time safety |
+| Type                                     | Purpose                                                               |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| `Watcher`                                | Central struct with config, state, debouncer — implements `io.Closer` |
+| `Filter`                                 | `func(Event) bool` — composable via `FilterAnd/Or/Not`                |
+| `Middleware`                             | `func(Handler) Handler` — wraps handlers for cross-cutting concerns   |
+| `Debouncer` / `GlobalDebouncer`          | Per-path or global debouncing strategies                              |
+| `EventPath` / `RootPath` / `DebounceKey` | Phantom-typed paths — compile-time safety                             |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full usage docs and API reference |
-| `ARCHITECTURE.md` | Layer diagram, concurrency model, state machine |
-| `watcher.go` | `Watcher` struct, `New()`, `Watch()`, `Close()` |
-| `filter.go` | All 15 filters + composition combinators |
-| `middleware.go` | 10 built-in middleware |
-| `examples/basic/main.go` | Minimal usage |
-| `examples/filter-generated/main.go` | Excluding auto-generated code |
+| File                                | Why                                             |
+| ----------------------------------- | ----------------------------------------------- |
+| `README.md`                         | Full usage docs and API reference               |
+| `ARCHITECTURE.md`                   | Layer diagram, concurrency model, state machine |
+| `watcher.go`                        | `Watcher` struct, `New()`, `Watch()`, `Close()` |
+| `filter.go`                         | All 15 filters + composition combinators        |
+| `middleware.go`                     | 10 built-in middleware                          |
+| `examples/basic/main.go`            | Minimal usage                                   |
+| `examples/filter-generated/main.go` | Excluding auto-generated code                   |
 
 ---
 
@@ -331,26 +331,26 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Commit` | Main orchestrator — holds git operations + provider + config |
-| `providers.Provider` | `GenerateCommitMessage(ctx, CommitRequest) (string, error)` |
-| `providers.Chain` | Tries providers in order until one succeeds |
-| `git.Operations` | Composite interface: status, staging, committing, pushing, syncing |
-| `branch.Hierarchy` | Parent/child relationships with cycle detection |
-| `conflict.Resolver` | AI-powered conflict resolution with confidence scoring |
+| Type                 | Purpose                                                            |
+| -------------------- | ------------------------------------------------------------------ |
+| `Commit`             | Main orchestrator — holds git operations + provider + config       |
+| `providers.Provider` | `GenerateCommitMessage(ctx, CommitRequest) (string, error)`        |
+| `providers.Chain`    | Tries providers in order until one succeeds                        |
+| `git.Operations`     | Composite interface: status, staging, committing, pushing, syncing |
+| `branch.Hierarchy`   | Parent/child relationships with cycle detection                    |
+| `conflict.Resolver`  | AI-powered conflict resolution with confidence scoring             |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full usage guide |
-| `docs/ARCHITECTURE.md` | Architecture decisions and data flow |
-| `pkg/commit/commit.go` | Core `Commit` struct — main entry point |
+| File                               | Why                                          |
+| ---------------------------------- | -------------------------------------------- |
+| `README.md`                        | Full usage guide                             |
+| `docs/ARCHITECTURE.md`             | Architecture decisions and data flow         |
+| `pkg/commit/commit.go`             | Core `Commit` struct — main entry point      |
 | `pkg/commit/providers/provider.go` | `Provider` interface, `Chain`, `CommitStyle` |
-| `pkg/commit/git/git.go` | `Operations` interface |
-| `pkg/commit/conflict/resolver.go` | AI conflict resolution |
-| `pkg/commit/branch/hierarchy.go` | Branch tree management |
+| `pkg/commit/git/git.go`            | `Operations` interface                       |
+| `pkg/commit/conflict/resolver.go`  | AI conflict resolution                       |
+| `pkg/commit/branch/hierarchy.go`   | Branch tree management                       |
 
 ---
 
@@ -369,27 +369,27 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Config` | Main entry point — resolver + context + formatters + cache |
-| `Source` (interface) | `Resolve(ctx, key) → (string, bool, error)` |
-| `ExecutionContext` | Full runtime picture: CI, cloud, container, git, runtime, user |
-| `Suggestion` | Actionable fix: title, command, URL, priority, platform, confidence |
-| `SmartError` | Composable error with aspects (key, message, suggestions, security warnings) |
-| `SuggestionGenerator` | Pluggable interface for service-specific suggestions |
+| Type                  | Purpose                                                                      |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `Config`              | Main entry point — resolver + context + formatters + cache                   |
+| `Source` (interface)  | `Resolve(ctx, key) → (string, bool, error)`                                  |
+| `ExecutionContext`    | Full runtime picture: CI, cloud, container, git, runtime, user               |
+| `Suggestion`          | Actionable fix: title, command, URL, priority, platform, confidence          |
+| `SmartError`          | Composable error with aspects (key, message, suggestions, security warnings) |
+| `SuggestionGenerator` | Pluggable interface for service-specific suggestions                         |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full feature overview, quick start |
-| `QUICK_START.md` | 5-minute getting started guide |
-| `AGENTS.md` | Architecture, patterns, gotchas |
-| `main.go` | All exported types, functions, and options |
-| `internal/configs/smartconfig.go` | `Config` struct and `New()` |
-| `internal/suggestions/suggestions_engine.go` | Suggestion dispatch engine |
-| `docs/services/turso.md` | Turso integration example |
-| `examples/usage/complete_example.go` | Comprehensive usage demo |
+| File                                         | Why                                        |
+| -------------------------------------------- | ------------------------------------------ |
+| `README.md`                                  | Full feature overview, quick start         |
+| `QUICK_START.md`                             | 5-minute getting started guide             |
+| `AGENTS.md`                                  | Architecture, patterns, gotchas            |
+| `main.go`                                    | All exported types, functions, and options |
+| `internal/configs/smartconfig.go`            | `Config` struct and `New()`                |
+| `internal/suggestions/suggestions_engine.go` | Suggestion dispatch engine                 |
+| `docs/services/turso.md`                     | Turso integration example                  |
+| `examples/usage/complete_example.go`         | Comprehensive usage demo                   |
 
 ---
 
@@ -410,28 +410,28 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `ActorSystem` | System lifecycle, health, metrics |
-| `ActorRef` | Actor interaction: `Send`, `Tell`, `Ask`, lifecycle hooks |
-| `PureActor[S]` | Generic typed actor with state `S`, message handling, supervision directives |
-| `Context` | Actor execution context with security, tracing, child spawning |
-| `ActorState` | Lifecycle enum with `CanTransitionTo()` state machine |
-| `SupervisionStrategy` | OneForOne, OneForAll, RestForOne, Escalate |
-| `SecurityContext` | AuthN/AuthZ with trust levels and permissions |
+| Type                  | Purpose                                                                      |
+| --------------------- | ---------------------------------------------------------------------------- |
+| `ActorSystem`         | System lifecycle, health, metrics                                            |
+| `ActorRef`            | Actor interaction: `Send`, `Tell`, `Ask`, lifecycle hooks                    |
+| `PureActor[S]`        | Generic typed actor with state `S`, message handling, supervision directives |
+| `Context`             | Actor execution context with security, tracing, child spawning               |
+| `ActorState`          | Lifecycle enum with `CanTransitionTo()` state machine                        |
+| `SupervisionStrategy` | OneForOne, OneForAll, RestForOne, Escalate                                   |
+| `SecurityContext`     | AuthN/AuthZ with trust levels and permissions                                |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Project overview, quick start, status |
-| `HOW_TO_USE.md` | Step-by-step usage guide with code examples |
-| `USAGE.md` | Comprehensive API reference |
-| `docs/what-we-are-not.md` | Clear limitations |
-| `pkg/interfaces/interfaces.go` | All public interfaces |
-| `internal/actor/interfaces.go` | Core actor interfaces and `PureActor[S]` |
-| `docs/architecture/supervision-architecture.md` | Supervision tree design |
-| `docs/security/SECURITY_GUIDE.md` | Security guide |
+| File                                            | Why                                         |
+| ----------------------------------------------- | ------------------------------------------- |
+| `README.md`                                     | Project overview, quick start, status       |
+| `HOW_TO_USE.md`                                 | Step-by-step usage guide with code examples |
+| `USAGE.md`                                      | Comprehensive API reference                 |
+| `docs/what-we-are-not.md`                       | Clear limitations                           |
+| `pkg/interfaces/interfaces.go`                  | All public interfaces                       |
+| `internal/actor/interfaces.go`                  | Core actor interfaces and `PureActor[S]`    |
+| `docs/architecture/supervision-architecture.md` | Supervision tree design                     |
+| `docs/security/SECURITY_GUIDE.md`               | Security guide                              |
 
 ---
 
@@ -454,28 +454,28 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `UnifiedWorkflow` | Main workflow — holds activities, state machine, execution mode |
-| `ActivityHandler` | `func(ctx ActivityContext) (*ActivityResult, error)` |
-| `ActivityBuilder` | Fluent: `.WithName().DependsOn().WithRetryPolicy()` |
-| `DependencyResolver` | Kahn's algorithm for topological sort |
-| `ParallelExecutor` | Concurrent execution within dependency levels |
-| `RetryInterceptor` | Exponential backoff with jitter |
-| `EventPublisher` | Pub/sub for workflow events with filtered subscriptions |
-| `BranchPolicy` | Conditional branching: Always, IfSuccess, IfFailure, IfCondition |
+| Type                 | Purpose                                                          |
+| -------------------- | ---------------------------------------------------------------- |
+| `UnifiedWorkflow`    | Main workflow — holds activities, state machine, execution mode  |
+| `ActivityHandler`    | `func(ctx ActivityContext) (*ActivityResult, error)`             |
+| `ActivityBuilder`    | Fluent: `.WithName().DependsOn().WithRetryPolicy()`              |
+| `DependencyResolver` | Kahn's algorithm for topological sort                            |
+| `ParallelExecutor`   | Concurrent execution within dependency levels                    |
+| `RetryInterceptor`   | Exponential backoff with jitter                                  |
+| `EventPublisher`     | Pub/sub for workflow events with filtered subscriptions          |
+| `BranchPolicy`       | Conditional branching: Always, IfSuccess, IfFailure, IfCondition |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full overview, quick start |
-| `examples/order-processing/main.go` | Complete working example using all features |
-| `pkg/workflow/workflow.go` | `UnifiedWorkflow` — the heart |
-| `pkg/workflow/workflow_types.go` | `Activity`, `ActivityHandler`, `ActivityBuilder` |
-| `pkg/workflow/dependency_resolver.go` | Topological sort implementation |
-| `pkg/workflow/parallel_executor.go` | Parallel execution |
-| `pkg/workflow/branch_execution.go` | Conditional branching |
+| File                                  | Why                                              |
+| ------------------------------------- | ------------------------------------------------ |
+| `README.md`                           | Full overview, quick start                       |
+| `examples/order-processing/main.go`   | Complete working example using all features      |
+| `pkg/workflow/workflow.go`            | `UnifiedWorkflow` — the heart                    |
+| `pkg/workflow/workflow_types.go`      | `Activity`, `ActivityHandler`, `ActivityBuilder` |
+| `pkg/workflow/dependency_resolver.go` | Topological sort implementation                  |
+| `pkg/workflow/parallel_executor.go`   | Parallel execution                               |
+| `pkg/workflow/branch_execution.go`    | Conditional branching                            |
 
 ---
 
@@ -495,28 +495,28 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `Renderer` | Core interface: `Render() (string, error)` |
-| `TableRenderer` | Extends `Renderer` with `SetHeaders` / `AddRow` |
-| `GraphRenderer` | Extends `Renderer` with `SetNodes` / `SetEdges` |
-| `Format` | 12 type-safe format constants |
-| `TableData` | Universal table data container (headers + rows) |
-| `D2Diagram` | Full D2 diagram builder (nodes, edges, SQL tables, classes) |
-| `TreeNode` | Hierarchical tree with metadata |
-| `BrandedID[Brand]` | Phantom-typed string IDs for compile-time safety |
+| Type               | Purpose                                                     |
+| ------------------ | ----------------------------------------------------------- |
+| `Renderer`         | Core interface: `Render() (string, error)`                  |
+| `TableRenderer`    | Extends `Renderer` with `SetHeaders` / `AddRow`             |
+| `GraphRenderer`    | Extends `Renderer` with `SetNodes` / `SetEdges`             |
+| `Format`           | 12 type-safe format constants                               |
+| `TableData`        | Universal table data container (headers + rows)             |
+| `D2Diagram`        | Full D2 diagram builder (nodes, edges, SQL tables, classes) |
+| `TreeNode`         | Hierarchical tree with metadata                             |
+| `BrandedID[Brand]` | Phantom-typed string IDs for compile-time safety            |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Full API tour with examples |
-| `format.go` | Core interfaces, `Format` enum, `TableData`, `TreeNode` |
-| `graph.go` | `GraphRenderer`, `GraphNode`, `GraphEdge` |
-| `d2_render.go` | D2 diagram builder |
-| `registry.go` | Pluggable renderer registry |
-| `examples/basic/main.go` | All 12 formats demonstrated |
-| `examples/d2/main.go` | Advanced D2 example |
+| File                     | Why                                                     |
+| ------------------------ | ------------------------------------------------------- |
+| `README.md`              | Full API tour with examples                             |
+| `format.go`              | Core interfaces, `Format` enum, `TableData`, `TreeNode` |
+| `graph.go`               | `GraphRenderer`, `GraphNode`, `GraphEdge`               |
+| `d2_render.go`           | D2 diagram builder                                      |
+| `registry.go`            | Pluggable renderer registry                             |
+| `examples/basic/main.go` | All 12 formats demonstrated                             |
+| `examples/d2/main.go`    | Advanced D2 example                                     |
 
 ---
 
@@ -535,27 +535,27 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `pkg/sync.VectorClock` | Causal ordering: `Increment`, `Merge`, `Compare`, `Clone` |
-| `pkg/sync.Operation[T]` | Generic typed sync operation with payload and vector clock |
-| `pkg/sync.ConflictResolver[T]` | Pluggable conflict resolution interface |
-| `pkg/sync.LWWResolver[T]` | Last-Write-Wins: vector clock → timestamp → tiebreaker |
-| `Manager` | WebSocket sync orchestrator with peer management |
-| `PebbleStore` | Embedded KV store implementing `TodoRepository` |
-| `aggregate.Todo` | Event-sourced aggregate (CQRS via go-cqrs-lite) |
+| Type                           | Purpose                                                    |
+| ------------------------------ | ---------------------------------------------------------- |
+| `pkg/sync.VectorClock`         | Causal ordering: `Increment`, `Merge`, `Compare`, `Clone`  |
+| `pkg/sync.Operation[T]`        | Generic typed sync operation with payload and vector clock |
+| `pkg/sync.ConflictResolver[T]` | Pluggable conflict resolution interface                    |
+| `pkg/sync.LWWResolver[T]`      | Last-Write-Wins: vector clock → timestamp → tiebreaker     |
+| `Manager`                      | WebSocket sync orchestrator with peer management           |
+| `PebbleStore`                  | Embedded KV store implementing `TodoRepository`            |
+| `aggregate.Todo`               | Event-sourced aggregate (CQRS via go-cqrs-lite)            |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Project overview, quick start |
-| `ARCHITECTURE.md` | Full architecture with Mermaid diagrams |
-| `pkg/sync/doc.go` | Reusable sync SDK overview with examples |
-| `pkg/sync/vectorclock.go` | `VectorClock` — causal ordering |
-| `pkg/sync/conflict.go` | `ConflictResolver[T]`, `LWWResolver[T]` |
-| `internal/sync/manager.go` | WebSocket sync manager |
-| `docs/adr/001-conflict-resolution-strategy.md` | Conflict resolution ADR |
+| File                                           | Why                                      |
+| ---------------------------------------------- | ---------------------------------------- |
+| `README.md`                                    | Project overview, quick start            |
+| `ARCHITECTURE.md`                              | Full architecture with Mermaid diagrams  |
+| `pkg/sync/doc.go`                              | Reusable sync SDK overview with examples |
+| `pkg/sync/vectorclock.go`                      | `VectorClock` — causal ordering          |
+| `pkg/sync/conflict.go`                         | `ConflictResolver[T]`, `LWWResolver[T]`  |
+| `internal/sync/manager.go`                     | WebSocket sync manager                   |
+| `docs/adr/001-conflict-resolution-strategy.md` | Conflict resolution ADR                  |
 
 ---
 
@@ -576,27 +576,27 @@
 
 #### Key Abstractions
 
-| Type | Purpose |
-|---|---|
-| `provider.Provider` | Interface: `Name()`, `Fetch()`, `FetchAll()`, `GetRateLimit()` |
-| `storage.Storage` | Composed of `Reader` (12 methods) + `Writer` + `Close` |
-| `sync.Syncer` | Full and incremental sync engine |
-| `sync.ConflictAwareSyncer` | Wraps `Syncer` with LWW conflict resolution |
-| `provider.Item` | Universal sync unit with full JSON payload |
-| Branded IDs | `ItemID`, `ExternalID`, `ProviderID`, `ActorID`, `RepoID` — compile-time safety |
+| Type                       | Purpose                                                                         |
+| -------------------------- | ------------------------------------------------------------------------------- |
+| `provider.Provider`        | Interface: `Name()`, `Fetch()`, `FetchAll()`, `GetRateLimit()`                  |
+| `storage.Storage`          | Composed of `Reader` (12 methods) + `Writer` + `Close`                          |
+| `sync.Syncer`              | Full and incremental sync engine                                                |
+| `sync.ConflictAwareSyncer` | Wraps `Syncer` with LWW conflict resolution                                     |
+| `provider.Item`            | Universal sync unit with full JSON payload                                      |
+| Branded IDs                | `ItemID`, `ExternalID`, `ProviderID`, `ActorID`, `RepoID` — compile-time safety |
 
 #### Start Reading
 
-| File | Why |
-|---|---|
-| `README.md` | Complete overview, quick start, architecture diagram |
-| `ROADMAP.md` | Project direction and completed work |
-| `pkg/provider/provider.go` | `Provider` interface, `Item` struct |
-| `pkg/storage/interface.go` | `Storage`/`Reader`/`Writer` interfaces |
-| `pkg/sync/sync.go` | `Syncer` — full and incremental sync |
-| `pkg/sync/conflict_aware.go` | LWW conflict resolution |
-| `pkg/providers/github/client.go` | Reference `Provider` implementation |
-| `cmd/examples/github-sync/main.go` | Complete CLI example |
+| File                               | Why                                                  |
+| ---------------------------------- | ---------------------------------------------------- |
+| `README.md`                        | Complete overview, quick start, architecture diagram |
+| `ROADMAP.md`                       | Project direction and completed work                 |
+| `pkg/provider/provider.go`         | `Provider` interface, `Item` struct                  |
+| `pkg/storage/interface.go`         | `Storage`/`Reader`/`Writer` interfaces               |
+| `pkg/sync/sync.go`                 | `Syncer` — full and incremental sync                 |
+| `pkg/sync/conflict_aware.go`       | LWW conflict resolution                              |
+| `pkg/providers/github/client.go`   | Reference `Provider` implementation                  |
+| `cmd/examples/github-sync/main.go` | Complete CLI example                                 |
 
 ---
 

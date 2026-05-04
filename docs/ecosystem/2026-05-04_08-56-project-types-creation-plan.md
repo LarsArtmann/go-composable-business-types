@@ -9,14 +9,14 @@
 
 `go-composable-business-types` already provides:
 
-| What we need | Already exists | Where |
-|---|---|---|
-| `Importance uint8` (0-100, bounded) | `Percentage uint8` (0-100, bounded) | `types/types_numeric.go` |
-| `Tag string` (regex validated, bounded length) | `BoundedString` (length validated) | `bounded/bounded.go` |
-| `validate.Validator` interface | Already exists | `validate/validate.go` |
-| Sentinel + structured errors | Already exists | `pkg/errors/` |
-| JSON/SQL serialization | Already exists per type | `scanutil/`, `types/json.go` |
-| `go-branded-id` integration | Already a dependency | `go.mod` |
+| What we need                                   | Already exists                      | Where                        |
+| ---------------------------------------------- | ----------------------------------- | ---------------------------- |
+| `Importance uint8` (0-100, bounded)            | `Percentage uint8` (0-100, bounded) | `types/types_numeric.go`     |
+| `Tag string` (regex validated, bounded length) | `BoundedString` (length validated)  | `bounded/bounded.go`         |
+| `validate.Validator` interface                 | Already exists                      | `validate/validate.go`       |
+| Sentinel + structured errors                   | Already exists                      | `pkg/errors/`                |
+| JSON/SQL serialization                         | Already exists per type             | `scanutil/`, `types/json.go` |
+| `go-branded-id` integration                    | Already a dependency                | `go.mod`                     |
 
 Creating `project-types` would duplicate ALL of this infrastructure. Instead, add `Importance`, `Tag`, `Language`, `ProjectCore` as new packages/types in `go-composable-business-types`.
 
@@ -188,72 +188,72 @@ Each step is a self-contained git commit.
 
 ### Phase 1: Add types to go-composable-business-types (Foundation)
 
-| # | Step | Impact | Effort | Self-contained? |
-|---|------|--------|--------|-----------------|
-| 1.1 | Add `importance/` package: type, constructor, classification, JSON, tests | HIGH | 1.5hr | ✅ |
-| 1.2 | Add `tag/` package: type, constructor, regex validation, JSON, tests | HIGH | 1hr | ✅ |
-| 1.3 | Add `programminglanguage/` package: Language type, Languages slice, normalization map, tests | HIGH | 1.5hr | ✅ |
-| 1.4 | Add `projectcore/` package: ProjectCore struct, options, validation, tests | MED | 1hr | ✅ |
-| 1.5 | Add sentinel errors to `pkg/errors/` for all new types | MED | 20min | ✅ |
-| 1.6 | Update README + LIBRARY_GUIDE.md with new types | LOW | 30min | ✅ |
-| 1.7 | Full test suite + `nix flake check` | MED | 30min | ✅ |
+| #   | Step                                                                                         | Impact | Effort | Self-contained? |
+| --- | -------------------------------------------------------------------------------------------- | ------ | ------ | --------------- |
+| 1.1 | Add `importance/` package: type, constructor, classification, JSON, tests                    | HIGH   | 1.5hr  | ✅              |
+| 1.2 | Add `tag/` package: type, constructor, regex validation, JSON, tests                         | HIGH   | 1hr    | ✅              |
+| 1.3 | Add `programminglanguage/` package: Language type, Languages slice, normalization map, tests | HIGH   | 1.5hr  | ✅              |
+| 1.4 | Add `projectcore/` package: ProjectCore struct, options, validation, tests                   | MED    | 1hr    | ✅              |
+| 1.5 | Add sentinel errors to `pkg/errors/` for all new types                                       | MED    | 20min  | ✅              |
+| 1.6 | Update README + LIBRARY_GUIDE.md with new types                                              | LOW    | 30min  | ✅              |
+| 1.7 | Full test suite + `nix flake check`                                                          | MED    | 30min  | ✅              |
 
 ### Phase 2: Wire into project-discovery-sdk (Lowest risk)
 
-| # | Step | Impact | Effort | Self-contained? |
-|---|------|--------|--------|-----------------|
-| 2.1 | Add `go-composable-business-types` to SDK go.mod (replace → local) | MED | 10min | ✅ |
-| 2.2 | Replace SDK `Project.Language string` + `Languages []string` with `programminglanguage.Language` + `Languages` | HIGH | 1hr | ✅ |
-| 2.3 | Replace SDK `Project.Importance int` with `importance.Importance` | HIGH | 30min | ✅ |
-| 2.4 | Replace SDK `Project.Tags []string` with `[]tag.Tag` | HIGH | 30min | ✅ |
-| 2.5 | Remove SDK's `detection/NormalizeLanguage` → use `programminglanguage.Normalize` | MED | 30min | ✅ |
-| 2.6 | Remove SDK's `branded.go` Language/ProjectName/ProjectPath types → use `programminglanguage.Language` | MED | 30min | ✅ |
-| 2.7 | Update SDK tests | MED | 1hr | ✅ |
+| #   | Step                                                                                                           | Impact | Effort | Self-contained? |
+| --- | -------------------------------------------------------------------------------------------------------------- | ------ | ------ | --------------- |
+| 2.1 | Add `go-composable-business-types` to SDK go.mod (replace → local)                                             | MED    | 10min  | ✅              |
+| 2.2 | Replace SDK `Project.Language string` + `Languages []string` with `programminglanguage.Language` + `Languages` | HIGH   | 1hr    | ✅              |
+| 2.3 | Replace SDK `Project.Importance int` with `importance.Importance`                                              | HIGH   | 30min  | ✅              |
+| 2.4 | Replace SDK `Project.Tags []string` with `[]tag.Tag`                                                           | HIGH   | 30min  | ✅              |
+| 2.5 | Remove SDK's `detection/NormalizeLanguage` → use `programminglanguage.Normalize`                               | MED    | 30min  | ✅              |
+| 2.6 | Remove SDK's `branded.go` Language/ProjectName/ProjectPath types → use `programminglanguage.Language`          | MED    | 30min  | ✅              |
+| 2.7 | Update SDK tests                                                                                               | MED    | 1hr    | ✅              |
 
 ### Phase 3: Wire into project-meta
 
-| # | Step | Impact | Effort | Self-contained? |
-|---|------|--------|--------|-----------------|
-| 3.1 | Add `go-composable-business-types` to project-meta go.mod | MED | 10min | ✅ |
-| 3.2 | Replace project-meta's `Importance int32` with `importance.Importance uint8` | HIGH | 1hr | ✅ |
-| 3.3 | Replace project-meta's `Tag` with `tag.Tag` | HIGH | 30min | ✅ |
-| 3.4 | Add backward-compat YAML unmarshaling (accept both int32 and uint8) | MED | 30min | ✅ |
-| 3.5 | Update all project-meta tests | MED | 1hr | ✅ |
+| #   | Step                                                                         | Impact | Effort | Self-contained? |
+| --- | ---------------------------------------------------------------------------- | ------ | ------ | --------------- |
+| 3.1 | Add `go-composable-business-types` to project-meta go.mod                    | MED    | 10min  | ✅              |
+| 3.2 | Replace project-meta's `Importance int32` with `importance.Importance uint8` | HIGH   | 1hr    | ✅              |
+| 3.3 | Replace project-meta's `Tag` with `tag.Tag`                                  | HIGH   | 30min  | ✅              |
+| 3.4 | Add backward-compat YAML unmarshaling (accept both int32 and uint8)          | MED    | 30min  | ✅              |
+| 3.5 | Update all project-meta tests                                                | MED    | 1hr    | ✅              |
 
 ### Phase 4: Wire into projects-management-automation (Highest risk)
 
-| # | Step | Impact | Effort | Self-contained? |
-|---|------|--------|--------|-----------------|
-| 4.1 | Add `go-composable-business-types` to PMA go.mod + go.work | MED | 10min | ✅ |
-| 4.2 | Replace PMA's `Importance int32` with `importance.Importance uint8` | HIGH | 1hr | ✅ |
-| 4.3 | Replace PMA's `types.Tag` with `tag.Tag` | HIGH | 30min | ✅ |
-| 4.4 | Replace PMA's `types.Language uint8` enum with `programminglanguage.Language` | HIGH | 2hr | ✅ |
-| 4.5 | Convert language switch statements to dispatch maps | MED | 1hr | ✅ |
-| 4.6 | Delete `meta/adapter.go` — no type conversion needed | HIGH | 15min | ✅ |
-| 4.7 | Fix Importance type leaks (raw int/int32) | MED | 30min | ✅ |
-| 4.8 | Update all PMA tests | MED | 2hr | ✅ |
+| #   | Step                                                                          | Impact | Effort | Self-contained? |
+| --- | ----------------------------------------------------------------------------- | ------ | ------ | --------------- |
+| 4.1 | Add `go-composable-business-types` to PMA go.mod + go.work                    | MED    | 10min  | ✅              |
+| 4.2 | Replace PMA's `Importance int32` with `importance.Importance uint8`           | HIGH   | 1hr    | ✅              |
+| 4.3 | Replace PMA's `types.Tag` with `tag.Tag`                                      | HIGH   | 30min  | ✅              |
+| 4.4 | Replace PMA's `types.Language uint8` enum with `programminglanguage.Language` | HIGH   | 2hr    | ✅              |
+| 4.5 | Convert language switch statements to dispatch maps                           | MED    | 1hr    | ✅              |
+| 4.6 | Delete `meta/adapter.go` — no type conversion needed                          | HIGH   | 15min  | ✅              |
+| 4.7 | Fix Importance type leaks (raw int/int32)                                     | MED    | 30min  | ✅              |
+| 4.8 | Update all PMA tests                                                          | MED    | 2hr    | ✅              |
 
 ### Phase 5: Wire into project-dependency-graph
 
-| # | Step | Impact | Effort | Self-contained? |
-|---|------|--------|--------|-----------------|
-| 5.1 | Add `go-composable-business-types` to PDG go.mod | MED | 10min | ✅ |
-| 5.2 | Use `programminglanguage.Language` for filtering | LOW | 15min | ✅ |
-| 5.3 | Full test verification | LOW | 30min | ✅ |
+| #   | Step                                             | Impact | Effort | Self-contained? |
+| --- | ------------------------------------------------ | ------ | ------ | --------------- |
+| 5.1 | Add `go-composable-business-types` to PDG go.mod | MED    | 10min  | ✅              |
+| 5.2 | Use `programminglanguage.Language` for filtering | LOW    | 15min  | ✅              |
+| 5.3 | Full test verification                           | LOW    | 30min  | ✅              |
 
 ---
 
 ## What I Got Wrong in v1 and v2
 
-| Mistake | Correction |
-|---|---|
-| Create new `project-types` library | Extend `go-composable-business-types` — it already has the infrastructure |
-| Use govalid for validation | Use the existing `validate.Validator` interface + constructor pattern |
-| `ProjectName`/`ProjectPath` in kernel | Keep in project-meta — they're storage identifiers, not shared |
-| `GitStatus` in kernel | Keep in PMA — only PMA uses it |
-| `ProjectType` in kernel | Keep in PMA — it's a PMA-specific classification |
-| `Languages` as `[]Language` with set library | `[]Language` with `slices.Contains` — no external dependency needed |
-| Tag regex change needs migration tool | Migration is simple: `strings.ReplaceAll(tag, "_", "-")` — add to `doctor --fix-tags` |
+| Mistake                                      | Correction                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------- |
+| Create new `project-types` library           | Extend `go-composable-business-types` — it already has the infrastructure             |
+| Use govalid for validation                   | Use the existing `validate.Validator` interface + constructor pattern                 |
+| `ProjectName`/`ProjectPath` in kernel        | Keep in project-meta — they're storage identifiers, not shared                        |
+| `GitStatus` in kernel                        | Keep in PMA — only PMA uses it                                                        |
+| `ProjectType` in kernel                      | Keep in PMA — it's a PMA-specific classification                                      |
+| `Languages` as `[]Language` with set library | `[]Language` with `slices.Contains` — no external dependency needed                   |
+| Tag regex change needs migration tool        | Migration is simple: `strings.ReplaceAll(tag, "_", "-")` — add to `doctor --fix-tags` |
 
 ---
 

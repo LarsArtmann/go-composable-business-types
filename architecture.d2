@@ -1,6 +1,6 @@
 # CBT (Composable Business Types) Architecture
 # Go 1.26 | Selective Imports
-# 
+#
 # Direction: right
 
 # ============================================
@@ -86,7 +86,7 @@ datapoint: {
   label: |md
     **DataPoint[T]**
     Self-contained data unit with audit trail
-    
+
     • id: NanoId
     • payload: T
     • actor: ActorEntry
@@ -103,7 +103,7 @@ actor_entry: {
   label: |md
     **ActorEntry[T]**
     Actor in a chain
-    
+
     • Kind: ActorKind
     • Id: ID[T]
     • Name: string
@@ -115,7 +115,7 @@ actor_chain: {
   label: |md
     **ActorChain[T]**
     Ordered actor history
-    
+
     []ActorEntry[T]
     • Origin() - first actor
     • Current() - last actor
@@ -127,7 +127,7 @@ bitemporal: {
   label: |md
     **Bitemporal**
     Valid time + Transaction time
-    
+
     • validFrom: Timestamp
     • validUntil: Timestamp
     • recorded: Timestamp
@@ -140,7 +140,7 @@ context: {
   label: |md
     **Context**
     Execution metadata
-    
+
     • environment: string
     • session: string
     • request: string
@@ -153,7 +153,7 @@ reference: {
   label: |md
     **Reference[T]**
     Entity reference
-    
+
     • id: T
     • relation: string
     • version: int
@@ -165,7 +165,7 @@ cause: {
   label: |md
     **Cause[T]**
     Causal relationship
-    
+
     • id: NanoId
     • kind: string
     • effect: string
@@ -181,7 +181,7 @@ nanoid: {
   label: |md
     **NanoId**
     URL-safe unique ID
-    
+
     • Length: 8-256 chars
     • Default: 21 chars (126 bits)
     • FIPS-140 compatible
@@ -193,9 +193,9 @@ id: {
   label: |md
     **ID[B, V]**
     Branded phantom type ID
-    
+
     Prevents mixing entity IDs at compile time
-    
+
     ```go
     type UserBrand struct{}
     type UserID = ID[UserBrand, string]
@@ -235,7 +235,7 @@ ext_currency: {
   label: |md
     **bojanz/currency**
     ISO 4217 handling
-    
+
     currency.Amount
     currency.Formatter
   |
@@ -255,7 +255,7 @@ ext_language: {
   label: |md
     **x/text/language**
     BCP 47 language tags
-    
+
     language.Tag
   |
 }

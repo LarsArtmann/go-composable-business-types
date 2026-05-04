@@ -85,6 +85,7 @@ func (p *ProjectCore) UnmarshalJSON(data []byte) error {
 	type Alias ProjectCore
 
 	var a Alias
+
 	err := json.Unmarshal(data, &a)
 	if err != nil {
 		return fmt.Errorf("projectcore: unmarshal: %w", err)

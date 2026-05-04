@@ -20,3 +20,5 @@ node_modules/
 
 
 /report/jscpd-report.json
+# Nix build output
+/result

@@ -8,11 +8,11 @@
 
 The LarsArtmann ecosystem has four Go projects that share overlapping domain types — `Importance`, `Tag`, and `Language` — but each defines them differently:
 
-| Type | project-discovery-sdk | project-meta | projects-management-automation |
-|---|---|---|---|
-| Importance | `int` (unvalidated) | `int32` (0–100, thresholds 26–49 = "low") | `int32` (0–100, thresholds 21–40 = "low") |
-| Tag | N/A (raw `[]string`) | `string` (`^[a-z0-9_-]+$`, reject invalid) | `string` (`^[a-z0-9_-]+$`, normalize invalid) |
-| Language | `string` (raw enry output) | N/A | `uint8` enum (27 values incl. non-languages) |
+| Type       | project-discovery-sdk      | project-meta                               | projects-management-automation                |
+| ---------- | -------------------------- | ------------------------------------------ | --------------------------------------------- |
+| Importance | `int` (unvalidated)        | `int32` (0–100, thresholds 26–49 = "low")  | `int32` (0–100, thresholds 21–40 = "low")     |
+| Tag        | N/A (raw `[]string`)       | `string` (`^[a-z0-9_-]+$`, reject invalid) | `string` (`^[a-z0-9_-]+$`, normalize invalid) |
+| Language   | `string` (raw enry output) | N/A                                        | `uint8` enum (27 values incl. non-languages)  |
 
 This causes:
 
@@ -27,12 +27,12 @@ Add four new packages to `go-composable-business-types` (the existing domain typ
 
 ### Packages
 
-| Package | Type | Rationale |
-|---|---|---|
-| `importance/` | `uint8` (0–100) | Impossible to be negative. Unified classification: VeryLow ≤20, Low 21–40, Medium 41–60, High 61–80, VeryHigh 81–100 |
-| `tag/` | `string` (validated `^[A-Za-z0-9-]+$`, max 50) | Uppercase allowed (was forbidden). Underscores dropped. Migration: `strings.ReplaceAll(tag, "_", "-")` |
-| `programminglanguage/` | branded `string` via go-branded-id | NOT a closed enum. go-enry is the authority (400+ languages). Zero maintenance when enry adds languages |
-| `projectcore/` | composite struct | Name, Path, Languages, Importance, Tags — the intersection of all four projects |
+| Package                | Type                                           | Rationale                                                                                                            |
+| ---------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `importance/`          | `uint8` (0–100)                                | Impossible to be negative. Unified classification: VeryLow ≤20, Low 21–40, Medium 41–60, High 61–80, VeryHigh 81–100 |
+| `tag/`                 | `string` (validated `^[A-Za-z0-9-]+$`, max 50) | Uppercase allowed (was forbidden). Underscores dropped. Migration: `strings.ReplaceAll(tag, "_", "-")`               |
+| `programminglanguage/` | branded `string` via go-branded-id             | NOT a closed enum. go-enry is the authority (400+ languages). Zero maintenance when enry adds languages              |
+| `projectcore/`         | composite struct                               | Name, Path, Languages, Importance, Tags — the intersection of all four projects                                      |
 
 ### Why extend go-composable-business-types?
 
