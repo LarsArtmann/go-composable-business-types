@@ -108,6 +108,39 @@ var (
 	ErrIDInsufficientData = errors.New("insufficient data for ID type")
 )
 
+// Importance errors.
+var (
+	// ErrImportanceExceedsMax is returned when an importance value exceeds 100.
+	ErrImportanceExceedsMax = errors.New("importance exceeds maximum value of 100")
+
+	// ErrImportanceEmpty is returned when an importance value is required but empty/zero.
+	ErrImportanceEmpty = errors.New("importance cannot be empty")
+
+	// ErrImportanceUnknownClassification is returned when a string cannot be parsed as importance.
+	ErrImportanceUnknownClassification = errors.New("unknown importance classification")
+)
+
+// Tag errors.
+var (
+	// ErrTagEmpty is returned when a tag is empty.
+	ErrTagEmpty = errors.New("tag cannot be empty")
+
+	// ErrTagTooLong is returned when a tag exceeds the maximum length.
+	ErrTagTooLong = errors.New("tag exceeds maximum length")
+
+	// ErrTagInvalidChars is returned when a tag contains invalid characters.
+	ErrTagInvalidChars = errors.New("tag contains invalid characters")
+
+	// ErrProjectCoreNil is returned when a ProjectCore is nil.
+	ErrProjectCoreNil = errors.New("projectcore is nil")
+
+	// ErrProjectCoreNameRequired is returned when a ProjectCore has no name.
+	ErrProjectCoreNameRequired = errors.New("projectcore name is required")
+
+	// ErrProjectCorePathRequired is returned when a ProjectCore has no path.
+	ErrProjectCorePathRequired = errors.New("projectcore path is required")
+)
+
 // Parse/Marshal errors - structured errors for detailed context.
 var (
 	// ErrMalformedInput is returned when input cannot be parsed.
@@ -322,6 +355,21 @@ func IsOneOf(err error, sentinels ...error) bool {
 // IsIDError checks if the error is related to ID validation.
 func IsIDError(err error) bool {
 	return IsOneOf(err, ErrIDInvalid, ErrIDTypeNotSupported, ErrIDInsufficientData)
+}
+
+// IsImportanceError checks if the error is related to importance validation.
+func IsImportanceError(err error) bool {
+	return IsOneOf(err, ErrImportanceExceedsMax, ErrImportanceEmpty, ErrImportanceUnknownClassification)
+}
+
+// IsTagError checks if the error is related to tag validation.
+func IsTagError(err error) bool {
+	return IsOneOf(err, ErrTagEmpty, ErrTagTooLong, ErrTagInvalidChars)
+}
+
+// IsProjectCoreError checks if the error is related to ProjectCore validation.
+func IsProjectCoreError(err error) bool {
+	return IsOneOf(err, ErrProjectCoreNil, ErrProjectCoreNameRequired, ErrProjectCorePathRequired)
 }
 
 // IsParseError checks if the error is a parse/marshal error.
