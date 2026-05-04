@@ -5,7 +5,7 @@ go 1.26.2
 tool github.com/abice/go-enum
 
 require (
-	github.com/bojanz/currency v1.4.3
+	github.com/bojanz/currency v1.4.4
 	github.com/larsartmann/go-branded-id v0.0.0
 	github.com/sixafter/nanoid v1.64.1
 	github.com/stretchr/testify v1.11.1
