@@ -335,25 +335,20 @@ func testInvalidEnumString[T any](t *testing.T, invalidValue T, typeName string,
 func TestInvalidEnumStrings(t *testing.T) {
 	t.Parallel()
 
-	t.Run("enums.ActorKind", func(t *testing.T) {
-		t.Parallel()
-		testInvalidEnumString(t, enums.ActorKind(99), "enums.ActorKind", 99)
+	t.Run("ActorKind", func(t *testing.T) {
+		testInvalidEnumString(t, enums.ActorKind(99), "ActorKind", 99)
 	})
-	t.Run("enums.Priority", func(t *testing.T) {
-		t.Parallel()
-		testInvalidEnumString(t, enums.Priority(99), "enums.Priority", 99)
+	t.Run("Priority", func(t *testing.T) {
+		testInvalidEnumString(t, enums.Priority(99), "Priority", 99)
 	})
-	t.Run("enums.Status", func(t *testing.T) {
-		t.Parallel()
-		testInvalidEnumString(t, enums.Status(99), "enums.Status", 99)
+	t.Run("Status", func(t *testing.T) {
+		testInvalidEnumString(t, enums.Status(99), "Status", 99)
 	})
-	t.Run("enums.Trigger", func(t *testing.T) {
-		t.Parallel()
-		testInvalidEnumString(t, enums.Trigger(99), "enums.Trigger", 99)
+	t.Run("Trigger", func(t *testing.T) {
+		testInvalidEnumString(t, enums.Trigger(99), "Trigger", 99)
 	})
-	t.Run("enums.CauseKind", func(t *testing.T) {
-		t.Parallel()
-		testInvalidEnumString(t, enums.CauseKind(99), "enums.CauseKind", 99)
+	t.Run("CauseKind", func(t *testing.T) {
+		testInvalidEnumString(t, enums.CauseKind(99), "CauseKind", 99)
 	})
 }
 
@@ -469,51 +464,59 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 
 	t.Run("ActorKind", func(t *testing.T) {
 		t.Parallel()
+		// ActorKind: User=0, Bot=1, System=2, Service=3
 		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.ActorKind]{
-			{1, "System", enums.ActorKindSystem},
-			{2, "Service", enums.ActorKindService},
 			{0, "User", enums.ActorKindUser},
-			{3, "Bot", enums.ActorKindBot},
+			{1, "Bot", enums.ActorKindBot},
+			{2, "System", enums.ActorKindSystem},
+			{3, "Service", enums.ActorKindService},
 		}), (*enums.ActorKind).Scan)
 	})
 
 	t.Run("Priority", func(t *testing.T) {
 		t.Parallel()
+		// Priority: Low=0, Medium=1, High=2, Critical=3
 		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Priority]{
-			{2, "Critical", enums.PriorityCritical},
 			{0, "Low", enums.PriorityLow},
 			{1, "Medium", enums.PriorityMedium},
-			{3, "High", enums.PriorityHigh},
+			{2, "High", enums.PriorityHigh},
+			{3, "Critical", enums.PriorityCritical},
 		}), (*enums.Priority).Scan)
 	})
 
 	t.Run("Status", func(t *testing.T) {
 		t.Parallel()
+		// Status: Draft=0, Active=1, Paused=2, Archived=3, Deleted=4
 		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Status]{
-			{1, "Archived", enums.StatusArchived},
-			{4, "Deleted", enums.StatusDeleted},
 			{0, "Draft", enums.StatusDraft},
+			{1, "Active", enums.StatusActive},
 			{2, "Paused", enums.StatusPaused},
-			{3, "Active", enums.StatusActive},
+			{3, "Archived", enums.StatusArchived},
+			{4, "Deleted", enums.StatusDeleted},
 		}), (*enums.Status).Scan)
 	})
 
 	t.Run("Trigger", func(t *testing.T) {
 		t.Parallel()
+		// Trigger: Manual=0, Scheduled=1, Webhook=2, Import=3, Migration=4, System=5, Correction=6
 		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.Trigger]{
-			{2, "Correction", enums.TriggerCorrection},
-			{0, "Import", enums.TriggerImport},
+			{0, "Manual", enums.TriggerManual},
+			{1, "Scheduled", enums.TriggerScheduled},
+			{2, "Webhook", enums.TriggerWebhook},
+			{3, "Import", enums.TriggerImport},
+			{4, "Migration", enums.TriggerMigration},
 			{5, "System", enums.TriggerSystem},
-			{6, "Webhook", enums.TriggerWebhook},
+			{6, "Correction", enums.TriggerCorrection},
 		}), (*enums.Trigger).Scan)
 	})
 
 	t.Run("CauseKind", func(t *testing.T) {
 		t.Parallel()
+		// CauseKind: Direct=0, Command=1, Event=2
 		testScanAllTypes(t, makeScanTestCases([]enumScanTestCase[enums.CauseKind]{
-			{1, "Event", enums.CauseKindEvent},
 			{0, "Direct", enums.CauseKindDirect},
-			{2, "Command", enums.CauseKindCommand},
+			{1, "Command", enums.CauseKindCommand},
+			{2, "Event", enums.CauseKindEvent},
 		}), (*enums.CauseKind).Scan)
 	})
 }
