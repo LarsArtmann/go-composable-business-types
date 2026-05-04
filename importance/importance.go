@@ -3,6 +3,7 @@ package importance
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -120,8 +121,8 @@ func (i Importance) Compare(other Importance) int {
 	return 0
 }
 
-func (i Importance) IsNone() bool     { return i == None }
-func (i Importance) IsDefault() bool  { return i == Medium }
+func (i Importance) IsNone() bool    { return i == None }
+func (i Importance) IsDefault() bool { return i == Medium }
 
 func (i Importance) Clamp() Importance {
 	if i < None {
@@ -204,11 +205,12 @@ func (i *Importance) UnmarshalJSON(data []byte) error {
 
 func (i *Importance) Scan(src any) error {
 	if i == nil {
-		return fmt.Errorf("importance: scan: receiver is nil")
+		return errors.New("importance: scan: receiver is nil")
 	}
 
 	return scanutil.ScanInt64(src, func(v int64) error {
 		*i = Importance(v) //nolint:gosec // G115: int64 to uint8 for Importance (0-100 range)
+
 		return nil
 	})
 }

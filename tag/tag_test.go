@@ -114,6 +114,7 @@ func TestJSONRoundTrip(t *testing.T) {
 	assert.JSONEq(t, `"my-project"`, string(data))
 
 	var got Tag
+
 	err = json.Unmarshal(data, &got)
 	require.NoError(t, err)
 	assert.Equal(t, original, got)
@@ -133,6 +134,7 @@ func TestJSONInStruct(t *testing.T) {
 	assert.JSONEq(t, `{"tags":["go","Rust","My-Project"]}`, string(data))
 
 	var got Project
+
 	err = json.Unmarshal(data, &got)
 	require.NoError(t, err)
 	assert.Equal(t, p.Tags, got.Tags)
@@ -142,6 +144,7 @@ func TestJSONUnmarshalInvalid(t *testing.T) {
 	t.Parallel()
 
 	var got Tag
+
 	err := json.Unmarshal([]byte(`123`), &got)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "invalid JSON")
@@ -154,6 +157,7 @@ func TestScanValue(t *testing.T) {
 		t.Parallel()
 
 		var got Tag
+
 		err := got.Scan("go")
 		require.NoError(t, err)
 		assert.Equal(t, Tag("go"), got)
@@ -163,6 +167,7 @@ func TestScanValue(t *testing.T) {
 		t.Parallel()
 
 		var got Tag
+
 		err := got.Scan(nil)
 		require.NoError(t, err)
 		assert.Equal(t, Tag(""), got)

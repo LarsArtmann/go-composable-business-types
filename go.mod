@@ -5,8 +5,8 @@ go 1.26.2
 tool github.com/abice/go-enum
 
 require (
-	github.com/bojanz/currency v1.4.3
-	github.com/larsartmann/go-branded-id v0.0.0
+	github.com/bojanz/currency v1.4.4
+	github.com/larsartmann/go-branded-id v0.1.0
 	github.com/sixafter/nanoid v1.64.1
 	github.com/stretchr/testify v1.11.1
 	golang.org/x/text v0.36.0
@@ -17,7 +17,7 @@ replace github.com/larsartmann/go-branded-id => ../go-branded-id
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
-	github.com/Masterminds/semver/v3 v3.4.0 // indirect
+	github.com/Masterminds/semver/v3 v3.5.0 // indirect
 	github.com/Masterminds/sprig/v3 v3.3.0 // indirect
 	github.com/abice/go-enum v0.9.2 // indirect
 	github.com/cockroachdb/apd/v3 v3.2.3 // indirect
@@ -26,9 +26,9 @@ require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
 	github.com/huandu/xstrings v1.5.0 // indirect
-	github.com/labstack/gommon v0.4.2 // indirect
+	github.com/labstack/gommon v0.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
-	github.com/mattn/go-isatty v0.0.21 // indirect
+	github.com/mattn/go-isatty v0.0.22 // indirect
 	github.com/mattn/goveralls v0.0.12 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
@@ -44,7 +44,7 @@ require (
 	golang.org/x/mod v0.35.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/sys v0.43.0 // indirect
-	golang.org/x/telemetry v0.0.0-20260414141209-fac6e1c83189 // indirect
+	golang.org/x/telemetry v0.0.0-20260428171046-76f71b9afea0 // indirect
 	golang.org/x/tools v0.44.0 // indirect
 	golang.org/x/tools/cmd/cover v0.1.0-deprecated // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

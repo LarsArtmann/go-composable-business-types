@@ -3,8 +3,10 @@ package tag
 import (
 	"database/sql/driver"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"regexp"
+	"slices"
 	"unicode/utf8"
 
 	"github.com/larsartmann/go-composable-business-types/scanutil"
@@ -21,15 +23,22 @@ type Tag string
 
 func New(s string) (Tag, error) {
 	if s == "" {
-		return "", fmt.Errorf("tag: cannot be empty")
+		return "", errors.New("tag: cannot be empty")
 	}
 
 	if utf8.RuneCountInString(s) > maxLen {
-		return "", fmt.Errorf("tag: length %d exceeds maximum %d", utf8.RuneCountInString(s), maxLen)
+		return "", fmt.Errorf(
+			"tag: length %d exceeds maximum %d",
+			utf8.RuneCountInString(s),
+			maxLen,
+		)
 	}
 
 	if !validPattern.MatchString(s) {
-		return "", fmt.Errorf("tag: %q contains invalid characters (allowed: A-Z, a-z, 0-9, hyphen)", s)
+		return "", fmt.Errorf(
+			"tag: %q contains invalid characters (allowed: A-Z, a-z, 0-9, hyphen)",
+			s,
+		)
 	}
 
 	return Tag(s), nil
@@ -76,11 +85,15 @@ func (t Tag) IsValid() bool {
 
 func (t Tag) Validate() error {
 	if t == "" {
-		return fmt.Errorf("tag: cannot be empty")
+		return errors.New("tag: cannot be empty")
 	}
 
 	if utf8.RuneCountInString(string(t)) > maxLen {
-		return fmt.Errorf("tag: length %d exceeds maximum %d", utf8.RuneCountInString(string(t)), maxLen)
+		return fmt.Errorf(
+			"tag: length %d exceeds maximum %d",
+			utf8.RuneCountInString(string(t)),
+			maxLen,
+		)
 	}
 
 	if !validPattern.MatchString(string(t)) {
@@ -114,11 +127,12 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 
 func (t *Tag) Scan(src any) error {
 	if t == nil {
-		return fmt.Errorf("tag: scan: receiver is nil")
+		return errors.New("tag: scan: receiver is nil")
 	}
 
 	return scanutil.ScanString(src, func(v string) error {
 		*t = Tag(v)
+
 		return nil
 	})
 }
@@ -159,11 +173,5 @@ func (ts Tags) IsEmpty() bool {
 }
 
 func (ts Tags) Contains(t Tag) bool {
-	for _, tag := range ts {
-		if tag == t {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(ts, t)
 }

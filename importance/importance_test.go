@@ -81,8 +81,10 @@ func TestParse(t *testing.T) {
 			got, err := Parse(tt.input)
 			if tt.wantErr {
 				require.Error(t, err)
+
 				return
 			}
+
 			require.NoError(t, err)
 			assert.Equal(t, tt.want, got)
 		})
@@ -202,6 +204,7 @@ func TestJSONRoundTrip(t *testing.T) {
 			require.NoError(t, err)
 
 			var got Importance
+
 			err = json.Unmarshal(data, &got)
 			require.NoError(t, err)
 			assert.Equal(t, imp, got)
@@ -213,6 +216,7 @@ func TestJSONUnmarshalInvalid(t *testing.T) {
 	t.Parallel()
 
 	var got Importance
+
 	err := json.Unmarshal([]byte(`"not-a-number"`), &got)
 	require.Error(t, err)
 	assert.Contains(t, err.Error(), "invalid JSON")
@@ -222,6 +226,7 @@ func TestJSONUnmarshalOverflow(t *testing.T) {
 	t.Parallel()
 
 	var got Importance
+
 	err := json.Unmarshal([]byte(`200`), &got)
 	require.NoError(t, err) // unmarshal just reads uint8, validation is separate
 	assert.False(t, got.IsValid())
@@ -242,6 +247,7 @@ func TestJSONInStruct(t *testing.T) {
 	assert.JSONEq(t, `{"name":"test","importance":70}`, string(data))
 
 	var got Project
+
 	err = json.Unmarshal(data, &got)
 	require.NoError(t, err)
 	assert.Equal(t, High, got.Importance)
@@ -254,6 +260,7 @@ func TestScanValue(t *testing.T) {
 		t.Parallel()
 
 		var got Importance
+
 		err := got.Scan(int64(50))
 		require.NoError(t, err)
 		assert.Equal(t, Medium, got)
@@ -263,6 +270,7 @@ func TestScanValue(t *testing.T) {
 		t.Parallel()
 
 		var got Importance
+
 		err := got.Scan(nil)
 		require.NoError(t, err)
 		assert.Equal(t, None, got)
@@ -289,6 +297,7 @@ func TestScanNilReceiver(t *testing.T) {
 	t.Parallel()
 
 	var got *Importance
+
 	err := got.Scan(int64(50))
 	require.Error(t, err)
 	assert.True(t, errors.Is(err, err) || err != nil)
@@ -297,13 +306,13 @@ func TestScanNilReceiver(t *testing.T) {
 func TestConstants(t *testing.T) {
 	t.Parallel()
 
-	assert.Equal(t, Importance(0), None)
-	assert.Equal(t, Importance(20), VeryLow)
-	assert.Equal(t, Importance(40), Low)
-	assert.Equal(t, Importance(50), Medium)
-	assert.Equal(t, Importance(70), High)
-	assert.Equal(t, Importance(90), VeryHigh)
-	assert.Equal(t, Importance(100), Max)
+	assert.Equal(t, None, Importance(0))
+	assert.Equal(t, VeryLow, Importance(20))
+	assert.Equal(t, Low, Importance(40))
+	assert.Equal(t, Medium, Importance(50))
+	assert.Equal(t, High, Importance(70))
+	assert.Equal(t, VeryHigh, Importance(90))
+	assert.Equal(t, Max, Importance(100))
 }
 
 func TestIsNone(t *testing.T) {

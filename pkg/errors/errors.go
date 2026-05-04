@@ -359,7 +359,12 @@ func IsIDError(err error) bool {
 
 // IsImportanceError checks if the error is related to importance validation.
 func IsImportanceError(err error) bool {
-	return IsOneOf(err, ErrImportanceExceedsMax, ErrImportanceEmpty, ErrImportanceUnknownClassification)
+	return IsOneOf(
+		err,
+		ErrImportanceExceedsMax,
+		ErrImportanceEmpty,
+		ErrImportanceUnknownClassification,
+	)
 }
 
 // IsTagError checks if the error is related to tag validation.

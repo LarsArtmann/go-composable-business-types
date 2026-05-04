@@ -1,6 +1,7 @@
 package programminglanguage
 
 import (
+	"maps"
 	"slices"
 	"strings"
 
@@ -13,27 +14,27 @@ type languageBrand struct{}
 type Language = id.ID[languageBrand, string]
 
 var aliases = map[string]string{
-	"golang":    "go",
-	"js":        "javascript",
-	"mjs":       "javascript",
-	"ts":        "typescript",
-	"tsx":       "typescript",
-	"py":        "python",
-	"rs":        "rust",
-	"jvm":       "java",
-	"c#":        "csharp",
-	"cs":        "csharp",
-	"rb":        "ruby",
-	"gdscript":  "godot",
-	"terraform": "hcl",
-	"tf":        "hcl",
-	"c++":       "cpp",
-	"bash":      "shell",
-	"sh":        "shell",
-	"zsh":       "shell",
-	"fish":      "shell",
-	"ps1":       "powershell",
-	"nodejs":    "node",
+	"golang":         "go",
+	"js":             "javascript",
+	"mjs":            "javascript",
+	"ts":             "typescript",
+	"tsx":            "typescript",
+	"py":             "python",
+	"rs":             "rust",
+	"jvm":            "java",
+	"c#":             "csharp",
+	"cs":             "csharp",
+	"rb":             "ruby",
+	"gdscript":       "godot",
+	"terraform":      "hcl",
+	"tf":             "hcl",
+	"c++":            "cpp",
+	"bash":           "shell",
+	"sh":             "shell",
+	"zsh":            "shell",
+	"fish":           "shell",
+	"ps1":            "powershell",
+	"nodejs":         "node",
 	"typescript-jsx": "typescript",
 }
 
@@ -61,9 +62,7 @@ func Normalize(s string) string {
 
 func AliasMap() map[string]string {
 	cp := make(map[string]string, len(aliases))
-	for k, v := range aliases {
-		cp[k] = v
-	}
+	maps.Copy(cp, aliases)
 
 	return cp
 }

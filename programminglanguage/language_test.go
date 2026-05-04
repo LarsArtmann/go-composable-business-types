@@ -126,8 +126,8 @@ func TestLanguages_IsZero(t *testing.T) {
 func TestLanguages_Validate(t *testing.T) {
 	t.Parallel()
 
-	assert.Nil(t, NewLanguages().Validate())
-	assert.Nil(t, NewLanguages(New("go")).Validate())
+	assert.NoError(t, NewLanguages().Validate())
+	assert.NoError(t, NewLanguages(New("go")).Validate())
 }
 
 func TestLanguageCompileTimeDistinctness(t *testing.T) {
@@ -137,6 +137,7 @@ func TestLanguageCompileTimeDistinctness(t *testing.T) {
 	_ = lang
 
 	type otherBrand struct{}
+
 	other := id.NewID[otherBrand, string]("go")
 
 	assert.Equal(t, lang.Get(), other.Get())

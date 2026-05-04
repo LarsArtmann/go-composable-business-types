@@ -48,18 +48,21 @@ func TestIsZero(t *testing.T) {
 
 	t.Run("nil", func(t *testing.T) {
 		t.Parallel()
+
 		var p *ProjectCore
 		assert.True(t, p.IsZero())
 	})
 
 	t.Run("empty", func(t *testing.T) {
 		t.Parallel()
+
 		p := &ProjectCore{}
 		assert.True(t, p.IsZero())
 	})
 
 	t.Run("with name", func(t *testing.T) {
 		t.Parallel()
+
 		p := &ProjectCore{Name: "test"}
 		assert.False(t, p.IsZero())
 	})
@@ -70,12 +73,14 @@ func TestValidate(t *testing.T) {
 
 	t.Run("nil", func(t *testing.T) {
 		t.Parallel()
+
 		var p *ProjectCore
 		require.Error(t, p.Validate())
 	})
 
 	t.Run("empty name", func(t *testing.T) {
 		t.Parallel()
+
 		p := &ProjectCore{Path: "/path"}
 		require.Error(t, p.Validate())
 		assert.Contains(t, p.Validate().Error(), "name is required")
@@ -83,6 +88,7 @@ func TestValidate(t *testing.T) {
 
 	t.Run("empty path", func(t *testing.T) {
 		t.Parallel()
+
 		p := &ProjectCore{Name: "test"}
 		require.Error(t, p.Validate())
 		assert.Contains(t, p.Validate().Error(), "path is required")
@@ -90,6 +96,7 @@ func TestValidate(t *testing.T) {
 
 	t.Run("valid", func(t *testing.T) {
 		t.Parallel()
+
 		p := New("test", "/path", programminglanguage.NewLanguages(programminglanguage.New("go")))
 		require.NoError(t, p.Validate())
 	})
@@ -98,8 +105,13 @@ func TestValidate(t *testing.T) {
 func TestJSONRoundTrip(t *testing.T) {
 	t.Parallel()
 
-	p := New("myproject", "/home/user/myproject",
-		programminglanguage.NewLanguages(programminglanguage.New("go"), programminglanguage.New("python")),
+	p := New(
+		"myproject",
+		"/home/user/myproject",
+		programminglanguage.NewLanguages(
+			programminglanguage.New("go"),
+			programminglanguage.New("python"),
+		),
 		WithImportance(importance.Must(75)),
 		WithTags(tag.Must("backend"), tag.Must("production")),
 	)
@@ -108,6 +120,7 @@ func TestJSONRoundTrip(t *testing.T) {
 	require.NoError(t, err)
 
 	var got ProjectCore
+
 	err = json.Unmarshal(data, &got)
 	require.NoError(t, err)
 
@@ -129,5 +142,9 @@ func TestJSONOutput(t *testing.T) {
 
 	data, err := json.Marshal(p)
 	require.NoError(t, err)
-	assert.JSONEq(t, `{"name":"test","path":"/path","languages":["go"],"importance":70,"tags":null}`, string(data))
+	assert.JSONEq(
+		t,
+		`{"name":"test","path":"/path","languages":["go"],"importance":70,"tags":null}`,
+		string(data),
+	)
 }

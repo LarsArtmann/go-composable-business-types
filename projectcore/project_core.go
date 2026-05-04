@@ -2,6 +2,7 @@ package projectcore
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/importance"
@@ -11,11 +12,11 @@ import (
 )
 
 type ProjectCore struct {
-	Name       string                          `json:"name"`
-	Path       string                          `json:"path"`
-	Languages  programminglanguage.Languages   `json:"languages"`
-	Importance importance.Importance           `json:"importance"`
-	Tags       []tag.Tag                       `json:"tags"`
+	Name       string                        `json:"name"`
+	Path       string                        `json:"path"`
+	Languages  programminglanguage.Languages `json:"languages"`
+	Importance importance.Importance         `json:"importance"`
+	Tags       []tag.Tag                     `json:"tags"`
 }
 
 type Option func(*ProjectCore)
@@ -48,23 +49,25 @@ func (p *ProjectCore) IsZero() bool {
 
 func (p *ProjectCore) Validate() error {
 	if p == nil {
-		return fmt.Errorf("projectcore: nil")
+		return errors.New("projectcore: nil")
 	}
 
 	if p.Name == "" {
-		return fmt.Errorf("projectcore: name is required")
+		return errors.New("projectcore: name is required")
 	}
 
 	if p.Path == "" {
-		return fmt.Errorf("projectcore: path is required")
+		return errors.New("projectcore: path is required")
 	}
 
-	if err := p.Importance.Validate(); err != nil {
+	err := p.Importance.Validate()
+	if err != nil {
 		return fmt.Errorf("projectcore: importance: %w", err)
 	}
 
 	for i, t := range p.Tags {
-		if err := t.Validate(); err != nil {
+		err := t.Validate()
+		if err != nil {
 			return fmt.Errorf("projectcore: tag[%d]: %w", i, err)
 		}
 	}
@@ -82,7 +85,8 @@ func (p *ProjectCore) UnmarshalJSON(data []byte) error {
 	type Alias ProjectCore
 
 	var a Alias
-	if err := json.Unmarshal(data, &a); err != nil {
+	err := json.Unmarshal(data, &a)
+	if err != nil {
 		return fmt.Errorf("projectcore: unmarshal: %w", err)
 	}
 
