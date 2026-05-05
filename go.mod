@@ -12,8 +12,6 @@ require (
 	golang.org/x/text v0.36.0
 )
 
-replace github.com/larsartmann/go-branded-id => ../go-branded-id
-
 require (
 	dario.cat/mergo v1.0.2 // indirect
 	github.com/Masterminds/goutils v1.1.1 // indirect
