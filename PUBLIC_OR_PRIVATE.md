@@ -16,19 +16,19 @@ However, several blockers must be resolved **before** flipping the visibility sw
 
 ## Project Facts
 
-| Metric | Value |
-| --- | --- |
-| Age | ~3 months (first commit 2026-02-12) |
-| Packages | 18 sub-packages |
-| Lines of code | ~9,500 (production + tests) |
-| Test coverage | 68.8% overall, several packages at 90-100% |
-| CI pipeline | Full: test (3 Go versions), lint, security (govulncheck), generate, benchmark |
-| Release pipeline | git-cliff changelog, GitHub Releases via tag |
-| Dependencies | 4 runtime deps (all well-maintained, permissive licenses) |
-| Contributors | 1 (Lars Artmann) |
-| License | Currently PROPRIETARY — README says MIT |
-| Documentation | README, POLICY, SECURITY, SUPPORT, CHANGELOG, PARTS, examples/ |
-| Community infra | Issue templates, PR template, Dependabot, Discussions linked |
+| Metric           | Value                                                                         |
+| ---------------- | ----------------------------------------------------------------------------- |
+| Age              | ~3 months (first commit 2026-02-12)                                           |
+| Packages         | 18 sub-packages                                                               |
+| Lines of code    | ~9,500 (production + tests)                                                   |
+| Test coverage    | 68.8% overall, several packages at 90-100%                                    |
+| CI pipeline      | Full: test (3 Go versions), lint, security (govulncheck), generate, benchmark |
+| Release pipeline | git-cliff changelog, GitHub Releases via tag                                  |
+| Dependencies     | 4 runtime deps (all well-maintained, permissive licenses)                     |
+| Contributors     | 1 (Lars Artmann)                                                              |
+| License          | Currently PROPRIETARY — README says MIT                                       |
+| Documentation    | README, POLICY, SECURITY, SUPPORT, CHANGELOG, PARTS, examples/                |
+| Community infra  | Issue templates, PR template, Dependabot, Discussions linked                  |
 
 ---
 
@@ -127,13 +127,13 @@ This local replace directive will break for anyone `go get`-ing the module. Both
 
 The CI enforces 80% coverage threshold, but actual coverage is 68.8%. Several packages are below target:
 
-| Package | Coverage |
-| --- | --- |
-| `datapoint/` | 60.4% |
-| `enums/` | 56.8% |
-| `nanoid/` | 52.4% |
-| `tag/` | 72.1% |
-| `scanutil/` | 79.4% |
+| Package      | Coverage |
+| ------------ | -------- |
+| `datapoint/` | 60.4%    |
+| `enums/`     | 56.8%    |
+| `nanoid/`    | 52.4%    |
+| `tag/`       | 72.1%    |
+| `scanutil/`  | 79.4%    |
 
 **Not a blocker**, but should be improved — especially `datapoint/` as the flagship type. Either fix coverage or adjust the CI threshold to match reality.
 
@@ -192,15 +192,15 @@ Two example programs exist (`examples/basic/`, `examples/datapoint/`) but they d
 
 ## Decision Matrix
 
-| Factor | Public | Private |
-| --- | --- | --- |
-| Portfolio/reputation value | High | None |
-| Community benefit | High | None |
-| `go get` usability | Works | Broken without auth |
-| Maintenance burden | Higher (issues, PRs) | Minimal |
-| API pressure to stabilize | Healthy | None |
-| Competitive risk | None (infrastructure) | N/A |
-| Effort to switch | 1-2 hours of fixes | N/A |
+| Factor                     | Public                | Private             |
+| -------------------------- | --------------------- | ------------------- |
+| Portfolio/reputation value | High                  | None                |
+| Community benefit          | High                  | None                |
+| `go get` usability         | Works                 | Broken without auth |
+| Maintenance burden         | Higher (issues, PRs)  | Minimal             |
+| API pressure to stabilize  | Healthy               | None                |
+| Competitive risk           | None (infrastructure) | N/A                 |
+| Effort to switch           | 1-2 hours of fixes    | N/A                 |
 
 ---
 
