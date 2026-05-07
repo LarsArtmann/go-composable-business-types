@@ -29,7 +29,7 @@ golangci-lint run --fix
 
 - `github.com/abice/go-enum` - Enum code generation (`//go:generate go-enum`)
 - `github.com/bojanz/currency` - ISO 4217 currency handling
-- `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers (extracted from this project, uses `replace` directive for local development)
+- `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers (extracted from this project, published as separate module)
 - `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
 
 ## Package Structure (Go 1.26 Selective Imports)
@@ -126,9 +126,21 @@ func main() {
 - **JSON serialization**: Custom MarshalJSON/UnmarshalJSON for type-safe serialization
 - **Error handling**: Constructors return errors; `Must*` variants panic on invalid input
 
+## Release & CI
+
+- **Tag format:** SemVer (`v0.4.0`, `v0.5.0`, etc.)
+- **Release command:** `just release 0.5.0` (creates tag + pushes)
+- **GitHub Actions:** CI runs on push to master (test, lint, security, generate, benchmark)
+- **Release workflow:** triggers on `v*` tag push — runs tests + lint + creates GitHub Release with git-cliff changelog
+- **CI known issue:** GitHub Actions billing is currently failing — all runs fail with billing/spending limit error. This is an account-level issue, not a code problem.
+
 ## Notes
 
 - `enums/enum_enum.go` is auto-generated - do not edit manually
 - Run `go generate ./...` after modifying `enums/enums.go`
 - Generic types (ActorEntry, ActorChain) must be imported from subpackages
-- ID types now live in `github.com/larsartmann/go-branded-id` (separate module)
+- ID types live in `github.com/larsartmann/go-branded-id` (separate module)
+- License: MIT (fixed from PROPRIETARY in 2026-05-07)
+- Test coverage: 86.6% overall
+- Repo is transitioning from private to public
+- **Updated:** 2026-05-07
