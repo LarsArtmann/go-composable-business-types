@@ -1,3 +1,14 @@
+// Package importance provides a 0-100 priority classification with named levels.
+//
+// Importance wraps a uint8 clamped to 0-100 with named constants (None, VeryLow, Low,
+// Medium, High, VeryHigh, Max) and convenience predicates. It supports JSON, SQL, and
+// string parsing.
+//
+// Basic usage:
+//
+//	imp := importance.New(75)
+//	fmt.Println(imp.Classification()) // "High"
+//	fmt.Println(imp.Percent())        // 0.75
 package importance
 
 import (

@@ -1,3 +1,7 @@
+// Package testutil provides generic test helpers for parse/string/zero-value testing.
+//
+// It offers table-driven test runners for types implementing String(), IsZero(),
+// and parse constructors — reducing boilerplate in type validation tests.
 package testutil
 
 import "testing"

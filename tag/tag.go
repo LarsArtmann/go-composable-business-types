@@ -1,3 +1,12 @@
+// Package tag provides validated string labels with length and character constraints.
+//
+// Tag values are alphanumeric strings (plus hyphens) up to 50 characters, suitable
+// for categorization and filtering. Tags implement JSON, SQL, and validate.Validator.
+//
+// Basic usage:
+//
+//	t, err := tag.New("priority-high")
+//	tags, err := tag.NewTags("frontend", "urgent")
 package tag
 
 import (

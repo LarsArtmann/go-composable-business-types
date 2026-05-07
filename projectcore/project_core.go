@@ -1,3 +1,13 @@
+// Package projectcore provides a composite type for project metadata.
+//
+// ProjectCore aggregates name, path, programming languages, importance,
+// and tags into a single validated struct with JSON support.
+//
+// Basic usage:
+//
+//	core := projectcore.New("my-app", "/src/my-app",
+//	    programminglanguage.NewLanguages(programminglanguage.New("go")),
+//	    projectcore.WithImportance(importance.High))
 package projectcore
 
 import (

@@ -1,3 +1,12 @@
+// Package programminglanguage provides normalized, branded identifiers for programming languages.
+//
+// It normalizes common aliases (e.g., "golang" → "go", "ts" → "typescript") and wraps
+// them in a branded ID type for type safety.
+//
+// Basic usage:
+//
+//	lang := programminglanguage.New("golang") // branded ID with value "go"
+//	langs := programminglanguage.NewLanguages(lang, programminglanguage.New("rust"))
 package programminglanguage
 
 import (

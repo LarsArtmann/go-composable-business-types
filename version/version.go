@@ -1,3 +1,11 @@
+// Package version provides build-time version information extracted from runtime/debug.
+//
+// It exposes Version, Revision (git commit), Date, and Dirty flag, populated
+// automatically at init time from Go's build info.
+//
+// Basic usage:
+//
+//	fmt.Println(version.String()) // "development+abc1234+2026-05-07+dirty"
 package version
 
 import (
