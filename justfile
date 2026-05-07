@@ -71,12 +71,12 @@ changelog:
 changelog-tag TAG:
     git-cliff --config cliff.toml --output CHANGELOG.md --tag {{TAG}}
 
-# Create a release tag for today
-# Usage: just release 1 (for 2026-03-27.1)
-release N:
-    git tag "{{date '+%Y-%m-%d'}}.{{N}}"
-    git push origin "{{date '+%Y-%m-%d'}}.{{N}}"
+# Create a release tag with SemVer
+# Usage: just release 0.4.0
+release VERSION:
+    git -c tag.gpgSign=false tag -a "v{{VERSION}}" -m "Release v{{VERSION}}"
+    git push origin "v{{VERSION}}"
 
 # List all release tags
 tags:
-    git tag --list '[0-9][0-9][0-9][0-9]*' | sort -V | tail -10
+    git tag --list 'v*' | sort -V | tail -10
