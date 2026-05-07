@@ -65,21 +65,9 @@ func (e Email) Domain() string {
 
 // Validate implements validate.Validator for Email.
 func (e Email) Validate() error {
-	if e == "" {
-		return pkgerrors.ErrInvalidEmail
-	}
+	_, err := NewEmail(string(e))
 
-	addr, err := mail.ParseAddress(string(e))
-	if err != nil {
-		return pkgerrors.ErrInvalidEmail
-	}
-
-	email := addr.Address
-	if !emailRegex.MatchString(email) {
-		return pkgerrors.ErrInvalidEmail
-	}
-
-	return nil
+	return err
 }
 
 // Normalize returns an email with normalized case.
@@ -143,24 +131,9 @@ func (u URL) IsZero() bool { return u == "" }
 
 // Validate implements validate.Validator for URL.
 func (u URL) Validate() error {
-	if u == "" {
-		return pkgerrors.ErrInvalidURL
-	}
+	_, err := NewURL(string(u))
 
-	parsed, err := url.Parse(string(u))
-	if err != nil {
-		return pkgerrors.ErrInvalidURL
-	}
-
-	if parsed.Scheme != "http" && parsed.Scheme != "https" {
-		return pkgerrors.ErrInvalidURL
-	}
-
-	if parsed.Host == "" {
-		return pkgerrors.ErrInvalidURL
-	}
-
-	return nil
+	return err
 }
 
 // Parse returns the underlying url.URL. Since URLs are validated at construction,
