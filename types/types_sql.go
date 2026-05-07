@@ -65,9 +65,7 @@ func valueInt64Type(v int64, name string) (driver.Value, error) {
 // Scan implements sql.Scanner for Email.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (e *Email) Scan(src any) error {
-	return scanStringType(e, "email", src, func(value string) (Email, error) {
-		return NewEmail(value)
-	})
+	return scanStringType(e, "email", src, NewEmail)
 }
 
 // Value implements driver.Valuer for Email.
@@ -79,9 +77,7 @@ func (e Email) Value() (driver.Value, error) {
 // Scan implements sql.Scanner for URL.
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (u *URL) Scan(src any) error {
-	return scanStringType(u, "url", src, func(value string) (URL, error) {
-		return NewURL(value)
-	})
+	return scanStringType(u, "url", src, NewURL)
 }
 
 // Value implements driver.Valuer for URL.
