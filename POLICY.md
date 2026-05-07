@@ -175,7 +175,7 @@ func BoundedStringOf(min, max int) func(string) (BoundedString, error) { ... }
 
 | Level            | Package                                                                                                                   | Stability Guarantee               |
 | ---------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
-| **Stable**       | `id/`, `actor/`, `datapoint/`, `temporal/`, `types/`, `enums/`, `money/`, `locale/`, `nanoid/`, `bounded/`, `pkg/errors/` | No breaking changes before v2.0.0 |
+| **Stable**       | `actor/`, `datapoint/`, `temporal/`, `types/`, `enums/`, `money/`, `locale/`, `nanoid/`, `bounded/`, `importance/`, `tag/`, `validate/`, `pkg/errors/` | No breaking changes before v2.0.0 |
 | **Experimental** | N/A                                                                                                                       | No current experimental packages  |
 
 ### 4.2 Compatibility Commitments
@@ -188,7 +188,7 @@ func BoundedStringOf(min, max int) func(string) (BoundedString, error) { ... }
 
 ### 4.3 Generic Type Stability
 
-Generic types (`ID[B, V]`, `ActorEntry[T]`, `DataPoint[T]`, `ActorChain[T]`) follow these rules:
+Generic types (`ActorEntry[T]`, `DataPoint[T]`, `ActorChain[T]`, `Reference[T]`, `Cause[T]`) follow these rules:
 
 - Type parameters may be added (backward-compatible for inference)
 - Type constraints may be relaxed (e.g., `comparable` to `any`)
@@ -319,10 +319,10 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 | `refactor` | Code restructuring | `refactor(actor): simplify chain traversal`   |
 | `test`     | Adding tests       | `test(datapoint): add bitemporal fuzz tests`  |
 | `chore`    | Maintenance        | `chore(deps): update golangci-lint`           |
-| `perf`     | Performance        | `perf(id): optimize Compare for strings`      |
+| `perf`     | Performance        | `perf(actor): optimize chain append`      |
 | `security` | Security fixes     | `security(nanoid): validate alphabet`         |
 
-**Scopes**: Package name (`id`, `actor`, `datapoint`, `types`, `enums`, `money`, `locale`, `nanoid`, `bounded`, `temporal`, `pkg/errors`)
+**Scopes**: Package name (`actor`, `datapoint`, `types`, `enums`, `money`, `locale`, `nanoid`, `bounded`, `temporal`, `importance`, `tag`, `pkg/errors`)
 
 ### 6.4 Code Review Process
 
@@ -491,7 +491,7 @@ govulncheck ./...
 
 | Package      | Benchmark                | Target    |
 | ------------ | ------------------------ | --------- |
-| `id/`        | `BenchmarkIDCompare`     | < 50ns/op |
+| `actor/`     | `BenchmarkActorChainAppend` | < 100ns/op |
 | `nanoid/`    | `BenchmarkNew`           | < 1μs/op  |
 | `datapoint/` | `BenchmarkDataPointJSON` | < 5μs/op  |
 
