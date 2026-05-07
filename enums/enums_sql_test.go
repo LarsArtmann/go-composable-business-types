@@ -569,7 +569,8 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
-		if err := scanFunc(&got, nonZeroVal); err != nil {
+		err := scanFunc(&got, nonZeroVal)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -582,8 +583,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		val := nonZeroVal
+
 		var got T
-		if err := scanFunc(&got, &val); err != nil {
+		err := scanFunc(&got, &val)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -596,6 +599,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*T)(nil))
 		if err == nil {
 			t.Error("expected error for nil pointer")
@@ -606,8 +610,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := int(1)
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -620,6 +626,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*int)(nil))
 		if err == nil {
 			t.Error("expected error for nil *int")
@@ -630,8 +637,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := int64(1)
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -644,6 +653,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*int64)(nil))
 		if err == nil {
 			t.Error("expected error for nil *int64")
@@ -654,8 +664,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := float64(1)
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -668,6 +680,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*float64)(nil))
 		if err == nil {
 			t.Error("expected error for nil *float64")
@@ -678,8 +691,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := uint(1)
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -692,6 +707,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*uint)(nil))
 		if err == nil {
 			t.Error("expected error for nil *uint")
@@ -702,8 +718,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := uint64(1)
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -716,6 +734,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*uint64)(nil))
 		if err == nil {
 			t.Error("expected error for nil *uint64")
@@ -726,8 +745,10 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		v := validStr
+
 		var got T
-		if err := scanFunc(&got, &v); err != nil {
+		err := scanFunc(&got, &v)
+		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
 		}
 
@@ -740,6 +761,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, (*string)(nil))
 		if err == nil {
 			t.Error("expected error for nil *string")

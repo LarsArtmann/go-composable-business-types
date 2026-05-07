@@ -133,12 +133,14 @@ func TestEmailValidate(t *testing.T) {
 	t.Parallel()
 
 	email, _ := NewEmail("test@example.com")
-	if err := email.Validate(); err != nil {
+	err := email.Validate()
+	if err != nil {
 		t.Errorf("valid email should validate: %v", err)
 	}
 
 	var zero Email
-	if err := zero.Validate(); err == nil {
+	err := zero.Validate()
+	if err == nil {
 		t.Error("empty email should fail validation")
 	}
 }
@@ -147,12 +149,14 @@ func TestURLValidate(t *testing.T) {
 	t.Parallel()
 
 	validURL, _ := NewURL("https://example.com")
-	if err := validURL.Validate(); err != nil {
+	err := validURL.Validate()
+	if err != nil {
 		t.Errorf("valid URL should validate: %v", err)
 	}
 
 	var zero URL
-	if err := zero.Validate(); err == nil {
+	err := zero.Validate()
+	if err == nil {
 		t.Error("empty URL should fail validation")
 	}
 }
@@ -161,6 +165,7 @@ func TestURLParse(t *testing.T) {
 	t.Parallel()
 
 	u, _ := NewURL("https://example.com/path?q=1")
+
 	parsed, err := u.Parse()
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)

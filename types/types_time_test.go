@@ -158,7 +158,8 @@ func TestDurationUnmarshalJSONErrors(t *testing.T) {
 		t.Parallel()
 
 		var dur Duration
-		if err := dur.UnmarshalJSON([]byte(`123`)); err == nil {
+		err := dur.UnmarshalJSON([]byte(`123`))
+		if err == nil {
 			t.Error("expected error for non-string JSON")
 		}
 	})
@@ -167,7 +168,8 @@ func TestDurationUnmarshalJSONErrors(t *testing.T) {
 		t.Parallel()
 
 		var dur Duration
-		if err := dur.UnmarshalJSON([]byte(`"not-a-duration"`)); err == nil {
+		err := dur.UnmarshalJSON([]byte(`"not-a-duration"`))
+		if err == nil {
 			t.Error("expected error for invalid duration string")
 		}
 	})

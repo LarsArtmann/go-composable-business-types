@@ -17,21 +17,21 @@ The library is in **good shape** — all 19 testable packages pass with 86.9% co
 
 ### Code Changes (this session)
 
-| Commit | What | Impact |
-|--------|------|--------|
+| Commit    | What                                                                 | Impact                                  |
+| --------- | -------------------------------------------------------------------- | --------------------------------------- |
 | `61cfca6` | `Email.Validate()` and `URL.Validate()` now delegate to constructors | Eliminated 27 lines of pure duplication |
-| `bfd0965` | `Duration.Compare()` uses existing `compare[T]()` generic | Eliminated hand-rolled comparison |
-| `9462a5b` | SQL Scan lambdas replaced with direct constructor refs | Linter cleanup (`gocritic/unlambda`) |
+| `bfd0965` | `Duration.Compare()` uses existing `compare[T]()` generic            | Eliminated hand-rolled comparison       |
+| `9462a5b` | SQL Scan lambdas replaced with direct constructor refs               | Linter cleanup (`gocritic/unlambda`)    |
 
 ### Documentation Changes (this session)
 
-| Commit | What | Impact |
-|--------|------|--------|
-| `8a819a4` | README.md: fix broken `id/` imports, add missing types/enums/deps | **Critical** — examples were uncompilable |
-| `5ac2c8f` | AGENTS.md: complete package tree, add all missing packages | Accurate project map |
-| `73d377e` | Add `// Package` docs to 6 packages (importance, tag, version, programminglanguage, projectcore, testutil) | pkg.go.dev now renders these |
-| `eeb636c` | POLICY.md: remove all stale `id/` references | No longer claims `id/` is an internal stable package |
-| `0d1d451` | PARTS.md: mark `id/` as extracted | Historical accuracy |
+| Commit    | What                                                                                                       | Impact                                               |
+| --------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `8a819a4` | README.md: fix broken `id/` imports, add missing types/enums/deps                                          | **Critical** — examples were uncompilable            |
+| `5ac2c8f` | AGENTS.md: complete package tree, add all missing packages                                                 | Accurate project map                                 |
+| `73d377e` | Add `// Package` docs to 6 packages (importance, tag, version, programminglanguage, projectcore, testutil) | pkg.go.dev now renders these                         |
+| `eeb636c` | POLICY.md: remove all stale `id/` references                                                               | No longer claims `id/` is an internal stable package |
+| `0d1d451` | PARTS.md: mark `id/` as extracted                                                                          | Historical accuracy                                  |
 
 ### Prior Work (previous sessions, still accurate)
 
@@ -49,42 +49,42 @@ The library is in **good shape** — all 19 testable packages pass with 86.9% co
 
 ## B. Partially Done ⚠️
 
-| Area | Status | What's Missing |
-|------|--------|----------------|
-| `Cents` vs `Money` relationship | Undocumented overlap | No guidance on when to use which. `Cents` is currency-unaware; `Money` wraps `bojanz/currency`. Consumers may silently mix USD cents with EUR cents. |
-| `validate.Validator` interface consistency | Partially implemented | `Email`, `URL`, `Cents`, `Percentage` implement it. `Timestamp`, `Duration`, `NanoID`, `Locale`, `Tag`, `Importance` do **not**. Either all types should implement it, or it shouldn't be part of the package contract. |
-| `emailRegex` double validation | Identified but not fixed | `NewEmail` runs both `mail.ParseAddress` (RFC 5322) AND `emailRegex`. The regex is strictly less capable than the stdlib parser. One or the other suffices. |
-| `Timestamp`/`Duration` `Scan()` methods | Not using `scanutil` helpers | `Duration.Scan()` has a hand-rolled 50-line type switch while `Email.Scan()` uses the clean `scanStringType` helper. Inconsistent patterns. |
+| Area                                       | Status                                                                                                                                                  | What's Missing                                                                                                                                                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Cents` vs `Money` relationship            | Undocumented overlap                                                                                                                                    | No guidance on when to use which. `Cents` is currency-unaware; `Money` wraps `bojanz/currency`. Consumers may silently mix USD cents with EUR cents.                                                                    |
+| `validate.Validator` interface consistency | Partially implemented                                                                                                                                   | `Email`, `URL`, `Cents`, `Percentage` implement it. `Timestamp`, `Duration`, `NanoID`, `Locale`, `Tag`, `Importance` do **not**. Either all types should implement it, or it shouldn't be part of the package contract. |
+| `emailRegex` double validation             | Identified but not fixed                                                                                                                                | `NewEmail` runs both `mail.ParseAddress` (RFC 5322) AND `emailRegex`. The regex is strictly less capable than the stdlib parser. One or the other suffices.                                                             |
+| `Timestamp`/`Duration` `Scan()` methods    | Not using `scanutil` helpers                                                                                                                            | `Duration.Scan()` has a hand-rolled 50-line type switch while `Email.Scan()` uses the clean `scanStringType` helper. Inconsistent patterns.                                                                             |
 | `Timestamp`/`Duration` `Compare()` methods | `Duration.Compare()` uses `compare[T]()` ✅ but `Timestamp.Compare()` delegates to `time.Time.Compare()` ✅ — both are correct but the patterns differ. |
 
 ---
 
 ## C. Not Started ❌
 
-| # | Item | Priority | Effort |
-|---|------|----------|--------|
-| 1 | Add `Timestamp.Validate()` and `Duration.Validate()` to implement `validate.Validator` | Medium | Tiny |
-| 2 | Remove `emailRegex` — trust `mail.ParseAddress` alone, or keep regex and remove `mail.ParseAddress` | Medium | Tiny |
-| 3 | Document `Cents` vs `Money` usage guidance in README | Medium | Small |
-| 4 | Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil` helpers | Low | Small |
-| 5 | Add `Locale` to README Usage examples | Low | Tiny |
-| 6 | Add `Importance` to README Usage examples | Low | Tiny |
-| 7 | Add `Tag` to README Usage examples | Low | Tiny |
-| 8 | `report/` package — purpose unknown, appears empty or unused | Unknown | Unknown |
-| 9 | `BDD_TESTS_REVIEW.md` — stale document from earlier session | Low | Tiny |
-| 10 | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — proposal exists but not executed | Low | Large |
-| 11 | `PROJECT_SPLIT_EXECUTIVE_REPORT.md` — historical, could be archived | Low | Tiny |
+| #   | Item                                                                                                | Priority | Effort  |
+| --- | --------------------------------------------------------------------------------------------------- | -------- | ------- |
+| 1   | Add `Timestamp.Validate()` and `Duration.Validate()` to implement `validate.Validator`              | Medium   | Tiny    |
+| 2   | Remove `emailRegex` — trust `mail.ParseAddress` alone, or keep regex and remove `mail.ParseAddress` | Medium   | Tiny    |
+| 3   | Document `Cents` vs `Money` usage guidance in README                                                | Medium   | Small   |
+| 4   | Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil` helpers                         | Low      | Small   |
+| 5   | Add `Locale` to README Usage examples                                                               | Low      | Tiny    |
+| 6   | Add `Importance` to README Usage examples                                                           | Low      | Tiny    |
+| 7   | Add `Tag` to README Usage examples                                                                  | Low      | Tiny    |
+| 8   | `report/` package — purpose unknown, appears empty or unused                                        | Unknown  | Unknown |
+| 9   | `BDD_TESTS_REVIEW.md` — stale document from earlier session                                         | Low      | Tiny    |
+| 10  | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — proposal exists but not executed                            | Low      | Large   |
+| 11  | `PROJECT_SPLIT_EXECUTIVE_REPORT.md` — historical, could be archived                                 | Low      | Tiny    |
 
 ---
 
 ## D. Totally Fucked Up 💥
 
-| Item | Severity | Details |
-|------|----------|---------|
-| **CI billing failure** | 🔴 Critical | GitHub Actions billing is broken — all CI runs fail with billing/spending limit error. This is an account-level issue, not a code problem. No PR can be validated by CI. |
-| **`justfile` is deprecated** but still exists | 🟡 Minor | AGENTS.md says "use flake.nix", POLICY.md still references `just check`, `just test`, `just lint`, `just release`. Mixed signals. |
-| **`depguard` linter misconfigured** | 🟡 Minor | Multiple packages get `depguard: import is not allowed from list 'Main'` warnings for perfectly valid intra-project imports. Linter config needs updating. |
-| **~260 golangci-lint warnings** | 🟡 Moderate | Mostly `revive` (missing doc comments), `err113` (dynamic errors), `recvcheck` (mixed receivers), `gochecknoglobals`. Not blocking, but noisy. |
+| Item                                          | Severity    | Details                                                                                                                                                                  |
+| --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **CI billing failure**                        | 🔴 Critical | GitHub Actions billing is broken — all CI runs fail with billing/spending limit error. This is an account-level issue, not a code problem. No PR can be validated by CI. |
+| **`justfile` is deprecated** but still exists | 🟡 Minor    | AGENTS.md says "use flake.nix", POLICY.md still references `just check`, `just test`, `just lint`, `just release`. Mixed signals.                                        |
+| **`depguard` linter misconfigured**           | 🟡 Minor    | Multiple packages get `depguard: import is not allowed from list 'Main'` warnings for perfectly valid intra-project imports. Linter config needs updating.               |
+| **~260 golangci-lint warnings**               | 🟡 Moderate | Mostly `revive` (missing doc comments), `err113` (dynamic errors), `recvcheck` (mixed receivers), `gochecknoglobals`. Not blocking, but noisy.                           |
 
 ---
 
@@ -124,43 +124,43 @@ Sorted by impact × effort (Pareto ranking):
 
 ### P0 — Do Now (high impact, low effort)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 1 | **Fix CI billing** — resolve GitHub Actions spending limit | 5min (account settings) | Critical — no CI = no safety net |
-| 2 | **Add `Validate()` to `Timestamp` and `Duration`** | 5min | Consistency — completes `validate.Validator` contract |
-| 3 | **Remove or justify `emailRegex`** | 5min | DRY — eliminates redundant double validation |
-| 4 | **Add `CauseKind` to `enums` table in PARTS.md** | 2min | Accuracy — already in code, just missing from analysis |
+| #   | Task                                                       | Effort                  | Impact                                                 |
+| --- | ---------------------------------------------------------- | ----------------------- | ------------------------------------------------------ |
+| 1   | **Fix CI billing** — resolve GitHub Actions spending limit | 5min (account settings) | Critical — no CI = no safety net                       |
+| 2   | **Add `Validate()` to `Timestamp` and `Duration`**         | 5min                    | Consistency — completes `validate.Validator` contract  |
+| 3   | **Remove or justify `emailRegex`**                         | 5min                    | DRY — eliminates redundant double validation           |
+| 4   | **Add `CauseKind` to `enums` table in PARTS.md**           | 2min                    | Accuracy — already in code, just missing from analysis |
 
 ### P1 — Do Soon (good impact, moderate effort)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 5 | **Document `Cents` vs `Money` guidance in README** | 15min | Prevents consumer confusion |
-| 6 | **Add usage examples for `Locale`, `Importance`, `Tag` in README** | 20min | Discoverability — 3 types completely unexampled |
-| 7 | **Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil`** | 30min | DRY — eliminates 80 lines of hand-rolled type switches |
-| 8 | **Fix `depguard` linter config** — allow intra-project imports | 10min | Eliminates ~20 false-positive warnings |
-| 9 | **Add `Locale.Validate()`, `Tag.Validate()` consistency** | 10min | All types should implement `validate.Validator` |
-| 10 | **Update POLICY.md to reference `flake.nix` instead of `just`** | 15min | Eliminates tooling confusion |
+| #   | Task                                                                    | Effort | Impact                                                 |
+| --- | ----------------------------------------------------------------------- | ------ | ------------------------------------------------------ |
+| 5   | **Document `Cents` vs `Money` guidance in README**                      | 15min  | Prevents consumer confusion                            |
+| 6   | **Add usage examples for `Locale`, `Importance`, `Tag` in README**      | 20min  | Discoverability — 3 types completely unexampled        |
+| 7   | **Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil`** | 30min  | DRY — eliminates 80 lines of hand-rolled type switches |
+| 8   | **Fix `depguard` linter config** — allow intra-project imports          | 10min  | Eliminates ~20 false-positive warnings                 |
+| 9   | **Add `Locale.Validate()`, `Tag.Validate()` consistency**               | 10min  | All types should implement `validate.Validator`        |
+| 10  | **Update POLICY.md to reference `flake.nix` instead of `just`**         | 15min  | Eliminates tooling confusion                           |
 
 ### P2 — Do Eventually (nice to have)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 11 | **Add doc comments to all exported symbols** (~50 items) | 2hr | pkg.go.dev rendering, eliminates ~100 linter warnings |
-| 12 | **Replace dynamic errors with sentinels from `pkg/errors/`** | 2hr | Consistent error handling, eliminates `err113` warnings |
-| 13 | **Standardize receiver types** (value vs pointer) | 1hr | Code consistency, eliminates `recvcheck` warnings |
-| 14 | **Add `Money` example to `examples/`** | 30min | Most complex type, deserves dedicated example |
-| 15 | **Add `BoundedString` example to `examples/`** | 15min | Common type, no example exists |
-| 16 | **Add `Temporal` example to `examples/`** | 15min | Complex type, no example exists |
-| 17 | **Archive `BDD_TESTS_REVIEW.md`** to `docs/status/archive/` | 1min | Housekeeping |
-| 18 | **Archive `PROJECT_SPLIT_EXECUTIVE_REPORT.md`** to `docs/` | 1min | Housekeeping |
-| 19 | **Investigate `report/` package** — what is it? Used? | 10min | Either document or remove |
-| 20 | **Fix `testutil/parse.go` unused `name` parameter** | 2min | Eliminates linter warning |
-| 21 | **Add `Locale` SQL round-trip tests** | 15min | `Locale.Scan()`/`Value()` lack direct test coverage |
-| 22 | **Add `Importance` SQL round-trip tests** | 15min | Same as above |
-| 23 | **Consider adding `encoding.TextAppender` to types** (Go 1.24+) | 1hr | Modern Go patterns, already identified in earlier analysis |
-| 24 | **Consider adding `encoding.BinaryAppender` to types** (Go 1.24+) | 1hr | Modern Go patterns |
-| 25 | **Consider `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` execution** | 4hr | Build system unification |
+| #   | Task                                                              | Effort | Impact                                                     |
+| --- | ----------------------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| 11  | **Add doc comments to all exported symbols** (~50 items)          | 2hr    | pkg.go.dev rendering, eliminates ~100 linter warnings      |
+| 12  | **Replace dynamic errors with sentinels from `pkg/errors/`**      | 2hr    | Consistent error handling, eliminates `err113` warnings    |
+| 13  | **Standardize receiver types** (value vs pointer)                 | 1hr    | Code consistency, eliminates `recvcheck` warnings          |
+| 14  | **Add `Money` example to `examples/`**                            | 30min  | Most complex type, deserves dedicated example              |
+| 15  | **Add `BoundedString` example to `examples/`**                    | 15min  | Common type, no example exists                             |
+| 16  | **Add `Temporal` example to `examples/`**                         | 15min  | Complex type, no example exists                            |
+| 17  | **Archive `BDD_TESTS_REVIEW.md`** to `docs/status/archive/`       | 1min   | Housekeeping                                               |
+| 18  | **Archive `PROJECT_SPLIT_EXECUTIVE_REPORT.md`** to `docs/`        | 1min   | Housekeeping                                               |
+| 19  | **Investigate `report/` package** — what is it? Used?             | 10min  | Either document or remove                                  |
+| 20  | **Fix `testutil/parse.go` unused `name` parameter**               | 2min   | Eliminates linter warning                                  |
+| 21  | **Add `Locale` SQL round-trip tests**                             | 15min  | `Locale.Scan()`/`Value()` lack direct test coverage        |
+| 22  | **Add `Importance` SQL round-trip tests**                         | 15min  | Same as above                                              |
+| 23  | **Consider adding `encoding.TextAppender` to types** (Go 1.24+)   | 1hr    | Modern Go patterns, already identified in earlier analysis |
+| 24  | **Consider adding `encoding.BinaryAppender` to types** (Go 1.24+) | 1hr    | Modern Go patterns                                         |
+| 25  | **Consider `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` execution**      | 4hr    | Build system unification                                   |
 
 ---
 
@@ -174,26 +174,26 @@ The directory exists with no `.go` files visible. It doesn't compile as a packag
 
 ## Package Coverage Matrix
 
-| Package | Coverage | Status |
-|---------|----------|--------|
-| `actor/` | **100.0%** | ✅ Excellent |
-| `nanoid/` | **100.0%** | ✅ Excellent |
-| `programminglanguage/` | **100.0%** | ✅ Excellent |
-| `validate/` | **100.0%** | ✅ Excellent |
-| `enums/` | **98.9%** | ✅ Excellent |
-| `bounded/` | **97.8%** | ✅ Excellent |
-| `scanutil/` | **97.1%** | ✅ Excellent |
-| `importance/` | **97.6%** | ✅ Excellent |
-| `tag/` | **93.4%** | ✅ Good |
-| `temporal/` | **95.1%** | ✅ Good |
-| `datapoint/` | **90.1%** | ✅ Good |
-| `money/` | **90.0%** | ✅ Good |
-| `types/` | **89.8%** | ✅ Good |
-| `locale/` | **88.1%** | 🟡 Adequate |
-| `pkg/errors/` | **87.5%** | 🟡 Adequate |
-| `projectcore/` | **84.4%** | 🟡 Adequate |
-| `version/` | **81.0%** | 🟡 Adequate |
-| **Total** | **86.9%** | ✅ Above 80% target |
+| Package                | Coverage   | Status              |
+| ---------------------- | ---------- | ------------------- |
+| `actor/`               | **100.0%** | ✅ Excellent        |
+| `nanoid/`              | **100.0%** | ✅ Excellent        |
+| `programminglanguage/` | **100.0%** | ✅ Excellent        |
+| `validate/`            | **100.0%** | ✅ Excellent        |
+| `enums/`               | **98.9%**  | ✅ Excellent        |
+| `bounded/`             | **97.8%**  | ✅ Excellent        |
+| `scanutil/`            | **97.1%**  | ✅ Excellent        |
+| `importance/`          | **97.6%**  | ✅ Excellent        |
+| `tag/`                 | **93.4%**  | ✅ Good             |
+| `temporal/`            | **95.1%**  | ✅ Good             |
+| `datapoint/`           | **90.1%**  | ✅ Good             |
+| `money/`               | **90.0%**  | ✅ Good             |
+| `types/`               | **89.8%**  | ✅ Good             |
+| `locale/`              | **88.1%**  | 🟡 Adequate         |
+| `pkg/errors/`          | **87.5%**  | 🟡 Adequate         |
+| `projectcore/`         | **84.4%**  | 🟡 Adequate         |
+| `version/`             | **81.0%**  | 🟡 Adequate         |
+| **Total**              | **86.9%**  | ✅ Above 80% target |
 
 ## Build & Test Status
 
@@ -204,14 +204,14 @@ The directory exists with no `.go` files visible. It doesn't compile as a packag
 
 ## Key Metrics
 
-| Metric | Value |
-|--------|-------|
-| Go packages | 18 (excluding examples/testutil) |
-| Total Go LOC | ~10,820 |
-| Test coverage | 86.9% |
-| Dependencies | 4 direct (`go-branded-id`, `bojanz/currency`, `sixafter/nanoid`, `golang.org/x/text`) + 1 dev (`abice/go-enum`) |
-| License | MIT |
-| Go version | 1.26.2 |
+| Metric        | Value                                                                                                           |
+| ------------- | --------------------------------------------------------------------------------------------------------------- |
+| Go packages   | 18 (excluding examples/testutil)                                                                                |
+| Total Go LOC  | ~10,820                                                                                                         |
+| Test coverage | 86.9%                                                                                                           |
+| Dependencies  | 4 direct (`go-branded-id`, `bojanz/currency`, `sixafter/nanoid`, `golang.org/x/text`) + 1 dev (`abice/go-enum`) |
+| License       | MIT                                                                                                             |
+| Go version    | 1.26.2                                                                                                          |
 
 ---
 

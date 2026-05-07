@@ -25,31 +25,31 @@ go get github.com/larsartmann/go-branded-id
 
 ## Types
 
-| Type            | Package            | Purpose                                                              |
-| --------------- | ------------------ | -------------------------------------------------------------------- |
-| `NanoID`        | `nanoid/`          | URL-safe, cryptographically random ID (default 21 chars)             |
-| `ActorChain[T]` | `actor/`           | Ordered chain of actors (User → Service → Service) for audit trails  |
-| `DataPoint[T]`  | `datapoint/`       | Self-contained data unit with complete audit trail                   |
-| `Bitemporal`    | `temporal/`        | Bitemporal tracking (validFrom, validUntil, recorded)                |
-| `Context`       | `datapoint/`       | Execution context (environment, session, request, source)            |
-| `Reference[T]`  | `datapoint/`       | Type-safe reference to another entity with relationship metadata     |
-| `Cause[T]`      | `datapoint/`       | Causal chain tracking for building audit/lineage graphs              |
-| `BoundedString` | `bounded/`         | String with validated length constraints                             |
-| `Money`         | `money/`           | ISO 4217 currency via `github.com/bojanz/currency`                   |
-| `Locale`        | `locale/`          | BCP 47 language tag for internationalization                         |
-| `Email`         | `types/`           | Email address string                                                 |
-| `URL`           | `types/`           | URL string                                                           |
-| `Percentage`    | `types/`           | 0-100 value with float conversion (clamps overflow to 100)           |
-| `Cents`         | `types/`           | Monetary amount in smallest unit (no float errors)                   |
-| `Timestamp`     | `types/`           | Domain-wrapped time.Time                                             |
-| `Duration`      | `types/`           | Domain-wrapped time.Duration                                         |
-| `Importance`    | `importance/`      | Priority classification (0-100) with named levels                    |
-| `Tag`           | `tag/`             | Validated string label with alphanumeric+hyphen constraint           |
+| Type            | Package       | Purpose                                                             |
+| --------------- | ------------- | ------------------------------------------------------------------- |
+| `NanoID`        | `nanoid/`     | URL-safe, cryptographically random ID (default 21 chars)            |
+| `ActorChain[T]` | `actor/`      | Ordered chain of actors (User → Service → Service) for audit trails |
+| `DataPoint[T]`  | `datapoint/`  | Self-contained data unit with complete audit trail                  |
+| `Bitemporal`    | `temporal/`   | Bitemporal tracking (validFrom, validUntil, recorded)               |
+| `Context`       | `datapoint/`  | Execution context (environment, session, request, source)           |
+| `Reference[T]`  | `datapoint/`  | Type-safe reference to another entity with relationship metadata    |
+| `Cause[T]`      | `datapoint/`  | Causal chain tracking for building audit/lineage graphs             |
+| `BoundedString` | `bounded/`    | String with validated length constraints                            |
+| `Money`         | `money/`      | ISO 4217 currency via `github.com/bojanz/currency`                  |
+| `Locale`        | `locale/`     | BCP 47 language tag for internationalization                        |
+| `Email`         | `types/`      | Email address string                                                |
+| `URL`           | `types/`      | URL string                                                          |
+| `Percentage`    | `types/`      | 0-100 value with float conversion (clamps overflow to 100)          |
+| `Cents`         | `types/`      | Monetary amount in smallest unit (no float errors)                  |
+| `Timestamp`     | `types/`      | Domain-wrapped time.Time                                            |
+| `Duration`      | `types/`      | Domain-wrapped time.Duration                                        |
+| `Importance`    | `importance/` | Priority classification (0-100) with named levels                   |
+| `Tag`           | `tag/`        | Validated string label with alphanumeric+hyphen constraint          |
 
 ### External Types (separate module)
 
-| Type       | Module                                                                  | Purpose                                              |
-| ---------- | ----------------------------------------------------------------------- | ---------------------------------------------------- |
+| Type       | Module                                                                                 | Purpose                                             |
+| ---------- | -------------------------------------------------------------------------------------- | --------------------------------------------------- |
 | `ID[B, V]` | [`github.com/larsartmann/go-branded-id`](https://github.com/larsartmann/go-branded-id) | Branded, type-safe identifier — prevents mixing IDs |
 
 ## Enums (generated)
@@ -266,17 +266,17 @@ json.Unmarshal(data, &parsed)
 
 ## Additional Packages
 
-| Package                  | Purpose                                                      |
-| ------------------------ | ------------------------------------------------------------ |
-| `validate/`              | `Validator` interface for self-validating types              |
-| `pkg/errors/`            | Centralized sentinel and structured error definitions        |
-| `scanutil/`              | Helpers for implementing `sql.Scanner` / `driver.Valuer`    |
-| `version/`               | Build version info from `runtime/debug.ReadBuildInfo`        |
-| `tag/`                   | Validated `Tag` type with length and character constraints   |
-| `importance/`            | `Importance` classification (0-100) with named levels        |
-| `locale/`                | BCP 47 `Locale` wrapping `golang.org/x/text/language`        |
-| `programminglanguage/`   | Programming language normalization and branded ID type        |
-| `projectcore/`           | Composite project metadata type (name, path, languages, tags)|
+| Package                | Purpose                                                       |
+| ---------------------- | ------------------------------------------------------------- |
+| `validate/`            | `Validator` interface for self-validating types               |
+| `pkg/errors/`          | Centralized sentinel and structured error definitions         |
+| `scanutil/`            | Helpers for implementing `sql.Scanner` / `driver.Valuer`      |
+| `version/`             | Build version info from `runtime/debug.ReadBuildInfo`         |
+| `tag/`                 | Validated `Tag` type with length and character constraints    |
+| `importance/`          | `Importance` classification (0-100) with named levels         |
+| `locale/`              | BCP 47 `Locale` wrapping `golang.org/x/text/language`         |
+| `programminglanguage/` | Programming language normalization and branded ID type        |
+| `projectcore/`         | Composite project metadata type (name, path, languages, tags) |
 
 See the [`examples/`](./examples/) directory for complete working programs.
 
@@ -290,13 +290,13 @@ go generate ./...
 
 ## Dependencies
 
-| Package                                           | Purpose                               |
-| ------------------------------------------------- | ------------------------------------- |
-| `github.com/larsartmann/go-branded-id`            | Branded/phantom-type identifiers      |
-| `github.com/bojanz/currency`                      | ISO 4217 currency handling            |
-| `github.com/sixafter/nanoid`                      | FIPS-140 compatible NanoID generation |
-| `golang.org/x/text`                               | BCP 47 locale/language support        |
-| `github.com/abice/go-enum`                        | Enum code generation (dev only)       |
+| Package                                | Purpose                               |
+| -------------------------------------- | ------------------------------------- |
+| `github.com/larsartmann/go-branded-id` | Branded/phantom-type identifiers      |
+| `github.com/bojanz/currency`           | ISO 4217 currency handling            |
+| `github.com/sixafter/nanoid`           | FIPS-140 compatible NanoID generation |
+| `golang.org/x/text`                    | BCP 47 locale/language support        |
+| `github.com/abice/go-enum`             | Enum code generation (dev only)       |
 
 ## Documentation
 

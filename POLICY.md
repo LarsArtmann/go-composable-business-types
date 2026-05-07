@@ -173,10 +173,10 @@ func BoundedStringOf(min, max int) func(string) (BoundedString, error) { ... }
 
 ### 4.1 Stability Levels
 
-| Level            | Package                                                                                                                   | Stability Guarantee               |
-| ---------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------- |
+| Level            | Package                                                                                                                                                | Stability Guarantee               |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | --------------------------------- |
 | **Stable**       | `actor/`, `datapoint/`, `temporal/`, `types/`, `enums/`, `money/`, `locale/`, `nanoid/`, `bounded/`, `importance/`, `tag/`, `validate/`, `pkg/errors/` | No breaking changes before v2.0.0 |
-| **Experimental** | N/A                                                                                                                       | No current experimental packages  |
+| **Experimental** | N/A                                                                                                                                                    | No current experimental packages  |
 
 ### 4.2 Compatibility Commitments
 
@@ -319,7 +319,7 @@ Follow [Conventional Commits](https://www.conventionalcommits.org/):
 | `refactor` | Code restructuring | `refactor(actor): simplify chain traversal`   |
 | `test`     | Adding tests       | `test(datapoint): add bitemporal fuzz tests`  |
 | `chore`    | Maintenance        | `chore(deps): update golangci-lint`           |
-| `perf`     | Performance        | `perf(actor): optimize chain append`      |
+| `perf`     | Performance        | `perf(actor): optimize chain append`          |
 | `security` | Security fixes     | `security(nanoid): validate alphabet`         |
 
 **Scopes**: Package name (`actor`, `datapoint`, `types`, `enums`, `money`, `locale`, `nanoid`, `bounded`, `temporal`, `importance`, `tag`, `pkg/errors`)
@@ -489,11 +489,11 @@ govulncheck ./...
 
 ### 9.3 Performance Benchmarks
 
-| Package      | Benchmark                | Target    |
-| ------------ | ------------------------ | --------- |
+| Package      | Benchmark                   | Target     |
+| ------------ | --------------------------- | ---------- |
 | `actor/`     | `BenchmarkActorChainAppend` | < 100ns/op |
-| `nanoid/`    | `BenchmarkNew`           | < 1μs/op  |
-| `datapoint/` | `BenchmarkDataPointJSON` | < 5μs/op  |
+| `nanoid/`    | `BenchmarkNew`              | < 1μs/op   |
+| `datapoint/` | `BenchmarkDataPointJSON`    | < 5μs/op   |
 
 ### 9.4 Continuous Integration
 
