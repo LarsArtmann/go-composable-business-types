@@ -48,15 +48,7 @@ func (d Duration) IsZero() bool { return d.Duration == 0 }
 
 // Compare returns -1 if d < other, 0 if equal, 1 if d > other.
 func (d Duration) Compare(other Duration) int {
-	if d.Duration < other.Duration {
-		return -1
-	}
-
-	if d.Duration > other.Duration {
-		return 1
-	}
-
-	return 0
+	return compare(d.Duration, other.Duration)
 }
 
 // Scan implements sql.Scanner for Duration.
