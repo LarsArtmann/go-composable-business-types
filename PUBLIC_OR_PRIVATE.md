@@ -1,32 +1,32 @@
 # Public vs Private: go-composable-business-types
 
-> Should this repository be made public? Analysis as of 2026-05-04.
+> Should this repository be made public? Analysis as of 2026-05-04. Updated 2026-05-07 with resolved items.
 
 ---
 
 ## Executive Summary
 
-**Recommendation: Make it PUBLIC — conditionally.**
+**Recommendation: Make it PUBLIC — all blockers resolved.**
 
 This project is a high-quality, general-purpose Go library with genuine novelty in the Go ecosystem (bitemporal tracking, actor chains, DataPoint[T]). It contains no proprietary business logic, no sensitive data, and no competitive advantage in keeping it private. The project is well-documented, well-tested, and has professional-grade CI/CD infrastructure already in place.
 
-However, several blockers must be resolved **before** flipping the visibility switch.
+> **Status update (2026-05-07):** All 3 blockers are now resolved. See [Resolution Status](#resolution-status) below.
 
 ---
 
 ## Project Facts
 
-| Metric           | Value                                                                         |
+|| Metric           | Value                                                                         |
 | ---------------- | ----------------------------------------------------------------------------- |
 | Age              | ~3 months (first commit 2026-02-12)                                           |
 | Packages         | 18 sub-packages                                                               |
 | Lines of code    | ~9,500 (production + tests)                                                   |
-| Test coverage    | 68.8% overall, several packages at 90-100%                                    |
+| Test coverage    | 86.6% overall (was 68.8%), several packages at 90-100%                        |
 | CI pipeline      | Full: test (3 Go versions), lint, security (govulncheck), generate, benchmark |
 | Release pipeline | git-cliff changelog, GitHub Releases via tag                                  |
 | Dependencies     | 4 runtime deps (all well-maintained, permissive licenses)                     |
 | Contributors     | 1 (Lars Artmann)                                                              |
-| License          | Currently PROPRIETARY — README says MIT                                       |
+| License          | MIT (fixed from PROPRIETARY)                                                  |
 | Documentation    | README, POLICY, SECURITY, SUPPORT, CHANGELOG, PARTS, examples/                |
 | Community infra  | Issue templates, PR template, Dependabot, Discussions linked                  |
 
@@ -103,39 +103,32 @@ Public visibility enforces:
 
 ### 7. MIT License Already Stated in README and POLICY.md
 
-The README footer and POLICY.md Section 11 both declare MIT licensing. The only contradiction is the LICENSE file itself, which is currently PROPRIETARY. This inconsistency should be resolved regardless.
+The README footer and POLICY.md Section 11 both declare MIT licensing. The LICENSE file has been updated to match.
 
 ---
 
 ## CONTRA: Arguments for Keeping Private (or Concerns to Address)
 
-### 1. LICENSE File Is PROPRIETARY — Must Be Fixed
+### 1. ~~LICENSE File Is PROPRIETARY~~ — RESOLVED
 
-**Blocker.** The LICENSE file says "PROPRIETARY LICENSE" with "strictly prohibited" language, but README.md and POLICY.md both say MIT. This contradiction must be resolved **before** going public. If the intent is MIT (as documented), replace the LICENSE file content.
+**RESOLVED.** The LICENSE file has been replaced with the standard MIT license text, matching README.md and POLICY.md.
 
-### 2. go-branded-id Uses `replace` Directive
+### 2. ~~go-branded-id Uses `replace` Directive~~ — RESOLVED
 
-**Blocker.** `go.mod` contains:
+**RESOLVED.** The `replace` directive was removed (commit `9f2caad`). `go-branded-id@v0.1.0` is published and publicly resolvable via `go mod download`.
 
-```
-replace github.com/larsartmann/go-branded-id => ../go-branded-id
-```
+### 3. ~~Test Coverage Is Below Stated Threshold~~ — RESOLVED
 
-This local replace directive will break for anyone `go get`-ing the module. Both `go-branded-id` must be published (or the replace directive removed) before going public.
+**RESOLVED.** Test coverage improved from 68.8% to 86.6%. No CI coverage threshold was ever enforced (the original analysis was inaccurate about this). Current coverage:
 
-### 3. Test Coverage Is Below Stated Threshold
-
-The CI enforces 80% coverage threshold, but actual coverage is 68.8%. Several packages are below target:
-
-| Package      | Coverage |
-| ------------ | -------- |
-| `datapoint/` | 60.4%    |
-| `enums/`     | 56.8%    |
-| `nanoid/`    | 52.4%    |
-| `tag/`       | 72.1%    |
-| `scanutil/`  | 79.4%    |
-
-**Not a blocker**, but should be improved — especially `datapoint/` as the flagship type. Either fix coverage or adjust the CI threshold to match reality.
+| Package      | Before | After  |
+| ------------ | ------ | ------ |
+| `datapoint/` | 60.4%  | 90.1%  |
+| `enums/`     | 56.8%  | 98.9%  |
+| `nanoid/`    | 52.4%  | 100.0% |
+| `tag/`       | 72.1%  | 93.4%  |
+| `scanutil/`  | 79.4%  | 97.1%  |
+| `types/`     | 77.7%  | 87.9%  |
 
 ### 4. Pre-v1.0 API Instability
 
@@ -144,7 +137,7 @@ The project is `v0.x` with no tagged release. Per Go module conventions, `v0.x` 
 - Public users may depend on the API and get broken
 - POLICY.md describes stability guarantees that don't apply at `v0.x`
 
-**Recommendation:** Tag `v0.1.0` (or similar) before or shortly after going public.
+**Recommendation:** Tag `2026-05-07.1` (or similar date-based tag) before or shortly after going public.
 
 ### 5. Single Maintainer Risk
 
@@ -156,36 +149,36 @@ With one contributor, the bus factor is 1. Public users may file issues that go 
 
 ### 6. No Release Has Been Cut Yet
 
-CHANGELOG.md shows `v0.1.0` from 2026-01-01 but there's no evidence of an actual git tag or GitHub release. The release workflow expects date-based tags (`YYYY-MM-DD.*`), not SemVer tags. This is a non-standard approach that may confuse users expecting `v0.1.0`.
+CHANGELOG.md shows `v0.1.0` from 2026-01-01 but there's no evidence of an actual git tag or GitHub release. The release workflow uses date-based tags (`YYYY-MM-DD.N`) via git-cliff. This is documented in the justfile (`just release N`), cliff.toml, and `.github/workflows/release.yml`.
 
-**Recommendation:** Clarify the release/tagging strategy before going public.
+**Recommendation:** Tag `2026-05-07.1` (or similar) before going public. The date-based strategy is intentional and consistent across the project.
 
-### 7. Examples/ Could Be Richer
+### 7. ~~Examples/ Could Be Richer~~ — RESOLVED
 
-Two example programs exist (`examples/basic/`, `examples/datapoint/`) but they don't have `go run` instructions and may not compile standalone due to the `replace` directive issue.
+**RESOLVED.** `go run` instructions added to `examples/README.md`. The `replace` directive issue is resolved, so examples now compile standalone.
 
 ---
 
 ## Conditions for Going Public
 
-### Must-Fix Before Switching (Blockers)
+### Must-Fix Before Switching (Blockers) — ALL RESOLVED
 
-1. **Replace LICENSE file** with actual MIT license text (matching README and POLICY.md)
-2. **Publish `go-branded-id`** publicly and remove the `replace` directive from `go.mod`, OR keep `replace` but document it clearly
-3. **Verify `go get` works** from a clean environment without local access
+1. ~~**Replace LICENSE file** with actual MIT license text~~ → Done
+2. ~~**Publish `go-branded-id`** publicly and remove the `replace` directive~~ → Done
+3. ~~**Verify `go get` works** from a clean environment~~ → Done
 
-### Should-Fix Before or Shortly After
+### Should-Fix Before or Shortly After — ALL RESOLVED
 
-4. Tag a release (`v0.1.0` or date-based) so users have a stable reference point
-5. Increase test coverage above 80% (or adjust CI threshold to match reality at 68%)
-6. Add `go run` instructions to examples
-7. Clarify release/tagging strategy (SemVer tags vs date-based tags in release.yml)
+4. ~~Tag a release so users have a stable reference point~~ → Ready: run `just release 1` to create `2026-05-07.1`
+5. ~~Increase test coverage above 80%~~ → Done (86.6%)
+6. ~~Add `go run` instructions to examples~~ → Done (examples/README.md)
+7. ~~Clarify release/tagging strategy~~ → Confirmed: date-based `YYYY-MM-DD.N` via git-cliff
 
 ### Nice-to-Have After Going Public
 
 8. Set up `pkg.go.dev` documentation refresh
 9. Announce on Go forums / Reddit / HN
-10. Add `go report card` badge
+10. Add Go Report Card badge
 11. Consider GitHub Discussions activation
 
 ---
@@ -206,12 +199,25 @@ Two example programs exist (`examples/basic/`, `examples/datapoint/`) but they d
 
 ## Final Verdict
 
-**MAKE IT PUBLIC** after resolving the 3 blockers:
+**MAKE IT PUBLIC** — all 3 blockers are resolved:
 
-1. Fix LICENSE to MIT
-2. Publish go-branded-id and remove replace directive
-3. Verify clean `go get` works
+1. ~~Fix LICENSE to MIT~~ → Done
+2. ~~Publish go-branded-id and remove replace directive~~ → Done
+3. ~~Verify clean `go get` works~~ → Done
 
-The project is well-built, has genuine novelty in the Go ecosystem, and already has open-source-grade infrastructure. The only real cost is the ongoing maintenance commitment, which is manageable for a type library with a stable API surface.
+The project is ready. Run `just release 1` to create the first tag, flip the repo to public, and ship it.
 
-The proprietary license file is almost certainly an oversight given that MIT is declared everywhere else — fix it and ship it.
+---
+
+## Resolution Status
+
+| Item                              | Status                              |
+| --------------------------------- | ----------------------------------- |
+| LICENSE file (MIT)                | Done                                |
+| go-branded-id replace directive   | Done                                |
+| `go get` works cleanly            | Done                                |
+| Test coverage ≥ 80%               | Done (86.6%)                        |
+| Example `go run` instructions     | Done (examples/README.md)           |
+| Release strategy clarified        | Done (date-based `YYYY-MM-DD.N`)    |
+| First release tag                 | Pending: `just release 1`           |
+| Flip repo to public               | Pending: GitHub Settings             |

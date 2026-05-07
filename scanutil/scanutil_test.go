@@ -165,6 +165,75 @@ func TestZeroAsNullValue(t *testing.T) {
 	}
 }
 
+func TestNullableValueWithError(t *testing.T) {
+	t.Parallel()
+
+	t.Run("non-empty string", func(t *testing.T) {
+		t.Parallel()
+
+		got, err := NullableValueWithError("hello", "test")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		if got != "hello" {
+			t.Errorf("got = %v, want hello", got)
+		}
+	})
+
+	t.Run("empty string returns nil", func(t *testing.T) {
+		t.Parallel()
+
+		got, err := NullableValueWithError("", "test")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		if got != nil {
+			t.Errorf("got = %v, want nil", got)
+		}
+	})
+}
+
+func TestNonNullableValue(t *testing.T) {
+	t.Parallel()
+
+	t.Run("non-empty string", func(t *testing.T) {
+		t.Parallel()
+
+		got, err := NonNullableValue("hello")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		if got != "hello" {
+			t.Errorf("got = %v, want hello", got)
+		}
+	})
+
+	t.Run("empty string still returns value", func(t *testing.T) {
+		t.Parallel()
+
+		got, err := NonNullableValue("")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+
+		if got != "" {
+			t.Errorf("got = %v, want empty string", got)
+		}
+	})
+}
+
+func TestScanInt64InvalidByteSlice(t *testing.T) {
+	t.Parallel()
+
+	err := ScanInt64([]byte("not-a-number"), func(_ int64) error { return nil })
+	if err == nil {
+		t.Error("expected error for invalid byte slice")
+	}
+}
+
 func testNullable[T comparable](
 	t *testing.T,
 	name string,

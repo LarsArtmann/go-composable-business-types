@@ -127,3 +127,48 @@ func TestDurationJSON(t *testing.T) {
 		t.Errorf("round-trip failed: expected %v, got %v", d.Duration, d4.Duration)
 	}
 }
+
+func TestTimestampBeforeAfter(t *testing.T) {
+	t.Parallel()
+
+	earlier := NewTimestamp(time.Date(2024, 1, 1, 0, 0, 0, 0, time.UTC))
+	later := NewTimestamp(time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC))
+
+	if !earlier.Before(later.Time) {
+		t.Error("earlier should be before later")
+	}
+
+	if earlier.Before(earlier.Time) {
+		t.Error("same time should not be before")
+	}
+
+	if !later.After(earlier.Time) {
+		t.Error("later should be after earlier")
+	}
+
+	if later.After(later.Time) {
+		t.Error("same time should not be after")
+	}
+}
+
+func TestDurationUnmarshalJSONErrors(t *testing.T) {
+	t.Parallel()
+
+	t.Run("non-string JSON", func(t *testing.T) {
+		t.Parallel()
+
+		var dur Duration
+		if err := dur.UnmarshalJSON([]byte(`123`)); err == nil {
+			t.Error("expected error for non-string JSON")
+		}
+	})
+
+	t.Run("invalid duration string", func(t *testing.T) {
+		t.Parallel()
+
+		var dur Duration
+		if err := dur.UnmarshalJSON([]byte(`"not-a-duration"`)); err == nil {
+			t.Error("expected error for invalid duration string")
+		}
+	})
+}

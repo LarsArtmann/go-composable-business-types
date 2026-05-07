@@ -5,11 +5,14 @@ import (
 	"iter"
 	"maps"
 	"testing"
+	"time"
 
 	id "github.com/larsartmann/go-branded-id"
 	"github.com/larsartmann/go-composable-business-types/actor"
 	"github.com/larsartmann/go-composable-business-types/enums"
 	"github.com/larsartmann/go-composable-business-types/nanoid"
+	"github.com/larsartmann/go-composable-business-types/temporal"
+	"github.com/larsartmann/go-composable-business-types/types"
 )
 
 func TestNewDataPoint(t *testing.T) {
@@ -492,4 +495,321 @@ func TestDataPointAllTagsEmpty(t *testing.T) {
 	t.Parallel()
 	dp := newTestDataPointEmpty(t)
 	testDataPointIteratorEmpty(t, "AllTags", countSeq2Iterator(dp.AllTags()))
+}
+
+func TestDataPointActor(t *testing.T) {
+	t.Parallel()
+
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID, "Test User")
+	dp := NewDataPoint("payload", actorEntry)
+
+	if dp.Actor().Name != "Test User" {
+		t.Errorf("expected actor name 'Test User', got %s", dp.Actor().Name)
+	}
+}
+
+func TestDataPointTemporal(t *testing.T) {
+	t.Parallel()
+
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+
+	dp := NewDataPoint("payload", actorEntry)
+
+	if dp.Temporal().IsZero() {
+		t.Error("expected non-zero temporal by default")
+	}
+}
+
+func TestDataPointWithTemporal(t *testing.T) {
+	t.Parallel()
+
+	userID := id.NewID[struct{}, string]("user-123")
+	actorEntry := actor.UserActor(userID)
+	dp := NewDataPoint("payload", actorEntry)
+
+	now := types.NewTimestamp(time.Now())
+	bt := temporal.NewBitemporal(now)
+	dp2 := dp.WithTemporal(bt)
+
+	if !dp2.Temporal().Recorded().Equal(now.Time) {
+		t.Errorf("expected recorded at %v, got %v", now, dp2.Temporal().Recorded())
+	}
+
+	if dp.Temporal().IsZero() {
+		t.Error("original should have non-zero temporal (created by NewDataPoint)")
+	}
+}
+
+func TestCauseFull(t *testing.T) {
+	t.Parallel()
+
+	causeID := nanoid.New()
+	trace := []nanoid.NanoID{nanoid.New(), nanoid.New()}
+	cause := NewCause[string](causeID, enums.CauseKindEvent, "created", trace)
+
+	if cause.ID() != causeID {
+		t.Error("ID mismatch")
+	}
+
+	if cause.Kind() != enums.CauseKindEvent {
+		t.Errorf("expected Event, got %v", cause.Kind())
+	}
+
+	if cause.Effect() != "created" {
+		t.Errorf("expected 'created', got %s", cause.Effect())
+	}
+
+	gotTrace := cause.Trace()
+	if len(gotTrace) != 2 {
+		t.Errorf("expected 2 trace entries, got %d", len(gotTrace))
+	}
+
+	if cause.IsZero() {
+		t.Error("cause should not be zero")
+	}
+}
+
+func TestCauseEvent(t *testing.T) {
+	t.Parallel()
+
+	causeID := nanoid.New()
+	trace1 := nanoid.New()
+	cause := NewCauseEvent[string](causeID, "order.placed", trace1)
+
+	if cause.Kind() != enums.CauseKindEvent {
+		t.Errorf("expected Event, got %v", cause.Kind())
+	}
+
+	if cause.Effect() != "order.placed" {
+		t.Errorf("expected 'order.placed', got %s", cause.Effect())
+	}
+
+	if len(cause.Trace()) != 1 {
+		t.Errorf("expected 1 trace entry, got %d", len(cause.Trace()))
+	}
+}
+
+func TestCauseIsZero(t *testing.T) {
+	t.Parallel()
+
+	var zero Cause[string]
+	if !zero.IsZero() {
+		t.Error("zero Cause should be zero")
+	}
+}
+
+func TestCauseTraceNil(t *testing.T) {
+	t.Parallel()
+
+	cause := NewCauseDirect[string](nanoid.New())
+	if cause.Trace() != nil {
+		t.Error("expected nil trace for direct cause")
+	}
+}
+
+func TestCauseJSONRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	causeID := nanoid.New()
+	cause := NewCause[string](causeID, enums.CauseKindCommand, "create-order", nil)
+
+	data, err := json.Marshal(cause)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	var parsed Cause[string]
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON failed: %v", err)
+	}
+
+	if parsed.ID() != causeID {
+		t.Error("ID mismatch after round-trip")
+	}
+
+	if parsed.Kind() != enums.CauseKindCommand {
+		t.Error("Kind mismatch after round-trip")
+	}
+
+	if parsed.Effect() != "create-order" {
+		t.Error("Effect mismatch after round-trip")
+	}
+}
+
+func TestReferenceAccessors(t *testing.T) {
+	t.Parallel()
+
+	ref := NewReference("order-123", "parent")
+
+	if ref.ID() != "order-123" {
+		t.Errorf("expected order-123, got %s", ref.ID())
+	}
+
+	if ref.Version() != 0 {
+		t.Errorf("expected version 0, got %d", ref.Version())
+	}
+
+	if ref.IsZero() {
+		t.Error("reference should not be zero")
+	}
+}
+
+func TestReferenceIsZero(t *testing.T) {
+	t.Parallel()
+
+	var zero Reference[string]
+	if !zero.IsZero() {
+		t.Error("zero Reference should be zero")
+	}
+}
+
+func TestReferenceWithVersion(t *testing.T) {
+	t.Parallel()
+
+	ref := NewReference("order-123", "parent").WithVersion(5)
+	if ref.Version() != 5 {
+		t.Errorf("expected version 5, got %d", ref.Version())
+	}
+}
+
+func TestReferenceTags(t *testing.T) {
+	t.Parallel()
+
+	ref := NewReference("order-123", "parent").WithTag("type", "subscription")
+
+	tags := ref.Tags()
+	if tags["type"] != "subscription" {
+		t.Errorf("expected type=subscription, got %s", tags["type"])
+	}
+
+	if ref.Tag("type") != "subscription" {
+		t.Errorf("expected type=subscription, got %s", ref.Tag("type"))
+	}
+
+	if ref.Tag("nonexistent") != "" {
+		t.Error("expected empty string for nonexistent tag")
+	}
+}
+
+func TestReferenceJSONRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	ref := NewReference("order-123", "parent").
+		WithVersion(3).
+		WithTag("type", "subscription")
+
+	data, err := json.Marshal(ref)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	var parsed Reference[string]
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON failed: %v", err)
+	}
+
+	if parsed.ID() != "order-123" {
+		t.Error("ID mismatch after round-trip")
+	}
+
+	if parsed.Relation() != "parent" {
+		t.Error("Relation mismatch after round-trip")
+	}
+
+	if parsed.Version() != 3 {
+		t.Error("Version mismatch after round-trip")
+	}
+}
+
+func TestContextAccessors(t *testing.T) {
+	t.Parallel()
+
+	ctx := NewContext().
+		WithEnvironment("production").
+		WithSession("session-abc").
+		WithRequest("req-xyz").
+		WithSource("order-service")
+
+	if ctx.Environment() != "production" {
+		t.Errorf("expected production, got %s", ctx.Environment())
+	}
+
+	if ctx.Session() != "session-abc" {
+		t.Errorf("expected session-abc, got %s", ctx.Session())
+	}
+
+	if ctx.Request() != "req-xyz" {
+		t.Errorf("expected req-xyz, got %s", ctx.Request())
+	}
+
+	if ctx.Source() != "order-service" {
+		t.Errorf("expected order-service, got %s", ctx.Source())
+	}
+}
+
+func TestContextIsZero(t *testing.T) {
+	t.Parallel()
+
+	var zero Context
+	if !zero.IsZero() {
+		t.Error("zero Context should be zero")
+	}
+
+	ctx := NewContext()
+	if !ctx.IsZero() {
+		t.Error("empty context should be zero")
+	}
+}
+
+func TestContextTags(t *testing.T) {
+	t.Parallel()
+
+	ctx := NewContext().WithTags(map[string]string{"region": "us-east-1", "env": "prod"})
+
+	tags := ctx.Tags()
+	if tags["region"] != "us-east-1" {
+		t.Errorf("expected region=us-east-1, got %s", tags["region"])
+	}
+
+	if ctx.Tag("region") != "us-east-1" {
+		t.Errorf("expected region=us-east-1, got %s", ctx.Tag("region"))
+	}
+}
+
+func TestContextJSONRoundTrip(t *testing.T) {
+	t.Parallel()
+
+	ctx := NewContext().
+		WithEnvironment("production").
+		WithSession("session-abc").
+		WithRequest("req-xyz").
+		WithSource("order-service")
+
+	data, err := json.Marshal(ctx)
+	if err != nil {
+		t.Fatalf("MarshalJSON failed: %v", err)
+	}
+
+	var parsed Context
+	if err := json.Unmarshal(data, &parsed); err != nil {
+		t.Fatalf("UnmarshalJSON failed: %v", err)
+	}
+
+	if parsed.Environment() != "production" {
+		t.Error("Environment mismatch after round-trip")
+	}
+
+	if parsed.Session() != "session-abc" {
+		t.Error("Session mismatch after round-trip")
+	}
+
+	if parsed.Request() != "req-xyz" {
+		t.Error("Request mismatch after round-trip")
+	}
+
+	if parsed.Source() != "order-service" {
+		t.Error("Source mismatch after round-trip")
+	}
 }

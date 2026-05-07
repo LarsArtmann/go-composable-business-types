@@ -199,3 +199,89 @@ func TestCentsMath(t *testing.T) {
 func TestCentsCompare(t *testing.T) {
 	testNumericCompare(t, "Cents", NewCents, Cents.Compare)
 }
+
+func TestPercentageString(t *testing.T) {
+	t.Parallel()
+
+	p := NewPercentage(50)
+	if p.String() != "50%" {
+		t.Errorf("expected 50%%, got %s", p.String())
+	}
+
+	zero := NewPercentage(0)
+	if zero.String() != "0%" {
+		t.Errorf("expected 0%%, got %s", zero.String())
+	}
+}
+
+func TestPercentageValidate(t *testing.T) {
+	t.Parallel()
+
+	p := NewPercentage(50)
+	if err := p.Validate(); err != nil {
+		t.Errorf("valid percentage should validate: %v", err)
+	}
+}
+
+func TestCentsHelpers(t *testing.T) {
+	t.Parallel()
+
+	positive := NewCents(100)
+	negative := NewCents(-100)
+	zero := NewCents(0)
+
+	if !positive.IsPositive() {
+		t.Error("100 cents should be positive")
+	}
+
+	if positive.IsNegative() {
+		t.Error("100 cents should not be negative")
+	}
+
+	if !positive.IsZero() == false {
+		t.Error("100 cents should not be zero")
+	}
+
+	if negative.IsPositive() {
+		t.Error("-100 cents should not be positive")
+	}
+
+	if !negative.IsNegative() {
+		t.Error("-100 cents should be negative")
+	}
+
+	if !zero.IsZero() {
+		t.Error("0 cents should be zero")
+	}
+
+	if zero.IsPositive() {
+		t.Error("0 cents should not be positive")
+	}
+
+	if zero.IsNegative() {
+		t.Error("0 cents should not be negative")
+	}
+}
+
+func TestCentsString(t *testing.T) {
+	t.Parallel()
+
+	c := NewCents(1234)
+	if c.String() != "$12.34" {
+		t.Errorf("expected $12.34, got %s", c.String())
+	}
+
+	negative := NewCents(-500)
+	if negative.String() != "$-5.00" {
+		t.Errorf("expected $-5.00, got %s", negative.String())
+	}
+}
+
+func TestCentsValidate(t *testing.T) {
+	t.Parallel()
+
+	c := NewCents(100)
+	if err := c.Validate(); err != nil {
+		t.Errorf("valid cents should validate: %v", err)
+	}
+}

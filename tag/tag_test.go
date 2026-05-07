@@ -189,3 +189,58 @@ func TestScanValue(t *testing.T) {
 		assert.Nil(t, v)
 	})
 }
+
+func TestNewTagsFromString(t *testing.T) {
+	t.Parallel()
+
+	t.Run("valid batch", func(t *testing.T) {
+		t.Parallel()
+
+		tags, err := NewTagsFromString("go", "rust", "My-Project")
+		require.NoError(t, err)
+		assert.Equal(t, Tags{"go", "rust", "My-Project"}, tags)
+	})
+
+	t.Run("empty input", func(t *testing.T) {
+		t.Parallel()
+
+		tags, err := NewTagsFromString()
+		require.NoError(t, err)
+		assert.Equal(t, Tags{}, tags)
+	})
+
+	t.Run("invalid in batch", func(t *testing.T) {
+		t.Parallel()
+
+		_, err := NewTagsFromString("go", "invalid tag", "rust")
+		require.Error(t, err)
+		assert.Contains(t, err.Error(), "index 1")
+	})
+}
+
+func TestTagsStrings(t *testing.T) {
+	t.Parallel()
+
+	tags := Tags{"go", "rust", "My-Project"}
+	strings := tags.Strings()
+	assert.Equal(t, []string{"go", "rust", "My-Project"}, strings)
+}
+
+func TestTagsIsEmpty(t *testing.T) {
+	t.Parallel()
+
+	assert.True(t, Tags{}.IsEmpty())
+	assert.True(t, Tags(nil).IsEmpty())
+	assert.False(t, Tags{"go"}.IsEmpty())
+}
+
+func TestTagsContains(t *testing.T) {
+	t.Parallel()
+
+	tags := Tags{"go", "rust"}
+
+	assert.True(t, tags.Contains("go"))
+	assert.True(t, tags.Contains("rust"))
+	assert.False(t, tags.Contains("python"))
+	assert.False(t, Tags{}.Contains("go"))
+}

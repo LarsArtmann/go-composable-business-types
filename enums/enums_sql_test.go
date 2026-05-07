@@ -520,3 +520,229 @@ func TestAllEnumScanAllTypes(t *testing.T) {
 		}), (*enums.CauseKind).Scan)
 	})
 }
+
+// TestEnumScanPointerTypes tests Scan with pointer and same-type inputs
+// for all enum types, covering cases not exercised by makeScanTestCases.
+func TestEnumScanPointerTypes(t *testing.T) {
+	t.Parallel()
+
+	t.Run("ActorKind", func(t *testing.T) {
+		t.Parallel()
+		testEnumScanPointerCases(t, enums.ActorKindUser, enums.ActorKindBot, "Bot",
+			(*enums.ActorKind).Scan)
+	})
+
+	t.Run("CauseKind", func(t *testing.T) {
+		t.Parallel()
+		testEnumScanPointerCases(t, enums.CauseKindDirect, enums.CauseKindCommand, "Command",
+			(*enums.CauseKind).Scan)
+	})
+
+	t.Run("Priority", func(t *testing.T) {
+		t.Parallel()
+		testEnumScanPointerCases(t, enums.PriorityLow, enums.PriorityHigh, "High",
+			(*enums.Priority).Scan)
+	})
+
+	t.Run("Status", func(t *testing.T) {
+		t.Parallel()
+		testEnumScanPointerCases(t, enums.StatusDraft, enums.StatusActive, "Active",
+			(*enums.Status).Scan)
+	})
+
+	t.Run("Trigger", func(t *testing.T) {
+		t.Parallel()
+		testEnumScanPointerCases(t, enums.TriggerManual, enums.TriggerWebhook, "Webhook",
+			(*enums.Trigger).Scan)
+	})
+}
+
+func testEnumScanPointerCases[T comparable](
+	t *testing.T,
+	zeroVal, nonZeroVal T,
+	validStr string,
+	scanFunc func(*T, any) error,
+) {
+	t.Helper()
+
+	t.Run("same_type", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		if err := scanFunc(&got, nonZeroVal); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got != nonZeroVal {
+			t.Errorf("expected %v, got %v", nonZeroVal, got)
+		}
+	})
+
+	t.Run("pointer_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		val := nonZeroVal
+		var got T
+		if err := scanFunc(&got, &val); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got != nonZeroVal {
+			t.Errorf("expected %v, got %v", nonZeroVal, got)
+		}
+	})
+
+	t.Run("pointer_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*T)(nil))
+		if err == nil {
+			t.Error("expected error for nil pointer")
+		}
+	})
+
+	t.Run("pointer_int_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := int(1)
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_int_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*int)(nil))
+		if err == nil {
+			t.Error("expected error for nil *int")
+		}
+	})
+
+	t.Run("pointer_int64_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := int64(1)
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_int64_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*int64)(nil))
+		if err == nil {
+			t.Error("expected error for nil *int64")
+		}
+	})
+
+	t.Run("pointer_float64_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := float64(1)
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_float64_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*float64)(nil))
+		if err == nil {
+			t.Error("expected error for nil *float64")
+		}
+	})
+
+	t.Run("pointer_uint_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := uint(1)
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_uint_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*uint)(nil))
+		if err == nil {
+			t.Error("expected error for nil *uint")
+		}
+	})
+
+	t.Run("pointer_uint64_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := uint64(1)
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_uint64_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*uint64)(nil))
+		if err == nil {
+			t.Error("expected error for nil *uint64")
+		}
+	})
+
+	t.Run("pointer_string_non_nil", func(t *testing.T) {
+		t.Parallel()
+
+		v := validStr
+		var got T
+		if err := scanFunc(&got, &v); err != nil {
+			t.Fatalf("unexpected error: %v", err)
+		}
+
+		if got == zeroVal {
+			t.Error("expected non-zero value")
+		}
+	})
+
+	t.Run("pointer_string_nil", func(t *testing.T) {
+		t.Parallel()
+
+		var got T
+		err := scanFunc(&got, (*string)(nil))
+		if err == nil {
+			t.Error("expected error for nil *string")
+		}
+	})
+}
