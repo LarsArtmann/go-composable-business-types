@@ -31,6 +31,7 @@ golangci-lint run --fix
 - `github.com/bojanz/currency` - ISO 4217 currency handling
 - `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers (extracted from this project, published as separate module)
 - `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
+- `golang.org/x/text` - BCP 47 locale/language support
 
 ## Package Structure (Go 1.26 Selective Imports)
 
@@ -45,15 +46,25 @@ This library uses a single Go module with subpackages for selective imports:
 │   ├── context.go      # Execution context
 │   ├── reference.go    # Reference[T] entity references
 │   └── cause.go        # Cause[T] causal relationships
-├── enums/              # ActorKind, Priority, Status, Trigger enums
+├── enums/              # ActorKind, Priority, Status, Trigger, CauseKind enums
 │   └── enum_enum.go    # Generated enum code (do not edit)
+├── importance/         # Importance - 0-100 priority classification
 ├── locale/             # Locale - BCP 47 language tags
 ├── money/              # Money - ISO 4217 currency wrapper
 ├── nanoid/             # NanoID - URL-safe unique identifiers
+├── programminglanguage/ # Language - normalized programming language IDs
+├── projectcore/        # ProjectCore - composite project metadata
+├── tag/                # Tag - validated string labels
 ├── temporal/           # Bitemporal - valid/recorded time tracking
 ├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
-└── cbt.go              # Root package (imports all subpackages)
+├── validate/           # Validator interface for self-validating types
+├── version/            # Build version info from runtime/debug
+├── pkg/errors/         # Centralized sentinel and structured errors
+├── scanutil/           # SQL Scanner/Valuer helpers
+└── testutil/           # Generic test helpers
 ```
+
+**Note:** Branded ID types (`ID[B, V]`) live in the separate module [`go-branded-id`](https://github.com/larsartmann/go-branded-id).
 
 ### Selective Import Examples
 
