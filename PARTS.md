@@ -15,6 +15,8 @@ This project contains **9 packages** with **14 distinct types** that fall into t
 
 ### Quick Reference
 
+> **Note (2026-05-07):** `id/` has been extracted to [`go-branded-id`](https://github.com/larsartmann/go-branded-id). The table below is preserved for historical reference. `CauseKind` was added to enums. New packages `importance/`, `tag/`, `validate/`, `version/`, `programminglanguage/`, `projectcore/`, `scanutil/`, `testutil/` were added after this analysis.
+
 | Package     | Types                                                          | Unique Value | Extract? | Recommendation                        |
 | ----------- | -------------------------------------------------------------- | ------------ | -------- | ------------------------------------- |
 | `id/`       | `ID[B,V]`                                                      | Medium       | Maybe    | Pattern is simple but useful          |
@@ -428,7 +430,7 @@ This library follows the principles from HOW_TO_GOLANG.md:
 
 | Package     | Type             | Lines   | Unique Value | Extract? | Reason                       |
 | ----------- | ---------------- | ------- | ------------ | -------- | ---------------------------- |
-| `id/`       | `ID[B,V]`        | ~167    | Medium       | Maybe    | Pattern is simple but useful |
+| `id/`       | `ID[B,V]`        | ~167    | Medium       | **Done** | Extracted to `go-branded-id` |
 | `nanoid/`   | `NanoID`         | ~137    | Low          | No       | Thin wrapper                 |
 | `temporal/` | `Bitemporal`     | ~121    | **High**     | **Yes**  | **No Go equivalent**         |
 | `actor/`    | `ActorChain`     | ~80     | **High**     | **Yes**  | Novel pattern                |
