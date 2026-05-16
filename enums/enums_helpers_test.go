@@ -105,12 +105,6 @@ func testParse[T comparable](
 	}
 }
 
-// enumIsValidCase represents a test case for enum IsValid() method.
-type enumIsValidCase[T any] struct {
-	value    T
-	expected bool
-}
-
 // testEnumIsValid tests that all provided valid values return true for IsValid()
 // and that the provided invalid value returns false.
 func testEnumIsValid[T interface{ IsValid() bool }](t *testing.T, validValues []T, invalidValue T) {

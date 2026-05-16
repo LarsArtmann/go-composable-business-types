@@ -178,9 +178,10 @@ func (w *wrappedError) Wrapped() error {
 
 // UnmarshalError represents a failure to parse/unmarshal data.
 type UnmarshalError struct {
+	wrappedError
+
 	Type  string // The type that failed (e.g., "JSON", "XML", "Text")
 	Input string // The invalid input that caused the failure
-	wrappedError
 }
 
 func (e *UnmarshalError) Error() string {
@@ -220,9 +221,10 @@ func (e *RangeError) Error() string {
 
 // ScanError represents a database scan failure.
 type ScanError struct {
+	wrappedError
+
 	SourceType string // The type we're scanning from
 	TargetType string // The type we're scanning into
-	wrappedError
 }
 
 func (e *ScanError) Error() string {

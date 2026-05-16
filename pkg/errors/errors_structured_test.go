@@ -23,6 +23,8 @@ func testStructuredError(err, original error, want string, checkFn func()) {
 }
 
 func testAs[E any](t *testing.T, err error, checkFn func(E)) {
+	t.Helper()
+
 	var target E
 	if !errors.As(err, &target) {
 		t.Error("expected errors.As() to succeed")

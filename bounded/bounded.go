@@ -22,6 +22,15 @@ import (
 	"github.com/larsartmann/go-composable-business-types/scanutil"
 )
 
+var (
+	errMaxLessThanMin = errors.New(
+		"boundedstring: maximum length cannot be less than minimum length",
+	)
+	errBelowMin        = errors.New("boundedstring: string length is less than minimum")
+	errAboveMax        = errors.New("boundedstring: string length exceeds maximum")
+	errScanNilReceiver = errors.New("boundedstring: scan: receiver is nil")
+)
+
 // BoundedString is a string with length constraints validated at construction.
 // Use NewBoundedString to create validated instances.
 type BoundedString struct {
@@ -35,20 +44,22 @@ type BoundedString struct {
 func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) {
 	if maxLen < minLen {
 		return BoundedString{value: "", minLen: 0, maxLen: 0}, fmt.Errorf(
-			"maximum length cannot be less than minimum length: minLen=%d, maxLen=%d, value=%q",
+			"%w: minLen=%d, maxLen=%d, value=%q",
+			errMaxLessThanMin,
 			minLen,
 			maxLen,
 			value,
 		)
 	}
 
-	length := uint(
+	length := uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 		utf8.RuneCountInString(value),
 	)
 
 	if length < minLen {
 		return BoundedString{}, fmt.Errorf(
-			"string length %d is less than minimum %d: maxLen=%d, value=%q",
+			"%w: length=%d, min=%d, max=%d, value=%q",
+			errBelowMin,
 			length,
 			minLen,
 			maxLen,
@@ -58,7 +69,8 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 
 	if length > maxLen {
 		return BoundedString{}, fmt.Errorf(
-			"string length %d exceeds maximum %d: minLen=%d, value=%q",
+			"%w: length=%d, max=%d, min=%d, value=%q",
+			errAboveMax,
 			length,
 			maxLen,
 			minLen,
@@ -139,7 +151,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.value = value
 	bs.minLen = 0
 
-	bs.maxLen = uint(
+	bs.maxLen = uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 		utf8.RuneCountInString(value),
 	)
 
@@ -150,7 +162,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 // Supports string and []byte sources. Sets min=0, max=len(value).
 func (bs *BoundedString) Scan(src any) error {
 	if bs == nil {
-		return errors.New("boundedstring: scan: receiver is nil")
+		return errScanNilReceiver
 	}
 
 	err := scanutil.ScanString(src, func(v string) error {
@@ -163,7 +175,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.value = v
 		bs.minLen = 0
 
-		bs.maxLen = uint(
+		bs.maxLen = uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
 			utf8.RuneCountInString(v),
 		)
 

@@ -19,6 +19,8 @@ import (
 	"golang.org/x/text/language"
 )
 
+var errLocaleScanNil = errors.New("locale: scan: receiver is nil")
+
 // Locale represents a BCP 47 language tag for internationalization.
 // It wraps golang.org/x/text/language.Tag for full BCP 47 compliance.
 type Locale struct {
@@ -123,7 +125,7 @@ func (l *Locale) UnmarshalText(data []byte) error {
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (l *Locale) Scan(src any) error {
 	if l == nil {
-		return errors.New("locale: scan: receiver is nil")
+		return errLocaleScanNil
 	}
 
 	err := scanutil.ScanString(src, func(v string) error {

@@ -421,16 +421,6 @@ func testScanAllTypes[T comparable](
 	}
 }
 
-// convertAndTestScan converts []any cases to []scanTestCase[T] and runs tests.
-func convertAndTestScan[T comparable](t *testing.T, cases []any, scanFunc func(*T, any) error) {
-	converted := make([]scanTestCase[T], len(cases))
-	for i, c := range cases {
-		converted[i] = c.(scanTestCase[T])
-	}
-
-	testScanAllTypes(t, converted, scanFunc)
-}
-
 // enumScanTestCase defines input/output for Scan method testing.
 // The same enum value can be tested with different input types.
 type enumScanTestCase[T any] struct {
@@ -445,7 +435,7 @@ func makeScanTestCases[T comparable](cases []enumScanTestCase[T]) []scanTestCase
 	result := make([]scanTestCase[T], 0, len(cases)*2+1)
 	for _, c := range cases {
 		result = append(result,
-			scanTestCase[T]{"int64", int64(c.intVal), c.want},
+			scanTestCase[T]{"int64", c.intVal, c.want},
 			scanTestCase[T]{"string", c.strVal, c.want},
 			scanTestCase[T]{"bytes", []byte(c.strVal), c.want},
 			scanTestCase[T]{"int", int(c.intVal), c.want},
@@ -569,6 +559,7 @@ func testEnumScanPointerCases[T comparable](
 		t.Parallel()
 
 		var got T
+
 		err := scanFunc(&got, nonZeroVal)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -585,6 +576,7 @@ func testEnumScanPointerCases[T comparable](
 		val := nonZeroVal
 
 		var got T
+
 		err := scanFunc(&got, &val)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -612,6 +604,7 @@ func testEnumScanPointerCases[T comparable](
 		v := int(1)
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -639,6 +632,7 @@ func testEnumScanPointerCases[T comparable](
 		v := int64(1)
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -666,6 +660,7 @@ func testEnumScanPointerCases[T comparable](
 		v := float64(1)
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -693,6 +688,7 @@ func testEnumScanPointerCases[T comparable](
 		v := uint(1)
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -720,6 +716,7 @@ func testEnumScanPointerCases[T comparable](
 		v := uint64(1)
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)
@@ -747,6 +744,7 @@ func testEnumScanPointerCases[T comparable](
 		v := validStr
 
 		var got T
+
 		err := scanFunc(&got, &v)
 		if err != nil {
 			t.Fatalf("unexpected error: %v", err)

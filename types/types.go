@@ -48,15 +48,20 @@ func NewEmail(v string) (Email, error) {
 	return Email(email), nil
 }
 
-// Email methods.
+// String returns the raw email string.
 func (e Email) String() string { return string(e) }
-func (e Email) IsZero() bool   { return e == "" }
+
+// IsZero reports whether the email is empty.
+func (e Email) IsZero() bool { return e == "" }
+
+// LocalPart returns the portion before the "@".
 func (e Email) LocalPart() string {
 	s, _, _ := e.split()
 
 	return s
 }
 
+// Domain returns the portion after the "@".
 func (e Email) Domain() string {
 	_, d, _ := e.split()
 
@@ -82,7 +87,7 @@ func (e Email) Normalize() Email {
 }
 
 // split returns local part, domain, and whether the split was successful.
-func (e Email) split() (local, domain string, ok bool) {
+func (e Email) split() (string, string, bool) {
 	if e == "" {
 		return "", "", false
 	}
@@ -123,7 +128,7 @@ func NewURL(v string) (URL, error) {
 	return URL(v), nil
 }
 
-// URL constants.
+// String returns the raw URL string.
 func (u URL) String() string { return string(u) }
 
 // IsZero returns true if the URL is empty.

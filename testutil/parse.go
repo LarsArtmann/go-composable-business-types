@@ -6,10 +6,12 @@ package testutil
 
 import "testing"
 
+// ParseTester is a constraint for types with a String method.
 type ParseTester interface {
 	String() string
 }
 
+// RunParseTest runs a single parse test.
 func RunParseTest[T ParseTester](
 	t *testing.T,
 	typeName, input string,
@@ -34,12 +36,14 @@ func RunParseTest[T ParseTester](
 	}
 }
 
+// ParseTestCase is a test case for table-driven parse tests.
 type ParseTestCase[T any] struct {
 	Name    string
 	Input   string
 	WantErr bool
 }
 
+// RunParseTests runs a suite of parse test cases as subtests.
 func RunParseTests[T ParseTester](
 	t *testing.T,
 	typeName string,
@@ -54,6 +58,7 @@ func RunParseTests[T ParseTester](
 	}
 }
 
+// RunParseErrorTest asserts that parsing an empty string returns an error.
 func RunParseErrorTest[T ParseTester](
 	t *testing.T,
 	typeName string,
@@ -63,6 +68,7 @@ func RunParseErrorTest[T ParseTester](
 	RunParseTest(t, typeName, "", parse, true)
 }
 
+// RunAppendTextTest tests appendText output.
 func RunAppendTextTest[T any](
 	t *testing.T,
 	expected string,
@@ -79,10 +85,12 @@ func RunAppendTextTest[T any](
 	}
 }
 
+// AppendTexter is a constraint for types implementing AppendText.
 type AppendTexter[T any] interface {
 	AppendText(b []byte) ([]byte, error)
 }
 
+// RunAppendTextTestSimple tests AppendText on a value directly.
 func RunAppendTextTestSimple[T AppendTexter[T]](t *testing.T, expected string, val T) {
 	n, err := val.AppendText(nil)
 	if err != nil {
@@ -94,10 +102,12 @@ func RunAppendTextTestSimple[T AppendTexter[T]](t *testing.T, expected string, v
 	}
 }
 
+// ZeroChecker is a constraint for types reporting zero state.
 type ZeroChecker interface {
 	IsZero() bool
 }
 
+// RunIsZeroTest verifies zero and non-zero value behavior.
 func RunIsZeroTest[T ZeroChecker](t *testing.T, makeNonZero func() (T, error)) {
 	t.Parallel()
 
@@ -116,12 +126,14 @@ func RunIsZeroTest[T ZeroChecker](t *testing.T, makeNonZero func() (T, error)) {
 	}
 }
 
+// PartAccessor defines a test case for accessing a sub-part.
 type PartAccessor[T any] struct {
 	Name     string
 	Get      func(T) string
 	Expected string
 }
 
+// RunPartsTest checks accessor output for a value.
 func RunPartsTest[T any](t *testing.T, val T, accessors []PartAccessor[T]) {
 	t.Helper()
 
@@ -133,16 +145,19 @@ func RunPartsTest[T any](t *testing.T, val T, accessors []PartAccessor[T]) {
 	}
 }
 
+// StringCase is a test case for String() output.
 type StringCase[T any] struct {
 	Value    T
 	Expected string
 }
 
+// Stringer is a constraint for types implementing String().
 type Stringer interface {
 	String() string
 }
 
-func RunStringTests[T Stringer](t *testing.T, name string, tests []StringCase[T]) {
+// RunStringTests runs a suite of String() test cases.
+func RunStringTests[T Stringer](t *testing.T, _ string, tests []StringCase[T]) {
 	t.Helper()
 
 	for _, tc := range tests {

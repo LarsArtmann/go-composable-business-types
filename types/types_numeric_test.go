@@ -218,6 +218,7 @@ func TestPercentageValidate(t *testing.T) {
 	t.Parallel()
 
 	p := NewPercentage(50)
+
 	err := p.Validate()
 	if err != nil {
 		t.Errorf("valid percentage should validate: %v", err)
@@ -282,6 +283,7 @@ func TestCentsValidate(t *testing.T) {
 	t.Parallel()
 
 	c := NewCents(100)
+
 	err := c.Validate()
 	if err != nil {
 		t.Errorf("valid cents should validate: %v", err)

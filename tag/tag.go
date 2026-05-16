@@ -26,33 +26,35 @@ const (
 	maxLen = 50
 )
 
-var validPattern = regexp.MustCompile(`^[A-Za-z0-9-]+$`)
+var (
+	validPattern       = regexp.MustCompile(`^[A-Za-z0-9-]+$`)
+	errTagEmpty        = errors.New("tag: cannot be empty")
+	errTagTooLong      = errors.New("tag: length exceeds maximum")
+	errTagInvalidChars = errors.New("tag: contains invalid characters")
+	errTagScanNil      = errors.New("tag: scan: receiver is nil")
+)
 
+// Tag is a validated string label with length and character constraints.
 type Tag string
 
+// New creates a validated Tag.
 func New(s string) (Tag, error) {
 	if s == "" {
-		return "", errors.New("tag: cannot be empty")
+		return "", errTagEmpty
 	}
 
 	if utf8.RuneCountInString(s) > maxLen {
-		return "", fmt.Errorf(
-			"tag: length %d exceeds maximum %d",
-			utf8.RuneCountInString(s),
-			maxLen,
-		)
+		return "", fmt.Errorf("%w: %d > %d", errTagTooLong, utf8.RuneCountInString(s), maxLen)
 	}
 
 	if !validPattern.MatchString(s) {
-		return "", fmt.Errorf(
-			"tag: %q contains invalid characters (allowed: A-Z, a-z, 0-9, hyphen)",
-			s,
-		)
+		return "", fmt.Errorf("%w: %q (allowed: A-Z, a-z, 0-9, hyphen)", errTagInvalidChars, s)
 	}
 
 	return Tag(s), nil
 }
 
+// Must creates a Tag or panics on validation failure.
 func Must(s string) Tag {
 	t, err := New(s)
 	if err != nil {
@@ -62,6 +64,7 @@ func Must(s string) Tag {
 	return t
 }
 
+// NewTags creates a slice of validated Tags.
 func NewTags(ss ...string) ([]Tag, error) {
 	tags := make([]Tag, 0, len(ss))
 	for _, s := range ss {
@@ -76,10 +79,13 @@ func NewTags(ss ...string) ([]Tag, error) {
 	return tags, nil
 }
 
+// String returns the raw tag string.
 func (t Tag) String() string { return string(t) }
 
+// IsZero reports whether the tag is empty.
 func (t Tag) IsZero() bool { return t == "" }
 
+// IsValid reports whether the tag satisfies all validation rules.
 func (t Tag) IsValid() bool {
 	if t == "" {
 		return false
@@ -92,26 +98,24 @@ func (t Tag) IsValid() bool {
 	return validPattern.MatchString(string(t))
 }
 
+// Validate returns an error if the tag is invalid.
 func (t Tag) Validate() error {
 	if t == "" {
-		return errors.New("tag: cannot be empty")
+		return errTagEmpty
 	}
 
 	if utf8.RuneCountInString(string(t)) > maxLen {
-		return fmt.Errorf(
-			"tag: length %d exceeds maximum %d",
-			utf8.RuneCountInString(string(t)),
-			maxLen,
-		)
+		return fmt.Errorf("%w: %d > %d", errTagTooLong, utf8.RuneCountInString(string(t)), maxLen)
 	}
 
 	if !validPattern.MatchString(string(t)) {
-		return fmt.Errorf("tag: %q contains invalid characters", string(t))
+		return fmt.Errorf("%w: %q", errTagInvalidChars, string(t))
 	}
 
 	return nil
 }
 
+// MarshalJSON encodes the tag as a JSON string.
 func (t Tag) MarshalJSON() ([]byte, error) {
 	b, err := json.Marshal(string(t))
 	if err != nil {
@@ -121,6 +125,7 @@ func (t Tag) MarshalJSON() ([]byte, error) {
 	return b, nil
 }
 
+// UnmarshalJSON decodes a JSON string into the tag.
 func (t *Tag) UnmarshalJSON(data []byte) error {
 	var s string
 
@@ -134,9 +139,10 @@ func (t *Tag) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
+// Scan implements sql.Scanner for the tag.
 func (t *Tag) Scan(src any) error {
 	if t == nil {
-		return errors.New("tag: scan: receiver is nil")
+		return errTagScanNil
 	}
 
 	return scanutil.ScanString(src, func(v string) error {
@@ -146,14 +152,17 @@ func (t *Tag) Scan(src any) error {
 	})
 }
 
+// Value implements driver.Valuer for the tag.
 func (t Tag) Value() (driver.Value, error) {
 	return scanutil.NullableValue(string(t))
 }
 
 var _ validate.Validator = Tag("")
 
+// Tags is an ordered collection of Tag values.
 type Tags []Tag
 
+// NewTagsFromString creates a Tags collection from raw strings.
 func NewTagsFromString(ss ...string) (Tags, error) {
 	tags := make(Tags, 0, len(ss))
 	for _, s := range ss {
@@ -168,6 +177,7 @@ func NewTagsFromString(ss ...string) (Tags, error) {
 	return tags, nil
 }
 
+// Strings returns the string representation of each tag.
 func (ts Tags) Strings() []string {
 	result := make([]string, len(ts))
 	for i, t := range ts {
@@ -177,10 +187,12 @@ func (ts Tags) Strings() []string {
 	return result
 }
 
+// IsEmpty reports whether the collection has no tags.
 func (ts Tags) IsEmpty() bool {
 	return len(ts) == 0
 }
 
+// Contains reports whether the collection contains the given tag.
 func (ts Tags) Contains(t Tag) bool {
 	return slices.Contains(ts, t)
 }

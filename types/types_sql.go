@@ -14,7 +14,7 @@ import (
 // Handles nil receiver check, empty string (zero value), and type-specific parsing.
 func scanStringType[T ~string](ptr *T, name string, src any, parse func(string) (T, error)) error {
 	if ptr == nil {
-		return fmt.Errorf("%s: scan: receiver is nil", name)
+		return fmt.Errorf("%s: %w", name, errScanNilReceiver)
 	}
 
 	err := scanutil.ScanString(src, func(value string) error {
@@ -90,7 +90,7 @@ func (u URL) Value() (driver.Value, error) {
 // Handles nil receiver check, int64 scanning, and type-specific conversion.
 func scanInt64Type[T any](ptr *T, name string, src any, convert func(int64) T) error {
 	if ptr == nil {
-		return fmt.Errorf("%s: scan: receiver is nil", name)
+		return fmt.Errorf("%s: %w", name, errScanNilReceiver)
 	}
 
 	err := scanutil.ScanInt64(src, func(v int64) error {
@@ -122,7 +122,7 @@ func (c *Cents) Scan(src any) error {
 // Supports time.Time, string (RFC3339), and []byte sources.
 func (t *Timestamp) Scan(src any) error {
 	if t == nil {
-		return errors.New("timestamp: scan: receiver is nil")
+		return errTimestampScanNil
 	}
 
 	switch v := src.(type) {
@@ -153,7 +153,7 @@ func (t *Timestamp) Scan(src any) error {
 
 		return nil
 	default:
-		return fmt.Errorf("timestamp: cannot scan value (got %T)", src)
+		return fmt.Errorf("%w: got %T", errTimestampCannotScan, src)
 	}
 }
 
@@ -168,6 +168,10 @@ func (t Timestamp) Value() (driver.Value, error) {
 
 // Compile-time interface assertions to ensure types implement validate.Validator.
 var (
+	errScanNilReceiver     = errors.New("scan: receiver is nil")
+	errTimestampScanNil    = errors.New("timestamp: scan: receiver is nil")
+	errTimestampCannotScan = errors.New("timestamp: cannot scan value")
+
 	_ validate.Validator = Email("")
 	_ validate.Validator = URL("")
 	_ validate.Validator = Cents(0)

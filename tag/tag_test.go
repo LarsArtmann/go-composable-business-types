@@ -99,8 +99,8 @@ func TestIsValid(t *testing.T) {
 func TestValidate(t *testing.T) {
 	t.Parallel()
 
-	assert.NoError(t, Tag("go").Validate())
-	assert.Error(t, Tag("").Validate())
+	require.NoError(t, Tag("go").Validate())
+	require.Error(t, Tag("").Validate())
 	assert.Error(t, Tag("invalid_tag").Validate())
 }
 

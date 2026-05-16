@@ -13,6 +13,7 @@ import (
 	"strings"
 )
 
+// Build version info.
 const (
 	Version    = "development"
 	ModulePath = "github.com/larsartmann/go-composable-business-types"
@@ -39,12 +40,14 @@ func init() {
 	}
 }
 
+// Build metadata populated from runtime/debug.
 var (
 	Revision string
 	Date     string
 	Dirty    bool
 )
 
+// String returns the version string with build metadata.
 func String() string {
 	var parts []string
 

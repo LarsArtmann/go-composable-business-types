@@ -7,6 +7,7 @@ import (
 
 // nilReturnsNilHelper tests that a wrap function returns nil when given a nil error.
 func nilReturnsNilHelper(t *testing.T, name string, wrapFunc func() error) {
+	t.Helper()
 	t.Run(name, func(t *testing.T) {
 		t.Parallel()
 
@@ -23,6 +24,8 @@ const (
 )
 
 func assertFieldValue(t *testing.T, fieldName, actual, want string) {
+	t.Helper()
+
 	if actual != want {
 		t.Errorf("%s = %q, want %s", fieldName, actual, want)
 	}

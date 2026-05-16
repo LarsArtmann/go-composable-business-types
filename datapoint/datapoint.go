@@ -80,6 +80,7 @@ func (d DataPoint[T]) Context() Context { return d.context }
 // Version returns the version number.
 func (d DataPoint[T]) Version() int { return d.version }
 
+// Tags returns a copy of the tags.
 func (d DataPoint[T]) Tags() map[string]string { return getTags(d.tags) }
 
 // Tag returns a specific tag value.

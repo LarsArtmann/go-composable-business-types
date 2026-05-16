@@ -20,8 +20,14 @@
 package scanutil
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
+)
+
+var (
+	errCannotScanString = errors.New("scanutil: cannot scan into string value")
+	errCannotScanInt64  = errors.New("scanutil: cannot scan into int64 value")
 )
 
 // ScanString scans src into a string callback, supporting nil, string, and []byte.
@@ -42,7 +48,7 @@ func ScanString(src any, setValue func(string) error) error {
 	case []byte:
 		return setValue(string(v))
 	default:
-		return fmt.Errorf("cannot scan %T into string value", src)
+		return fmt.Errorf("%w: got %T", errCannotScanString, src)
 	}
 }
 
@@ -69,12 +75,12 @@ func ScanInt64(src any, setValue func(int64) error) error {
 	case []byte:
 		parsed, err := parseIntFromBytes(v)
 		if err != nil {
-			return fmt.Errorf("cannot scan %T (len=%d) into int64 value: %w", src, len(v), err)
+			return fmt.Errorf("%w: got %T (len=%d): %w", errCannotScanInt64, src, len(v), err)
 		}
 
 		return setValue(parsed)
 	default:
-		return fmt.Errorf("cannot scan %T into int64 value", src)
+		return fmt.Errorf("%w: got %T", errCannotScanInt64, src)
 	}
 }
 

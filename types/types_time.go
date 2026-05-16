@@ -8,6 +8,11 @@ import (
 	"time"
 )
 
+var (
+	errDurationScanNil    = errors.New("duration: scan: receiver is nil")
+	errDurationCannotScan = errors.New("duration: cannot scan non-numeric/string value")
+)
+
 // Timestamp wraps time.Time for domain clarity.
 type Timestamp struct{ time.Time }
 
@@ -55,7 +60,7 @@ func (d Duration) Compare(other Duration) int {
 // Supports int64 (nanoseconds), float64, string (parseable duration), and []byte sources.
 func (d *Duration) Scan(src any) error {
 	if d == nil {
-		return errors.New("duration: scan: receiver is nil")
+		return errDurationScanNil
 	}
 
 	switch v := src.(type) {
@@ -102,7 +107,7 @@ func (d *Duration) Scan(src any) error {
 
 		return nil
 	default:
-		return fmt.Errorf("duration: cannot scan non-numeric/string value (got %T)", src)
+		return fmt.Errorf("%w: got %T", errDurationCannotScan, src)
 	}
 }
 
@@ -129,7 +134,9 @@ func (d Duration) MarshalJSON() ([]byte, error) {
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *Duration) UnmarshalJSON(data []byte) error {
 	var s string
-	if err := json.Unmarshal(data, &s); err != nil {
+
+	err := json.Unmarshal(data, &s)
+	if err != nil {
 		return fmt.Errorf("duration: invalid JSON %q: %w", string(data), err)
 	}
 

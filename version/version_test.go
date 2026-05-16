@@ -5,14 +5,12 @@ import (
 	"testing"
 )
 
-//nolint:paralleltest // Tests modify global state (Revision, Date, Dirty)
 func TestVersion(t *testing.T) {
 	if Version == "" {
 		t.Error("Version should not be empty")
 	}
 }
 
-//nolint:paralleltest // Tests modify global state
 func TestModulePath(t *testing.T) {
 	if ModulePath == "" {
 		t.Error("ModulePath should not be empty")
@@ -23,7 +21,6 @@ func TestModulePath(t *testing.T) {
 	}
 }
 
-//nolint:paralleltest // Tests modify global state
 func TestString(t *testing.T) {
 	s := String()
 	if s == "" {
@@ -35,17 +32,14 @@ func TestString(t *testing.T) {
 	}
 }
 
-//nolint:paralleltest // Tests modify global state
 func TestStringWithRevision(t *testing.T) {
 	testWithGlobal(t, &Revision, "abc1234567890", "abc1234", "shortened revision")
 }
 
-//nolint:paralleltest // Tests modify global state
 func TestStringWithDate(t *testing.T) {
 	testWithGlobal(t, &Date, "2026-03-27T10:00:00Z", "2026-03-27", "date")
 }
 
-//nolint:paralleltest // Tests modify global state
 func TestStringDirty(t *testing.T) {
 	testWithGlobal(t, &Dirty, true, "dirty", "'dirty' when Dirty is true")
 }

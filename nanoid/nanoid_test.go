@@ -119,6 +119,7 @@ func TestNanoIDUnmarshalTextEmpty(t *testing.T) {
 	t.Parallel()
 
 	var id NanoID
+
 	err := id.UnmarshalText([]byte{})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -133,6 +134,7 @@ func TestNanoIDUnmarshalTextError(t *testing.T) {
 	t.Parallel()
 
 	var id NanoID
+
 	err := id.UnmarshalText([]byte("bad!"))
 	if err == nil {
 		t.Error("expected error for invalid NanoID")
@@ -144,6 +146,7 @@ func TestNanoIDScan(t *testing.T) {
 
 	// Valid string
 	var id1 NanoID
+
 	err := id1.Scan("V1StGXR8_Z5jdHi6B-myT")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -155,7 +158,8 @@ func TestNanoIDScan(t *testing.T) {
 
 	// Valid []byte
 	var id2 NanoID
-	err := id2.Scan([]byte("V1StGXR8_Z5jdHi6B-myT"))
+
+	err = id2.Scan([]byte("V1StGXR8_Z5jdHi6B-myT"))
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -166,7 +170,8 @@ func TestNanoIDScan(t *testing.T) {
 
 	// Empty string
 	var id3 NanoID
-	err := id3.Scan("")
+
+	err = id3.Scan("")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -177,7 +182,8 @@ func TestNanoIDScan(t *testing.T) {
 
 	// nil
 	var id4 NanoID
-	err := id4.Scan(nil)
+
+	err = id4.Scan(nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
@@ -188,14 +194,16 @@ func TestNanoIDScan(t *testing.T) {
 
 	// Invalid type
 	var id5 NanoID
-	err := id5.Scan(123)
+
+	err = id5.Scan(123)
 	if err == nil {
 		t.Error("expected error for invalid type")
 	}
 
 	// Invalid NanoID value
 	var id6 NanoID
-	err := id6.Scan("bad!")
+
+	err = id6.Scan("bad!")
 	if err == nil {
 		t.Error("expected error for invalid NanoID value")
 	}
@@ -205,6 +213,7 @@ func TestNanoIDScanNilReceiver(t *testing.T) {
 	t.Parallel()
 
 	var id *NanoID
+
 	err := id.Scan("V1StGXR8_Z5jdHi6B-myT")
 	if err == nil {
 		t.Error("expected error when scanning into nil receiver")

@@ -20,6 +20,8 @@ import (
 	"github.com/sixafter/nanoid"
 )
 
+var errNanoIDScanNil = errors.New("nanoid: scan: receiver is nil")
+
 // NanoID is a URL-safe, unique identifier (default 21 characters).
 // Wrapped around https://github.com/sixafter/nanoid - FIPS-140 compatible, high-performance.
 type NanoID struct{ value string }
@@ -119,7 +121,7 @@ func isNanoIDChar(r rune) bool {
 // Supports string and []byte sources. Empty string/nil results in zero value.
 func (id *NanoID) Scan(src any) error {
 	if id == nil {
-		return errors.New("nanoid: scan: receiver is nil")
+		return errNanoIDScanNil
 	}
 
 	err := scanutil.ScanString(src, func(v string) error {
