@@ -5,7 +5,6 @@ import (
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/importance"
-	"github.com/larsartmann/go-composable-business-types/programminglanguage"
 	"github.com/larsartmann/go-composable-business-types/tag"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -14,12 +13,12 @@ import (
 func TestNew(t *testing.T) {
 	t.Parallel()
 
-	langs := programminglanguage.NewLanguages(programminglanguage.New("go"))
+	langs := []string{"go"}
 	p := New("myproject", "/home/user/myproject", langs)
 
 	assert.Equal(t, "myproject", p.Name)
 	assert.Equal(t, "/home/user/myproject", p.Path)
-	assert.Equal(t, "go", p.Languages.Primary().Get())
+	assert.Equal(t, "go", p.PrimaryLanguage())
 	assert.True(t, p.Importance.IsZero())
 	assert.Empty(t, p.Tags)
 }
@@ -27,7 +26,7 @@ func TestNew(t *testing.T) {
 func TestNewWithOptions(t *testing.T) {
 	t.Parallel()
 
-	langs := programminglanguage.NewLanguages(programminglanguage.New("go"))
+	langs := []string{"go"}
 	imp := importance.Must(70)
 	t1, _ := tag.New("backend")
 	t2, _ := tag.New("production")
@@ -97,7 +96,7 @@ func TestValidate(t *testing.T) {
 	t.Run("valid", func(t *testing.T) {
 		t.Parallel()
 
-		p := New("test", "/path", programminglanguage.NewLanguages(programminglanguage.New("go")))
+		p := New("test", "/path", []string{"go"})
 		require.NoError(t, p.Validate())
 	})
 }
@@ -108,10 +107,7 @@ func TestJSONRoundTrip(t *testing.T) {
 	p := New(
 		"myproject",
 		"/home/user/myproject",
-		programminglanguage.NewLanguages(
-			programminglanguage.New("go"),
-			programminglanguage.New("python"),
-		),
+		[]string{"go", "python"},
 		WithImportance(importance.Must(75)),
 		WithTags(tag.Must("backend"), tag.Must("production")),
 	)
@@ -126,6 +122,7 @@ func TestJSONRoundTrip(t *testing.T) {
 
 	assert.Equal(t, "myproject", got.Name)
 	assert.Equal(t, "/home/user/myproject", got.Path)
+	assert.Equal(t, []string{"go", "python"}, got.Languages)
 	assert.Equal(t, importance.Importance(75), got.Importance)
 	require.Len(t, got.Tags, 2)
 	assert.Equal(t, "backend", got.Tags[0].String())
@@ -136,7 +133,7 @@ func TestJSONOutput(t *testing.T) {
 	t.Parallel()
 
 	p := New("test", "/path",
-		programminglanguage.NewLanguages(programminglanguage.New("go")),
+		[]string{"go"},
 		WithImportance(importance.High),
 	)
 

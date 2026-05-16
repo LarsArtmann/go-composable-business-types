@@ -52,7 +52,6 @@ This library uses a single Go module with subpackages for selective imports:
 ├── locale/             # Locale - BCP 47 language tags
 ├── money/              # Money - ISO 4217 currency wrapper
 ├── nanoid/             # NanoID - URL-safe unique identifiers
-├── programminglanguage/ # Language - normalized programming language IDs
 ├── projectcore/        # ProjectCore - composite project metadata
 ├── tag/                # Tag - validated string labels
 ├── temporal/           # Bitemporal - valid/recorded time tracking
@@ -151,6 +150,7 @@ func main() {
 - Run `go generate ./...` after modifying `enums/enums.go`
 - Generic types (ActorEntry, ActorChain) must be imported from subpackages
 - ID types live in `github.com/larsartmann/go-branded-id` (separate module)
+- `programminglanguage/` was removed — use [`go-enry`](https://github.com/go-enry/go-enry) for language detection, plain `[]string` in `projectcore.ProjectCore.Languages`
 - License: MIT (fixed from PROPRIETARY in 2026-05-07)
 - Test coverage: 86.6% overall
 - Repo is transitioning from private to public

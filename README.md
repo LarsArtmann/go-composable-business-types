@@ -266,17 +266,16 @@ json.Unmarshal(data, &parsed)
 
 ## Additional Packages
 
-| Package                | Purpose                                                       |
-| ---------------------- | ------------------------------------------------------------- |
-| `validate/`            | `Validator` interface for self-validating types               |
-| `pkg/errors/`          | Centralized sentinel and structured error definitions         |
-| `scanutil/`            | Helpers for implementing `sql.Scanner` / `driver.Valuer`      |
-| `version/`             | Build version info from `runtime/debug.ReadBuildInfo`         |
-| `tag/`                 | Validated `Tag` type with length and character constraints    |
-| `importance/`          | `Importance` classification (0-100) with named levels         |
-| `locale/`              | BCP 47 `Locale` wrapping `golang.org/x/text/language`         |
-| `programminglanguage/` | Programming language normalization and branded ID type        |
-| `projectcore/`         | Composite project metadata type (name, path, languages, tags) |
+| Package        | Purpose                                                       |
+| -------------- | ------------------------------------------------------------- |
+| `validate/`    | `Validator` interface for self-validating types               |
+| `pkg/errors/`  | Centralized sentinel and structured error definitions         |
+| `scanutil/`    | Helpers for implementing `sql.Scanner` / `driver.Valuer`      |
+| `version/`     | Build version info from `runtime/debug.ReadBuildInfo`         |
+| `tag/`         | Validated `Tag` type with length and character constraints    |
+| `importance/`  | `Importance` classification (0-100) with named levels         |
+| `locale/`      | BCP 47 `Locale` wrapping `golang.org/x/text/language`         |
+| `projectcore/` | Composite project metadata type (name, path, languages, tags) |
 
 See the [`examples/`](./examples/) directory for complete working programs.
 

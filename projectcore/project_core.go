@@ -3,10 +3,12 @@
 // ProjectCore aggregates name, path, programming languages, importance,
 // and tags into a single validated struct with JSON support.
 //
+// For language detection, see https://github.com/go-enry/go-enry.
+//
 // Basic usage:
 //
 //	core := projectcore.New("my-app", "/src/my-app",
-//	    programminglanguage.NewLanguages(programminglanguage.New("go")),
+//	    []string{"go"},
 //	    projectcore.WithImportance(importance.High))
 package projectcore
 
@@ -16,7 +18,6 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/importance"
-	"github.com/larsartmann/go-composable-business-types/programminglanguage"
 	"github.com/larsartmann/go-composable-business-types/tag"
 	"github.com/larsartmann/go-composable-business-types/validate"
 )
@@ -29,11 +30,11 @@ var (
 
 // ProjectCore aggregates project metadata: name, path, languages, importance, and tags.
 type ProjectCore struct {
-	Name       string                        `json:"name"`
-	Path       string                        `json:"path"`
-	Languages  programminglanguage.Languages `json:"languages"`
-	Importance importance.Importance         `json:"importance"`
-	Tags       []tag.Tag                     `json:"tags"`
+	Name       string                `json:"name"`
+	Path       string                `json:"path"`
+	Languages  []string              `json:"languages"`
+	Importance importance.Importance `json:"importance"`
+	Tags       []tag.Tag             `json:"tags"`
 }
 
 // Option configures a ProjectCore during construction.
@@ -50,7 +51,7 @@ func WithTags(tags ...tag.Tag) Option {
 }
 
 // New creates a ProjectCore with the given name, path, languages, and optional configuration.
-func New(name, path string, langs programminglanguage.Languages, opts ...Option) *ProjectCore {
+func New(name, path string, langs []string, opts ...Option) *ProjectCore {
 	p := &ProjectCore{
 		Name:      name,
 		Path:      path,
@@ -64,9 +65,18 @@ func New(name, path string, langs programminglanguage.Languages, opts ...Option)
 	return p
 }
 
+// PrimaryLanguage returns the first language, or empty string if none.
+func (p *ProjectCore) PrimaryLanguage() string {
+	if len(p.Languages) == 0 {
+		return ""
+	}
+
+	return p.Languages[0]
+}
+
 // IsZero reports whether the ProjectCore is nil or has no name, path, or languages.
 func (p *ProjectCore) IsZero() bool {
-	return p == nil || (p.Name == "" && p.Path == "" && p.Languages.IsZero())
+	return p == nil || (p.Name == "" && p.Path == "" && len(p.Languages) == 0)
 }
 
 // Validate checks that name and path are present and all nested fields are valid.
