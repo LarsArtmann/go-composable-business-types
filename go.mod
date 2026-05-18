@@ -7,9 +7,9 @@ tool github.com/abice/go-enum
 require (
 	github.com/bojanz/currency v1.4.4
 	github.com/larsartmann/go-branded-id v0.1.0
-	github.com/sixafter/nanoid v1.64.1
+	github.com/sixafter/nanoid v1.64.2
 	github.com/stretchr/testify v1.11.1
-	golang.org/x/text v0.36.0
+	golang.org/x/text v0.37.0
 )
 
 require (
@@ -33,8 +33,8 @@ require (
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
-	github.com/sixafter/aes-ctr-drbg v1.19.0 // indirect
-	github.com/sixafter/prng-chacha v1.16.1 // indirect
+	github.com/sixafter/aes-ctr-drbg v1.19.1 // indirect
+	github.com/sixafter/prng-chacha v1.16.2 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
