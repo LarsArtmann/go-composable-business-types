@@ -1,6 +1,7 @@
 package scanutil
 
 import (
+	"fmt"
 	"testing"
 )
 
@@ -257,6 +258,104 @@ func testNullable[T comparable](
 
 		if !wantNil && got != any(input) {
 			t.Errorf("got = %v, want %v", got, input)
+		}
+	})
+}
+
+func TestScanEnum(t *testing.T) {
+	t.Parallel()
+
+	type testEnum uint8
+
+	const (
+		testEnumA testEnum = iota
+		testEnumB
+		testEnumC
+	)
+
+	parseTestEnum := func(s string) (testEnum, error) {
+		switch s {
+		case "A":
+			return testEnumA, nil
+		case "B":
+			return testEnumB, nil
+		case "C":
+			return testEnumC, nil
+		default:
+			return 0, fmt.Errorf("unknown testEnum: %s", s)
+		}
+	}
+
+	tests := []struct {
+		name    string
+		src     any
+		want    testEnum
+		wantErr bool
+	}{
+		{name: "nil", src: nil, want: testEnumA},
+		{name: "int64", src: int64(1), want: testEnumB},
+		{name: "string", src: "B", want: testEnumB},
+		{name: "[]byte", src: []byte("C"), want: testEnumC},
+		{name: "enum value", src: testEnumC, want: testEnumC},
+		{name: "int", src: int(2), want: testEnumC},
+		{name: "uint", src: uint(1), want: testEnumB},
+		{name: "uint64", src: uint64(0), want: testEnumA},
+		{name: "float64", src: float64(1), want: testEnumB},
+		{name: "invalid string", src: "Z", wantErr: true},
+		{name: "invalid type", src: struct{}{}, wantErr: true},
+		{name: "nil *int", src: (*int)(nil), wantErr: true},
+		{name: "nil *string", src: (*string)(nil), wantErr: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			var got testEnum
+			err := ScanEnum(&got, tt.src, parseTestEnum)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ScanEnum() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if !tt.wantErr && got != tt.want {
+				t.Errorf("ScanEnum() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestScanEnumPointer(t *testing.T) {
+	t.Parallel()
+
+	type testEnum uint8
+
+	const testEnumB testEnum = 1
+
+	parseTestEnum := func(s string) (testEnum, error) {
+		return testEnumB, nil
+	}
+
+	t.Run("*enum value", func(t *testing.T) {
+		t.Parallel()
+
+		val := testEnumB
+		var got testEnum
+		err := ScanEnum(&got, &val, parseTestEnum)
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+		if got != testEnumB {
+			t.Errorf("got = %v, want %v", got, testEnumB)
+		}
+	})
+
+	t.Run("nil *enum", func(t *testing.T) {
+		t.Parallel()
+
+		var got testEnum
+		err := ScanEnum(&got, (*testEnum)(nil), parseTestEnum)
+		if err == nil {
+			t.Error("expected error for nil pointer")
 		}
 	})
 }

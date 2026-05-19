@@ -136,3 +136,80 @@ func ZeroAsNullValue(v int64) (any, error) {
 
 	return v, nil
 }
+
+var errNilPtr = errors.New("scanutil: value pointer is nil")
+
+// ScanEnum provides a generic sql.Scanner implementation for iota-based enum types.
+// parseFunc is the generated ParseX function (e.g. ParseActorKind).
+//
+// Usage:
+//
+//	func (x *ActorKind) Scan(value interface{}) error {
+//	    return scanutil.ScanEnum(x, value, ParseActorKind)
+//	}
+func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) error {
+	if src == nil {
+		*ptr = T(0)
+		return nil
+	}
+
+	var err error
+
+	switch v := src.(type) {
+	case int64:
+		*ptr = T(v)
+	case string:
+		*ptr, err = parseFunc(v)
+	case []byte:
+		*ptr, err = parseFunc(string(v))
+	case T:
+		*ptr = v
+	case int:
+		*ptr = T(v)
+	case *T:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = *v
+	case uint:
+		*ptr = T(v)
+	case uint64:
+		*ptr = T(v)
+	case *int:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = T(*v)
+	case *int64:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = T(*v)
+	case float64:
+		*ptr = T(v)
+	case *float64:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = T(*v)
+	case *uint:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = T(*v)
+	case *uint64:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr = T(*v)
+	case *string:
+		if v == nil {
+			return errNilPtr
+		}
+		*ptr, err = parseFunc(*v)
+	default:
+		return fmt.Errorf("scanutil: cannot scan %T into %T", src, *ptr)
+	}
+
+	return err
+}
