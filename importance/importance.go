@@ -26,6 +26,16 @@ const (
 	maxValue = 100
 )
 
+// String representations for parsing and output.
+const (
+	strNone     = "none"
+	strVeryLow  = "very-low"
+	strLow      = "low"
+	strMedium   = "medium"
+	strHigh     = "high"
+	strVeryHigh = "very-high"
+)
+
 var (
 	errExceedsMax      = errors.New("importance: value exceeds maximum")
 	errUnknownClass    = errors.New("importance: unknown classification")
@@ -68,17 +78,17 @@ func Must(v uint8) Importance {
 // Parse parses a named importance level string.
 func Parse(s string) (Importance, error) {
 	switch strings.ToLower(strings.TrimSpace(s)) {
-	case "none", "0":
+	case strNone, "0":
 		return None, nil
-	case "very-low", "verylow":
+	case strVeryLow, "verylow":
 		return VeryLow, nil
-	case "low":
+	case strLow:
 		return Low, nil
-	case "medium", "mid":
+	case strMedium, "mid":
 		return Medium, nil
-	case "high":
+	case strHigh:
 		return High, nil
-	case "very-high", "veryhigh":
+	case strVeryHigh, "veryhigh":
 		return VeryHigh, nil
 	case "max", "100":
 		return Max, nil
@@ -91,17 +101,17 @@ func Parse(s string) (Importance, error) {
 func (i Importance) String() string {
 	switch {
 	case i == 0:
-		return "none"
+		return strNone
 	case i <= 20:
-		return "very-low"
+		return strVeryLow
 	case i <= 40:
-		return "low"
+		return strLow
 	case i <= 60:
-		return "medium"
+		return strMedium
 	case i <= 80:
-		return "high"
+		return strHigh
 	default:
-		return "very-high"
+		return strVeryHigh
 	}
 }
 

@@ -52,7 +52,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 		)
 	}
 
-	length := uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+	length := uint(
 		utf8.RuneCountInString(value),
 	)
 
@@ -85,7 +85,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 func (bs BoundedString) String() string { return bs.value }
 
 // Len returns the number of runes in the string.
-func (bs BoundedString) Len() uint { return uint(utf8.RuneCountInString(bs.value)) } //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+func (bs BoundedString) Len() uint { return uint(utf8.RuneCountInString(bs.value)) }
 
 // MinLen returns the minimum allowed length.
 func (bs BoundedString) MinLen() uint { return bs.minLen }
@@ -151,7 +151,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.value = value
 	bs.minLen = 0
 
-	bs.maxLen = uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+	bs.maxLen = uint(
 		utf8.RuneCountInString(value),
 	)
 
@@ -175,7 +175,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.value = v
 		bs.minLen = 0
 
-		bs.maxLen = uint( //nolint:gosec // G115: utf8.RuneCountInString cannot return negative value
+		bs.maxLen = uint(
 			utf8.RuneCountInString(v),
 		)
 
