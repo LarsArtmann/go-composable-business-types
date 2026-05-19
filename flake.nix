@@ -14,7 +14,7 @@
       {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            go
+            go_1_26
             golangci-lint
             gofumpt
             golines
@@ -32,7 +32,7 @@
 
         checks = {
           build = pkgs.runCommand "build-check" {
-            nativeBuildInputs = [ pkgs.go ];
+            nativeBuildInputs = [ pkgs.go_1_26 ];
             src = ./.;
           } ''
             export HOME=$(mktemp -d)
@@ -49,7 +49,7 @@
           '';
 
           test = pkgs.runCommand "test-check" {
-            nativeBuildInputs = [ pkgs.go ];
+            nativeBuildInputs = [ pkgs.go_1_26 ];
             src = ./.;
           } ''
             export HOME=$(mktemp -d)
@@ -65,6 +65,6 @@
           '';
         };
 
-        formatter = pkgs.nixfmt-classic;
+        formatter = pkgs.nixfmt;
       });
 }
