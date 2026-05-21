@@ -145,7 +145,12 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 
 	err := json.Unmarshal(data, &value)
 	if err != nil {
-		return fmt.Errorf("boundedstring: unmarshal JSON %q, value=%q: %w", string(data), value, err)
+		return fmt.Errorf(
+			"boundedstring: unmarshal JSON %q, value=%q: %w",
+			string(data),
+			value,
+			err,
+		)
 	}
 
 	bs.value = value
