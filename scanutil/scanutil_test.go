@@ -199,31 +199,29 @@ func TestNullableValueWithError(t *testing.T) {
 func TestNonNullableValue(t *testing.T) {
 	t.Parallel()
 
-	t.Run("non-empty string", func(t *testing.T) {
-		t.Parallel()
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"non-empty string", "hello", "hello"},
+		{"empty string", "", ""},
+	}
 
-		got, err := NonNullableValue("hello")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-		if got != "hello" {
-			t.Errorf("got = %v, want hello", got)
-		}
-	})
+			got, err := NonNullableValue(tt.input)
+			if err != nil {
+				t.Errorf("unexpected error: %v", err)
+			}
 
-	t.Run("empty string still returns value", func(t *testing.T) {
-		t.Parallel()
-
-		got, err := NonNullableValue("")
-		if err != nil {
-			t.Errorf("unexpected error: %v", err)
-		}
-
-		if got != "" {
-			t.Errorf("got = %v, want empty string", got)
-		}
-	})
+			if got != tt.want {
+				t.Errorf("got = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
 
 func TestScanInt64InvalidByteSlice(t *testing.T) {
@@ -334,7 +332,7 @@ func TestScanEnumPointer(t *testing.T) {
 
 	const testEnumB testEnum = 1
 
-	parseTestEnum := func(s string) (testEnum, error) {
+	parseTestEnum := func(_ string) (testEnum, error) {
 		return testEnumB, nil
 	}
 
