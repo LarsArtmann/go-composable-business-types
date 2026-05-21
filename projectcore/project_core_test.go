@@ -31,7 +31,8 @@ func TestNewWithOptions(t *testing.T) {
 	t1, _ := tag.New("backend")
 	t2, _ := tag.New("production")
 
-	p := New("myproject", "/path", langs,
+	p := New(
+		"myproject", "/path", langs,
 		WithImportance(imp),
 		WithTags(t1, t2),
 	)
@@ -132,7 +133,8 @@ func TestJSONRoundTrip(t *testing.T) {
 func TestJSONOutput(t *testing.T) {
 	t.Parallel()
 
-	p := New("test", "/path",
+	p := New(
+		"test", "/path",
 		[]string{"go"},
 		WithImportance(importance.High),
 	)

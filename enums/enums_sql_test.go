@@ -354,7 +354,8 @@ func TestInvalidEnumStrings(t *testing.T) {
 
 // Test UnmarshalText error cases.
 func TestUnmarshalTextErrors(t *testing.T) {
-	testUnmarshalTextErrorsAll(t,
+	testUnmarshalTextErrorsAll(
+		t,
 		[]enumUnmarshalTextErrorCase[enums.ActorKind]{{"enums.ActorKind"}},
 		[]enumUnmarshalTextErrorCase[enums.Priority]{{"enums.Priority"}},
 		[]enumUnmarshalTextErrorCase[enums.Status]{{"enums.Status"}},
@@ -434,7 +435,8 @@ type enumScanTestCase[T any] struct {
 func makeScanTestCases[T comparable](cases []enumScanTestCase[T]) []scanTestCase[T] {
 	result := make([]scanTestCase[T], 0, len(cases)*2+1)
 	for _, c := range cases {
-		result = append(result,
+		result = append(
+			result,
 			scanTestCase[T]{"int64", c.intVal, c.want},
 			scanTestCase[T]{"string", c.strVal, c.want},
 			scanTestCase[T]{"bytes", []byte(c.strVal), c.want},

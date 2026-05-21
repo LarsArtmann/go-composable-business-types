@@ -312,11 +312,14 @@ func TestScanEnum(t *testing.T) {
 			t.Parallel()
 
 			var got testEnum
+
 			err := ScanEnum(&got, tt.src, parseTestEnum)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ScanEnum() error = %v, wantErr %v", err, tt.wantErr)
+
 				return
 			}
+
 			if !tt.wantErr && got != tt.want {
 				t.Errorf("ScanEnum() got = %v, want %v", got, tt.want)
 			}
@@ -339,11 +342,14 @@ func TestScanEnumPointer(t *testing.T) {
 		t.Parallel()
 
 		val := testEnumB
+
 		var got testEnum
+
 		err := ScanEnum(&got, &val, parseTestEnum)
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
 		}
+
 		if got != testEnumB {
 			t.Errorf("got = %v, want %v", got, testEnumB)
 		}
@@ -353,6 +359,7 @@ func TestScanEnumPointer(t *testing.T) {
 		t.Parallel()
 
 		var got testEnum
+
 		err := ScanEnum(&got, (*testEnum)(nil), parseTestEnum)
 		if err == nil {
 			t.Error("expected error for nil pointer")

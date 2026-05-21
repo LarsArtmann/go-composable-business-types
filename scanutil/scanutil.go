@@ -150,6 +150,7 @@ var errNilPtr = errors.New("scanutil: value pointer is nil")
 func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) error {
 	if src == nil {
 		*ptr = T(0)
+
 		return nil
 	}
 
@@ -170,6 +171,7 @@ func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) erro
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = *v
 	case uint:
 		*ptr = T(v)
@@ -179,11 +181,13 @@ func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) erro
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = T(*v)
 	case *int64:
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = T(*v)
 	case float64:
 		*ptr = T(v)
@@ -191,21 +195,25 @@ func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) erro
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = T(*v)
 	case *uint:
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = T(*v)
 	case *uint64:
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr = T(*v)
 	case *string:
 		if v == nil {
 			return errNilPtr
 		}
+
 		*ptr, err = parseFunc(*v)
 	default:
 		return fmt.Errorf("scanutil: cannot scan %T into %T", src, *ptr)
