@@ -7,6 +7,10 @@ test
 *.out
 coverage.out
 *.png
+
+# Go workspace (auto-generated checksums, not the go.work itself)
+go.work.sum
+!go.work
 # Dependencies
 node_modules/
 # Test coverage

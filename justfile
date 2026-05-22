@@ -55,9 +55,10 @@ fmt:
 vet:
     GOEXPERIMENT=jsonv2 go vet ./...
 
-# Run go mod tidy
+# Run go mod tidy for all modules
 tidy:
     go mod tidy
+    for mod in nanoid locale money datapoint examples; do (cd $$mod && go mod tidy || true); done
 
 # Install git-cliff for changelog generation
 install-cliff:
@@ -71,11 +72,17 @@ changelog:
 changelog-tag TAG:
     git-cliff --config cliff.toml --output CHANGELOG.md --tag {{TAG}}
 
-# Create a release tag with SemVer
-# Usage: just release 0.4.0
+# Create a release tag with SemVer for root + all sub-modules
+# Usage: just release 0.5.0
 release VERSION:
     git -c tag.gpgSign=false tag -a "v{{VERSION}}" -m "Release v{{VERSION}}"
+    @for mod in nanoid locale money datapoint examples; do \
+        git -c tag.gpgSign=false tag -a "$$mod/v{{VERSION}}" -m "Release $$mod/v{{VERSION}}"; \
+    done
     git push origin "v{{VERSION}}"
+    @for mod in nanoid locale money datapoint examples; do \
+        git push origin "$$mod/v{{VERSION}}"; \
+    done
 
 # List all release tags
 tags:

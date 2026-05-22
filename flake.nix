@@ -10,6 +10,12 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
+        goEnv = [
+          "GOEXPERIMENT=jsonv2"
+          "GOPRIVATE=github.com/LarsArtmann/*,github.com/larsartmann/*"
+          "GONOSUMCHECK=github.com/LarsArtmann/*,github.com/larsartmann/*"
+          "GONOSUMDB=github.com/LarsArtmann/*,github.com/larsartmann/*"
+        ];
       in
       {
         devShells.default = pkgs.mkShell {
@@ -26,7 +32,6 @@
             GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
             GONOSUMCHECK = "github.com/LarsArtmann/*,github.com/larsartmann/*";
             GONOSUMDB = "github.com/LarsArtmann/*,github.com/larsartmann/*";
-            GOWORK = "off";
           };
         };
 
@@ -37,13 +42,19 @@
           } ''
             export HOME=$(mktemp -d)
             export GOMODCACHE=$(mktemp -d)
-            export GOPRIVATE="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GONOSUMCHECK="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GONOSUMDB="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GOEXPERIMENT=jsonv2
-            cp -r $src/* .
+            ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
+            cp -r $src/. .
             chmod -R u+w .
+
+            # Download deps for each module
             go mod download
+            cd nanoid && go mod download && cd ..
+            cd locale && go mod download && cd ..
+            cd money && go mod download && cd ..
+            cd datapoint && go mod download && cd ..
+            cd examples && go mod download && cd ..
+
+            # Build all modules via workspace
             go build ./...
             touch $out
           '';
@@ -54,14 +65,20 @@
           } ''
             export HOME=$(mktemp -d)
             export GOMODCACHE=$(mktemp -d)
-            export GOPRIVATE="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GONOSUMCHECK="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GONOSUMDB="github.com/LarsArtmann/*,github.com/larsartmann/*"
-            export GOEXPERIMENT=jsonv2
-            cp -r $src/* .
+            ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
+            cp -r $src/. .
             chmod -R u+w .
+
+            # Download deps for each module
             go mod download
-            go test ./... 2>&1 | tee $out
+            cd nanoid && go mod download && cd ..
+            cd locale && go mod download && cd ..
+            cd money && go mod download && cd ..
+            cd datapoint && go mod download && cd ..
+            cd examples && go mod download && cd ..
+
+            # Test all modules via workspace
+            go test -race ./... 2>&1 | tee $out
           '';
         };
 

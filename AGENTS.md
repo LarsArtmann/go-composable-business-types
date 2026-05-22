@@ -6,61 +6,93 @@ A Go library of strongly typed, composable base values for business applications
 
 Build the best possible data types for Lars Artmann's Golang applications, leveraging superb existing libraries where appropriate. **Backwards compatibility is NOT a concern** — we prioritize clean, optimal design over legacy support.
 
+## Multi-Module Workspace
+
+This library uses a Go workspace (`go.work`) with 6 semi-independent sub-modules for dependency isolation:
+
+| Module | Directory | External Deps | Purpose |
+|---|---|---|---|
+| Root | `./` | go-branded-id | Base types: enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore |
+| nanoid | `./nanoid/` | sixafter/nanoid | URL-safe unique identifiers |
+| locale | `./locale/` | golang.org/x/text | BCP 47 language tags |
+| money | `./money/` | bojanz/currency | ISO 4217 currency |
+| datapoint | `./datapoint/` | — | Self-contained data units with audit trail |
+| examples | `./examples/` | — | Usage examples |
+
+Consumer import paths are identical to the single-module era. The split only affects dependency isolation.
+
 ## Build & Test Commands
 
 ```bash
-# Generate enum code
-go generate ./...
-
-# Build
+# Build all modules (via workspace)
 go build ./...
 
-# Run tests
+# Test all modules
 go test -race ./...
+
+# Test a specific module
+go test -race ./nanoid/...
 
 # Run tests with coverage
 go test -race -coverprofile=coverage.out ./...
 
+# Tidy all modules
+go mod tidy  # root
+for mod in nanoid locale money datapoint examples; do (cd $mod && go mod tidy || true); done
+
 # Lint
 golangci-lint run --fix
+
+# Generate enum code (in root module)
+go generate ./...
 ```
 
 ## Dependencies
 
+Root module:
 - `github.com/abice/go-enum` - Enum code generation (`//go:generate go-enum`)
-- `github.com/bojanz/currency` - ISO 4217 currency handling
-- `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers (extracted from this project, published as separate module)
-- `github.com/sixafter/nanoid` - FIPS-140 compatible, high-performance NanoID generation
-- `golang.org/x/text` - BCP 47 locale/language support
+- `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers
+- `github.com/stretchr/testify` - Test assertions (banned per policy, should be replaced with ginkgo/gomega)
 
-## Package Structure (Go 1.26 Selective Imports)
+Sub-modules:
+- `github.com/sixafter/nanoid` - FIPS-140 compatible NanoID (nanoid module only)
+- `golang.org/x/text` - BCP 47 locale support (locale module only)
+- `github.com/bojanz/currency` - ISO 4217 currency (money module only)
 
-This library uses a single Go module with subpackages for selective imports:
+## Package Structure (Go 1.26 Multi-Module Selective Imports)
+
+This library uses Go workspace mode with 6 sub-modules for dependency isolation.
+Consumer import paths are unchanged from the single-module era.
 
 ```
-.
+Root Module (./) — zero heavy external deps
 ├── actor/              # ActorChain[T], ActorEntry[T] - audit trail tracking
 ├── bounded/            # BoundedString - length-validated strings
+├── enums/              # ActorKind, Priority, Status, Trigger, CauseKind enums
+│   └── enum_enum.go    # Generated enum code (do not edit)
+├── importance/         # Importance - 0-100 priority classification
+├── pkg/errors/         # Centralized sentinel and structured errors
+├── projectcore/        # ProjectCore - composite project metadata
+├── scanutil/           # SQL Scanner/Valuer helpers
+├── tag/                # Tag - validated string labels
+├── temporal/           # Bitemporal - valid/recorded time tracking
+├── testutil/           # Generic test helpers
+├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
+├── validate/           # Validator interface for self-validating types
+└── version/            # Build version info from runtime/debug
+
+Sub-Modules (own go.mod)
+├── nanoid/             # NanoID - URL-safe unique identifiers [sixafter/nanoid]
+├── locale/             # Locale - BCP 47 language tags [golang.org/x/text]
+├── money/              # Money - ISO 4217 currency [bojanz/currency]
 ├── datapoint/          # DataPoint[T] - self-contained data with audit trail
 │   ├── datapoint.go    # DataPoint[T] main type
 │   ├── context.go      # Execution context
 │   ├── reference.go    # Reference[T] entity references
 │   └── cause.go        # Cause[T] causal relationships
-├── enums/              # ActorKind, Priority, Status, Trigger, CauseKind enums
-│   └── enum_enum.go    # Generated enum code (do not edit)
-├── importance/         # Importance - 0-100 priority classification
-├── locale/             # Locale - BCP 47 language tags
-├── money/              # Money - ISO 4217 currency wrapper
-├── nanoid/             # NanoID - URL-safe unique identifiers
-├── projectcore/        # ProjectCore - composite project metadata
-├── tag/                # Tag - validated string labels
-├── temporal/           # Bitemporal - valid/recorded time tracking
-├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
-├── validate/           # Validator interface for self-validating types
-├── version/            # Build version info from runtime/debug
-├── pkg/errors/         # Centralized sentinel and structured errors
-├── scanutil/           # SQL Scanner/Valuer helpers
-└── testutil/           # Generic test helpers
+└── examples/           # Usage examples
+    ├── basic/          # Basic usage example
+    └── datapoint/      # DataPoint usage example
 ```
 
 **Note:** Branded ID types (`ID[B, V]`) live in the separate module [`go-branded-id`](https://github.com/larsartmann/go-branded-id).
@@ -138,10 +170,10 @@ func main() {
 
 ## Release & CI
 
-- **Tag format:** SemVer (`v0.4.0`, `v0.5.0`, etc.)
-- **Release command:** `just release 0.5.0` (creates tag + pushes)
+- **Tag format:** Root: SemVer (`v0.5.0`). Sub-modules: `nanoid/v0.5.0`, `locale/v0.5.0`, etc.
+- **Release command:** `just release 0.5.0` (creates all tags + pushes)
 - **GitHub Actions:** CI runs on push to master (test, lint, security, generate, benchmark)
-- **Release workflow:** triggers on `v*` tag push — runs tests + lint + creates GitHub Release with git-cliff changelog
+- **Release workflow:** triggers on `v*` and `*/v*` tag pushes
 - **CI known issue:** GitHub Actions billing is currently failing — all runs fail with billing/spending limit error. This is an account-level issue, not a code problem.
 
 ## Notes
@@ -154,4 +186,6 @@ func main() {
 - License: MIT (fixed from PROPRIETARY in 2026-05-07)
 - Test coverage: 86.6% overall
 - Repo is transitioning from private to public
-- **Updated:** 2026-05-07
+- Modularization docs: `docs/modularization/` (PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md)
+- `go mod tidy` in sub-modules may fail due to bootstrapping (published root v0.4.0 still has those packages) — use `|| true` or tidy via workspace
+- **Updated:** 2026-05-22
