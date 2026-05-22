@@ -1,0 +1,5 @@
+{
+  "$schema": "https://json.schemastore.org/jscpd",
+  "ignore": ["**/docs/status/**", "**/docs/GITHUB_SETUP.md", "**/*_test.go"],
+  "threshold": 0.8
+}

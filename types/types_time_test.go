@@ -154,25 +154,24 @@ func TestTimestampBeforeAfter(t *testing.T) {
 func TestDurationUnmarshalJSONErrors(t *testing.T) {
 	t.Parallel()
 
-	t.Run("non-string JSON", func(t *testing.T) {
-		t.Parallel()
+	tests := []struct {
+		name  string
+		input string
+	}{
+		{name: "non-string JSON", input: `123`},
+		{name: "invalid duration string", input: `"not-a-duration"`},
+	}
 
-		var dur Duration
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 
-		err := dur.UnmarshalJSON([]byte(`123`))
-		if err == nil {
-			t.Error("expected error for non-string JSON")
-		}
-	})
+			var dur Duration
 
-	t.Run("invalid duration string", func(t *testing.T) {
-		t.Parallel()
-
-		var dur Duration
-
-		err := dur.UnmarshalJSON([]byte(`"not-a-duration"`))
-		if err == nil {
-			t.Error("expected error for invalid duration string")
-		}
-	})
+			err := dur.UnmarshalJSON([]byte(tt.input))
+			if err == nil {
+				t.Error("expected error")
+			}
+		})
+	}
 }

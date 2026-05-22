@@ -164,17 +164,12 @@ type Tags []Tag
 
 // NewTagsFromString creates a Tags collection from raw strings.
 func NewTagsFromString(ss ...string) (Tags, error) {
-	tags := make(Tags, 0, len(ss))
-	for _, s := range ss {
-		t, err := New(s)
-		if err != nil {
-			return nil, fmt.Errorf("tag at index %d: %w", len(tags), err)
-		}
-
-		tags = append(tags, t)
+	tags, err := NewTags(ss...)
+	if err != nil {
+		return nil, err
 	}
 
-	return tags, nil
+	return Tags(tags), nil
 }
 
 // Strings returns the string representation of each tag.

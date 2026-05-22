@@ -6,8 +6,14 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      flake-utils,
+    }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         goEnv = [
@@ -36,52 +42,59 @@
         };
 
         checks = {
-          build = pkgs.runCommand "build-check" {
-            nativeBuildInputs = [ pkgs.go_1_26 ];
-            src = ./.;
-          } ''
-            export HOME=$(mktemp -d)
-            export GOMODCACHE=$(mktemp -d)
-            ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
-            cp -r $src/. .
-            chmod -R u+w .
+          build =
+            pkgs.runCommand "build-check"
+              {
+                nativeBuildInputs = [ pkgs.go_1_26 ];
+                src = ./.;
+              }
+              ''
+                export HOME=$(mktemp -d)
+                export GOMODCACHE=$(mktemp -d)
+                ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
+                cp -r $src/. .
+                chmod -R u+w .
 
-            # Download deps for each module
-            go mod download
-            cd nanoid && go mod download && cd ..
-            cd locale && go mod download && cd ..
-            cd money && go mod download && cd ..
-            cd datapoint && go mod download && cd ..
-            cd examples && go mod download && cd ..
+                # Download deps for each module
+                go mod download
+                cd nanoid && go mod download && cd ..
+                cd locale && go mod download && cd ..
+                cd money && go mod download && cd ..
+                cd datapoint && go mod download && cd ..
+                cd examples && go mod download && cd ..
 
-            # Build all modules via workspace
-            go build ./...
-            touch $out
-          '';
+                # Build all modules via workspace
+                go build ./...
+                touch $out
+              '';
 
-          test = pkgs.runCommand "test-check" {
-            nativeBuildInputs = [ pkgs.go_1_26 ];
-            src = ./.;
-          } ''
-            export HOME=$(mktemp -d)
-            export GOMODCACHE=$(mktemp -d)
-            ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
-            cp -r $src/. .
-            chmod -R u+w .
+          test =
+            pkgs.runCommand "test-check"
+              {
+                nativeBuildInputs = [ pkgs.go_1_26 ];
+                src = ./.;
+              }
+              ''
+                export HOME=$(mktemp -d)
+                export GOMODCACHE=$(mktemp -d)
+                ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
+                cp -r $src/. .
+                chmod -R u+w .
 
-            # Download deps for each module
-            go mod download
-            cd nanoid && go mod download && cd ..
-            cd locale && go mod download && cd ..
-            cd money && go mod download && cd ..
-            cd datapoint && go mod download && cd ..
-            cd examples && go mod download && cd ..
+                # Download deps for each module
+                go mod download
+                cd nanoid && go mod download && cd ..
+                cd locale && go mod download && cd ..
+                cd money && go mod download && cd ..
+                cd datapoint && go mod download && cd ..
+                cd examples && go mod download && cd ..
 
-            # Test all modules via workspace
-            go test -race ./... 2>&1 | tee $out
-          '';
+                # Test all modules via workspace
+                go test -race ./... 2>&1 | tee $out
+              '';
         };
 
         formatter = pkgs.nixfmt;
-      });
+      }
+    );
 }

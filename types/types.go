@@ -179,8 +179,8 @@ func (u URL) Path() string {
 }
 
 func (u URL) extractField(fn func(*url.URL) string) string {
-	parsed, _ := u.Parse()
-	if parsed == nil {
+	parsed, err := u.Parse()
+	if err != nil || parsed == nil {
 		return ""
 	}
 

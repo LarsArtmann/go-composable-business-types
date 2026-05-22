@@ -23,11 +23,14 @@ import (
 	"errors"
 	"fmt"
 	"strconv"
+
+	pkgerrors "github.com/larsartmann/go-composable-business-types/pkg/errors"
 )
 
 var (
 	errCannotScanString = errors.New("scanutil: cannot scan into string value")
 	errCannotScanInt64  = errors.New("scanutil: cannot scan into int64 value")
+	errCannotScan       = errors.New("unsupported scan target type")
 )
 
 // ScanString scans src into a string callback, supporting nil, string, and []byte.
@@ -216,7 +219,10 @@ func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) erro
 
 		*ptr, err = parseFunc(*v)
 	default:
-		return fmt.Errorf("scanutil: cannot scan %T into %T", src, *ptr)
+		srcType := fmt.Sprintf("%T", src)
+		targetType := fmt.Sprintf("%T", ptr)
+
+		return pkgerrors.WrapScan(errCannotScan, srcType, targetType)
 	}
 
 	return err
