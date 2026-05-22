@@ -11,6 +11,7 @@
 **Why:** Foundation for all subsequent steps. Without go.work, sub-modules can't resolve root imports locally.
 
 **Actions:**
+
 - Create `go.work` with `use .`
 - Remove `GOWORK=off` from flake.nix
 
@@ -27,6 +28,7 @@
 **Why:** Isolates sixafter/nanoid + crypto deps. Most impactful isolation because nanoid is widely used but has specific crypto deps.
 
 **Actions:**
+
 - Create `nanoid/go.mod`:
   ```
   module github.com/larsartmann/go-composable-business-types/nanoid
@@ -40,6 +42,7 @@
 - Run `go mod tidy` in both root and nanoid
 
 **Verify:**
+
 - `cd nanoid && go build ./... && go test ./...`
 - `go build ./... && go test ./...` (from root with go.work)
 - `go mod tidy` changes nothing in both modules
@@ -55,6 +58,7 @@
 **Why:** Isolates golang.org/x/text.
 
 **Actions:**
+
 - Create `locale/go.mod`:
   ```
   module github.com/larsartmann/go-composable-business-types/locale
@@ -68,6 +72,7 @@
 - Run `go mod tidy` in root, locale
 
 **Verify:**
+
 - `cd locale && go build ./... && go test ./...`
 - Root build + test still pass
 
@@ -82,6 +87,7 @@
 **Why:** Isolates bojanz/currency (heaviest dep: apd, decimal, pq). Money depends on locale module.
 
 **Actions:**
+
 - Create `money/go.mod`:
   ```
   module github.com/larsartmann/go-composable-business-types/money
@@ -96,6 +102,7 @@
 - Run `go mod tidy` in root, money
 
 **Verify:**
+
 - `cd money && go build ./... && go test ./...`
 - Root build + test still pass
 
@@ -110,6 +117,7 @@
 **Why:** Datapoint depends on nanoid module — can't stay in root. Isolates the "composite" type.
 
 **Actions:**
+
 - Create `datapoint/go.mod`:
   ```
   module github.com/larsartmann/go-composable-business-types/datapoint
@@ -122,6 +130,7 @@
 - Run `go mod tidy` in root, datapoint
 
 **Verify:**
+
 - `cd datapoint && go build ./... && go test ./...`
 - Root build + test still pass
 - Datapoint doesn't pull in bojanz/currency
@@ -137,6 +146,7 @@
 **Why:** Examples depend on multiple modules. Keeps example deps out of library modules.
 
 **Actions:**
+
 - Create `examples/go.mod`:
   ```
   module github.com/larsartmann/go-composable-business-types/examples
@@ -150,6 +160,7 @@
 - Run `go mod tidy` in examples
 
 **Verify:**
+
 - `cd examples && go build ./...`
 - Root build + test still pass
 
@@ -164,6 +175,7 @@
 **Why:** CI must verify all modules, not just root.
 
 **Actions:**
+
 - Update build check to build each module: `go build ./...` in root, nanoid, locale, money, datapoint, examples
 - Update test check to test each module
 - Remove GOWORK=off, ensure GOEXPERIMENT=jsonv2 is set
@@ -181,6 +193,7 @@
 **Why:** CI must test all modules, not just root.
 
 **Actions:**
+
 - Update test job to iterate over modules
 - Consider parallel per-module jobs
 - Update release workflow for multi-module tagging
@@ -198,6 +211,7 @@
 **Why:** Documentation must reflect reality.
 
 **Actions:**
+
 - Update README with module boundaries
 - Update AGENTS.md with per-module build/test commands
 - Update architecture.d2 with module boundaries
@@ -214,6 +228,7 @@
 **What:** Full end-to-end verification of the modularized project.
 
 **Actions:**
+
 - `go work sync`
 - Build and test every module independently
 - Build and test from root with go.work

@@ -10,14 +10,14 @@ Build the best possible data types for Lars Artmann's Golang applications, lever
 
 This library uses a Go workspace (`go.work`) with 6 semi-independent sub-modules for dependency isolation:
 
-| Module | Directory | External Deps | Purpose |
-|---|---|---|---|
-| Root | `./` | go-branded-id | Base types: enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore |
-| nanoid | `./nanoid/` | sixafter/nanoid | URL-safe unique identifiers |
-| locale | `./locale/` | golang.org/x/text | BCP 47 language tags |
-| money | `./money/` | bojanz/currency | ISO 4217 currency |
-| datapoint | `./datapoint/` | — | Self-contained data units with audit trail |
-| examples | `./examples/` | — | Usage examples |
+| Module    | Directory      | External Deps     | Purpose                                                                                                                             |
+| --------- | -------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Root      | `./`           | go-branded-id     | Base types: enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore |
+| nanoid    | `./nanoid/`    | sixafter/nanoid   | URL-safe unique identifiers                                                                                                         |
+| locale    | `./locale/`    | golang.org/x/text | BCP 47 language tags                                                                                                                |
+| money     | `./money/`     | bojanz/currency   | ISO 4217 currency                                                                                                                   |
+| datapoint | `./datapoint/` | —                 | Self-contained data units with audit trail                                                                                          |
+| examples  | `./examples/`  | —                 | Usage examples                                                                                                                      |
 
 Consumer import paths are identical to the single-module era. The split only affects dependency isolation.
 
@@ -50,11 +50,13 @@ go generate ./...
 ## Dependencies
 
 Root module:
+
 - `github.com/abice/go-enum` - Enum code generation (`//go:generate go-enum`)
 - `github.com/larsartmann/go-branded-id` - Branded phantom-type identifiers
 - `github.com/stretchr/testify` - Test assertions (banned per policy, should be replaced with ginkgo/gomega)
 
 Sub-modules:
+
 - `github.com/sixafter/nanoid` - FIPS-140 compatible NanoID (nanoid module only)
 - `golang.org/x/text` - BCP 47 locale support (locale module only)
 - `github.com/bojanz/currency` - ISO 4217 currency (money module only)

@@ -18,15 +18,15 @@ Split the single-module Go library into 6 semi-independent sub-modules, each wit
 
 ### 2.1 Module Landscape
 
-| Field | Value |
-|---|---|
-| State | **Monolith** — single go.mod, no go.work |
-| Module | `github.com/larsartmann/go-composable-business-types` |
-| Go version | 1.26.2 |
-| Packages | 19 |
-| Total LOC | ~12K prod, ~5.5K test |
+| Field           | Value                                                              |
+| --------------- | ------------------------------------------------------------------ |
+| State           | **Monolith** — single go.mod, no go.work                           |
+| Module          | `github.com/larsartmann/go-composable-business-types`              |
+| Go version      | 1.26.2                                                             |
+| Packages        | 19                                                                 |
+| Total LOC       | ~12K prod, ~5.5K test                                              |
 | Ext deps (prod) | bojanz/currency, sixafter/nanoid, golang.org/x/text, go-branded-id |
-| Ext deps (test) | stretchr/testify (banned per policy) |
+| Ext deps (test) | stretchr/testify (banned per policy)                               |
 
 ### 2.2 Package Dependency Graph (Production)
 
@@ -50,13 +50,13 @@ version             types
 
 ### 2.4 Dependency Bloat Today
 
-| Consumer needs | Current transitive deps pulled in |
-|---|---|
-| Just `enums` | bojanz/currency, sixafter/nanoid, golang.org/x/text, 30+ indirect |
-| Just `nanoid` | bojanz/currency, golang.org/x/text, 30+ indirect |
-| Just `types` | bojanz/currency, sixafter/nanoid, golang.org/x/text, 30+ indirect |
-| Just `money` | sixafter/nanoid (unnecessary), 30+ indirect |
-| Just `datapoint` | everything (expected — it's the composite) |
+| Consumer needs   | Current transitive deps pulled in                                 |
+| ---------------- | ----------------------------------------------------------------- |
+| Just `enums`     | bojanz/currency, sixafter/nanoid, golang.org/x/text, 30+ indirect |
+| Just `nanoid`    | bojanz/currency, golang.org/x/text, 30+ indirect                  |
+| Just `types`     | bojanz/currency, sixafter/nanoid, golang.org/x/text, 30+ indirect |
+| Just `money`     | sixafter/nanoid (unnecessary), 30+ indirect                       |
+| Just `datapoint` | everything (expected — it's the composite)                        |
 
 ---
 
@@ -64,14 +64,14 @@ version             types
 
 ### 3.1 Module Definitions
 
-| # | Module Path | Directory | Packages | Ext Deps (prod) | Internal Deps |
-|---|---|---|---|---|---|
-| 1 | `go-composable-business-types` | `./` | enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore | go-branded-id | — |
-| 2 | `.../nanoid` | `./nanoid/` | nanoid | sixafter/nanoid | root |
-| 3 | `.../locale` | `./locale/` | locale | golang.org/x/text | root |
-| 4 | `.../money` | `./money/` | money | bojanz/currency | root, locale |
-| 5 | `.../datapoint` | `./datapoint/` | datapoint | — | root, nanoid |
-| 6 | `.../examples` | `./examples/` | basic, datapoint | — | root, nanoid, datapoint |
+| #   | Module Path                    | Directory      | Packages                                                                                                                | Ext Deps (prod)   | Internal Deps           |
+| --- | ------------------------------ | -------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------- | ----------------------- |
+| 1   | `go-composable-business-types` | `./`           | enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore | go-branded-id     | —                       |
+| 2   | `.../nanoid`                   | `./nanoid/`    | nanoid                                                                                                                  | sixafter/nanoid   | root                    |
+| 3   | `.../locale`                   | `./locale/`    | locale                                                                                                                  | golang.org/x/text | root                    |
+| 4   | `.../money`                    | `./money/`     | money                                                                                                                   | bojanz/currency   | root, locale            |
+| 5   | `.../datapoint`                | `./datapoint/` | datapoint                                                                                                               | —                 | root, nanoid            |
+| 6   | `.../examples`                 | `./examples/`  | basic, datapoint                                                                                                        | —                 | root, nanoid, datapoint |
 
 ### 3.2 Why These Boundaries
 
@@ -98,14 +98,14 @@ All edges point upward. No cycles. ✓
 
 ### 3.4 Dependency Isolation After Split
 
-| Consumer needs | Dependencies after split |
-|---|---|
-| Just `enums` | **go-branded-id only** (via root) |
-| Just `nanoid` | **sixafter/nanoid + go-branded-id** |
-| Just `types` | **go-branded-id only** (via root) |
-| Just `locale` | **golang.org/x/text + go-branded-id** |
-| Just `money` | **bojanz/currency + golang.org/x/text + go-branded-id** |
-| Just `datapoint` | **everything** (expected — it composes everything) |
+| Consumer needs   | Dependencies after split                                |
+| ---------------- | ------------------------------------------------------- |
+| Just `enums`     | **go-branded-id only** (via root)                       |
+| Just `nanoid`    | **sixafter/nanoid + go-branded-id**                     |
+| Just `types`     | **go-branded-id only** (via root)                       |
+| Just `locale`    | **golang.org/x/text + go-branded-id**                   |
+| Just `money`     | **bojanz/currency + golang.org/x/text + go-branded-id** |
+| Just `datapoint` | **everything** (expected — it composes everything)      |
 
 ---
 
@@ -128,6 +128,7 @@ use (
 ```
 
 **Rationale:**
+
 - Cleaner than per-module `replace` directives
 - Go tooling handles `go.work` natively
 - `go.work` is automatically ignored by consumers using published versions
@@ -137,14 +138,14 @@ use (
 
 ## 5. Test Dependency Isolation
 
-| Module | Test deps from other modules |
-|---|---|
-| Root | testutil (internal), enums (internal) — all within root |
-| nanoid | testutil (from root) |
-| locale | testutil (from root) |
-| money | locale (from locale module) |
-| datapoint | actor, enums, nanoid, temporal, types (from deps) |
-| examples | none |
+| Module    | Test deps from other modules                            |
+| --------- | ------------------------------------------------------- |
+| Root      | testutil (internal), enums (internal) — all within root |
+| nanoid    | testutil (from root)                                    |
+| locale    | testutil (from root)                                    |
+| money     | locale (from locale module)                             |
+| datapoint | actor, enums, nanoid, temporal, types (from deps)       |
+| examples  | none                                                    |
 
 No bidirectional test dependencies. ✓
 
@@ -184,13 +185,13 @@ Each step leaves the project in a buildable, testable state.
 
 ## 8. Risk Assessment
 
-| Risk | Likelihood | Mitigation |
-|---|---|---|
-| Import path confusion | Low | Import paths don't change — verified |
-| go.work conflicts with CI | Medium | Test CI with GOWORK=off and with go.work |
-| Version tag complexity | Medium | Automate with release script |
-| testify in root go.mod | High (existing) | Replace with ginkgo/gomega (separate task, not blocking) |
-| Consumer confusion about which module to import | Low | README clearly documents module boundaries |
+| Risk                                            | Likelihood      | Mitigation                                               |
+| ----------------------------------------------- | --------------- | -------------------------------------------------------- |
+| Import path confusion                           | Low             | Import paths don't change — verified                     |
+| go.work conflicts with CI                       | Medium          | Test CI with GOWORK=off and with go.work                 |
+| Version tag complexity                          | Medium          | Automate with release script                             |
+| testify in root go.mod                          | High (existing) | Replace with ginkgo/gomega (separate task, not blocking) |
+| Consumer confusion about which module to import | Low             | README clearly documents module boundaries               |
 
 ---
 
