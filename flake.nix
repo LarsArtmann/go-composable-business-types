@@ -3,98 +3,131 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    flake-utils.url = "github:numtide/flake-utils";
+    systems.url = "github:nix-systems/default";
   };
 
   outputs =
     {
       self,
       nixpkgs,
-      flake-utils,
+      systems,
     }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-        goEnv = [
-          "GOEXPERIMENT=jsonv2"
-          "GOPRIVATE=github.com/LarsArtmann/*,github.com/larsartmann/*"
-          "GONOSUMCHECK=github.com/LarsArtmann/*,github.com/larsartmann/*"
-          "GONOSUMDB=github.com/LarsArtmann/*,github.com/larsartmann/*"
-        ];
-      in
-      {
-        devShells.default = pkgs.mkShell {
-          packages = with pkgs; [
-            go_1_26
-            golangci-lint
-            gofumpt
-            golines
-            gci
-          ];
+    let
+      eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
 
-          env = {
-            GOEXPERIMENT = "jsonv2";
-            GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
-            GONOSUMCHECK = "github.com/LarsArtmann/*,github.com/larsartmann/*";
-            GONOSUMDB = "github.com/LarsArtmann/*,github.com/larsartmann/*";
+      goEnvVars = {
+        GOEXPERIMENT = "jsonv2";
+        GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
+        GONOSUMCHECK = "github.com/LarsArtmann/*,github.com/larsartmann/*";
+        GONOSUMDB = "github.com/LarsArtmann/*,github.com/larsartmann/*";
+      };
+
+      goSrc = pkgs: pkgs.lib.fileset.toSource {
+        root = ./.;
+        fileset = pkgs.lib.fileset.unions [
+          ./go.mod
+          ./go.sum
+          ./go.work
+          ./actor
+          ./bounded
+          ./enums
+          ./importance
+          ./pkg
+          ./projectcore
+          ./scanutil
+          ./tag
+          ./temporal
+          ./testutil
+          ./types
+          ./validate
+          ./version
+          ./nanoid
+          ./locale
+          ./money
+          ./datapoint
+          ./examples
+        ];
+      };
+
+      mkGoCheck =
+        { pkgs, name, command }:
+        pkgs.runCommand name
+          {
+            nativeBuildInputs = [ pkgs.go_1_26 ];
+            src = goSrc pkgs;
+          }
+          ''
+            export HOME=$(mktemp -d)
+            export GOMODCACHE=$(mktemp -d)
+            ${pkgs.lib.concatLines (pkgs.lib.mapAttrsToList (k: v: "export ${k}=${v}") goEnvVars)}
+            cp -r $src/. .
+            chmod -R u+w .
+
+            go mod download
+            cd nanoid && go mod download && cd ..
+            cd locale && go mod download && cd ..
+            cd money && go mod download && cd ..
+            cd datapoint && go mod download && cd ..
+            cd examples && go mod download && cd ..
+
+            ${command}
+          '';
+    in
+    {
+      devShells = eachSystem (pkgs: {
+        default = pkgs.mkShell {
+          packages = builtins.attrValues {
+            inherit (pkgs)
+              go_1_26
+              golangci-lint
+              gofumpt
+              golines
+              gci
+              ;
+          };
+
+          env = goEnvVars // {
+            GOWORK = "off";
           };
         };
+      });
 
-        checks = {
-          build =
-            pkgs.runCommand "build-check"
-              {
-                nativeBuildInputs = [ pkgs.go_1_26 ];
-                src = ./.;
-              }
-              ''
-                export HOME=$(mktemp -d)
-                export GOMODCACHE=$(mktemp -d)
-                ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
-                cp -r $src/. .
-                chmod -R u+w .
-
-                # Download deps for each module
-                go mod download
-                cd nanoid && go mod download && cd ..
-                cd locale && go mod download && cd ..
-                cd money && go mod download && cd ..
-                cd datapoint && go mod download && cd ..
-                cd examples && go mod download && cd ..
-
-                # Build all modules via workspace
-                go build ./...
-                touch $out
-              '';
-
-          test =
-            pkgs.runCommand "test-check"
-              {
-                nativeBuildInputs = [ pkgs.go_1_26 ];
-                src = ./.;
-              }
-              ''
-                export HOME=$(mktemp -d)
-                export GOMODCACHE=$(mktemp -d)
-                ${builtins.concatStringsSep "\n" (map (e: "export ${e}") goEnv)}
-                cp -r $src/. .
-                chmod -R u+w .
-
-                # Download deps for each module
-                go mod download
-                cd nanoid && go mod download && cd ..
-                cd locale && go mod download && cd ..
-                cd money && go mod download && cd ..
-                cd datapoint && go mod download && cd ..
-                cd examples && go mod download && cd ..
-
-                # Test all modules via workspace
-                go test -race ./... 2>&1 | tee $out
-              '';
+      checks = eachSystem (pkgs: {
+        build = mkGoCheck {
+          inherit pkgs;
+          name = "build-check";
+          command = "go build ./... && touch $out";
         };
 
-        formatter = pkgs.nixfmt;
-      }
-    );
+        test = mkGoCheck {
+          inherit pkgs;
+          name = "test-check";
+          command = "go test -race ./... 2>&1 | tee $out";
+        };
+
+        lint = mkGoCheck {
+          inherit pkgs;
+          name = "lint-check";
+          command =
+            let
+              golangci-lint = pkgs.lib.getExe pkgs.golangci-lint;
+            in
+            "${golangci-lint} run ./... && touch $out";
+        };
+
+        format = pkgs.runCommand "format-check"
+          {
+            nativeBuildInputs = [ pkgs.nixfmt ];
+            src = pkgs.lib.fileset.toSource {
+              root = ./.;
+              fileset = pkgs.lib.fileset.intersection (pkgs.lib.fileset.gitTracked ./.) (pkgs.lib.fileset.fileFilter (file: file.hasExt "nix") ./.);
+            };
+          }
+          ''
+            nixfmt --check $src && touch $out
+          '';
+      });
+
+      formatter = eachSystem (pkgs: pkgs.nixfmt);
+    };
 }
