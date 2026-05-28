@@ -2,6 +2,10 @@ github.com/bojanz/currency v1.4.4 h1:EJjt1pZYR2BwBJxFQWXndAs/ZK56Lfs+ZBDLow8ISvs
 github.com/bojanz/currency v1.4.4/go.mod h1:hv7AAJ5jNRvE/SXaJe74uBPg6syV21imy4yKP7fi9GM=
 github.com/cockroachdb/apd/v3 v3.2.1 h1:U+8j7t0axsIgvQUqthuNm82HIrYXodOV2iWLWtEaIwg=
 github.com/cockroachdb/apd/v3 v3.2.1/go.mod h1:klXJcjp+FffLTHlhIG69tezTDvdP065naDsHzKhYSqc=
+github.com/larsartmann/go-composable-business-types v0.5.0 h1:gmnUIdcOyb4mEUEqZ18xjig5xn1C8+v7EPIvIoTm8n0=
+github.com/larsartmann/go-composable-business-types v0.5.0/go.mod h1:5oCDpAa5anTfhhKWoZpoPobITZi/AMKmz2PsBeJK4Oo=
+github.com/larsartmann/go-composable-business-types/locale v0.5.0 h1:VJpZCHNYETaTyJNCedQljyYWq0zNA1veGDL6jApaFlw=
+github.com/larsartmann/go-composable-business-types/locale v0.5.0/go.mod h1:+E3Xbb9rV60qe/1H6/AyCu30w6QiQt3P4sGLN7OaVHs=
 github.com/lib/pq v1.10.7 h1:p7ZhMD+KsSRozJr34udlUrhboJwWAgCg34+/ZZNvZZw=
 github.com/lib/pq v1.10.7/go.mod h1:AlVN5x4E4T544tWzH6hKfbfQvm3HdbOxrmggDNAPY9o=
 golang.org/x/text v0.37.0 h1:Cqjiwd9eSg8e0QAkyCaQTNHFIIzWtidPahFWR83rTrc=
