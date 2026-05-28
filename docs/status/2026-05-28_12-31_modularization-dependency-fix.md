@@ -21,14 +21,14 @@ The initial modularization (commit `f6c0943`) split the monolith into 6 modules 
 
 Every sub-module now correctly declares its dependencies:
 
-| Module    | Root Dep | Sibling Deps | External Deps | Replace Directives |
-| --------- | -------- | ------------ | ------------- | ------------------ |
-| **Root**  | — | — | go-branded-id, go-enum (tool), testify | None |
-| **nanoid** | v0.4.0 | — | sixafter/nanoid | root → ../ |
-| **locale** | v0.4.0 | — | golang.org/x/text | root → ../ |
-| **money** | v0.4.0 | locale | bojanz/currency | root → ../, locale → ../locale |
-| **datapoint** | v0.4.0 | nanoid | go-branded-id v0.3.0 | root → ../, nanoid → ../nanoid |
-| **examples** | v0.4.0 | nanoid, datapoint | go-branded-id v0.3.0 | root → ../, nanoid → ../nanoid, datapoint → ../datapoint |
+| Module        | Root Dep | Sibling Deps      | External Deps                          | Replace Directives                                       |
+| ------------- | -------- | ----------------- | -------------------------------------- | -------------------------------------------------------- |
+| **Root**      | —        | —                 | go-branded-id, go-enum (tool), testify | None                                                     |
+| **nanoid**    | v0.4.0   | —                 | sixafter/nanoid                        | root → ../                                               |
+| **locale**    | v0.4.0   | —                 | golang.org/x/text                      | root → ../                                               |
+| **money**     | v0.4.0   | locale            | bojanz/currency                        | root → ../, locale → ../locale                           |
+| **datapoint** | v0.4.0   | nanoid            | go-branded-id v0.3.0                   | root → ../, nanoid → ../nanoid                           |
+| **examples**  | v0.4.0   | nanoid, datapoint | go-branded-id v0.3.0                   | root → ../, nanoid → ../nanoid, datapoint → ../datapoint |
 
 ### 2. go-branded-id Version Alignment
 
@@ -52,14 +52,14 @@ Every sub-module now correctly declares its dependencies:
 
 ### 6. Full Verification Matrix
 
-| Check | Root | nanoid | locale | money | datapoint | examples |
-| ----- | ---- | ------ | ------ | ----- | --------- | -------- |
-| `go build ./...` | PASS | PASS | PASS | PASS | PASS | PASS |
-| `go test -race ./...` | 13/13 PASS | PASS | PASS | PASS | PASS | 0 tests |
-| `go vet ./...` | CLEAN | CLEAN | CLEAN | CLEAN | CLEAN | CLEAN |
-| `go mod tidy` | CLEAN | CLEAN | CLEAN | CLEAN | CLEAN | CLEAN |
-| `go mod verify` | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED | VERIFIED |
-| Coverage | 89.0% | 100.0% | 88.1% | 90.0% | 90.1% | N/A |
+| Check                 | Root       | nanoid   | locale   | money    | datapoint | examples |
+| --------------------- | ---------- | -------- | -------- | -------- | --------- | -------- |
+| `go build ./...`      | PASS       | PASS     | PASS     | PASS     | PASS      | PASS     |
+| `go test -race ./...` | 13/13 PASS | PASS     | PASS     | PASS     | PASS      | 0 tests  |
+| `go vet ./...`        | CLEAN      | CLEAN    | CLEAN    | CLEAN    | CLEAN     | CLEAN    |
+| `go mod tidy`         | CLEAN      | CLEAN    | CLEAN    | CLEAN    | CLEAN     | CLEAN    |
+| `go mod verify`       | VERIFIED   | VERIFIED | VERIFIED | VERIFIED | VERIFIED  | VERIFIED |
+| Coverage              | 89.0%      | 100.0%   | 88.1%    | 90.0%    | 90.1%     | N/A      |
 
 ---
 
@@ -68,6 +68,7 @@ Every sub-module now correctly declares its dependencies:
 ### 1. Replace Directive Scaffolding
 
 The `replace` directives in sub-modules are **temporary scaffolding** needed because the published root v0.4.0 still contains all packages. They should be removed once:
+
 - A new root version is published that no longer includes nanoid/, locale/, money/, datapoint/, examples/
 - Sub-modules get their first versioned git tags (e.g., `nanoid/v0.5.0`)
 
@@ -96,6 +97,7 @@ The modularization branch has not been merged. Requires review and approval.
 ### 3. Replace `testify` with `ginkgo/gomega`
 
 3 test files in root still use `github.com/stretchr/testify` (banned per policy):
+
 - `importance/importance_test.go`
 - `tag/tag_test.go`
 - `projectcore/project_core_test.go`
@@ -103,6 +105,7 @@ The modularization branch has not been merged. Requires review and approval.
 ### 4. CI Pipeline for Multi-Module
 
 GitHub Actions workflow needs:
+
 - Per-module test jobs (or a loop over modules)
 - Per-module lint jobs
 - Multi-module release workflow
@@ -136,6 +139,7 @@ Root module go.mod still has `testify` and `go-enum` tool dependency. After remo
 **Severity:** CRITICAL
 
 The initial modularization (commit `f6c0943`) created sub-module go.mod files that:
+
 - Imported `pkg/errors`, `scanutil`, `testutil`, `enums`, `actor`, `types`, `temporal` from root — **without declaring the root module as a dependency**
 - Imported `locale` from locale module — **without declaring locale as a dependency**
 - Only "worked" because `go.work` accidentally provided the modules locally
@@ -185,33 +189,33 @@ Root was 1.26.3, sub-modules were 1.26.2. Fixed to 1.26.3 everywhere.
 
 ## F) Top 25 Things We Should Get Done Next
 
-| # | Priority | Task | Impact | Effort |
-|---|----------|------|--------|--------|
-| 1 | **P0** | Merge `modularize/split-modules` into `master` | Unblocks all downstream work | Low |
-| 2 | **P0** | Fix GitHub Actions billing/spending limit | Restores CI | External |
-| 3 | **P0** | Update CI workflow for multi-module testing | Ensures all modules tested | Medium |
-| 4 | **P1** | Create first versioned release (v0.5.0) with sub-module tags | Enables external consumers | Low |
-| 5 | **P1** | Remove `replace` directives after new root release | Eliminates scaffolding tech debt | Low |
-| 6 | **P1** | Update flake.nix for multi-module build/test | Restores Nix CI | Medium |
-| 7 | **P1** | Replace testify with ginkgo/gomega (3 files) | Policy compliance | Medium |
-| 8 | **P1** | Move nanoid-specific errors from `pkg/errors` to nanoid module | Cleaner dep isolation | Medium |
-| 9 | **P2** | Add compilation test for examples module | Catches build regressions | Low |
-| 10 | **P2** | Write integration test verifying external consumer imports | Validates consumer experience | Medium |
-| 11 | **P2** | Update README.md to reflect multi-module structure | Consumer documentation | Low |
-| 12 | **P2** | Verify pkg.go.dev renders all sub-modules correctly | Documentation | Low |
-| 13 | **P2** | Add `go work edit -fmt` to CI pipeline | Prevents go.work drift | Low |
-| 14 | **P2** | Create release automation script (justfile → flake.nix) | Operational | Medium |
-| 15 | **P3** | Improve `pkg/errors` coverage to 95%+ (87.5% → 95%) | Quality | Low |
-| 16 | **P3** | Improve `scanutil` coverage to 95%+ (79.2% → 95%) | Quality | Low |
-| 17 | **P3** | Improve `version` coverage to 95%+ (81.0% → 95%) | Quality | Low |
-| 18 | **P3** | Improve `projectcore` coverage to 95%+ (82.9% → 95%) | Quality | Low |
-| 19 | **P3** | Consider extracting `testutil` to its own module | Cleaner test dep isolation | Medium |
-| 20 | **P3** | Add `//go:build` constraints if any platform-specific code exists | Correctness | Low |
-| 21 | **P3** | Add benchmark suite for hot paths (nanoid generation, parsing) | Performance visibility | Medium |
-| 22 | **P3** | Add CHANGELOG entry for v0.5.0 modularization release | Documentation | Low |
-| 23 | **P4** | Evaluate `internal/` packages for cross-module access safety | Correctness | Low |
-| 24 | **P4** | Set up Dependabot for sub-module go.mod files | Security | Low |
-| 25 | **P4** | Add pre-commit hook for `go mod tidy` verification | Developer experience | Low |
+| #   | Priority | Task                                                              | Impact                           | Effort   |
+| --- | -------- | ----------------------------------------------------------------- | -------------------------------- | -------- |
+| 1   | **P0**   | Merge `modularize/split-modules` into `master`                    | Unblocks all downstream work     | Low      |
+| 2   | **P0**   | Fix GitHub Actions billing/spending limit                         | Restores CI                      | External |
+| 3   | **P0**   | Update CI workflow for multi-module testing                       | Ensures all modules tested       | Medium   |
+| 4   | **P1**   | Create first versioned release (v0.5.0) with sub-module tags      | Enables external consumers       | Low      |
+| 5   | **P1**   | Remove `replace` directives after new root release                | Eliminates scaffolding tech debt | Low      |
+| 6   | **P1**   | Update flake.nix for multi-module build/test                      | Restores Nix CI                  | Medium   |
+| 7   | **P1**   | Replace testify with ginkgo/gomega (3 files)                      | Policy compliance                | Medium   |
+| 8   | **P1**   | Move nanoid-specific errors from `pkg/errors` to nanoid module    | Cleaner dep isolation            | Medium   |
+| 9   | **P2**   | Add compilation test for examples module                          | Catches build regressions        | Low      |
+| 10  | **P2**   | Write integration test verifying external consumer imports        | Validates consumer experience    | Medium   |
+| 11  | **P2**   | Update README.md to reflect multi-module structure                | Consumer documentation           | Low      |
+| 12  | **P2**   | Verify pkg.go.dev renders all sub-modules correctly               | Documentation                    | Low      |
+| 13  | **P2**   | Add `go work edit -fmt` to CI pipeline                            | Prevents go.work drift           | Low      |
+| 14  | **P2**   | Create release automation script (justfile → flake.nix)           | Operational                      | Medium   |
+| 15  | **P3**   | Improve `pkg/errors` coverage to 95%+ (87.5% → 95%)               | Quality                          | Low      |
+| 16  | **P3**   | Improve `scanutil` coverage to 95%+ (79.2% → 95%)                 | Quality                          | Low      |
+| 17  | **P3**   | Improve `version` coverage to 95%+ (81.0% → 95%)                  | Quality                          | Low      |
+| 18  | **P3**   | Improve `projectcore` coverage to 95%+ (82.9% → 95%)              | Quality                          | Low      |
+| 19  | **P3**   | Consider extracting `testutil` to its own module                  | Cleaner test dep isolation       | Medium   |
+| 20  | **P3**   | Add `//go:build` constraints if any platform-specific code exists | Correctness                      | Low      |
+| 21  | **P3**   | Add benchmark suite for hot paths (nanoid generation, parsing)    | Performance visibility           | Medium   |
+| 22  | **P3**   | Add CHANGELOG entry for v0.5.0 modularization release             | Documentation                    | Low      |
+| 23  | **P4**   | Evaluate `internal/` packages for cross-module access safety      | Correctness                      | Low      |
+| 24  | **P4**   | Set up Dependabot for sub-module go.mod files                     | Security                         | Low      |
+| 25  | **P4**   | Add pre-commit hook for `go mod tidy` verification                | Developer experience             | Low      |
 
 ---
 
@@ -231,26 +235,26 @@ The current `replace` directives in sub-module go.mod files exist because the pu
 
 ## Project Metrics
 
-| Metric | Value |
-|--------|-------|
-| Go version | 1.26.3 |
-| Modules | 6 (root + 5 sub-modules) |
-| Packages | 18 (13 root + 5 sub-module) |
-| Go source files | 53 |
-| Lines of code | ~10,933 |
-| Test suites | 19 (16 with tests, 3 no-test packages) |
-| Test coverage (root) | 89.0% |
-| Test coverage (nanoid) | 100.0% |
-| Test coverage (locale) | 88.1% |
-| Test coverage (money) | 90.0% |
-| Test coverage (datapoint) | 90.1% |
-| External deps (root) | go-branded-id, go-enum, testify |
-| External deps (nanoid) | sixafter/nanoid |
-| External deps (locale) | golang.org/x/text |
-| External deps (money) | bojanz/currency |
-| External deps (datapoint) | go-branded-id |
-| Replace directives | 8 total across 5 sub-modules |
-| License | MIT |
+| Metric                    | Value                                  |
+| ------------------------- | -------------------------------------- |
+| Go version                | 1.26.3                                 |
+| Modules                   | 6 (root + 5 sub-modules)               |
+| Packages                  | 18 (13 root + 5 sub-module)            |
+| Go source files           | 53                                     |
+| Lines of code             | ~10,933                                |
+| Test suites               | 19 (16 with tests, 3 no-test packages) |
+| Test coverage (root)      | 89.0%                                  |
+| Test coverage (nanoid)    | 100.0%                                 |
+| Test coverage (locale)    | 88.1%                                  |
+| Test coverage (money)     | 90.0%                                  |
+| Test coverage (datapoint) | 90.1%                                  |
+| External deps (root)      | go-branded-id, go-enum, testify        |
+| External deps (nanoid)    | sixafter/nanoid                        |
+| External deps (locale)    | golang.org/x/text                      |
+| External deps (money)     | bojanz/currency                        |
+| External deps (datapoint) | go-branded-id                          |
+| Replace directives        | 8 total across 5 sub-modules           |
+| License                   | MIT                                    |
 
 ---
 

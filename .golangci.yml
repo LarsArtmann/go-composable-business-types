@@ -1,375 +1,372 @@
 version: "2"
 run:
-    timeout: 5m
-    go: 1.26.3
-    build-tags:
-        - goexperiment.arenas
-        - goexperiment.goroutineleakprofile
-        - goexperiment.jsonv2
-        - goexperiment.runtimesecret
-        - goexperiment.simd
-    allow-parallel-runners: true
-    allow-serial-runners: true
-    tests: true
-    concurrency: 4
+  timeout: 5m
+  go: 1.26.3
+  build-tags:
+    - goexperiment.arenas
+    - goexperiment.goroutineleakprofile
+    - goexperiment.jsonv2
+    - goexperiment.runtimesecret
+    - goexperiment.simd
+  allow-parallel-runners: true
+  allow-serial-runners: true
+  tests: true
+  concurrency: 4
 output:
-    formats: {}
+  formats: {}
 linters:
-    enable:
-        - arangolint
-        - asasalint
-        - asciicheck
-        - bidichk
-        - bodyclose
-        - canonicalheader
-        - containedctx
-        - contextcheck
-        - copyloopvar
-        - cyclop
-        - decorder
-        - depguard
-        - dogsled
-        - dupl
-        - dupword
-        - durationcheck
-        - embeddedstructfieldcheck
-        - err113
-        - errchkjson
-        - errname
-        - errorlint
-        - exhaustive
-        - exhaustruct
-        - exptostd
-        - fatcontext
-        - forbidigo
-        - forcetypeassert
-        - funlen
-        - ginkgolinter
-        - gocheckcompilerdirectives
-        - gochecknoglobals
-        - gochecknoinits
-        - gochecksumtype
-        - gocognit
-        - goconst
-        - gocritic
-        - gocyclo
-        - godoclint
-        - godot
-        - godox
-        - goheader
-        - gomoddirectives
-        - gomodguard_v2
-        - goprintffuncname
-        - gosec
-        - gosmopolitan
-        - grouper
-        - iface
-        - importas
-        - inamedparam
-        - interfacebloat
-        - intrange
-        - iotamixing
-        - ireturn
-        - loggercheck
-        - maintidx
-        - makezero
-        - mirror
-        - misspell
-        - mnd
-        - modernize
-        - musttag
-        - nakedret
-        - nestif
-        - nilerr
-        - nilnesserr
-        - nilnil
-        - nlreturn
-        - noctx
-        - noinlineerr
-        - nolintlint
-        - nonamedreturns
-        - paralleltest
-        - perfsprint
-        - prealloc
-        - predeclared
-        - promlinter
-        - protogetter
-        - reassign
-        - recvcheck
-        - revive
-        - rowserrcheck
-        - sloglint
-        - spancheck
-        - sqlclosecheck
-        - tagalign
-        - tagliatelle
-        - testableexamples
-        - testifylint
-        - testpackage
-        - thelper
-        - tparallel
-        - unconvert
-        - unparam
-        - unqueryvet
-        - usestdlibvars
-        - usetesting
-        - varnamelen
-        - wastedassign
-        - whitespace
-        - wrapcheck
-        - wsl_v5
-        - zerologlint
-    default: standard
-    settings:
-        cyclop:
-            max-complexity: 40
-        depguard:
-            rules:
-                main:
-                    allow:
-                        - $gostd
-                        - github.com/larsartmann/go-composable-business-types
-                        - github.com/larsartmann/go-branded-id
-                        - github.com/abice/go-enum
-                        - github.com/bojanz/currency
-                        - github.com/sixafter/nanoid
-                        - github.com/stretchr/testify
-                        - golang.org/x/text
-                test:
-                    allow:
-                        - $gostd
-                        - github.com/larsartmann/go-composable-business-types
-                        - github.com/larsartmann/go-branded-id
-                        - github.com/abice/go-enum
-                        - github.com/bojanz/currency
-                        - github.com/sixafter/nanoid
-                        - github.com/stretchr/testify
-                        - golang.org/x/text
-        exhaustruct:
-            exclude:
-                - .+test.*
-                - .+Case
-                - .+projectcore\.ProjectCore
-                - .+projectcore\.Alias
-        funlen:
-            lines: 80
-            statements: 60
-        goconst:
-            min-len: 3
-            min-occurrences: 4
-        gocritic:
-            disabled-checks:
-                - dupImport
-                - ifElseChain
-                - octalLiteral
-                - whyNoLint
-        gomoddirectives:
-            replace-local: true
-        ireturn:
-            allow:
-                - anon
-                - error
-                - empty
-                - stdlib
-                - github.com/larsartmann/go-composable-business-types
-        mnd:
-            ignored-numbers:
-                - "0"
-                - "1"
-                - "2"
-                - "8"
-                - "10"
-                - "21"
-                - "100"
-                - "128"
-                - "256"
-                - "1000"
-        revive:
-            rules:
-                - disabled: true
-                  name: exported
-                - disabled: true
-                  name: package-comments
-        tagliatelle:
-            case:
-                rules:
-                    json: camel
-        varnamelen:
-            ignore-decls:
-                - t *testing.T
-                - t testing.TB
-                - err error
-                - ok bool
-                - id NanoID
-                - id string
-                - dp DataPoint
-                - bs BoundedString
-            ignore-names:
-                - tt
-                - tc
-                - bs
-                - id
-                - ok
-                - dp
-                - ck
-                - ak
-                - v
-                - m
-                - p
-                - "n"
-                - s
-                - t
-                - b
-                - e
-                - i
-                - k
-                - c
-                - r
-                - w
-                - bj
-                - a
-                - u
-                - d
-            min-name-length: 2
-        wrapcheck:
-            ignore-package-globs:
-                - github.com/larsartmann/go-composable-business-types/*
-    exclusions:
-        generated: lax
+  enable:
+    - arangolint
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - canonicalheader
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - embeddedstructfieldcheck
+    - err113
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exhaustruct
+    - exptostd
+    - fatcontext
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gochecksumtype
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godoclint
+    - godot
+    - godox
+    - goheader
+    - gomoddirectives
+    - gomodguard_v2
+    - goprintffuncname
+    - gosec
+    - gosmopolitan
+    - grouper
+    - iface
+    - importas
+    - inamedparam
+    - interfacebloat
+    - intrange
+    - iotamixing
+    - ireturn
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - misspell
+    - mnd
+    - modernize
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnesserr
+    - nilnil
+    - nlreturn
+    - noctx
+    - noinlineerr
+    - nolintlint
+    - nonamedreturns
+    - paralleltest
+    - perfsprint
+    - prealloc
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - tagalign
+    - tagliatelle
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - unqueryvet
+    - usestdlibvars
+    - usetesting
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl_v5
+    - zerologlint
+  default: standard
+  settings:
+    cyclop:
+      max-complexity: 40
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/larsartmann/go-composable-business-types
+            - github.com/larsartmann/go-branded-id
+            - github.com/abice/go-enum
+            - github.com/bojanz/currency
+            - github.com/sixafter/nanoid
+            - github.com/stretchr/testify
+            - golang.org/x/text
+        test:
+          allow:
+            - $gostd
+            - github.com/larsartmann/go-composable-business-types
+            - github.com/larsartmann/go-branded-id
+            - github.com/abice/go-enum
+            - github.com/bojanz/currency
+            - github.com/sixafter/nanoid
+            - github.com/stretchr/testify
+            - golang.org/x/text
+    exhaustruct:
+      exclude:
+        - .+test.*
+        - .+Case
+        - .+projectcore\.ProjectCore
+        - .+projectcore\.Alias
+    funlen:
+      lines: 80
+      statements: 60
+    goconst:
+      min-len: 3
+      min-occurrences: 4
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    gomoddirectives:
+      replace-local: true
+    ireturn:
+      allow:
+        - anon
+        - error
+        - empty
+        - stdlib
+        - github.com/larsartmann/go-composable-business-types
+    mnd:
+      ignored-numbers:
+        - "0"
+        - "1"
+        - "2"
+        - "8"
+        - "10"
+        - "21"
+        - "100"
+        - "128"
+        - "256"
+        - "1000"
+    revive:
+      rules:
+        - disabled: true
+          name: exported
+        - disabled: true
+          name: package-comments
+    tagliatelle:
+      case:
         rules:
-            - path: _test\.go
-              linters:
-                - err113
-                - exhaustruct
-                - forcetypeassert
-                - gochecknoglobals
-                - gochecknoinits
-                - goconst
-                - gocritic
-                - wrapcheck
-                - funlen
-                - gocognit
-                - godoclint
-                - noinlineerr
-                - nilnil
-                - mnd
-                - gosmopolitan
-                - gosec
-                - testpackage
-                - paralleltest
-                - tparallel
-                - unconvert
-                - inamedparam
-                - predeclared
-                - iface
-                - thelper
-                - ireturn
-                - nilnil
-                - gosec
-                - musttag
-            - path: examples/
-              linters:
-                - err113
-                - exhaustruct
-                - tagliatelle
-                - godoclint
-                - gosec
-                - wrapcheck
-                - varnamelen
-                - forbidigo
-                - mnd
-                - funlen
-                - gochecknoglobals
-                - gochecknoinits
-                - nonamedreturns
-                - noinlineerr
-            - text: exported:.*stutters
-              linters:
-                - revive
-            - path: importance/
-              linters:
-                - mnd
-            - path: enums/
-              linters:
-                - recvcheck
-            - path: version/
-              linters:
-                - gochecknoglobals
-            - path: locale/
-              linters:
-                - gochecknoglobals
-            - path: programminglanguage/
-              linters:
-                - gochecknoglobals
-            - path: testutil/
-              linters:
-                - iface
-                - thelper
-            - path: pkg/errors/
-              linters:
-                - godoclint
-                - revive
-            - path: datapoint/
-              linters:
-                - recvcheck
-                - ireturn
-                - musttag
-            - path: importance/
-              linters:
-                - recvcheck
-            - path: tag/
-              linters:
-                - recvcheck
-            - path: locale/
-              linters:
-                - nilnil
-            - path: types/
-              linters:
-                - nilnil
-            - path: types/
-              linters:
-                - recvcheck
-            - path: bounded/
-              linters:
-                - recvcheck
-            - path: locale/
-              linters:
-                - recvcheck
-            - path: nanoid/
-              linters:
-                - recvcheck
-            - path: temporal/
-              linters:
-                - recvcheck
-            - path: datapoint/ - revive
-              text: redefines-builtin-id
-              linters:
-                - recvcheck
-            - path: scanutil/
-              linters:
-                - nilnil
-            - path: _test\.go
-              text: unused
-              linters:
-                - unused
-        paths:
-            - \.gen\.go$
-            - _enum\.go$
-            - _templ\.go$
-            - enums/enums_enum\.go
-            - vendor/
+          json: camel
+    varnamelen:
+      ignore-decls:
+        - t *testing.T
+        - t testing.TB
+        - err error
+        - ok bool
+        - id NanoID
+        - id string
+        - dp DataPoint
+        - bs BoundedString
+      ignore-names:
+        - tt
+        - tc
+        - bs
+        - id
+        - ok
+        - dp
+        - ck
+        - ak
+        - v
+        - m
+        - p
+        - "n"
+        - s
+        - t
+        - b
+        - e
+        - i
+        - k
+        - c
+        - r
+        - w
+        - bj
+        - a
+        - u
+        - d
+      min-name-length: 2
+    wrapcheck:
+      ignore-package-globs:
+        - github.com/larsartmann/go-composable-business-types/*
+  exclusions:
+    generated: lax
+    rules:
+      - path: _test\.go
+        linters:
+          - err113
+          - exhaustruct
+          - forcetypeassert
+          - gochecknoglobals
+          - gochecknoinits
+          - goconst
+          - gocritic
+          - wrapcheck
+          - funlen
+          - gocognit
+          - godoclint
+          - noinlineerr
+          - nilnil
+          - mnd
+          - gosmopolitan
+          - gosec
+          - testpackage
+          - paralleltest
+          - tparallel
+          - unconvert
+          - inamedparam
+          - predeclared
+          - iface
+          - thelper
+          - ireturn
+          - nilnil
+          - gosec
+          - musttag
+      - path: examples/
+        linters:
+          - err113
+          - exhaustruct
+          - tagliatelle
+          - godoclint
+          - gosec
+          - wrapcheck
+          - varnamelen
+          - forbidigo
+          - mnd
+          - funlen
+          - gochecknoglobals
+          - gochecknoinits
+          - nonamedreturns
+          - noinlineerr
+      - text: exported:.*stutters
+        linters:
+          - revive
+      - path: importance/
+        linters:
+          - mnd
+      - path: enums/
+        linters:
+          - recvcheck
+      - path: version/
+        linters:
+          - gochecknoglobals
+      - path: locale/
+        linters:
+          - gochecknoglobals
+      - path: programminglanguage/
+        linters:
+          - gochecknoglobals
+      - path: testutil/
+        linters:
+          - iface
+          - thelper
+      - path: pkg/errors/
+        linters:
+          - godoclint
+          - revive
+      - path: datapoint/
+        linters:
+          - recvcheck
+          - ireturn
+          - musttag
+      - path: importance/
+        linters:
+          - recvcheck
+      - path: tag/
+        linters:
+          - recvcheck
+      - path: locale/
+        linters:
+          - nilnil
+      - path: types/
+        linters:
+          - nilnil
+      - path: types/
+        linters:
+          - recvcheck
+      - path: bounded/
+        linters:
+          - recvcheck
+      - path: locale/
+        linters:
+          - recvcheck
+      - path: nanoid/
+        linters:
+          - recvcheck
+      - path: temporal/
+        linters:
+          - recvcheck
+      - path: datapoint/ - revive
+        text: redefines-builtin-id
+        linters:
+          - recvcheck
+      - path: scanutil/
+        linters:
+          - nilnil
+      - path: _test\.go
+        text: unused
+        linters:
+          - unused
+    paths:
+      - \.gen\.go$
+      - _enum\.go$
+      - _templ\.go$
+      - enums/enums_enum\.go
+      - vendor/
 formatters:
-    enable:
-        - gci
-        - goimports
-        - gofumpt
-        - golines
-    settings:
-        golines:
-            max-len: 120
-    exclusions:
-        generated: lax
-        paths:
-            - _enum\.go$
-            - _templ\.go$
+  enable:
+    - gci
+    - goimports
+    - gofumpt
+    - golines
+  settings:
+    golines:
+      max-len: 120
+  exclusions:
+    generated: lax
+    paths:
+      - _enum\.go$
+      - _templ\.go$
 issues: {}

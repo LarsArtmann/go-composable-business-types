@@ -18,50 +18,50 @@ Completed a comprehensive cleanup sprint after the modularization (v0.4.0 → v0
 
 ## a) FULLY DONE ✅
 
-| # | Item | Details |
-|---|---|---|
-| 1 | Archive pruning | Removed 20 outdated status reports from `docs/status/archive/` — 6,529 lines of stale documentation. Git history preserved. |
-| 2 | golangci-lint fix — scanutil | `scanutil/scanutil.go:222` — replaced dynamic `fmt.Errorf` with `pkgerrors.WrapScan` + static sentinel `errCannotScan`. |
-| 3 | golangci-lint fix — types | `types/types.go:182` — `URL.extractField` now properly checks `Parse()` error instead of ignoring it with `_`. |
-| 4 | Deduplication — tag/tag.go | `NewTagsFromString` now delegates to `NewTags` helper. Eliminated duplicate loop body. |
-| 5 | Deduplication — types_time_test.go | `TestDurationUnmarshalJSONErrors` refactored from 2 subtests to table-driven test. |
-| 6 | jscpd configuration | Created `.jscpd.json` with threshold 0.8, excluding docs/status/, docs/GITHUB_SETUP.md, and `*_test.go` files. |
-| 7 | .gitattributes | Added `reports/** linguist-generated` to exclude generated reports from language stats. |
-| 8 | coverage.out relocation | Moved to `reports/coverage.out` per go-structure-linter recommendation. |
-| 9 | flake.nix modernization | Updated formatting to explicit attribute set syntax, updated nixpkgs revision. |
-| 10 | Test coverage improvement | 89.0% → 91.5% (+2.5pp) across all packages. |
-| 11 | All tests passing | `go test -race ./...` passes for all 6 modules. |
-| 12 | All builds passing | `go build ./...` passes for all 6 modules. |
-| 13 | go vet clean | Zero issues across entire workspace. |
-| 14 | go mod verify | All modules verified. |
-| 15 | golangci-lint | 0 issues across entire codebase. |
-| 16 | art-dupl | 0 clone groups (was 2). |
-| 17 | jscpd | 0 clones (was 16 affecting 17 files). |
-| 18 | hierarchical-errors CLI | 0 violations (direct CLI run). |
-| 19 | Branching-flow context | ✅ No semantic context issues detected (327 functions checked). |
-| 20 | go-structure-linter | Clean for all **auto-fixable** rules. Only non-auto-fixable suggestion remains (`internal-directory`). |
+| #   | Item                               | Details                                                                                                                     |
+| --- | ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Archive pruning                    | Removed 20 outdated status reports from `docs/status/archive/` — 6,529 lines of stale documentation. Git history preserved. |
+| 2   | golangci-lint fix — scanutil       | `scanutil/scanutil.go:222` — replaced dynamic `fmt.Errorf` with `pkgerrors.WrapScan` + static sentinel `errCannotScan`.     |
+| 3   | golangci-lint fix — types          | `types/types.go:182` — `URL.extractField` now properly checks `Parse()` error instead of ignoring it with `_`.              |
+| 4   | Deduplication — tag/tag.go         | `NewTagsFromString` now delegates to `NewTags` helper. Eliminated duplicate loop body.                                      |
+| 5   | Deduplication — types_time_test.go | `TestDurationUnmarshalJSONErrors` refactored from 2 subtests to table-driven test.                                          |
+| 6   | jscpd configuration                | Created `.jscpd.json` with threshold 0.8, excluding docs/status/, docs/GITHUB_SETUP.md, and `*_test.go` files.              |
+| 7   | .gitattributes                     | Added `reports/** linguist-generated` to exclude generated reports from language stats.                                     |
+| 8   | coverage.out relocation            | Moved to `reports/coverage.out` per go-structure-linter recommendation.                                                     |
+| 9   | flake.nix modernization            | Updated formatting to explicit attribute set syntax, updated nixpkgs revision.                                              |
+| 10  | Test coverage improvement          | 89.0% → 91.5% (+2.5pp) across all packages.                                                                                 |
+| 11  | All tests passing                  | `go test -race ./...` passes for all 6 modules.                                                                             |
+| 12  | All builds passing                 | `go build ./...` passes for all 6 modules.                                                                                  |
+| 13  | go vet clean                       | Zero issues across entire workspace.                                                                                        |
+| 14  | go mod verify                      | All modules verified.                                                                                                       |
+| 15  | golangci-lint                      | 0 issues across entire codebase.                                                                                            |
+| 16  | art-dupl                           | 0 clone groups (was 2).                                                                                                     |
+| 17  | jscpd                              | 0 clones (was 16 affecting 17 files).                                                                                       |
+| 18  | hierarchical-errors CLI            | 0 violations (direct CLI run).                                                                                              |
+| 19  | Branching-flow context             | ✅ No semantic context issues detected (327 functions checked).                                                             |
+| 20  | go-structure-linter                | Clean for all **auto-fixable** rules. Only non-auto-fixable suggestion remains (`internal-directory`).                      |
 
 ---
 
 ## b) PARTIALLY DONE
 
-| # | Item | What's done | What remains |
-|---|---|---|---|
-| 1 | hierarchical-errors buildflow step | Direct CLI run: 0 violations. `branching-flow context --exit-code=true`: exit 0. | Buildflow step reports 3 violations — buildflow uses a different/lagged version of the tool internally. Not fixable without buildflow update. |
-| 2 | go-structure-linter | All CRITICAL and HIGH auto-fixable rules pass. | `internal-directory` (MEDIUM) — suggestion to use `internal/` for private code. Not applicable to a library project (public API is the point). No auto-fix available. |
-| 3 | CI billing | GitHub Actions billing issue acknowledged. | Account-level fix needed — not a code issue. |
+| #   | Item                               | What's done                                                                      | What remains                                                                                                                                                          |
+| --- | ---------------------------------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | hierarchical-errors buildflow step | Direct CLI run: 0 violations. `branching-flow context --exit-code=true`: exit 0. | Buildflow step reports 3 violations — buildflow uses a different/lagged version of the tool internally. Not fixable without buildflow update.                         |
+| 2   | go-structure-linter                | All CRITICAL and HIGH auto-fixable rules pass.                                   | `internal-directory` (MEDIUM) — suggestion to use `internal/` for private code. Not applicable to a library project (public API is the point). No auto-fix available. |
+| 3   | CI billing                         | GitHub Actions billing issue acknowledged.                                       | Account-level fix needed — not a code issue.                                                                                                                          |
 
 ---
 
 ## c) NOT STARTED
 
-| # | Item | Priority | Notes |
-|---|---|---|---|
-| 1 | First release (v0.5.0) | **HIGH** | `just release 0.5.0` — creates 6 tags, pushes. Required to make sub-modules independently buildable. |
-| 2 | Replace testify with ginkgo/gomega | **HIGH** | 3 root test files still use testify (banned per how-to-golang policy). |
-| 3 | README.md multi-module update | **MEDIUM** | Import examples still reference single-module. |
-| 4 | architecture.d2 update | **MEDIUM** | Should show module boundaries. |
-| 5 | Per-module CI parallel jobs | **LOW** | CI currently runs sequentially. |
+| #   | Item                               | Priority   | Notes                                                                                                |
+| --- | ---------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------- |
+| 1   | First release (v0.5.0)             | **HIGH**   | `just release 0.5.0` — creates 6 tags, pushes. Required to make sub-modules independently buildable. |
+| 2   | Replace testify with ginkgo/gomega | **HIGH**   | 3 root test files still use testify (banned per how-to-golang policy).                               |
+| 3   | README.md multi-module update      | **MEDIUM** | Import examples still reference single-module.                                                       |
+| 4   | architecture.d2 update             | **MEDIUM** | Should show module boundaries.                                                                       |
+| 5   | Per-module CI parallel jobs        | **LOW**    | CI currently runs sequentially.                                                                      |
 
 ---
 
@@ -73,16 +73,16 @@ Completed a comprehensive cleanup sprint after the modularization (v0.4.0 → v0
 
 ## e) WHAT WE SHOULD IMPROVE
 
-| # | Area | Current State | Improvement |
-|---|---|---|---|
-| 1 | Banned dependency: testify | 3 root test files use it | Replace with ginkgo/gomega per policy |
-| 2 | Test coverage for scanutil | 79.2% — lowest | Add edge case tests |
-| 3 | Test coverage for testutil | 0.0% — no tests | Add basic tests for generic helpers |
-| 4 | Root indirect deps | x/text, x/crypto still indirect via go-enum tool chain | Acceptable for tool deps |
-| 5 | CI speed | Sequential per module | Could parallelize |
-| 6 | justfile → flake.nix migration | justfile still exists | Per AGENTS.md policy |
-| 7 | CONTRIBUTING.md | Doesn't exist | Document multi-module workflow |
-| 8 | First release | Not done | Unblocks independent sub-module builds |
+| #   | Area                           | Current State                                          | Improvement                            |
+| --- | ------------------------------ | ------------------------------------------------------ | -------------------------------------- |
+| 1   | Banned dependency: testify     | 3 root test files use it                               | Replace with ginkgo/gomega per policy  |
+| 2   | Test coverage for scanutil     | 79.2% — lowest                                         | Add edge case tests                    |
+| 3   | Test coverage for testutil     | 0.0% — no tests                                        | Add basic tests for generic helpers    |
+| 4   | Root indirect deps             | x/text, x/crypto still indirect via go-enum tool chain | Acceptable for tool deps               |
+| 5   | CI speed                       | Sequential per module                                  | Could parallelize                      |
+| 6   | justfile → flake.nix migration | justfile still exists                                  | Per AGENTS.md policy                   |
+| 7   | CONTRIBUTING.md                | Doesn't exist                                          | Document multi-module workflow         |
+| 8   | First release                  | Not done                                               | Unblocks independent sub-module builds |
 
 ---
 
@@ -90,45 +90,45 @@ Completed a comprehensive cleanup sprint after the modularization (v0.4.0 → v0
 
 ### Tier 1: Critical (Release Blockers)
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 1 | Release v0.5.0 — `just release 0.5.0` | 5 min | Unblocks independent sub-module builds |
-| 2 | Verify sub-modules build independently — `GOWORK=off go build ./...` in each | 10 min | Confirms modularization success |
-| 3 | Replace testify in root tests — ginkgo/gomega | 1-2 hr | Policy compliance (banned dep) |
-| 4 | Remove testify from root go.mod | 2 min | Eliminates banned dep entirely |
+| #   | Task                                                                         | Effort | Impact                                 |
+| --- | ---------------------------------------------------------------------------- | ------ | -------------------------------------- |
+| 1   | Release v0.5.0 — `just release 0.5.0`                                        | 5 min  | Unblocks independent sub-module builds |
+| 2   | Verify sub-modules build independently — `GOWORK=off go build ./...` in each | 10 min | Confirms modularization success        |
+| 3   | Replace testify in root tests — ginkgo/gomega                                | 1-2 hr | Policy compliance (banned dep)         |
+| 4   | Remove testify from root go.mod                                              | 2 min  | Eliminates banned dep entirely         |
 
 ### Tier 2: High Value
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 5 | Update README.md — multi-module structure, module boundary table | 30 min | Consumer-facing documentation |
-| 6 | Update architecture.d2 — module boundaries | 20 min | Visual architecture accuracy |
-| 7 | Add per-module coverage reporting | 30 min | Better coverage visibility |
-| 8 | scanutil coverage improvement — 79.2% → 90%+ | 30 min | Coverage |
-| 9 | testutil coverage — add basic tests | 1 hr | Coverage |
+| #   | Task                                                             | Effort | Impact                        |
+| --- | ---------------------------------------------------------------- | ------ | ----------------------------- |
+| 5   | Update README.md — multi-module structure, module boundary table | 30 min | Consumer-facing documentation |
+| 6   | Update architecture.d2 — module boundaries                       | 20 min | Visual architecture accuracy  |
+| 7   | Add per-module coverage reporting                                | 30 min | Better coverage visibility    |
+| 8   | scanutil coverage improvement — 79.2% → 90%+                     | 30 min | Coverage                      |
+| 9   | testutil coverage — add basic tests                              | 1 hr   | Coverage                      |
 
 ### Tier 3: Polish
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 10 | Migrate justfile to flake.nix | 1-2 hr | Build system consistency |
-| 11 | Add CONTRIBUTING.md — multi-module workflow | 30 min | Open-source readiness |
-| 12 | Add pkg.go.dev links per module | 15 min | Documentation |
-| 13 | Per-module CI parallel jobs | 1 hr | CI speed |
-| 14 | Add `go work sync` to CI | 10 min | CI robustness |
-| 15 | Add FIPS compliance note to nanoid README | 10 min | Documentation |
-| 16 | Version pinning in sub-module go.mod | 5 min | Reproducibility |
-| 17 | Add examples/README.md | 15 min | Documentation |
+| #   | Task                                        | Effort | Impact                   |
+| --- | ------------------------------------------- | ------ | ------------------------ |
+| 10  | Migrate justfile to flake.nix               | 1-2 hr | Build system consistency |
+| 11  | Add CONTRIBUTING.md — multi-module workflow | 30 min | Open-source readiness    |
+| 12  | Add pkg.go.dev links per module             | 15 min | Documentation            |
+| 13  | Per-module CI parallel jobs                 | 1 hr   | CI speed                 |
+| 14  | Add `go work sync` to CI                    | 10 min | CI robustness            |
+| 15  | Add FIPS compliance note to nanoid README   | 10 min | Documentation            |
+| 16  | Version pinning in sub-module go.mod        | 5 min  | Reproducibility          |
+| 17  | Add examples/README.md                      | 15 min | Documentation            |
 
 ### Tier 4: Nice to Have
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 18 | Add codecov per-module flags | 30 min | Coverage tracking |
-| 19 | Add dependabot/renovate config | 30 min | Maintenance |
-| 20 | Module boundary enforcement test | 1 hr | Architecture enforcement |
-| 21 | Add CHANGELOG.md entry for v0.5.0 | 15 min | Release notes |
-| 22 | Generate architecture.svg from updated .d2 | 5 min | Visual |
+| #   | Task                                       | Effort | Impact                   |
+| --- | ------------------------------------------ | ------ | ------------------------ |
+| 18  | Add codecov per-module flags               | 30 min | Coverage tracking        |
+| 19  | Add dependabot/renovate config             | 30 min | Maintenance              |
+| 20  | Module boundary enforcement test           | 1 hr   | Architecture enforcement |
+| 21  | Add CHANGELOG.md entry for v0.5.0          | 15 min | Release notes            |
+| 22  | Generate architecture.svg from updated .d2 | 5 min  | Visual                   |
 
 ---
 
@@ -140,10 +140,10 @@ Completed a comprehensive cleanup sprint after the modularization (v0.4.0 → v0
 
 **Options:**
 
-| Option | Pros | Cons |
-|---|---|---|
-| **Release now** | Consumers get dependency isolation immediately. Testify only affects root module tests. Can bump to v0.5.1 after testify removal. | First published version has a banned dep (cosmetic issue). |
-| **Release after testify removal** | Cleaner first impression. Policy-compliant from day one. | Delays value delivery. testify removal is 1-2 hr of work. |
+| Option                            | Pros                                                                                                                              | Cons                                                       |
+| --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| **Release now**                   | Consumers get dependency isolation immediately. Testify only affects root module tests. Can bump to v0.5.1 after testify removal. | First published version has a banned dep (cosmetic issue). |
+| **Release after testify removal** | Cleaner first impression. Policy-compliant from day one.                                                                          | Delays value delivery. testify removal is 1-2 hr of work.  |
 
 This is a **product/prioritization decision** I cannot make autonomously. Both approaches are valid.
 
@@ -153,27 +153,27 @@ This is a **product/prioritization decision** I cannot make autonomously. Both a
 
 ### Modified
 
-| File | Change |
-|---|---|
-| `flake.nix` | Formatting modernization, nixpkgs update |
-| `flake.lock` | Updated nixpkgs revision |
-| `scanutil/scanutil.go` | Dynamic error → static sentinel + WrapScan |
-| `types/types.go` | Error check for Parse() in extractField |
-| `tag/tag.go` | NewTagsFromString delegates to NewTags |
-| `types/types_time_test.go` | Subtests → table-driven test |
+| File                       | Change                                     |
+| -------------------------- | ------------------------------------------ |
+| `flake.nix`                | Formatting modernization, nixpkgs update   |
+| `flake.lock`               | Updated nixpkgs revision                   |
+| `scanutil/scanutil.go`     | Dynamic error → static sentinel + WrapScan |
+| `types/types.go`           | Error check for Parse() in extractField    |
+| `tag/tag.go`               | NewTagsFromString delegates to NewTags     |
+| `types/types_time_test.go` | Subtests → table-driven test               |
 
 ### Created
 
-| File | Purpose |
-|---|---|
+| File             | Purpose                             |
+| ---------------- | ----------------------------------- |
 | `.gitattributes` | Exclude reports from language stats |
-| `.jscpd.json` | Code duplication configuration |
+| `.jscpd.json`    | Code duplication configuration      |
 
 ### Deleted
 
-| Path | Files | Lines |
-|---|---|---|
-| `docs/status/archive/` | 20 | -6,529 |
+| Path                   | Files | Lines  |
+| ---------------------- | ----- | ------ |
+| `docs/status/archive/` | 20    | -6,529 |
 
 ---
 
@@ -207,4 +207,4 @@ go work sync
 
 ---
 
-*Generated: 2026-05-23 01:36*
+_Generated: 2026-05-23 01:36_

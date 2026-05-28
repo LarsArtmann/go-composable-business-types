@@ -132,6 +132,7 @@ use (
 ### Sub-module replace directives
 
 Each sub-module includes `replace` directives for:
+
 1. **Root module** (`go-composable-business-types => ../`) — required because the published root v0.4.0 still contains all packages, creating ambiguous imports with the local sub-module directories
 2. **Sibling modules** (e.g., `nanoid => ../nanoid`) — required for unpublished sub-modules that have no versioned tag
 
