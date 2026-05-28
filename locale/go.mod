@@ -1,5 +1,10 @@
 module github.com/larsartmann/go-composable-business-types/locale
 
-go 1.26.2
+go 1.26.3
 
-require golang.org/x/text v0.37.0
+require (
+	github.com/larsartmann/go-composable-business-types v0.4.0
+	golang.org/x/text v0.37.0
+)
+
+replace github.com/larsartmann/go-composable-business-types => ../

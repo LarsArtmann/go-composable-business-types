@@ -111,11 +111,13 @@ All edges point upward. No cycles. ✓
 
 ## 4. Replace / Workspace Strategy
 
-**Approach:** `go.work` at repo root. No `replace` directives in individual `go.mod` files.
+**Approach:** `go.work` at repo root + `replace` directives in sub-module go.mod files for local development.
+
+### go.work
 
 ```go
 // go.work
-go 1.26.2
+go 1.26.3
 
 use (
     .
@@ -127,12 +129,19 @@ use (
 )
 ```
 
+### Sub-module replace directives
+
+Each sub-module includes `replace` directives for:
+1. **Root module** (`go-composable-business-types => ../`) — required because the published root v0.4.0 still contains all packages, creating ambiguous imports with the local sub-module directories
+2. **Sibling modules** (e.g., `nanoid => ../nanoid`) — required for unpublished sub-modules that have no versioned tag
+
 **Rationale:**
 
-- Cleaner than per-module `replace` directives
-- Go tooling handles `go.work` natively
-- `go.work` is automatically ignored by consumers using published versions
-- Each module's `go.mod` stays clean — references the published version, overridden locally by `go.work`
+- `go.work` provides workspace-level module resolution for builds
+- `replace` directives in sub-modules ensure `go mod tidy` works correctly — without them, Go resolves against published v0.4.0 and sees ambiguous imports (same package in both root v0.4.0 and local sub-module)
+- `replace` directives are ignored by consumers of published modules — they only apply during local development
+- Once a new root version is published (without the split-out packages), the root `replace` can be removed
+- Once sub-modules get their first versioned tags, the sibling `replace` directives can be removed
 
 ---
 

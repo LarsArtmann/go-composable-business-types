@@ -27,8 +27,9 @@ Consumer import paths are identical to the single-module era. The split only aff
 # Build all modules (via workspace)
 go build ./...
 
-# Test all modules
+# Test all modules (per-module due to workspace structure)
 go test -race ./...
+for mod in nanoid locale money datapoint examples; do (cd $mod && go test -race ./...); done
 
 # Test a specific module
 go test -race ./nanoid/...
@@ -38,7 +39,10 @@ go test -race -coverprofile=coverage.out ./...
 
 # Tidy all modules
 go mod tidy  # root
-for mod in nanoid locale money datapoint examples; do (cd $mod && go mod tidy || true); done
+for mod in nanoid locale money datapoint examples; do (cd $mod && go mod tidy); done
+
+# Sync workspace
+go work sync
 
 # Lint
 golangci-lint run --fix
@@ -189,5 +193,5 @@ func main() {
 - Test coverage: 86.6% overall
 - Repo is transitioning from private to public
 - Modularization docs: `docs/modularization/` (PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md)
-- `go mod tidy` in sub-modules may fail due to bootstrapping (published root v0.4.0 still has those packages) — use `|| true` or tidy via workspace
+- `go mod tidy` in sub-modules requires `replace` directives (present in each sub-module go.mod) to resolve the root module locally. The published root v0.4.0 still contains all packages, creating ambiguous imports without `replace`.
 - **Updated:** 2026-05-22
