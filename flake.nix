@@ -86,9 +86,7 @@
               ;
           };
 
-          env = goEnvVars // {
-            GOWORK = "off";
-          };
+          env = goEnvVars;
         };
       });
 
@@ -96,13 +94,32 @@
         build = mkGoCheck {
           inherit pkgs;
           name = "build-check";
-          command = "go build ./... && touch $out";
+          command = ''
+            go build ./... || exit 1
+            (cd nanoid && go build ./...) || exit 1
+            (cd locale && go build ./...) || exit 1
+            (cd money && go build ./...) || exit 1
+            (cd datapoint && go build ./...) || exit 1
+            (cd examples && go build ./...) || exit 1
+            touch $out
+          '';
         };
 
         test = mkGoCheck {
           inherit pkgs;
           name = "test-check";
-          command = "go test -race ./... 2>&1 | tee $out";
+          command = ''
+            TEST_OUT=$(mktemp)
+            RC=0
+            go test -race ./... >> "$TEST_OUT" 2>&1 || RC=1
+            (cd nanoid && go test -race ./...) >> "$TEST_OUT" 2>&1 || RC=1
+            (cd locale && go test -race ./...) >> "$TEST_OUT" 2>&1 || RC=1
+            (cd money && go test -race ./...) >> "$TEST_OUT" 2>&1 || RC=1
+            (cd datapoint && go test -race ./...) >> "$TEST_OUT" 2>&1 || RC=1
+            cat "$TEST_OUT" > $out
+            rm "$TEST_OUT"
+            exit $RC
+          '';
         };
 
         lint = mkGoCheck {
@@ -112,7 +129,15 @@
             let
               golangci-lint = pkgs.lib.getExe pkgs.golangci-lint;
             in
-            "${golangci-lint} run ./... && touch $out";
+            ''
+              ${golangci-lint} run ./... || exit 1
+              (cd nanoid && ${golangci-lint} run ./...) || exit 1
+              (cd locale && ${golangci-lint} run ./...) || exit 1
+              (cd money && ${golangci-lint} run ./...) || exit 1
+              (cd datapoint && ${golangci-lint} run ./...) || exit 1
+              (cd examples && ${golangci-lint} run ./...) || exit 1
+              touch $out
+            '';
         };
 
         format = pkgs.runCommand "format-check"

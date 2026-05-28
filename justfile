@@ -58,7 +58,7 @@ vet:
 # Run go mod tidy for all modules
 tidy:
     go mod tidy
-    for mod in nanoid locale money datapoint examples; do (cd $$mod && go mod tidy || true); done
+    for mod in nanoid locale money datapoint examples; do (cd $$mod && go mod tidy); done
 
 # Install git-cliff for changelog generation
 install-cliff:
