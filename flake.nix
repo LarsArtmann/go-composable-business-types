@@ -22,35 +22,41 @@
         GONOSUMDB = "github.com/LarsArtmann/*,github.com/larsartmann/*";
       };
 
-      goSrc = pkgs: pkgs.lib.fileset.toSource {
-        root = ./.;
-        fileset = pkgs.lib.fileset.unions [
-          ./go.mod
-          ./go.sum
-          ./go.work
-          ./actor
-          ./bounded
-          ./enums
-          ./importance
-          ./pkg
-          ./projectcore
-          ./scanutil
-          ./tag
-          ./temporal
-          ./testutil
-          ./types
-          ./validate
-          ./version
-          ./nanoid
-          ./locale
-          ./money
-          ./datapoint
-          ./examples
-        ];
-      };
+      goSrc =
+        pkgs:
+        pkgs.lib.fileset.toSource {
+          root = ./.;
+          fileset = pkgs.lib.fileset.unions [
+            ./go.mod
+            ./go.sum
+            ./go.work
+            ./actor
+            ./bounded
+            ./enums
+            ./importance
+            ./pkg
+            ./projectcore
+            ./scanutil
+            ./tag
+            ./temporal
+            ./testutil
+            ./types
+            ./validate
+            ./version
+            ./nanoid
+            ./locale
+            ./money
+            ./datapoint
+            ./examples
+          ];
+        };
 
       mkGoCheck =
-        { pkgs, name, command }:
+        {
+          pkgs,
+          name,
+          command,
+        }:
         pkgs.runCommand name
           {
             nativeBuildInputs = [ pkgs.go_1_26 ];
@@ -140,17 +146,20 @@
             '';
         };
 
-        format = pkgs.runCommand "format-check"
-          {
-            nativeBuildInputs = [ pkgs.nixfmt ];
-            src = pkgs.lib.fileset.toSource {
-              root = ./.;
-              fileset = pkgs.lib.fileset.intersection (pkgs.lib.fileset.gitTracked ./.) (pkgs.lib.fileset.fileFilter (file: file.hasExt "nix") ./.);
-            };
-          }
-          ''
-            nixfmt --check $src && touch $out
-          '';
+        format =
+          pkgs.runCommand "format-check"
+            {
+              nativeBuildInputs = [ pkgs.nixfmt ];
+              src = pkgs.lib.fileset.toSource {
+                root = ./.;
+                fileset = pkgs.lib.fileset.intersection (pkgs.lib.fileset.gitTracked ./.) (
+                  pkgs.lib.fileset.fileFilter (file: file.hasExt "nix") ./.
+                );
+              };
+            }
+            ''
+              nixfmt --check $src && touch $out
+            '';
       });
 
       formatter = eachSystem (pkgs: pkgs.nixfmt);
