@@ -103,10 +103,12 @@
             projectRootFile = "go.mod";
             programs = {
               gofumpt.enable = true;
+              goimports.enable = true;
               nixfmt.enable = true;
             };
           };
 
+          checks.format = config.treefmt.build.check self;
           devShells.default = pkgs.mkShell {
             packages = builtins.attrValues {
               inherit (pkgs)
@@ -119,6 +121,16 @@
             };
 
             env = goEnvVars;
+          };
+
+          devShells.ci = pkgs.mkShellNoCC {
+            packages = [
+              pkgs.go_1_26
+              pkgs.golangci-lint
+            ];
+
+            GOWORK = "off";
+          GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
           };
 
           checks = {
