@@ -130,7 +130,7 @@
             ];
 
             GOWORK = "off";
-          GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
+            GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
           };
 
           checks = {
