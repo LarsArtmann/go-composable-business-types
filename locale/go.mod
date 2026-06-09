@@ -4,5 +4,5 @@ go 1.26.3
 
 require (
 	github.com/larsartmann/go-composable-business-types v0.5.0
-	golang.org/x/text v0.37.0
+	golang.org/x/text v0.38.0
 )
