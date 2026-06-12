@@ -34,12 +34,12 @@ const (
 )
 
 var (
-	errContactNil        = errors.New("contact: nil")
-	errContactNameReq    = errors.New("contact: name is required")
-	errContactNameTooLong = errors.New("contact: name exceeds maximum length")
-	errContactEmailTooLong = errors.New("contact: email exceeds maximum length")
-	errContactEmailInvalid = errors.New("contact: email is invalid")
-	errContactPhoneTooLong = errors.New("contact: phone exceeds maximum length")
+	errContactNil            = errors.New("contact: nil")
+	errContactNameReq        = errors.New("contact: name is required")
+	errContactNameTooLong    = errors.New("contact: name exceeds maximum length")
+	errContactEmailTooLong   = errors.New("contact: email exceeds maximum length")
+	errContactEmailInvalid   = errors.New("contact: email is invalid")
+	errContactPhoneTooLong   = errors.New("contact: phone exceeds maximum length")
 	errContactWebsiteInvalid = errors.New("contact: website URL is invalid")
 )
 
@@ -106,7 +106,8 @@ func (c *Contact) Validate() error {
 	}
 
 	if c.Email != "" {
-		if err := validateEmail(c.Email); err != nil {
+		err := validateEmail(c.Email)
+		if err != nil {
 			return err
 		}
 	}
@@ -116,13 +117,15 @@ func (c *Contact) Validate() error {
 	}
 
 	if c.Website != "" {
-		if err := validateWebsite(c.Website); err != nil {
+		err := validateWebsite(c.Website)
+		if err != nil {
 			return err
 		}
 	}
 
 	if c.Address != nil {
-		if err := c.Address.Validate(); err != nil {
+		err := c.Address.Validate()
+		if err != nil {
 			return fmt.Errorf("address: %w", err)
 		}
 	}
@@ -141,8 +144,10 @@ func validateEmail(email string) error {
 	}
 
 	local := email[:at]
+
 	domain := email[at+1:]
-	if local == "" || domain == "" || strings.Contains(domain, "..") || strings.HasPrefix(domain, ".") || strings.HasSuffix(domain, ".") {
+	if local == "" || domain == "" || strings.Contains(domain, "..") || strings.HasPrefix(domain, ".") ||
+		strings.HasSuffix(domain, ".") {
 		return fmt.Errorf("%w: %q", errContactEmailInvalid, email)
 	}
 

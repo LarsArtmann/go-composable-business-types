@@ -1,4 +1,4 @@
-github.com/larsartmann/go-composable-business-types v0.5.0 h1:gmnUIdcOyb4mEUEqZ18xjig5xn1C8+v7EPIvIoTm8n0=
-github.com/larsartmann/go-composable-business-types v0.5.0/go.mod h1:5oCDpAa5anTfhhKWoZpoPobITZi/AMKmz2PsBeJK4Oo=
+github.com/larsartmann/go-composable-business-types v0.6.0 h1:e6x5I/VU0imwPI8o/6VnZdLVhXIr+kUcToH9TAQupk4=
+github.com/larsartmann/go-composable-business-types v0.6.0/go.mod h1:40ifJyZMcQrmJgyJkHVazFaC+HivIhbZJMW5qBAJJ8c=
 golang.org/x/text v0.38.0 h1:sXmwo9DwP3OK9EZ7PqAdaooSGozfl/3a6/xJcbzPRhE=
 golang.org/x/text v0.38.0/go.mod h1:YXZt3QhHUKYT53r2lLKFIVi6Ao1jdzrTR/KQ09qyxF4=

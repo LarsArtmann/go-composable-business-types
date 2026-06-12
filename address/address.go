@@ -35,18 +35,18 @@ const (
 )
 
 var (
-	errAddressNil        = errors.New("address: nil")
-	errAddressLine1Req   = errors.New("address: line1 is required")
-	errAddressLine1TooLong = errors.New("address: line1 exceeds maximum length")
-	errAddressLine2TooLong = errors.New("address: line2 exceeds maximum length")
-	errAddressCityReq      = errors.New("address: city is required")
-	errAddressCityTooLong  = errors.New("address: city exceeds maximum length")
-	errAddressStateTooLong = errors.New("address: state exceeds maximum length")
-	errAddressPostalReq    = errors.New("address: postal code is required")
+	errAddressNil           = errors.New("address: nil")
+	errAddressLine1Req      = errors.New("address: line1 is required")
+	errAddressLine1TooLong  = errors.New("address: line1 exceeds maximum length")
+	errAddressLine2TooLong  = errors.New("address: line2 exceeds maximum length")
+	errAddressCityReq       = errors.New("address: city is required")
+	errAddressCityTooLong   = errors.New("address: city exceeds maximum length")
+	errAddressStateTooLong  = errors.New("address: state exceeds maximum length")
+	errAddressPostalReq     = errors.New("address: postal code is required")
 	errAddressPostalTooLong = errors.New("address: postal code exceeds maximum length")
-	errAddressCountryReq   = errors.New("address: country code is required")
-	errAddressCountryLen   = errors.New("address: country code must be 2 characters")
-	errAddressCountryAlpha = errors.New("address: country code must be alphabetic")
+	errAddressCountryReq    = errors.New("address: country code is required")
+	errAddressCountryLen    = errors.New("address: country code must be 2 characters")
+	errAddressCountryAlpha  = errors.New("address: country code must be alphabetic")
 )
 
 // Address represents a validated postal address.
@@ -128,7 +128,12 @@ func (a *Address) Validate() error {
 	}
 
 	if utf8.RuneCountInString(a.PostalCode) > maxPostalCodeLen {
-		return fmt.Errorf("%w: %d > %d", errAddressPostalTooLong, utf8.RuneCountInString(a.PostalCode), maxPostalCodeLen)
+		return fmt.Errorf(
+			"%w: %d > %d",
+			errAddressPostalTooLong,
+			utf8.RuneCountInString(a.PostalCode),
+			maxPostalCodeLen,
+		)
 	}
 
 	if a.CountryCode == "" {
@@ -155,6 +160,7 @@ func (a *Address) Format() string {
 	}
 
 	var parts []string
+
 	parts = append(parts, a.Line1)
 
 	if a.Line2 != "" {
@@ -165,9 +171,11 @@ func (a *Address) Format() string {
 	if a.State != "" {
 		cityLine += ", " + a.State
 	}
+
 	if a.PostalCode != "" {
 		cityLine += " " + a.PostalCode
 	}
+
 	parts = append(parts, strings.TrimSpace(cityLine))
 	parts = append(parts, strings.ToUpper(a.CountryCode))
 

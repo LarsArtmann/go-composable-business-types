@@ -135,6 +135,7 @@ func TestAddress_Format(t *testing.T) {
 	)
 
 	formatted := addr.Format()
+
 	want := "123 Main St\nApt 4\nBerlin, BE 10115\nDE"
 	if formatted != want {
 		t.Errorf("Format() = %q, want %q", formatted, want)
