@@ -26,10 +26,23 @@ var (
 	errMaxLessThanMin = errors.New(
 		"boundedstring: maximum length cannot be less than minimum length",
 	)
-	errBelowMin        = errors.New("boundedstring: string length is less than minimum")
-	errAboveMax        = errors.New("boundedstring: string length exceeds maximum")
-	errScanNilReceiver = errors.New("boundedstring: scan: receiver is nil")
+	errBelowMin = errors.New("boundedstring: string length is less than minimum")
+	errAboveMax = errors.New("boundedstring: string length exceeds maximum")
 )
+
+// runeCount returns the number of runes in s as uint.
+// utf8.RuneCountInString always returns a non-negative int, but gosec G115
+// requires an explicit check when converting to uint.
+func runeCount(s string) uint {
+	n := utf8.RuneCountInString(s)
+	if n < 0 {
+		return 0
+	}
+
+	return uint(n)
+}
+
+var errScanNilReceiver = errors.New("boundedstring: scan: receiver is nil")
 
 // BoundedString is a string with length constraints validated at construction.
 // Use NewBoundedString to create validated instances.
@@ -52,9 +65,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 		)
 	}
 
-	length := uint(
-		utf8.RuneCountInString(value),
-	)
+	length := runeCount(value)
 
 	if length < minLen {
 		return BoundedString{}, fmt.Errorf(
@@ -85,7 +96,7 @@ func NewBoundedString(minLen, maxLen uint, value string) (BoundedString, error) 
 func (bs BoundedString) String() string { return bs.value }
 
 // Len returns the number of runes in the string.
-func (bs BoundedString) Len() uint { return uint(utf8.RuneCountInString(bs.value)) }
+func (bs BoundedString) Len() uint { return runeCount(bs.value) }
 
 // MinLen returns the minimum allowed length.
 func (bs BoundedString) MinLen() uint { return bs.minLen }
@@ -156,9 +167,7 @@ func (bs *BoundedString) UnmarshalJSON(data []byte) error {
 	bs.value = value
 	bs.minLen = 0
 
-	bs.maxLen = uint(
-		utf8.RuneCountInString(value),
-	)
+	bs.maxLen = runeCount(value)
 
 	return nil
 }
@@ -180,9 +189,7 @@ func (bs *BoundedString) Scan(src any) error {
 		bs.value = v
 		bs.minLen = 0
 
-		bs.maxLen = uint(
-			utf8.RuneCountInString(v),
-		)
+		bs.maxLen = runeCount(v)
 
 		return nil
 	})

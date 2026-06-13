@@ -77,6 +77,7 @@ func WithAddress(addr *address.Address) Option {
 
 // New creates a Contact with the required name and optional configuration.
 func New(name string, opts ...Option) *Contact {
+	//nolint:exhaustruct // Options pattern allows partial initialization.
 	c := &Contact{Name: strings.TrimSpace(name)}
 
 	for _, opt := range opts {

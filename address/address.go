@@ -74,6 +74,7 @@ func WithState(state string) Option {
 
 // New creates an Address with the required fields and optional configuration.
 func New(line1, city, postalCode, countryCode string, opts ...Option) *Address {
+	//nolint:exhaustruct // Options pattern allows partial initialization.
 	a := &Address{
 		Line1:       line1,
 		City:        city,
