@@ -23,33 +23,6 @@ Consumer import paths are identical to the single-module era. The split only aff
 
 ## Build & Test Commands
 
-```bash
-# Build all modules (via workspace)
-go build ./...
-
-# Test all modules (per-module due to workspace structure)
-go test -race ./...
-for mod in nanoid locale money datapoint examples; do (cd $mod && go test -race ./...); done
-
-# Test a specific module
-go test -race ./nanoid/...
-
-# Run tests with coverage
-go test -race -coverprofile=coverage.out ./...
-
-# Tidy all modules
-go mod tidy  # root
-for mod in nanoid locale money datapoint examples; do (cd $mod && go mod tidy); done
-
-# Sync workspace
-go work sync
-
-# Lint
-golangci-lint run --fix
-
-# Generate enum code (in root module)
-go generate ./...
-```
 
 ## Dependencies
 
@@ -70,36 +43,6 @@ Sub-modules:
 This library uses Go workspace mode with 6 sub-modules for dependency isolation.
 Consumer import paths are unchanged from the single-module era.
 
-```
-Root Module (./) — zero heavy external deps
-├── actor/              # ActorChain[T], ActorEntry[T] - audit trail tracking
-├── bounded/            # BoundedString - length-validated strings
-├── enums/              # ActorKind, Priority, Status, Trigger, CauseKind enums
-│   └── enum_enum.go    # Generated enum code (do not edit)
-├── importance/         # Importance - 0-100 priority classification
-├── pkg/errors/         # Centralized sentinel and structured errors
-├── projectcore/        # ProjectCore - composite project metadata
-├── scanutil/           # SQL Scanner/Valuer helpers
-├── tag/                # Tag - validated string labels
-├── temporal/           # Bitemporal - valid/recorded time tracking
-├── testutil/           # Generic test helpers
-├── types/              # Email, URL, Percentage, Cents, Timestamp, Duration
-├── validate/           # Validator interface for self-validating types
-└── version/            # Build version info from runtime/debug
-
-Sub-Modules (own go.mod)
-├── nanoid/             # NanoID - URL-safe unique identifiers [sixafter/nanoid]
-├── locale/             # Locale - BCP 47 language tags [golang.org/x/text]
-├── money/              # Money - ISO 4217 currency [bojanz/currency]
-├── datapoint/          # DataPoint[T] - self-contained data with audit trail
-│   ├── datapoint.go    # DataPoint[T] main type
-│   ├── context.go      # Execution context
-│   ├── reference.go    # Reference[T] entity references
-│   └── cause.go        # Cause[T] causal relationships
-└── examples/           # Usage examples
-    ├── basic/          # Basic usage example
-    └── datapoint/      # DataPoint usage example
-```
 
 **Note:** Branded ID types (`ID[B, V]`) live in the separate module [`go-branded-id`](https://github.com/larsartmann/go-branded-id).
 
@@ -116,21 +59,6 @@ func main() {
 }
 ```
 
-```go
-// Import generic types with type parameters
-import (
-    "github.com/larsartmann/go-branded-id"
-    "github.com/larsartmann/go-composable-business-types/actor"
-)
-
-type UserBrand struct{}
-type UserID = id.ID[UserBrand, string]
-
-func main() {
-    userID := id.NewID[UserBrand, string]("user-123")
-    actorEntry := actor.UserActor(userID, "John Doe")
-}
-```
 
 ```go
 // Import enums
@@ -142,30 +70,6 @@ func main() {
 }
 ```
 
-```go
-// Import DataPoint for complete audit trails
-import (
-    "github.com/larsartmann/go-composable-business-types/datapoint"
-    "github.com/larsartmann/go-composable-business-types/actor"
-    "github.com/larsartmann/go-composable-business-types/enums"
-    "github.com/larsartmann/go-branded-id"
-)
-
-func main() {
-    userID := id.NewID[struct{}, string]("user-123")
-    actorEntry := actor.UserActor(userID, "John Doe")
-
-    // Create a DataPoint with complete audit trail
-    dp := datapoint.NewDataPoint("order-123", actorEntry).
-        WithTrigger(enums.TriggerWebhook).
-        WithReason("Customer checkout").
-        WithTag("priority", "high")
-
-    // Add references and causes
-    ref := datapoint.NewReference("customer-456", "customer")
-    dp = dp.WithReference(ref)
-}
-```
 
 ## Code Conventions
 
