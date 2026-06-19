@@ -23,7 +23,6 @@ Consumer import paths are identical to the single-module era. The split only aff
 
 ## Build & Test Commands
 
-
 ## Dependencies
 
 Root module:
@@ -43,7 +42,6 @@ Sub-modules:
 This library uses Go workspace mode with 6 sub-modules for dependency isolation.
 Consumer import paths are unchanged from the single-module era.
 
-
 **Note:** Branded ID types (`ID[B, V]`) live in the separate module [`go-branded-id`](https://github.com/larsartmann/go-branded-id).
 
 ### Selective Import Examples
@@ -59,7 +57,6 @@ func main() {
 }
 ```
 
-
 ```go
 // Import enums
 import "github.com/larsartmann/go-composable-business-types/enums"
@@ -69,7 +66,6 @@ func main() {
     trigger := enums.TriggerManual
 }
 ```
-
 
 ## Code Conventions
 
