@@ -82,7 +82,9 @@ func (c ActorChain[T]) ByKind(kind enums.ActorKind) []ActorEntry[T] {
 }
 
 // HasKind checks if any actor in chain is of given kind.
-func (c ActorChain[T]) HasKind(kind enums.ActorKind) bool { return slices.Contains(c, kind) }
+func (c ActorChain[T]) HasKind(kind enums.ActorKind) bool {
+	return slices.ContainsFunc(c, func(e ActorEntry[T]) bool { return e.Kind == kind })
+}
 
 // Constructor helpers
 
