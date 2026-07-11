@@ -26,7 +26,6 @@
       goEnvVars = {
         GOEXPERIMENT = "jsonv2";
         GOPRIVATE = "github.com/LarsArtmann/*,github.com/larsartmann/*";
-        GONOSUMCHECK = "github.com/LarsArtmann/*,github.com/larsartmann/*";
         GONOSUMDB = "github.com/LarsArtmann/*,github.com/larsartmann/*";
       };
     in
