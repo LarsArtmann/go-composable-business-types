@@ -1,7 +1,7 @@
 package datapoint
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"fmt"
 
 	"github.com/larsartmann/go-composable-business-types/enums"

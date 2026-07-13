@@ -118,7 +118,7 @@ var errActorKindNilPtr = errors.New("value pointer is nil") // one per type for 
 func (x *ActorKind) Scan(value interface{}) (err error) {
 	if value == nil {
 		*x = ActorKind(0)
-		return err
+		return
 	}
 
 	// A wider range of scannable types.
@@ -177,7 +177,7 @@ func (x *ActorKind) Scan(value interface{}) (err error) {
 		*x, err = ParseActorKind(*v)
 	}
 
-	return err
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -288,7 +288,7 @@ var errCauseKindNilPtr = errors.New("value pointer is nil") // one per type for 
 func (x *CauseKind) Scan(value interface{}) (err error) {
 	if value == nil {
 		*x = CauseKind(0)
-		return err
+		return
 	}
 
 	// A wider range of scannable types.
@@ -347,7 +347,7 @@ func (x *CauseKind) Scan(value interface{}) (err error) {
 		*x, err = ParseCauseKind(*v)
 	}
 
-	return err
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -461,7 +461,7 @@ var errPriorityNilPtr = errors.New("value pointer is nil") // one per type for p
 func (x *Priority) Scan(value interface{}) (err error) {
 	if value == nil {
 		*x = Priority(0)
-		return err
+		return
 	}
 
 	// A wider range of scannable types.
@@ -520,7 +520,7 @@ func (x *Priority) Scan(value interface{}) (err error) {
 		*x, err = ParsePriority(*v)
 	}
 
-	return err
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -640,7 +640,7 @@ var errStatusNilPtr = errors.New("value pointer is nil") // one per type for pac
 func (x *Status) Scan(value interface{}) (err error) {
 	if value == nil {
 		*x = Status(0)
-		return err
+		return
 	}
 
 	// A wider range of scannable types.
@@ -699,7 +699,7 @@ func (x *Status) Scan(value interface{}) (err error) {
 		*x, err = ParseStatus(*v)
 	}
 
-	return err
+	return
 }
 
 // Value implements the driver Valuer interface.
@@ -838,7 +838,7 @@ var errTriggerNilPtr = errors.New("value pointer is nil") // one per type for pa
 func (x *Trigger) Scan(value interface{}) (err error) {
 	if value == nil {
 		*x = Trigger(0)
-		return err
+		return
 	}
 
 	// A wider range of scannable types.
@@ -897,7 +897,7 @@ func (x *Trigger) Scan(value interface{}) (err error) {
 		*x, err = ParseTrigger(*v)
 	}
 
-	return err
+	return
 }
 
 // Value implements the driver Valuer interface.

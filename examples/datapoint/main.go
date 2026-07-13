@@ -4,7 +4,8 @@
 package main
 
 import (
-	"encoding/json"
+	"encoding/json/jsontext"
+	"encoding/json/v2"
 	"fmt"
 
 	id "github.com/larsartmann/go-branded-id"
@@ -92,7 +93,7 @@ func main() {
 	fmt.Printf("Causes: %d\n", len(dp.Causes()))
 
 	// Serialize to JSON with indentation
-	data, err := json.MarshalIndent(dp, "", "  ")
+	data, err := json.Marshal(dp, jsontext.WithIndentPrefix(""), jsontext.WithIndent("  "))
 	if err != nil {
 		panic(err)
 	}
