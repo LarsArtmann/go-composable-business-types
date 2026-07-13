@@ -1,6 +1,7 @@
 package bounded
 
 import (
+	"bytes"
 	"encoding/json"
 	"testing"
 )
@@ -421,10 +422,7 @@ func TestBoundedStringEdgeCases(t *testing.T) {
 	t.Run("large max", func(t *testing.T) {
 		t.Parallel()
 
-		large := make([]byte, 10000)
-		for i := range large {
-			large[i] = 'a'
-		}
+		large := bytes.Repeat([]byte{'a'}, 10000)
 
 		bs, err := NewBoundedString(0, 20000, string(large))
 		if err != nil {

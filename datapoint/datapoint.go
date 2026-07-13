@@ -16,6 +16,7 @@ import (
 	"encoding/json/v2"
 	"fmt"
 	"iter"
+	"slices"
 
 	"github.com/larsartmann/go-composable-business-types/actor"
 	"github.com/larsartmann/go-composable-business-types/enums"
@@ -88,14 +89,7 @@ func (d DataPoint[T]) Tag(key string) string { return getTag(d.tags, key) }
 
 // cloneSlice creates a copy of the given slice, returning nil if the input is nil.
 func cloneSlice[T any](s []T) []T {
-	if s == nil {
-		return nil
-	}
-
-	result := make([]T, len(s))
-	copy(result, s)
-
-	return result
+	return slices.Clone(s)
 }
 
 // References returns all references.

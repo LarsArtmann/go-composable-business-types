@@ -34,9 +34,9 @@ func testSentinelErrorSet(t *testing.T, errs ...error) {
 		name string
 		err  error
 		want error
-	}, len(errs))
-	for i, err := range errs {
-		tests[i] = struct {
+	}, 0, len(errs))
+	for _, err := range errs {
+		tests = append(tests, struct {
 			name string
 			err  error
 			want error
@@ -44,7 +44,7 @@ func testSentinelErrorSet(t *testing.T, errs ...error) {
 			name: err.Error(),
 			err:  err,
 			want: err,
-		}
+		})
 	}
 
 	testSentinelErrors(t, tests)

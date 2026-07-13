@@ -3,6 +3,7 @@ package datapoint
 import (
 	"encoding/json/v2"
 	"fmt"
+	"slices"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
 	"github.com/larsartmann/go-composable-business-types/nanoid"
@@ -23,14 +24,11 @@ func NewCause[T comparable](
 	effect string,
 	trace []nanoid.NanoID,
 ) Cause[T] {
-	t := make([]nanoid.NanoID, len(trace))
-	copy(t, trace)
-
 	return Cause[T]{
 		id:     id,
 		kind:   kind,
 		effect: effect,
-		trace:  t,
+		trace:  slices.Clone(trace),
 	}
 }
 
@@ -56,14 +54,11 @@ func NewCauseCommand[T comparable](id nanoid.NanoID, command string) Cause[T] {
 
 // NewCauseEvent creates a Cause for an event-triggered relationship.
 func NewCauseEvent[T comparable](id nanoid.NanoID, event string, trace ...nanoid.NanoID) Cause[T] {
-	t := make([]nanoid.NanoID, len(trace))
-	copy(t, trace)
-
 	return Cause[T]{
 		id:     id,
 		kind:   enums.CauseKindEvent,
 		effect: event,
-		trace:  t,
+		trace:  slices.Clone(trace),
 	}
 }
 
@@ -82,10 +77,7 @@ func (c Cause[T]) Trace() []nanoid.NanoID {
 		return nil
 	}
 
-	result := make([]nanoid.NanoID, len(c.trace))
-	copy(result, c.trace)
-
-	return result
+	return slices.Clone(c.trace)
 }
 
 // IsZero returns true if this is the zero value.
@@ -132,8 +124,7 @@ func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	c.id = raw.ID
 
 	// Parse trace
-	c.trace = make([]nanoid.NanoID, len(raw.Trace))
-	copy(c.trace, raw.Trace)
+	c.trace = slices.Clone(raw.Trace)
 
 	return nil
 }

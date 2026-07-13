@@ -58,9 +58,9 @@ type enumStringCase[T interface{ String() string }] struct {
 func testEnumString[T interface{ String() string }](t *testing.T, tests []enumStringCase[T]) {
 	t.Helper()
 
-	cases := make([]testutil.StringCase[T], len(tests))
-	for i, tt := range tests {
-		cases[i] = testutil.StringCase[T]{Value: tt.value, Expected: tt.expected}
+	cases := make([]testutil.StringCase[T], 0, len(tests))
+	for _, tt := range tests {
+		cases = append(cases, testutil.StringCase[T]{Value: tt.value, Expected: tt.expected})
 	}
 
 	testutil.RunStringTests(t, "", cases)

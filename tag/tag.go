@@ -174,9 +174,9 @@ func NewTagsFromString(ss ...string) (Tags, error) {
 
 // Strings returns the string representation of each tag.
 func (ts Tags) Strings() []string {
-	result := make([]string, len(ts))
-	for i, t := range ts {
-		result[i] = t.String()
+	result := make([]string, 0, len(ts))
+	for _, t := range ts {
+		result = append(result, t.String())
 	}
 
 	return result
