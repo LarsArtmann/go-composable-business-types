@@ -143,7 +143,7 @@ func TestJSONOutput(t *testing.T) {
 	require.NoError(t, err)
 	assert.JSONEq(
 		t,
-		`{"name":"test","path":"/path","languages":["go"],"importance":70,"tags":null}`,
+		`{"name":"test","path":"/path","languages":["go"],"importance":70,"tags":[]}`,
 		string(data),
 	)
 }
