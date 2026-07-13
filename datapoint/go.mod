@@ -10,8 +10,8 @@ require (
 
 require (
 	github.com/sixafter/aes-ctr-drbg v1.19.2 // indirect
-	github.com/sixafter/nanoid v1.64.4 // indirect
-	github.com/sixafter/prng-chacha v1.16.4 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
+	github.com/sixafter/nanoid v1.64.5 // indirect
+	github.com/sixafter/prng-chacha v1.16.5 // indirect
+	golang.org/x/crypto v0.54.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 )
