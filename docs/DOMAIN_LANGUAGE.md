@@ -1,67 +1,68 @@
 # Domain Language
 
-A **Unified Language** for `.` — shared across Customer, Product Owner, Developer, and AI.
+A **Unified Language** for go-composable-business-types — shared across developers, consumers, and AI.
 Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 
 Every term below should mean the **same thing** to everyone who reads it.
-If a word means something different to a developer than to a customer, define it here.
 
 ## Glossary
 
-| Term         | Definition               | Context                        |
-| ------------ | ------------------------ | ------------------------------ |
-| .            | The project/product name | What we call this system       |
-| Example Term | A placeholder definition | Replace with your actual terms |
-
-## Entities
-
-Objects with identity and lifecycle (e.g., User, Order, Account).
-
-<!-- Add your entities here:
-| Term | Definition | Context |
-|------|-----------|---------|
-| User | A person who interacts with the system | Customer-facing |
--->
+| Term          | Definition                                                          | Context                         |
+| ------------- | ------------------------------------------------------------------- | ------------------------------- |
+| DataPoint     | Self-contained data unit with complete audit trail (who, when, why) | Core abstraction of the library |
+| Actor         | Entity that caused a data event (User, Bot, Service, System)        | Audit trail, authorization      |
+| Bitemporal    | Time tracking with separate valid-time and transaction-time         | Temporal correctness            |
+| NanoID        | URL-safe, cryptographically random identifier (21 chars default)    | Entity identification           |
+| BoundedString | String validated against min/max length constraints                 | Input validation                |
+| Importance    | Priority classification (0-100) with named levels                   | Task/project prioritization     |
 
 ## Value Objects
 
-Immutable objects defined by attributes (e.g., Email, Money, Address).
+Immutable objects defined by attributes.
 
-<!-- Add your value objects here:
-| Term | Definition | Context |
-|------|-----------|---------|
-| Email | A validated email address | Unique identifier for users |
--->
+| Term       | Definition                                                   | Context                            |
+| ---------- | ------------------------------------------------------------ | ---------------------------------- |
+| Email      | A validated email address                                    | User identity, contact             |
+| URL        | A validated URL with scheme and host                         | Web references                     |
+| Percentage | A 0-100 value with float conversion (clamps overflow to 100) | Rates, proportions                 |
+| Cents      | Monetary amount in smallest currency unit (no float errors)  | Payments, pricing                  |
+| Timestamp  | Domain-wrapped time.Time for business timestamps             | Temporal tracking                  |
+| Duration   | Domain-wrapped time.Duration for business intervals          | Time spans                         |
+| Money      | ISO 4217 currency amount with formatting                     | International payments             |
+| Locale     | BCP 47 language tag for internationalization                 | i18n, formatting                   |
+| Tag        | Validated string label with alphanumeric+hyphen constraint   | Categorization, metadata           |
+| Address    | Validated postal address (line1, city, postalCode, country)  | Shipping, billing                  |
+| Contact    | Contact info (name, email, phone, website, address)          | Person/organization representation |
 
-## Events
+## Entities
 
-Things that happen in the domain (e.g., UserRegistered, PaymentProcessed).
+Objects with identity and lifecycle.
 
-<!-- Add your events here:
-| Term | Definition | Context |
-|------|-----------|---------|
-| UserRegistered | A new user completed signup | Triggers welcome email |
--->
+| Term        | Definition                                                                                                 | Context                     |
+| ----------- | ---------------------------------------------------------------------------------------------------------- | --------------------------- |
+| DataPoint   | Wraps any payload with full metadata: actor, temporal, trigger, context, references, causes, tags, version | Event sourcing, audit trail |
+| ProjectCore | Composite project metadata (name, path, languages, importance, tags)                                       | Project ecosystem           |
 
-## Commands
+## Concepts
 
-Actions the system can perform (e.g., CreateUser, ProcessPayment).
+| Term       | Definition                                                       | Context                    |
+| ---------- | ---------------------------------------------------------------- | -------------------------- |
+| ActorChain | Ordered chain of actors showing delegation path                  | Audit trail, authorization |
+| Context    | Execution environment (environment, session, request, source)    | DataPoint metadata         |
+| Reference  | Type-safe reference to another entity with relationship metadata | DataPoint lineage          |
+| Cause      | Entry in a causal chain for building lineage graphs              | DataPoint lineage          |
+| Correction | Flag indicating a bitemporal record is a correction              | Temporal tracking          |
+| Validator  | Interface for self-validating types                              | Input validation pattern   |
 
-<!-- Add your commands here:
-| Term | Definition | Context |
-|------|-----------|---------|
-| CreateUser | Registers a new user account | Admin action |
--->
+## Enums
 
-## Bounded Contexts
-
-Subsystems with distinct vocabulary (e.g., Billing vs. Shipping).
-
-<!-- Define contexts where the same word means different things:
-| Context | Description |
-|---------|------------|
-| Billing | Handles payments and invoices |
--->
+| Enum      | Values                                                            | Context                     |
+| --------- | ----------------------------------------------------------------- | --------------------------- |
+| ActorKind | User, Bot, System, Service                                        | Who triggered an action     |
+| Priority  | Low, Medium, High, Critical                                       | Task urgency                |
+| Status    | Draft, Active, Paused, Archived, Deleted                          | Entity lifecycle            |
+| Trigger   | Manual, Scheduled, Webhook, Import, Migration, System, Correction | What caused a DataPoint     |
+| CauseKind | Direct, Command, Event                                            | Causal chain classification |
 
 ---
 

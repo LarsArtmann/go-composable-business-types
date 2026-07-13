@@ -10,18 +10,43 @@ Build the best possible data types for Lars Artmann's Golang applications, lever
 
 This library uses a Go workspace (`go.work`) with 6 semi-independent sub-modules for dependency isolation:
 
-| Module    | Directory      | External Deps     | Purpose                                                                                                                             |
-| --------- | -------------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| Root      | `./`           | go-branded-id     | Base types: enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore |
-| nanoid    | `./nanoid/`    | sixafter/nanoid   | URL-safe unique identifiers                                                                                                         |
-| locale    | `./locale/`    | golang.org/x/text | BCP 47 language tags                                                                                                                |
-| money     | `./money/`     | bojanz/currency   | ISO 4217 currency                                                                                                                   |
-| datapoint | `./datapoint/` | —                 | Self-contained data units with audit trail                                                                                          |
-| examples  | `./examples/`  | —                 | Usage examples                                                                                                                      |
+| Module    | Directory      | External Deps         | Purpose                                                                                                                                               |
+| --------- | -------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Root      | `./`           | go-branded-id         | Base types: enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore, address, contact |
+| nanoid    | `./nanoid/`    | sixafter/nanoid       | URL-safe unique identifiers                                                                                                                           |
+| locale    | `./locale/`    | golang.org/x/text     | BCP 47 language tags                                                                                                                                  |
+| money     | `./money/`     | bojanz/currency       | ISO 4217 currency                                                                                                                                     |
+| datapoint | `./datapoint/` | go-branded-id, nanoid | Self-contained data units with audit trail                                                                                                            |
+| examples  | `./examples/`  | —                     | Usage examples                                                                                                                                        |
 
 Consumer import paths are identical to the single-module era. The split only affects dependency isolation.
 
 ## Build & Test Commands
+
+All build automation lives in `flake.nix`. Use Nix flakes, never Makefile.
+
+| Task         | Command                    |
+| ------------ | -------------------------- |
+| Dev shell    | `nix develop`              |
+| Build        | `nix build .#check-build`  |
+| Test         | `nix build .#check-test`   |
+| Lint         | `nix build .#check-lint`   |
+| Format check | `nix build .#check-format` |
+
+Manual (non-Nix) equivalents require `GOEXPERIMENT=jsonv2` (see Gotchas):
+
+```bash
+GOEXPERIMENT=jsonv2 go build ./...
+GOEXPERIMENT=jsonv2 go test -race ./...
+golangci-lint run ./...
+go generate ./...
+```
+
+Each sub-module must be built/tested separately:
+
+```bash
+for d in nanoid locale money datapoint examples; do (cd $d && GOEXPERIMENT=jsonv2 go test -race ./...); done
+```
 
 ## Dependencies
 
@@ -76,22 +101,23 @@ func main() {
 
 ## Release & CI
 
-- **Tag format:** Root: SemVer (`v0.5.0`). Sub-modules: `nanoid/v0.5.0`, `locale/v0.5.0`, etc.
-- **Release command:** `just release 0.5.0` (creates all tags + pushes)
+- **Tag format:** Root: SemVer (`v0.6.0`). Sub-modules: `nanoid/v0.6.0`, `locale/v0.6.0`, etc.
+- **Release:** Create tags manually and push (justfile was removed in favor of flake.nix)
 - **GitHub Actions:** CI runs on push to master (test, lint, security, generate, benchmark)
 - **Release workflow:** triggers on `v*` and `*/v*` tag pushes
 - **CI known issue:** GitHub Actions billing is currently failing — all runs fail with billing/spending limit error. This is an account-level issue, not a code problem.
 
 ## Notes
 
-- `enums/enum_enum.go` is auto-generated - do not edit manually
+- `enums/enums_enum.go` is auto-generated - do not edit manually
 - Run `go generate ./...` after modifying `enums/enums.go`
 - Generic types (ActorEntry, ActorChain) must be imported from subpackages
 - ID types live in `github.com/larsartmann/go-branded-id` (separate module)
 - `programminglanguage/` was removed — use [`go-enry`](https://github.com/go-enry/go-enry) for language detection, plain `[]string` in `projectcore.ProjectCore.Languages`
 - License: MIT (fixed from PROPRIETARY in 2026-05-07)
-- Test coverage: 86.6% overall
+- Test coverage: varies by package (79-100%); `testutil` has 0%; see `FEATURES.md` for per-package status
 - Repo is transitioning from private to public
 - Modularization docs: `docs/modularization/` (PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md)
-- `go mod tidy` in sub-modules requires `replace` directives (present in each sub-module go.mod) to resolve the root module locally. The published root v0.4.0 still contains all packages, creating ambiguous imports without `replace`.
-- **Updated:** 2026-05-22
+- `go mod tidy` in sub-modules requires `replace` directives (present in each sub-module go.mod) to resolve the root module locally.
+- **Gotcha:** Code uses `encoding/json/v2` which requires `GOEXPERIMENT=jsonv2` on Go 1.26.x, or Go 1.27+. The `go.mod` currently says `go 1.26.4`. Without this env var, builds fail with "build constraints exclude all Go files".
+- **Updated:** 2026-07-13

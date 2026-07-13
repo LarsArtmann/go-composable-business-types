@@ -45,6 +45,8 @@ go get github.com/larsartmann/go-branded-id
 | `Duration`      | `types/`      | Domain-wrapped time.Duration                                        |
 | `Importance`    | `importance/` | Priority classification (0-100) with named levels                   |
 | `Tag`           | `tag/`        | Validated string label with alphanumeric+hyphen constraint          |
+| `Address`       | `address/`    | Validated postal address (line1, city, postalCode, countryCode)     |
+| `Contact`       | `contact/`    | Contact info (name, email, phone, website, address)                 |
 
 ### External Types (separate module)
 
@@ -306,6 +308,8 @@ go generate ./...
 | [SUPPORT.md](./SUPPORT.md)     | Getting help, reporting issues, FAQ                           |
 | [SECURITY.md](./SECURITY.md)   | Security policy and vulnerability reporting                   |
 | [CHANGELOG.md](./CHANGELOG.md) | Version history and release notes                             |
+| [FEATURES.md](./FEATURES.md)   | Honest feature inventory by status                            |
+| [TODO_LIST.md](./TODO_LIST.md) | Short-term actionable work items                              |
 | [PARTS.md](./PARTS.md)         | Component analysis and architecture                           |
 
 ## Contributing
