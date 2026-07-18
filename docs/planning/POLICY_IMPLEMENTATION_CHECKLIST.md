@@ -105,10 +105,10 @@
 
 ### 4.2 Legal
 
-| Task                         | Status |
+| Task | Status |
 | ---------------------------- | ------ | --------------------------- |
-| Set up CLA assistant         | ⏳     |
-| Review license compatibility | ✅     | All deps MIT/Apache-2.0/BSD |
+| Set up CLA assistant | ⏳ |
+| Review license compatibility | ✅ | All deps MIT/Apache-2.0/BSD |
 
 ---
 

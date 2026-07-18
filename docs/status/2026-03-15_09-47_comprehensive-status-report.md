@@ -52,18 +52,19 @@ ac859aa fix(locale): improve error messages with context
 | architecture.png in git | Tracked   | BuildFlow warns about binary    |
 
 **Coverage by Package:**
-| Package | Coverage | Status |
-|---------|----------|--------|
-| actor | 100.0% | ✓ |
-| money | 100.0% | ✓ |
-| temporal | 96.3% | ✓ |
-| datapoint | 50.0% | ⚠️ |
-| nanoid | 48.1% | ⚠️ |
-| bounded | 43.8% | ⚠️ |
-| id | 41.9% | ⚠️ |
-| locale | 28.9% | ⚠️ |
-| types | 25.9% | ⚠️ |
-| enums | 6.8% | ⚠️ |
+
+| Package   | Coverage | Status |
+| --------- | -------- | ------ |
+| actor     | 100.0%   | ✓      |
+| money     | 100.0%   | ✓      |
+| temporal  | 96.3%    | ✓      |
+| datapoint | 50.0%    | ⚠️     |
+| nanoid    | 48.1%    | ⚠️     |
+| bounded   | 43.8%    | ⚠️     |
+| id        | 41.9%    | ⚠️     |
+| locale    | 28.9%    | ⚠️     |
+| types     | 25.9%    | ⚠️     |
+| enums     | 6.8%     | ⚠️     |
 
 ---
 
@@ -173,10 +174,11 @@ ac859aa fix(locale): improve error messages with context
 - `enums/enums_enum.go` is auto-generated (not editable)
 
 **Trade-offs:**
-| Option | Pros | Cons |
-|--------|------|------|
-| Split by type | Clean separation | Many small files |
-| Keep as-is | Logical cohesion | Violates size limit |
+
+| Option          | Pros                | Cons                 |
+| --------------- | ------------------- | -------------------- |
+| Split by type   | Clean separation    | Many small files     |
+| Keep as-is      | Logical cohesion    | Violates size limit  |
 | Split by domain | Better organization | More complex imports |
 
 **Recommendation needed:** What's the preferred file organization strategy?

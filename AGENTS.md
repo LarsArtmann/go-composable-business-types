@@ -115,9 +115,7 @@ func main() {
 - ID types live in `github.com/larsartmann/go-branded-id` (separate module)
 - `programminglanguage/` was removed — use [`go-enry`](https://github.com/go-enry/go-enry) for language detection, plain `[]string` in `projectcore.ProjectCore.Languages`
 - License: MIT (fixed from PROPRIETARY in 2026-05-07)
-- Test coverage: varies by package (79-100%); `testutil` has 0%; see `FEATURES.md` for per-package status
 - Repo is transitioning from private to public
 - Modularization docs: `docs/modularization/` (PROPOSAL.md, DEPENDENCY_GRAPH.md, EXECUTION_PLAN.md)
 - `go mod tidy` in sub-modules requires `replace` directives (present in each sub-module go.mod) to resolve the root module locally.
 - **Gotcha:** Code uses `encoding/json/v2` which requires `GOEXPERIMENT=jsonv2` on Go 1.26.x, or Go 1.27+. The `go.mod` currently says `go 1.26.4`. Without this env var, builds fail with "build constraints exclude all Go files".
-- **Updated:** 2026-07-13
