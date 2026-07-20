@@ -5,7 +5,7 @@ go 1.26.4
 tool github.com/abice/go-enum
 
 require (
-	github.com/larsartmann/go-branded-id v0.3.1
+	github.com/larsartmann/go-branded-id v0.3.2
 	github.com/stretchr/testify v1.11.1
 )
 
@@ -34,12 +34,12 @@ require (
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
 	github.com/xrash/smetrics v0.0.0-20250705151800-55b8f293f342 // indirect
-	golang.org/x/crypto v0.53.0 // indirect
+	golang.org/x/crypto v0.54.0 // indirect
 	golang.org/x/mod v0.37.0 // indirect
-	golang.org/x/sync v0.21.0 // indirect
-	golang.org/x/sys v0.46.0 // indirect
+	golang.org/x/sync v0.22.0 // indirect
+	golang.org/x/sys v0.47.0 // indirect
 	golang.org/x/telemetry v0.0.0-20260625142307-59b4966ccb57 // indirect
-	golang.org/x/text v0.38.0 // indirect
+	golang.org/x/text v0.40.0 // indirect
 	golang.org/x/tools v0.47.0 // indirect
 	golang.org/x/tools/cmd/cover v0.1.0-deprecated // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
