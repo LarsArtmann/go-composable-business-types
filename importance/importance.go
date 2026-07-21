@@ -13,12 +13,12 @@ package importance
 
 import (
 	"database/sql/driver"
-	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/larsartmann/go-composable-business-types/scanutil"
+	"github.com/larsartmann/go-composable-business-types/types"
 	"github.com/larsartmann/go-composable-business-types/validate"
 )
 
@@ -242,21 +242,16 @@ func (i Importance) Validate() error {
 
 // MarshalJSON encodes the importance as a JSON number.
 func (i Importance) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(uint8(i))
-	if err != nil {
-		return nil, fmt.Errorf("importance: marshal JSON: %w", err)
-	}
-
-	return b, nil
+	return types.MarshalJSON("importance", uint8(i))
 }
 
 // UnmarshalJSON decodes a JSON number into the importance.
 func (i *Importance) UnmarshalJSON(data []byte) error {
 	var v uint8
 
-	err := json.Unmarshal(data, &v)
+	err := types.UnmarshalJSON("importance", data, &v)
 	if err != nil {
-		return fmt.Errorf("importance: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	*i = Importance(v)

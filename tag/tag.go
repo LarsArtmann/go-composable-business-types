@@ -11,7 +11,6 @@ package tag
 
 import (
 	"database/sql/driver"
-	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"regexp"
@@ -19,6 +18,7 @@ import (
 	"unicode/utf8"
 
 	"github.com/larsartmann/go-composable-business-types/scanutil"
+	"github.com/larsartmann/go-composable-business-types/types"
 	"github.com/larsartmann/go-composable-business-types/validate"
 )
 
@@ -117,21 +117,16 @@ func (t Tag) Validate() error {
 
 // MarshalJSON encodes the tag as a JSON string.
 func (t Tag) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(string(t))
-	if err != nil {
-		return nil, fmt.Errorf("tag: marshal JSON: %w", err)
-	}
-
-	return b, nil
+	return types.MarshalJSON("tag", string(t))
 }
 
 // UnmarshalJSON decodes a JSON string into the tag.
 func (t *Tag) UnmarshalJSON(data []byte) error {
 	var s string
 
-	err := json.Unmarshal(data, &s)
+	err := types.UnmarshalJSON("tag", data, &s)
 	if err != nil {
-		return fmt.Errorf("tag: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	*t = Tag(s)

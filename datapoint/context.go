@@ -1,9 +1,9 @@
 package datapoint
 
 import (
-	"encoding/json/v2"
-	"fmt"
 	"maps"
+
+	"github.com/larsartmann/go-composable-business-types/types"
 )
 
 // Context represents the execution context for a DataPoint.
@@ -134,27 +134,22 @@ type jsonContext struct {
 
 // MarshalJSON implements json.Marshaler.
 func (c Context) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(jsonContext{
+	return types.MarshalJSON("context", jsonContext{
 		Environment: c.environment,
 		Session:     c.session,
 		Request:     c.request,
 		Source:      c.source,
 		Tags:        c.tags,
 	})
-	if err != nil {
-		return nil, fmt.Errorf("context: marshal JSON: %w", err)
-	}
-
-	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (c *Context) UnmarshalJSON(data []byte) error {
 	var raw jsonContext
 
-	err := json.Unmarshal(data, &raw)
+	err := types.UnmarshalJSON("context", data, &raw)
 	if err != nil {
-		return fmt.Errorf("unmarshal context: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	c.environment = raw.Environment

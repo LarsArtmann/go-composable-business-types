@@ -1,12 +1,11 @@
 package datapoint
 
 import (
-	"encoding/json/v2"
-	"fmt"
 	"slices"
 
 	"github.com/larsartmann/go-composable-business-types/enums"
 	"github.com/larsartmann/go-composable-business-types/nanoid"
+	"github.com/larsartmann/go-composable-business-types/types"
 )
 
 // Cause represents a causal relationship to another DataPoint or event.
@@ -95,26 +94,21 @@ type jsonCause struct {
 
 // MarshalJSON implements json.Marshaler.
 func (c Cause[T]) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(jsonCause{
+	return types.MarshalJSON("cause", jsonCause{
 		ID:     c.id,
 		Kind:   c.kind,
 		Effect: c.effect,
 		Trace:  c.trace,
 	})
-	if err != nil {
-		return nil, fmt.Errorf("marshal cause: %w", err)
-	}
-
-	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (c *Cause[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonCause
 
-	err := json.Unmarshal(data, &raw)
+	err := types.UnmarshalJSON("cause", data, &raw)
 	if err != nil {
-		return fmt.Errorf("unmarshal cause: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	c.kind = raw.Kind

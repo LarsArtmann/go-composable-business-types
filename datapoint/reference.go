@@ -1,9 +1,9 @@
 package datapoint
 
 import (
-	"encoding/json/v2"
-	"fmt"
 	"maps"
+
+	"github.com/larsartmann/go-composable-business-types/types"
 )
 
 // Taggable is an interface for types that support tagging.
@@ -116,26 +116,21 @@ type jsonReference[T comparable] struct {
 
 // MarshalJSON implements json.Marshaler.
 func (r Reference[T]) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(jsonReference[T]{
+	return types.MarshalJSON("reference", jsonReference[T]{
 		ID:       r.id,
 		Relation: r.relation,
 		Version:  r.version,
 		Tags:     r.tags,
 	})
-	if err != nil {
-		return nil, fmt.Errorf("reference: marshal JSON: %w", err)
-	}
-
-	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (r *Reference[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonReference[T]
 
-	err := json.Unmarshal(data, &raw)
+	err := types.UnmarshalJSON("reference", data, &raw)
 	if err != nil {
-		return fmt.Errorf("unmarshal reference: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	r.id = raw.ID

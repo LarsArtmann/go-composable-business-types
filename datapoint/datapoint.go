@@ -13,8 +13,6 @@
 package datapoint
 
 import (
-	"encoding/json/v2"
-	"fmt"
 	"iter"
 	"slices"
 
@@ -224,7 +222,7 @@ type jsonDataPoint[T comparable] struct {
 
 // MarshalJSON implements json.Marshaler.
 func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(jsonDataPoint[T]{
+	return types.MarshalJSON("datapoint", jsonDataPoint[T]{
 		ID:         d.id,
 		Payload:    d.payload,
 		Actor:      d.actor,
@@ -237,20 +235,15 @@ func (d DataPoint[T]) MarshalJSON() ([]byte, error) {
 		References: d.references,
 		Causes:     d.causes,
 	})
-	if err != nil {
-		return nil, fmt.Errorf("marshal datapoint: %w", err)
-	}
-
-	return b, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *DataPoint[T]) UnmarshalJSON(data []byte) error {
 	var raw jsonDataPoint[T]
 
-	err := json.Unmarshal(data, &raw)
+	err := types.UnmarshalJSON("datapoint", data, &raw)
 	if err != nil {
-		return fmt.Errorf("unmarshal datapoint: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	// Parse ID

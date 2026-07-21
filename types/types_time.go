@@ -2,7 +2,6 @@ package types
 
 import (
 	"database/sql/driver"
-	"encoding/json/v2"
 	"errors"
 	"fmt"
 	"time"
@@ -123,21 +122,15 @@ func (d Duration) Value() (driver.Value, error) {
 
 // MarshalJSON implements json.Marshaler.
 func (d Duration) MarshalJSON() ([]byte, error) {
-	b, err := json.Marshal(d.String())
-	if err != nil {
-		return nil, fmt.Errorf("duration: marshal JSON: %w", err)
-	}
-
-	return b, nil
+	return MarshalJSON("duration", d.String())
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (d *Duration) UnmarshalJSON(data []byte) error {
 	var s string
 
-	err := json.Unmarshal(data, &s)
-	if err != nil {
-		return fmt.Errorf("duration: invalid JSON %q: %w", string(data), err)
+	if err := UnmarshalJSON("duration", data, &s); err != nil {
+		return err
 	}
 
 	if s == "" {

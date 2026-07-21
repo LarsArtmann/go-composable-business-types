@@ -13,8 +13,6 @@
 package temporal
 
 import (
-	"encoding/json/v2"
-	"fmt"
 	"time"
 
 	"github.com/larsartmann/go-composable-business-types/types"
@@ -155,26 +153,21 @@ type jsonBitemporal struct {
 
 // MarshalJSON implements json.Marshaler.
 func (b Bitemporal) MarshalJSON() ([]byte, error) {
-	bj, err := json.Marshal(jsonBitemporal{
+	return types.MarshalJSON("bitemporal", jsonBitemporal{
 		ValidFrom:  b.validFrom.Time,
 		ValidUntil: b.validUntil.Time,
 		Recorded:   b.recorded.Time,
 		Correction: b.correction,
 	})
-	if err != nil {
-		return nil, fmt.Errorf("bitemporal: marshal JSON: %w", err)
-	}
-
-	return bj, nil
 }
 
 // UnmarshalJSON implements json.Unmarshaler.
 func (b *Bitemporal) UnmarshalJSON(data []byte) error {
 	var raw jsonBitemporal
 
-	err := json.Unmarshal(data, &raw)
+	err := types.UnmarshalJSON("bitemporal", data, &raw)
 	if err != nil {
-		return fmt.Errorf("unmarshal bitemporal: invalid JSON %q: %w", string(data), err)
+		return err
 	}
 
 	b.validFrom = types.NewTimestamp(raw.ValidFrom)
