@@ -6,16 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.7.0] - 2026-07-23
+
+> Sub-modules (`nanoid`, `locale`, `money`, `datapoint`, `examples`) ship as **v0.6.0** in this cycle.
+
 ### Changed
 
-- Upgraded to Go 1.27 `encoding/json/v2` across all packages (requires `GOEXPERIMENT=jsonv2` on Go 1.26.x)
-- Updated `go-branded-id` to v0.3.1
+- Migrated to Go 1.27 `encoding/json/v2` across all packages (requires `GOEXPERIMENT=jsonv2` on Go 1.26.x)
+- Centralized JSON marshal/unmarshal through `types.MarshalJSON`/`types.UnmarshalJSON` helpers (`importance`, `tag`, `temporal`, `projectcore`)
+- Adopted `slices.Clone` and idiomatic slice construction throughout
+- Updated `go-branded-id` to v0.3.2
+- Updated all dependency versions across all modules
 - Tightened `golangci-lint` configuration and applied gosec G115 compliance fixes
+
+### Added
+
+- `flake.nix` build automation with `build`, `test`, `lint`, and `format` checks (replaces justfile)
+- `FEATURES.md` and `TODO_LIST.md`
 
 ### Removed
 
-- Removed deprecated justfile in favor of `flake.nix`
-- Removed generated HTML report assets from repository
+- Deprecated justfile in favor of `flake.nix`
+- Generated HTML report assets from repository
 
 ## [0.6.0] - 2026-06-12
 
