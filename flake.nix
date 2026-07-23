@@ -20,6 +20,7 @@
       flake-parts,
       systems,
       treefmt-nix,
+      ...
     }:
     let
       goEnvVars = {
