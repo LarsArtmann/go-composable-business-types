@@ -1,7 +1,7 @@
 package contact
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"testing"
 
 	"github.com/larsartmann/go-composable-business-types/address"

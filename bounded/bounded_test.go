@@ -2,7 +2,7 @@ package bounded
 
 import (
 	"bytes"
-	"encoding/json"
+	"encoding/json/v2"
 	"testing"
 )
 

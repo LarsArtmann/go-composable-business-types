@@ -1,7 +1,7 @@
 package datapoint
 
 import (
-	"encoding/json"
+	"encoding/json/v2"
 	"iter"
 	"maps"
 	"testing"

@@ -5,7 +5,7 @@ go 1.26.4
 tool github.com/abice/go-enum
 
 require (
-	github.com/larsartmann/go-branded-id v0.3.1
+	github.com/larsartmann/go-branded-id v0.3.2
 	github.com/stretchr/testify v1.11.1
 )
 
