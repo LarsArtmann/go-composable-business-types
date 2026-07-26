@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-composable-business-types/datapoint
 
-go 1.26.5
+go 1.26.4
 
 require (
 	github.com/larsartmann/go-branded-id v0.3.2
