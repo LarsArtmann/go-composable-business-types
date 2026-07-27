@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-composable-business-types/nanoid
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/larsartmann/go-composable-business-types v0.7.0

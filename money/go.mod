@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-composable-business-types/money
 
-go 1.26.4
+go 1.26.5
 
 require (
 	github.com/bojanz/currency v1.4.4
