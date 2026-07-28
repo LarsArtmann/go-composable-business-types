@@ -1,9 +1,9 @@
 module github.com/larsartmann/go-composable-business-types/examples
 
-go 1.26.4
+go 1.26.5
 
 require (
-	github.com/larsartmann/go-branded-id v0.3.3
+	github.com/larsartmann/go-branded-id v0.5.0
 	github.com/larsartmann/go-composable-business-types v0.7.0
 	github.com/larsartmann/go-composable-business-types/datapoint v0.6.0
 	github.com/larsartmann/go-composable-business-types/nanoid v0.6.0
