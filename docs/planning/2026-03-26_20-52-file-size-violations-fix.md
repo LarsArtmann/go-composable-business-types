@@ -83,24 +83,24 @@ The file size violations reported by buildflow have been addressed. 6 of 7 files
 
 ### High Impact / Low Effort
 
-| #   | Task                                           | Effort | Impact | Customer Value           |
-| --- | ---------------------------------------------- | ------ | ------ | ------------------------ |
-| 1   | Commit go.mod/go.sum changes (dependency bump) | 2min   | Low    | Clean git history        |
-| 2   | Document enums_enum.go limitation in README    | 5min   | Medium | Developer clarity        |
-| 3   | Research buildflow config for generated files  | 15min  | High   | Eliminate false positive |
+| # | Task                                           | Effort | Impact | Customer Value           |
+| - | ---------------------------------------------- | ------ | ------ | ------------------------ |
+| 1 | Commit go.mod/go.sum changes (dependency bump) | 2min   | Low    | Clean git history        |
+| 2 | Document enums_enum.go limitation in README    | 5min   | Medium | Developer clarity        |
+| 3 | Research buildflow config for generated files  | 15min  | High   | Eliminate false positive |
 
 ### Medium Impact / Medium Effort
 
-| #   | Task                                            | Effort | Impact | Customer Value  |
-| --- | ----------------------------------------------- | ------ | ------ | --------------- |
-| 4   | Add buildflow config to exclude generated files | 30min  | High   | Clean CI runs   |
-| 5   | Add file size check to pre-commit hook          | 20min  | Medium | Early detection |
+| # | Task                                            | Effort | Impact | Customer Value  |
+| - | ----------------------------------------------- | ------ | ------ | --------------- |
+| 4 | Add buildflow config to exclude generated files | 30min  | High   | Clean CI runs   |
+| 5 | Add file size check to pre-commit hook          | 20min  | Medium | Early detection |
 
 ### Low Impact / High Effort
 
-| #   | Task                                 | Effort | Impact | Customer Value             |
-| --- | ------------------------------------ | ------ | ------ | -------------------------- |
-| 6   | Split enums into multiple enum files | 2h     | Low    | Would require go-enum fork |
+| # | Task                                 | Effort | Impact | Customer Value             |
+| - | ------------------------------------ | ------ | ------ | -------------------------- |
+| 6 | Split enums into multiple enum files | 2h     | Low    | Would require go-enum fork |
 
 ## Execution Graph
 

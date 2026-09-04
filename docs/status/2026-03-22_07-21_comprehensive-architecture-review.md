@@ -1,7 +1,7 @@
 # Comprehensive Status Report: Architecture Review & Type Safety Improvements
 
-**Date:** 2026-03-22 07:21  
-**Project:** go-composable-business-types  
+**Date:** 2026-03-22 07:21\
+**Project:** go-composable-business-types\
 **Session Focus:** Comprehensive architectural review, type safety improvements, code quality analysis
 
 ---
@@ -12,13 +12,13 @@ This session conducted a thorough architectural review of the go-composable-busi
 
 ### Key Metrics
 
-| Metric             | Value          | Status               |
-| ------------------ | -------------- | -------------------- |
-| Tests Passing      | 12/12 packages | ✅ 100%              |
-| Compilation Errors | 0              | ✅ Clean             |
+| Metric             | Value          | Status              |
+| ------------------ | -------------- | ------------------- |
+| Tests Passing      | 12/12 packages | ✅ 100%             |
+| Compilation Errors | 0              | ✅ Clean            |
 | Lint Issues        | 213            | ⚠️ Mostly acceptable |
 | Code Duplication   | 23.6%          | ⚠️ Borderline        |
-| Package Structure  | 14 packages    | ✅ Clean             |
+| Package Structure  | 14 packages    | ✅ Clean            |
 
 ---
 
@@ -118,40 +118,40 @@ cyclop:
 
 ### High Impact / Low Effort 🔴
 
-| #   | Task                           | Impact | Effort | Files          |
-| --- | ------------------------------ | ------ | ------ | -------------- |
-| 1   | Add `t.Parallel()` to tests    | Medium | Low    | All test files |
-| 2   | Fix errchkjson in ID tests     | Medium | Low    | id/id_test.go  |
-| 3   | Split long TestIDScan function | Low    | Low    | id/id_test.go  |
-| 4   | Add struct tags for musttag    | Low    | Low    | Various        |
+| # | Task                           | Impact | Effort | Files          |
+| - | ------------------------------ | ------ | ------ | -------------- |
+| 1 | Add `t.Parallel()` to tests    | Medium | Low    | All test files |
+| 2 | Fix errchkjson in ID tests     | Medium | Low    | id/id_test.go  |
+| 3 | Split long TestIDScan function | Low    | Low    | id/id_test.go  |
+| 4 | Add struct tags for musttag    | Low    | Low    | Various        |
 
 ### High Impact / High Effort 🟡
 
-| #   | Task                                     | Impact | Effort | Files              |
-| --- | ---------------------------------------- | ------ | ------ | ------------------ |
-| 5   | Add comprehensive documentation (revive) | Medium | High   | All packages       |
-| 6   | Split id/id.go into multiple files       | High   | High   | id/id.go → 4 files |
-| 7   | Review G115 overflow warnings            | Medium | Medium | types/, bounded/   |
-| 8   | Add BDD test structure                   | High   | High   | tests/ directory   |
+| # | Task                                     | Impact | Effort | Files              |
+| - | ---------------------------------------- | ------ | ------ | ------------------ |
+| 5 | Add comprehensive documentation (revive) | Medium | High   | All packages       |
+| 6 | Split id/id.go into multiple files       | High   | High   | id/id.go → 4 files |
+| 7 | Review G115 overflow warnings            | Medium | Medium | types/, bounded/   |
+| 8 | Add BDD test structure                   | High   | High   | tests/ directory   |
 
 ### Medium Impact / Medium Effort 🟢
 
-| #   | Task                                  | Impact | Effort | Files            |
-| --- | ------------------------------------- | ------ | ------ | ---------------- |
-| 9   | Extract locale constants to functions | Low    | Medium | locale/locale.go |
-| 10  | Refactor complex functions (gocyclo)  | Low    | Medium | id/id.go         |
-| 11  | Review nilnil returns                 | Low    | Medium | Various          |
-| 12  | Add integration tests                 | High   | High   | tests/ directory |
-| 13  | Add fuzz tests                        | Medium | Medium | \*\_fuzz_test.go |
+| #  | Task                                  | Impact | Effort | Files            |
+| -- | ------------------------------------- | ------ | ------ | ---------------- |
+| 9  | Extract locale constants to functions | Low    | Medium | locale/locale.go |
+| 10 | Refactor complex functions (gocyclo)  | Low    | Medium | id/id.go         |
+| 11 | Review nilnil returns                 | Low    | Medium | Various          |
+| 12 | Add integration tests                 | High   | High   | tests/ directory |
+| 13 | Add fuzz tests                        | Medium | Medium | \*\_fuzz_test.go |
 
 ### Long-term Improvements 🟣
 
-| #   | Task                      | Impact | Effort | Notes                    |
-| --- | ------------------------- | ------ | ------ | ------------------------ |
-| 14  | TypeSpec code generation  | High   | High   | Replace handwritten code |
-| 15  | BDD framework integration | High   | Medium | ginkgo/gomega            |
-| 16  | Performance benchmarks    | Low    | Medium | \*\_bench_test.go        |
-| 17  | Migration guide           | Medium | Medium | For API changes          |
+| #  | Task                      | Impact | Effort | Notes                    |
+| -- | ------------------------- | ------ | ------ | ------------------------ |
+| 14 | TypeSpec code generation  | High   | High   | Replace handwritten code |
+| 15 | BDD framework integration | High   | Medium | ginkgo/gomega            |
+| 16 | Performance benchmarks    | Low    | Medium | \*\_bench_test.go        |
+| 17 | Migration guide           | Medium | Medium | For API changes          |
 
 ---
 
@@ -454,5 +454,5 @@ _Note: The comprehensive review identified that the codebase is production-ready
 
 ---
 
-_Generated with Crush_  
+_Generated with Crush_\
 _Assisted-by: Sr. Software Architect Review via Crush <crush@charm.land>_

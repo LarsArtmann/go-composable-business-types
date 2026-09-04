@@ -12,7 +12,7 @@
 | ---------------- | ------------------ | ---------------------------------------------------------------- |
 | Branch           | `master`           | Up to date with `origin/master`                                  |
 | Staged Changes   | ✅ Ready to commit | `bounded/bounded.go`, `bounded/bounded_test.go`                  |
-| Unstaged Changes | ⚠️ Not ready       | `.golangci.yml` (formatting), `BDD_TESTS_REVIEW.md` (formatting) |
+| Unstaged Changes | ⚠️ Not ready        | `.golangci.yml` (formatting), `BDD_TESTS_REVIEW.md` (formatting) |
 
 ---
 

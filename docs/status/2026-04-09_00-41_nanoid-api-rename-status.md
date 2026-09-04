@@ -1,7 +1,7 @@
 # Status Report: NanoID API Rename
 
-**Date:** 2026-04-09 00:41  
-**Session:** Rename `NewNanoID()` → `New()`, `ParseNanoID()` → `Parse()`  
+**Date:** 2026-04-09 00:41\
+**Session:** Rename `NewNanoID()` → `New()`, `ParseNanoID()` → `Parse()`\
 **Author:** Crush (assisted)
 
 ---
@@ -14,21 +14,21 @@ Renamed all NanoID public functions to idiomatic Go names that eliminate redunda
 
 ## A) FULLY DONE
 
-| #   | Task                                                                        | Files Changed | Verification                                                                       |
-| --- | --------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------- |
-| 1   | Rename functions in `nanoid/nanoid.go`                                      | 1             | ✅ `go build` passes                                                               |
-| 2   | Update `nanoid/nanoid_test.go`                                              | 1             | ✅ All nanoid tests pass                                                           |
-| 3   | Update `datapoint/datapoint.go`                                             | 1             | ✅ `go build` passes                                                               |
-| 4   | Update `datapoint/datapoint_test.go`                                        | 1             | ✅ Tests pass (datapoint has pre-existing build failures unrelated to this change) |
-| 5   | Update `examples/basic/main.go`                                             | 1             | ✅ `go build` passes                                                               |
-| 6   | Update `examples/datapoint/main.go`                                         | 1             | ✅ `go build` passes                                                               |
-| 7   | Update `README.md`                                                          | 1             | ✅                                                                                 |
-| 8   | Update `id/README.md`                                                       | 1             | ✅                                                                                 |
-| 9   | Update `AGENTS.md`                                                          | 1             | ✅                                                                                 |
-| 10  | Update `POLICY.md`                                                          | 1             | ✅                                                                                 |
-| 11  | Update `docs/status/2026-03-22_00-38_comprehensive-status-report.md`        | 1             | ✅                                                                                 |
-| 12  | Update `docs/status/2026-03-22_03-15_panic-removal-comprehensive-status.md` | 1             | ✅                                                                                 |
-| 13  | Update `docs/status/2026-03-29_13-02_comprehensive-project-status.md`       | 1             | ✅                                                                                 |
+| #  | Task                                                                        | Files Changed | Verification                                                                       |
+| -- | --------------------------------------------------------------------------- | ------------- | ---------------------------------------------------------------------------------- |
+| 1  | Rename functions in `nanoid/nanoid.go`                                      | 1             | ✅ `go build` passes                                                               |
+| 2  | Update `nanoid/nanoid_test.go`                                              | 1             | ✅ All nanoid tests pass                                                           |
+| 3  | Update `datapoint/datapoint.go`                                             | 1             | ✅ `go build` passes                                                               |
+| 4  | Update `datapoint/datapoint_test.go`                                        | 1             | ✅ Tests pass (datapoint has pre-existing build failures unrelated to this change) |
+| 5  | Update `examples/basic/main.go`                                             | 1             | ✅ `go build` passes                                                               |
+| 6  | Update `examples/datapoint/main.go`                                         | 1             | ✅ `go build` passes                                                               |
+| 7  | Update `README.md`                                                          | 1             | ✅                                                                                 |
+| 8  | Update `id/README.md`                                                       | 1             | ✅                                                                                 |
+| 9  | Update `AGENTS.md`                                                          | 1             | ✅                                                                                 |
+| 10 | Update `POLICY.md`                                                          | 1             | ✅                                                                                 |
+| 11 | Update `docs/status/2026-03-22_00-38_comprehensive-status-report.md`        | 1             | ✅                                                                                 |
+| 12 | Update `docs/status/2026-03-22_03-15_panic-removal-comprehensive-status.md` | 1             | ✅                                                                                 |
+| 13 | Update `docs/status/2026-03-29_13-02_comprehensive-project-status.md`       | 1             | ✅                                                                                 |
 
 ### API Mapping
 
@@ -66,12 +66,12 @@ Nothing partially done — the rename is complete across all files.
 
 ## C) NOT STARTED
 
-| #   | Task                                                                                      | Priority | Notes                                                                            |
-| --- | ----------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
-| 1   | Lint run with `golangci-lint`                                                             | Medium   | Failed due to disk space (95% full, go build cache corruption), not a code issue |
-| 2   | Fix pre-existing build failures in `actor`, `bounded`, `enums`, `datapoint` test packages | High     | Multiple test packages have compilation errors (see Section D)                   |
-| 3   | Fix `id/id_text.go` references to `parseSignedIntegerID` / `parseUnsignedIntegerID`       | High     | Pre-existing uncommitted change; calls functions that don't exist                |
-| 4   | Fix `version/version.go` uncommitted changes                                              | Low      | Pre-existing uncommitted modification                                            |
+| # | Task                                                                                      | Priority | Notes                                                                            |
+| - | ----------------------------------------------------------------------------------------- | -------- | -------------------------------------------------------------------------------- |
+| 1 | Lint run with `golangci-lint`                                                             | Medium   | Failed due to disk space (95% full, go build cache corruption), not a code issue |
+| 2 | Fix pre-existing build failures in `actor`, `bounded`, `enums`, `datapoint` test packages | High     | Multiple test packages have compilation errors (see Section D)                   |
+| 3 | Fix `id/id_text.go` references to `parseSignedIntegerID` / `parseUnsignedIntegerID`       | High     | Pre-existing uncommitted change; calls functions that don't exist                |
+| 4 | Fix `version/version.go` uncommitted changes                                              | Low      | Pre-existing uncommitted modification                                            |
 
 ---
 
@@ -116,14 +116,14 @@ At 95% full, the Go build cache becomes unreliable:
 
 ## E) WHAT WE SHOULD IMPROVE
 
-| #   | Improvement                                                                                                                                           | Impact   |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
-| 1   | **Fix all test compilation errors** — the 5 broken test packages make CI worthless                                                                    | Critical |
-| 2   | **Don't leave broken code on master** — `id/id_text.go` should not compile-error                                                                      | Critical |
-| 3   | **Free disk space** — 95% full causes cascading build/cache failures                                                                                  | High     |
-| 4   | **Add CI pipeline** — these breakages would be caught immediately                                                                                     | High     |
-| 5   | **Apply same rename pattern to other packages** — `types.NewEmail()` → `types.NewEmail()` is fine, but `datapoint.NewDataPoint()` could be considered | Low      |
-| 6   | **Consistent test package naming** — decide if tests are `_test` (external) or internal                                                               | Medium   |
+| # | Improvement                                                                                                                                           | Impact   |
+| - | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------- |
+| 1 | **Fix all test compilation errors** — the 5 broken test packages make CI worthless                                                                    | Critical |
+| 2 | **Don't leave broken code on master** — `id/id_text.go` should not compile-error                                                                      | Critical |
+| 3 | **Free disk space** — 95% full causes cascading build/cache failures                                                                                  | High     |
+| 4 | **Add CI pipeline** — these breakages would be caught immediately                                                                                     | High     |
+| 5 | **Apply same rename pattern to other packages** — `types.NewEmail()` → `types.NewEmail()` is fine, but `datapoint.NewDataPoint()` could be considered | Low      |
+| 6 | **Consistent test package naming** — decide if tests are `_test` (external) or internal                                                               | Medium   |
 
 ---
 

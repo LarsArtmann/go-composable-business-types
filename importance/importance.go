@@ -266,7 +266,7 @@ func (i *Importance) Scan(src any) error {
 	}
 
 	return scanutil.ScanInt64(src, func(v int64) error {
-		*i = Importance(v) //nolint:gosec // G115: int64 to uint8 for Importance (0-100 range)
+		*i = Importance(v)
 
 		return nil
 	})

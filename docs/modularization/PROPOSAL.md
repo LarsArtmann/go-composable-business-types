@@ -64,14 +64,14 @@ version             types
 
 ### 3.1 Module Definitions
 
-| #   | Module Path                    | Directory      | Packages                                                                                                                | Ext Deps (prod)   | Internal Deps           |
-| --- | ------------------------------ | -------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------- | ----------------------- |
-| 1   | `go-composable-business-types` | `./`           | enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore | go-branded-id     | —                       |
-| 2   | `.../nanoid`                   | `./nanoid/`    | nanoid                                                                                                                  | sixafter/nanoid   | root                    |
-| 3   | `.../locale`                   | `./locale/`    | locale                                                                                                                  | golang.org/x/text | root                    |
-| 4   | `.../money`                    | `./money/`     | money                                                                                                                   | bojanz/currency   | root, locale            |
-| 5   | `.../datapoint`                | `./datapoint/` | datapoint                                                                                                               | —                 | root, nanoid            |
-| 6   | `.../examples`                 | `./examples/`  | basic, datapoint                                                                                                        | —                 | root, nanoid, datapoint |
+| # | Module Path                    | Directory      | Packages                                                                                                                | Ext Deps (prod)   | Internal Deps           |
+| - | ------------------------------ | -------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------- | ----------------------- |
+| 1 | `go-composable-business-types` | `./`           | enums, validate, pkg/errors, scanutil, testutil, version, bounded, importance, tag, types, temporal, actor, projectcore | go-branded-id     | —                       |
+| 2 | `.../nanoid`                   | `./nanoid/`    | nanoid                                                                                                                  | sixafter/nanoid   | root                    |
+| 3 | `.../locale`                   | `./locale/`    | locale                                                                                                                  | golang.org/x/text | root                    |
+| 4 | `.../money`                    | `./money/`     | money                                                                                                                   | bojanz/currency   | root, locale            |
+| 5 | `.../datapoint`                | `./datapoint/` | datapoint                                                                                                               | —                 | root, nanoid            |
+| 6 | `.../examples`                 | `./examples/`  | basic, datapoint                                                                                                        | —                 | root, nanoid, datapoint |
 
 ### 3.2 Why These Boundaries
 

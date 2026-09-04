@@ -103,26 +103,26 @@ Successfully completed a focused architecture sprint addressing critical type sa
 
 ### High Priority
 
-| #   | Task                                              | Effort | Impact |
-| --- | ------------------------------------------------- | ------ | ------ |
-| 1   | Fix BoundedString.UnmarshalJSON length validation | 10min  | Medium |
-| 2   | Add more SQL edge case tests                      | 15min  | Medium |
+| # | Task                                              | Effort | Impact |
+| - | ------------------------------------------------- | ------ | ------ |
+| 1 | Fix BoundedString.UnmarshalJSON length validation | 10min  | Medium |
+| 2 | Add more SQL edge case tests                      | 15min  | Medium |
 
 ### Medium Priority
 
-| #   | Task                                                         | Effort | Impact |
-| --- | ------------------------------------------------------------ | ------ | ------ |
-| 3   | Consider adding `Option[T]` type for nullable values         | 30min  | High   |
-| 4   | Consider adding `Result[T]` type for explicit error handling | 30min  | Medium |
-| 5   | Add example tests for godoc                                  | 30min  | Low    |
+| # | Task                                                         | Effort | Impact |
+| - | ------------------------------------------------------------ | ------ | ------ |
+| 3 | Consider adding `Option[T]` type for nullable values         | 30min  | High   |
+| 4 | Consider adding `Result[T]` type for explicit error handling | 30min  | Medium |
+| 5 | Add example tests for godoc                                  | 30min  | Low    |
 
 ### Low Priority
 
-| #   | Task                                        | Effort | Impact |
-| --- | ------------------------------------------- | ------ | ------ |
-| 6   | Review error types for consistency          | 15min  | Low    |
-| 7   | Add BDD-style tests with Ginkgo/Gomega      | 60min  | Medium |
-| 8   | Document phantom type pattern in id package | 10min  | Low    |
+| # | Task                                        | Effort | Impact |
+| - | ------------------------------------------- | ------ | ------ |
+| 6 | Review error types for consistency          | 15min  | Low    |
+| 7 | Add BDD-style tests with Ginkgo/Gomega      | 60min  | Medium |
+| 8 | Document phantom type pattern in id package | 10min  | Low    |
 
 ---
 

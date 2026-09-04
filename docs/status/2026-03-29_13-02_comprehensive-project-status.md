@@ -268,58 +268,58 @@ The 4 `As*Error` helpers in `pkg/errors` may be unnecessary indirection since Go
 
 ### Priority 1: Unblock & Stabilize (1–3)
 
-| #   | Task                                                                                        | Effort | Impact      | Package                   |
-| --- | ------------------------------------------------------------------------------------------- | ------ | ----------- | ------------------------- |
-| 1   | **Create `.golangci.yml`** with targeted exclusions for the 84 pre-existing issues          | S      | 🔴 Critical | Root                      |
-| 2   | **Fix `omitzero` inconsistency** in `datapoint/context.go` and `temporal/temporal.go`       | XS     | 🔴 High     | `datapoint/`, `temporal/` |
-| 3   | **Fix stale `nolint` directives** in `bounded/bounded.go` (gosec G115 not being suppressed) | XS     | 🟡 Medium   | `bounded/`                |
+| # | Task                                                                                        | Effort | Impact      | Package                   |
+| - | ------------------------------------------------------------------------------------------- | ------ | ----------- | ------------------------- |
+| 1 | **Create `.golangci.yml`** with targeted exclusions for the 84 pre-existing issues          | S      | 🔴 Critical | Root                      |
+| 2 | **Fix `omitzero` inconsistency** in `datapoint/context.go` and `temporal/temporal.go`       | XS     | 🔴 High     | `datapoint/`, `temporal/` |
+| 3 | **Fix stale `nolint` directives** in `bounded/bounded.go` (gosec G115 not being suppressed) | XS     | 🟡 Medium   | `bounded/`                |
 
 ### Priority 2: Coverage (4–8)
 
-| #   | Task                                                                                                                                   | Effort | Impact    | Package      |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------- | ------------ |
-| 4   | **Increase `nanoid/` coverage** from 48.9% → 80%+ (test `Parse` edge cases, error paths, `Scan`/`Value`)                               | M      | 🔴 High   | `nanoid/`    |
-| 5   | **Increase `id/` coverage** from 49.8% → 75%+ (test `Compare` all type branches, `Format`, `GobEncode`/`GobDecode`, more `Scan` types) | M      | 🔴 High   | `id/`        |
-| 6   | **Increase `datapoint/` coverage** from 57.0% → 80%+ (test `UnmarshalJSON` error paths, `Context` methods, `With*` chains)             | M      | 🔴 High   | `datapoint/` |
-| 7   | **Increase `types/` coverage** from 78.4% → 90%+ (test `Cents` arithmetic, `URL.Parse`, `Percentage` JSON round-trip)                  | S      | 🟡 Medium | `types/`     |
-| 8   | **Generate HTML coverage report** and identify exact uncovered functions                                                               | XS     | 🟡 Medium | All          |
+| # | Task                                                                                                                                   | Effort | Impact    | Package      |
+| - | -------------------------------------------------------------------------------------------------------------------------------------- | ------ | --------- | ------------ |
+| 4 | **Increase `nanoid/` coverage** from 48.9% → 80%+ (test `Parse` edge cases, error paths, `Scan`/`Value`)                               | M      | 🔴 High   | `nanoid/`    |
+| 5 | **Increase `id/` coverage** from 49.8% → 75%+ (test `Compare` all type branches, `Format`, `GobEncode`/`GobDecode`, more `Scan` types) | M      | 🔴 High   | `id/`        |
+| 6 | **Increase `datapoint/` coverage** from 57.0% → 80%+ (test `UnmarshalJSON` error paths, `Context` methods, `With*` chains)             | M      | 🔴 High   | `datapoint/` |
+| 7 | **Increase `types/` coverage** from 78.4% → 90%+ (test `Cents` arithmetic, `URL.Parse`, `Percentage` JSON round-trip)                  | S      | 🟡 Medium | `types/`     |
+| 8 | **Generate HTML coverage report** and identify exact uncovered functions                                                               | XS     | 🟡 Medium | All          |
 
 ### Priority 3: Go 1.24–1.26 Feature Completion (9–14)
 
-| #   | Task                                                           | Effort | Impact    | Package   |
-| --- | -------------------------------------------------------------- | ------ | --------- | --------- |
-| 9   | **Add `encoding.TextAppender` to `NanoID`**                    | S      | 🟡 Medium | `nanoid/` |
-| 10  | **Add `encoding.TextAppender` to `Locale`**                    | S      | 🟡 Medium | `locale/` |
-| 11  | **Add `encoding.TextAppender` to `ID[B,V]`**                   | S      | 🟡 Medium | `id/`     |
-| 12  | **Add `encoding.BinaryAppender` to `ID[B,V]`**                 | S      | 🟡 Medium | `id/`     |
-| 13  | **Add `encoding.TextAppender` to `Timestamp`, `Email`, `URL`** | S      | 🟡 Medium | `types/`  |
-| 14  | **Add `ignore examples` to `go.mod`** (Go 1.25)                | XS     | 🟢 Low    | Root      |
+| #  | Task                                                           | Effort | Impact    | Package   |
+| -- | -------------------------------------------------------------- | ------ | --------- | --------- |
+| 9  | **Add `encoding.TextAppender` to `NanoID`**                    | S      | 🟡 Medium | `nanoid/` |
+| 10 | **Add `encoding.TextAppender` to `Locale`**                    | S      | 🟡 Medium | `locale/` |
+| 11 | **Add `encoding.TextAppender` to `ID[B,V]`**                   | S      | 🟡 Medium | `id/`     |
+| 12 | **Add `encoding.BinaryAppender` to `ID[B,V]`**                 | S      | 🟡 Medium | `id/`     |
+| 13 | **Add `encoding.TextAppender` to `Timestamp`, `Email`, `URL`** | S      | 🟡 Medium | `types/`  |
+| 14 | **Add `ignore examples` to `go.mod`** (Go 1.25)                | XS     | 🟢 Low    | Root      |
 
 ### Priority 4: Iterator Expansion (15–17)
 
-| #   | Task                                                          | Effort | Impact    | Package      |
-| --- | ------------------------------------------------------------- | ------ | --------- | ------------ |
-| 15  | **Add `ActorChain.IterByKind()`** → `iter.Seq[ActorEntry[T]]` | S      | 🟡 Medium | `actor/`     |
-| 16  | **Add `Context.AllTags()`** → `iter.Seq2[string, string]`     | S      | 🟡 Medium | `datapoint/` |
-| 17  | **Add `Reference.IterTags()`** → `iter.Seq[string]`           | S      | 🟢 Low    | `datapoint/` |
+| #  | Task                                                          | Effort | Impact    | Package      |
+| -- | ------------------------------------------------------------- | ------ | --------- | ------------ |
+| 15 | **Add `ActorChain.IterByKind()`** → `iter.Seq[ActorEntry[T]]` | S      | 🟡 Medium | `actor/`     |
+| 16 | **Add `Context.AllTags()`** → `iter.Seq2[string, string]`     | S      | 🟡 Medium | `datapoint/` |
+| 17 | **Add `Reference.IterTags()`** → `iter.Seq[string]`           | S      | 🟢 Low    | `datapoint/` |
 
 ### Priority 5: Testing Quality (18–21)
 
-| #   | Task                                                                                                    | Effort | Impact    | Package               |
-| --- | ------------------------------------------------------------------------------------------------------- | ------ | --------- | --------------------- |
-| 18  | **Add benchmarks** to `bounded/`, `datapoint/`, `nanoid/`, `types/`, `temporal/`                        | M      | 🟡 Medium | Multiple              |
-| 19  | **Add fuzz tests** for `NanoID` validation, `Email` parsing, `URL` parsing, `BoundedString` constraints | M      | 🟡 Medium | Multiple              |
-| 20  | **Adopt `testing/synctest`** for `temporal/` and `types/timestamp` time-dependent tests                 | S      | 🟢 Low    | `temporal/`, `types/` |
-| 21  | **Add `Example*` test functions** for godoc                                                             | M      | 🟢 Low    | All                   |
+| #  | Task                                                                                                    | Effort | Impact    | Package               |
+| -- | ------------------------------------------------------------------------------------------------------- | ------ | --------- | --------------------- |
+| 18 | **Add benchmarks** to `bounded/`, `datapoint/`, `nanoid/`, `types/`, `temporal/`                        | M      | 🟡 Medium | Multiple              |
+| 19 | **Add fuzz tests** for `NanoID` validation, `Email` parsing, `URL` parsing, `BoundedString` constraints | M      | 🟡 Medium | Multiple              |
+| 20 | **Adopt `testing/synctest`** for `temporal/` and `types/timestamp` time-dependent tests                 | S      | 🟢 Low    | `temporal/`, `types/` |
+| 21 | **Add `Example*` test functions** for godoc                                                             | M      | 🟢 Low    | All                   |
 
 ### Priority 6: Documentation & Polish (22–25)
 
-| #   | Task                                                                                                         | Effort | Impact    | Package             |
-| --- | ------------------------------------------------------------------------------------------------------------ | ------ | --------- | ------------------- |
-| 22  | **Add package doc to `version/`** and doc comments on exported vars                                          | XS     | 🟢 Low    | `version/`          |
-| 23  | **Add doc comments** on `types.Email.IsZero()`, `LocalPart()`, `Domain()`, `nanoid.ErrNanoIDTooShort`        | XS     | 🟢 Low    | `types/`, `nanoid/` |
-| 24  | **Evaluate `AsType` wrappers** — keep or remove based on API ergonomics decision                             | XS     | 🟢 Low    | `pkg/errors/`       |
-| 25  | **Document Go version compatibility** in README (requires Go 1.24+ for `omitzero`, 1.26 for `errors.AsType`) | S      | 🟡 Medium | Root                |
+| #  | Task                                                                                                         | Effort | Impact    | Package             |
+| -- | ------------------------------------------------------------------------------------------------------------ | ------ | --------- | ------------------- |
+| 22 | **Add package doc to `version/`** and doc comments on exported vars                                          | XS     | 🟢 Low    | `version/`          |
+| 23 | **Add doc comments** on `types.Email.IsZero()`, `LocalPart()`, `Domain()`, `nanoid.ErrNanoIDTooShort`        | XS     | 🟢 Low    | `types/`, `nanoid/` |
+| 24 | **Evaluate `AsType` wrappers** — keep or remove based on API ergonomics decision                             | XS     | 🟢 Low    | `pkg/errors/`       |
+| 25 | **Document Go version compatibility** in README (requires Go 1.24+ for `omitzero`, 1.26 for `errors.AsType`) | S      | 🟡 Medium | Root                |
 
 ---
 

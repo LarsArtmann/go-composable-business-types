@@ -107,33 +107,33 @@ could not import errors (open .../fb0a51e7...-d: no such file or directory)
 
 Sorted by **Impact / Effort Ratio** (highest first):
 
-| #   | Task                                                             | Impact | Effort | Ratio |
-| --- | ---------------------------------------------------------------- | ------ | ------ | ----- |
-| 1   | Add package comments (enums, money, locale, temporal, datapoint) | High   | 5m     | 10.0  |
-| 2   | Run `golangci-lint run --fix` to auto-fix warnings               | High   | 1m     | 9.0   |
-| 3   | Add tests for Compare methods (Timestamp, Duration)              | High   | 5m     | 8.0   |
-| 4   | Add tests for SQL Scan/Value methods                             | High   | 15m    | 6.0   |
-| 5   | Improve enums test coverage (6.8% → 50%)                         | High   | 30m    | 5.0   |
-| 6   | Improve types test coverage (25.9% → 50%)                        | High   | 30m    | 4.5   |
-| 7   | Improve locale test coverage (28.9% → 50%)                       | Medium | 15m    | 4.0   |
-| 8   | Improve bounded test coverage (43.8% → 60%)                      | Medium | 15m    | 3.5   |
-| 9   | Improve nanoid test coverage (48.1% → 60%)                       | Medium | 15m    | 3.0   |
-| 10  | Improve id test coverage (41.9% → 55%)                           | Medium | 20m    | 2.5   |
-| 11  | Fix remaining manual linter warnings                             | Medium | 30m    | 2.0   |
-| 12  | Add example tests for godoc                                      | Medium | 20m    | 2.0   |
-| 13  | Add version constants to root                                    | Low    | 5m     | 2.0   |
-| 14  | Create CONTRIBUTING.md                                           | Low    | 20m    | 1.5   |
-| 15  | Add CHANGELOG.md                                                 | Low    | 15m    | 1.5   |
-| 16  | Add fuzz tests for Email, URL parsing                            | Medium | 30m    | 1.5   |
-| 17  | Refactor ID.Compare to use cmp.Ordered                           | Medium | 45m    | 1.0   |
-| 18  | Add benchmark suite                                              | Low    | 30m    | 1.0   |
-| 19  | Create root package re-exports                                   | Low    | 15m    | 1.0   |
-| 20  | Add WithTrace method to Cause                                    | Low    | 10m    | 1.0   |
-| 21  | Add more DataPoint examples                                      | Low    | 20m    | 0.8   |
-| 22  | Document best practices                                          | Low    | 30m    | 0.5   |
-| 23  | Set up GitHub Releases                                           | Low    | 20m    | 0.5   |
-| 24  | Add pre-commit hooks                                             | Low    | 15m    | 0.5   |
-| 25  | JSON v2 migration                                                | Low    | 60m+   | 0.2   |
+| #  | Task                                                             | Impact | Effort | Ratio |
+| -- | ---------------------------------------------------------------- | ------ | ------ | ----- |
+| 1  | Add package comments (enums, money, locale, temporal, datapoint) | High   | 5m     | 10.0  |
+| 2  | Run `golangci-lint run --fix` to auto-fix warnings               | High   | 1m     | 9.0   |
+| 3  | Add tests for Compare methods (Timestamp, Duration)              | High   | 5m     | 8.0   |
+| 4  | Add tests for SQL Scan/Value methods                             | High   | 15m    | 6.0   |
+| 5  | Improve enums test coverage (6.8% → 50%)                         | High   | 30m    | 5.0   |
+| 6  | Improve types test coverage (25.9% → 50%)                        | High   | 30m    | 4.5   |
+| 7  | Improve locale test coverage (28.9% → 50%)                       | Medium | 15m    | 4.0   |
+| 8  | Improve bounded test coverage (43.8% → 60%)                      | Medium | 15m    | 3.5   |
+| 9  | Improve nanoid test coverage (48.1% → 60%)                       | Medium | 15m    | 3.0   |
+| 10 | Improve id test coverage (41.9% → 55%)                           | Medium | 20m    | 2.5   |
+| 11 | Fix remaining manual linter warnings                             | Medium | 30m    | 2.0   |
+| 12 | Add example tests for godoc                                      | Medium | 20m    | 2.0   |
+| 13 | Add version constants to root                                    | Low    | 5m     | 2.0   |
+| 14 | Create CONTRIBUTING.md                                           | Low    | 20m    | 1.5   |
+| 15 | Add CHANGELOG.md                                                 | Low    | 15m    | 1.5   |
+| 16 | Add fuzz tests for Email, URL parsing                            | Medium | 30m    | 1.5   |
+| 17 | Refactor ID.Compare to use cmp.Ordered                           | Medium | 45m    | 1.0   |
+| 18 | Add benchmark suite                                              | Low    | 30m    | 1.0   |
+| 19 | Create root package re-exports                                   | Low    | 15m    | 1.0   |
+| 20 | Add WithTrace method to Cause                                    | Low    | 10m    | 1.0   |
+| 21 | Add more DataPoint examples                                      | Low    | 20m    | 0.8   |
+| 22 | Document best practices                                          | Low    | 30m    | 0.5   |
+| 23 | Set up GitHub Releases                                           | Low    | 20m    | 0.5   |
+| 24 | Add pre-commit hooks                                             | Low    | 15m    | 0.5   |
+| 25 | JSON v2 migration                                                | Low    | 60m+   | 0.2   |
 
 ---
 

@@ -10,5 +10,5 @@ require (
 require (
 	github.com/cockroachdb/apd/v3 v3.2.3 // indirect
 	github.com/larsartmann/go-composable-business-types v0.7.0 // indirect
-	golang.org/x/text v0.40.0 // indirect
+	golang.org/x/text v0.41.0 // indirect
 )

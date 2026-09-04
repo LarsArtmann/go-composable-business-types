@@ -30,10 +30,10 @@ This plan addresses the remaining lint issues in the go-composable-business-type
 
 These 2 tasks fix the most impactful issues with minimal effort:
 
-| #   | Task                                                          | Impact           | Effort |
-| --- | ------------------------------------------------------------- | ---------------- | ------ |
-| 1   | Add `//nolint:gosec` for G115 integer conversions in id/id.go | 62% issues fixed | 5 min  |
-| 2   | Fix predeclared `max` parameter in pkg/errors/errors.go       | 3% issues fixed  | 2 min  |
+| # | Task                                                          | Impact           | Effort |
+| - | ------------------------------------------------------------- | ---------------- | ------ |
+| 1 | Add `//nolint:gosec` for G115 integer conversions in id/id.go | 62% issues fixed | 5 min  |
+| 2 | Fix predeclared `max` parameter in pkg/errors/errors.go       | 3% issues fixed  | 2 min  |
 
 **Result:** 65% of issues resolved with 7 minutes of work.
 
@@ -41,10 +41,10 @@ These 2 tasks fix the most impactful issues with minimal effort:
 
 Add these 2 tasks to the above:
 
-| #   | Task                                          | Impact           | Effort |
-| --- | --------------------------------------------- | ---------------- | ------ |
-| 3   | Fix goconst issues (extract string constants) | 10% issues fixed | 10 min |
-| 4   | Fix errchkjson issues in id_test.go           | 7% issues fixed  | 5 min  |
+| # | Task                                          | Impact           | Effort |
+| - | --------------------------------------------- | ---------------- | ------ |
+| 3 | Fix goconst issues (extract string constants) | 10% issues fixed | 10 min |
+| 4 | Fix errchkjson issues in id_test.go           | 7% issues fixed  | 5 min  |
 
 **Result:** 82% of issues resolved with 22 minutes of work.
 
@@ -52,13 +52,13 @@ Add these 2 tasks to the above:
 
 The gocyclo issues (5 remaining) require significant refactoring:
 
-| #   | Task                                             | Impact    | Effort |
-| --- | ------------------------------------------------ | --------- | ------ |
-| 5   | Refactor ID.Scan to reduce complexity            | 3% issues | 60 min |
-| 6   | Refactor ID.UnmarshalJSON to reduce complexity   | 3% issues | 45 min |
-| 7   | Refactor ID.UnmarshalBinary to reduce complexity | 3% issues | 45 min |
-| 8   | Refactor TestDurationSQL to reduce complexity    | 3% issues | 20 min |
-| 9   | Refactor TestLocaleSQL to reduce complexity      | 3% issues | 20 min |
+| # | Task                                             | Impact    | Effort |
+| - | ------------------------------------------------ | --------- | ------ |
+| 5 | Refactor ID.Scan to reduce complexity            | 3% issues | 60 min |
+| 6 | Refactor ID.UnmarshalJSON to reduce complexity   | 3% issues | 45 min |
+| 7 | Refactor ID.UnmarshalBinary to reduce complexity | 3% issues | 45 min |
+| 8 | Refactor TestDurationSQL to reduce complexity    | 3% issues | 20 min |
+| 9 | Refactor TestLocaleSQL to reduce complexity      | 3% issues | 20 min |
 
 **Decision:** These are **ACCEPTABLE TECHNICAL DEBT** because:
 

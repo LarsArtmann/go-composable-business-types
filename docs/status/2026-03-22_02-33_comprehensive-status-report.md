@@ -1,9 +1,9 @@
 # Comprehensive Status Report
 
-**Date:** 2026-03-22 02:33  
-**Branch:** master  
-**Total Go Files:** 31  
-**Test Files:** 12  
+**Date:** 2026-03-22 02:33\
+**Branch:** master\
+**Total Go Files:** 31\
+**Test Files:** 12\
 **All Tests Passing:** ✅ YES
 
 ---
@@ -20,16 +20,16 @@ The `NanoId` → `NanoID` breaking change has been **completed** across all Go s
 | ------------- | ---------------- | --------- | -------------------------------- | --------------------------------------------- |
 | `actor/`      | ✅ COMPLETE      | 96        | `ActorEntry[T]`, `ActorChain[T]` | Clean design, minor issues                    |
 | `bounded/`    | ✅ COMPLETE      | 147       | `BoundedString`                  | Needs error wrapping fixes                    |
-| `datapoint/`  | ⚠️ NEEDS WORK    | 563 total | `DataPoint[T]`                   | **CRITICAL: With\* mutation bug**             |
+| `datapoint/`  | ⚠️ NEEDS WORK     | 563 total | `DataPoint[T]`                   | **CRITICAL: With\* mutation bug**             |
 | `enums/`      | ✅ COMPLETE      | 774 total | `ActorKind`, `Trigger`, etc.     | Generated code                                |
-| `id/`         | ⚠️ NEEDS WORK    | 915       | `ID[B,V]`                        | **CRITICAL: Must split, massive duplication** |
+| `id/`         | ⚠️ NEEDS WORK     | 915       | `ID[B,V]`                        | **CRITICAL: Must split, massive duplication** |
 | `locale/`     | ✅ COMPLETE      | 126       | `Locale`                         | Minor issues                                  |
-| `money/`      | ⚠️ NEEDS REVIEW  | 78        | `Money`                          | **Type alias anti-pattern**                   |
+| `money/`      | ⚠️ NEEDS REVIEW   | 78        | `Money`                          | **Type alias anti-pattern**                   |
 | `nanoid/`     | ✅ COMPLETE      | 137       | `NanoID`                         | Just renamed, clean                           |
 | `pkg/errors/` | ❌ CONTROVERSIAL | 288       | Sentinel errors                  | **Split brain with stdlib**                   |
 | `scanutil/`   | ✅ COMPLETE      | 112       | Helpers                          | Minor warnings                                |
 | `temporal/`   | ✅ COMPLETE      | 134       | `Bitemporal`                     | Minor inconsistencies                         |
-| `types/`      | ⚠️ NEEDS WORK    | 533       | `Email`, `URL`, `Cents`, etc.    | **Must split, duplication**                   |
+| `types/`      | ⚠️ NEEDS WORK     | 533       | `Email`, `URL`, `Cents`, etc.    | **Must split, duplication**                   |
 | `validate/`   | ✅ COMPLETE      | 41        | `Validator`                      | Clean                                         |
 
 ---
@@ -49,8 +49,8 @@ The `NanoId` → `NanoID` breaking change has been **completed** across all Go s
 
 ### b) Partially Done
 
-| Task                 | Status    | Notes                                             |
-| -------------------- | --------- | ------------------------------------------------- |
+| Task                 | Status   | Notes                                             |
+| -------------------- | -------- | ------------------------------------------------- |
 | Docs archive updates | ⏸️ PAUSED | Historical archives left as-is (correct decision) |
 | Usage planning doc   | ⏸️ PAUSED | Low priority, design reference only               |
 
@@ -180,33 +180,33 @@ func compare[T Ordered](a, b T) int {
 
 ## 4. Top 25 Tasks (Prioritized)
 
-| #   | Priority     | Task                                        | Impact          | Effort  | Status      |
-| --- | ------------ | ------------------------------------------- | --------------- | ------- | ----------- |
-| 1   | **CRITICAL** | Fix DataPoint.With\* mutation bug           | Data corruption | Medium  | NOT STARTED |
-| 2   | **CRITICAL** | Split id/id.go (915 lines)                  | Maintainability | High    | NOT STARTED |
-| 3   | **HIGH**     | Split types/types.go (533 lines)            | Maintainability | Medium  | NOT STARTED |
-| 4   | **HIGH**     | Decide pkg/errors/ fate                     | Architecture    | Low     | NOT STARTED |
-| 5   | **HIGH**     | Fix error wrapping (%w) in bounded, types   | Correctness     | Medium  | NOT STARTED |
-| 6   | **MEDIUM**   | Review money type alias pattern             | Type safety     | Medium  | NOT STARTED |
-| 7   | **MEDIUM**   | Add BoundedString to pkg/errors integration | Consistency     | Low     | NOT STARTED |
-| 8   | **MEDIUM**   | Add nanoid to pkg/errors integration        | Consistency     | Low     | NOT STARTED |
-| 9   | **LOW**      | Fix temporal receiver inconsistency         | Correctness     | Low     | NOT STARTED |
-| 10  | **LOW**      | Remove validate.Validatable alias           | Cleanup         | Trivial | NOT STARTED |
-| 11  | **LOW**      | ActorEntry.Name → BoundedString             | Type safety     | Medium  | NOT STARTED |
-| 12  | **LOW**      | Add interfaces for common behaviors         | Extensibility   | Medium  | NOT STARTED |
-| 13  | **LOW**      | DataPoint update semantics (from existing)  | Completeness    | Medium  | NOT STARTED |
-| 14  | **LOW**      | Add fuzz tests for parsers                  | Quality         | Medium  | NOT STARTED |
-| 15  | **LOW**      | ActorChain.IsZero panic fix                 | Correctness     | Low     | NOT STARTED |
-| 16  | **LOW**      | Add more Reference factory methods          | Completeness    | Low     | NOT STARTED |
-| 17  | **LOW**      | Timestamp/Percentage validation             | Correctness     | Low     | NOT STARTED |
-| 18  | **INFO**     | Update remaining docs (archive)             | Documentation   | Low     | NOT STARTED |
-| 19  | **INFO**     | GOSEC G115 overflow fix in types            | Security        | Trivial | NOT STARTED |
-| 20  | **INFO**     | Locale Scan nilnil fix                      | Correctness     | Low     | NOT STARTED |
-| 21  | **INFO**     | Fix enum double //go:generate               | Cleanup         | Trivial | NOT STARTED |
-| 22  | **INFO**     | Add godoc examples to key types             | Documentation   | Medium  | NOT STARTED |
-| 23  | **INFO**     | BoundedString → Bounded rename              | Naming          | Low     | NOT STARTED |
-| 24  | **INFO**     | Consider uint types where applicable        | Type safety     | Low     | NOT STARTED |
-| 25  | **INFO**     | Add DataPoint factory from existing         | Completeness    | Low     | NOT STARTED |
+| #  | Priority     | Task                                        | Impact          | Effort  | Status      |
+| -- | ------------ | ------------------------------------------- | --------------- | ------- | ----------- |
+| 1  | **CRITICAL** | Fix DataPoint.With\* mutation bug           | Data corruption | Medium  | NOT STARTED |
+| 2  | **CRITICAL** | Split id/id.go (915 lines)                  | Maintainability | High    | NOT STARTED |
+| 3  | **HIGH**     | Split types/types.go (533 lines)            | Maintainability | Medium  | NOT STARTED |
+| 4  | **HIGH**     | Decide pkg/errors/ fate                     | Architecture    | Low     | NOT STARTED |
+| 5  | **HIGH**     | Fix error wrapping (%w) in bounded, types   | Correctness     | Medium  | NOT STARTED |
+| 6  | **MEDIUM**   | Review money type alias pattern             | Type safety     | Medium  | NOT STARTED |
+| 7  | **MEDIUM**   | Add BoundedString to pkg/errors integration | Consistency     | Low     | NOT STARTED |
+| 8  | **MEDIUM**   | Add nanoid to pkg/errors integration        | Consistency     | Low     | NOT STARTED |
+| 9  | **LOW**      | Fix temporal receiver inconsistency         | Correctness     | Low     | NOT STARTED |
+| 10 | **LOW**      | Remove validate.Validatable alias           | Cleanup         | Trivial | NOT STARTED |
+| 11 | **LOW**      | ActorEntry.Name → BoundedString             | Type safety     | Medium  | NOT STARTED |
+| 12 | **LOW**      | Add interfaces for common behaviors         | Extensibility   | Medium  | NOT STARTED |
+| 13 | **LOW**      | DataPoint update semantics (from existing)  | Completeness    | Medium  | NOT STARTED |
+| 14 | **LOW**      | Add fuzz tests for parsers                  | Quality         | Medium  | NOT STARTED |
+| 15 | **LOW**      | ActorChain.IsZero panic fix                 | Correctness     | Low     | NOT STARTED |
+| 16 | **LOW**      | Add more Reference factory methods          | Completeness    | Low     | NOT STARTED |
+| 17 | **LOW**      | Timestamp/Percentage validation             | Correctness     | Low     | NOT STARTED |
+| 18 | **INFO**     | Update remaining docs (archive)             | Documentation   | Low     | NOT STARTED |
+| 19 | **INFO**     | GOSEC G115 overflow fix in types            | Security        | Trivial | NOT STARTED |
+| 20 | **INFO**     | Locale Scan nilnil fix                      | Correctness     | Low     | NOT STARTED |
+| 21 | **INFO**     | Fix enum double //go:generate               | Cleanup         | Trivial | NOT STARTED |
+| 22 | **INFO**     | Add godoc examples to key types             | Documentation   | Medium  | NOT STARTED |
+| 23 | **INFO**     | BoundedString → Bounded rename              | Naming          | Low     | NOT STARTED |
+| 24 | **INFO**     | Consider uint types where applicable        | Type safety     | Low     | NOT STARTED |
+| 25 | **INFO**     | Add DataPoint factory from existing         | Completeness    | Low     | NOT STARTED |
 
 ---
 
@@ -272,15 +272,15 @@ User → ID[NanoID] → DataPoint → JSON/Database
 
 ## 8. Architecture Principles Check
 
-| Principle                         | Status     | Notes                           |
-| --------------------------------- | ---------- | ------------------------------- |
-| Composition over Inheritance      | ✅ GOOD    | No inheritance used             |
+| Principle                         | Status    | Notes                           |
+| --------------------------------- | --------- | ------------------------------- |
+| Composition over Inheritance      | ✅ GOOD   | No inheritance used             |
 | Impossible states unrepresentable | ⚠️ PARTIAL | Some raw strings, mutation bug  |
 | Small, focused functions          | ⚠️ PARTIAL | Some large files need splitting |
 | Strong types                      | ⚠️ PARTIAL | Money type alias, untyped tags  |
-| Errors centralized                | ❌ FAIL    | `pkg/errors/` has issues        |
-| Consistent error handling         | ❌ FAIL    | Most packages don't `%w` wrap   |
-| Files under 350 lines             | ❌ FAIL    | `id/` and `types/` exceed       |
+| Errors centralized                | ❌ FAIL   | `pkg/errors/` has issues        |
+| Consistent error handling         | ❌ FAIL   | Most packages don't `%w` wrap   |
+| Files under 350 lines             | ❌ FAIL   | `id/` and `types/` exceed       |
 
 ---
 
@@ -351,5 +351,5 @@ User → ID[NanoID] → DataPoint → JSON/Database
 
 ---
 
-**Prepared by:** Crush AI  
+**Prepared by:** Crush AI\
 **Date:** 2026-03-22

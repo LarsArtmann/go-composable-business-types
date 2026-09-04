@@ -1,9 +1,9 @@
 # MASTER EXECUTION PLAN — Shared Types Ecosystem Migration
 
-**Created:** 2026-05-04 11:01  
-**Total tasks:** 68  
-**Max task duration:** 12 minutes  
-**Sorted by:** Impact × Customer Value / Effort (highest first)  
+**Created:** 2026-05-04 11:01\
+**Total tasks:** 68\
+**Max task duration:** 12 minutes\
+**Sorted by:** Impact × Customer Value / Effort (highest first)\
 **Legend:** ✅ = Done | ⬜ = Not started | 🔶 = Partial
 
 ---

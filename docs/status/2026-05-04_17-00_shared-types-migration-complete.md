@@ -1,7 +1,7 @@
 # Status Report — Shared Types Ecosystem Migration
 
-**Date:** 2026-05-04 17:00  
-**Scope:** go-composable-business-types, project-discovery-sdk, project-meta, projects-management-automation, project-dependency-graph  
+**Date:** 2026-05-04 17:00\
+**Scope:** go-composable-business-types, project-discovery-sdk, project-meta, projects-management-automation, project-dependency-graph\
 **Overall Status:** Migration COMPLETE. Post-migration improvements IN PROGRESS.
 
 ---
@@ -99,16 +99,16 @@ PMA's `Language uint8` enum includes project-type categories that don't exist in
 
 ## C) NOT STARTED
 
-| #   | Task                                                               | Effort | Why                                                                                   |
-| --- | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------- |
-| 1   | Extract `ProjectType` from PMA's Language enum                     | 2-4h   | Requires touching 50+ switch statements across PMA                                    |
-| 2   | Auto-generate PMA Language string maps via `go-enum` or `stringer` | 30m    | `stringToLanguage`/`languageStrings` are manually maintained inverse maps             |
-| 3   | Make PMA `Importance` a true type alias to CBT                     | 1h     | Need to update `NewImportance(int)` callers to use `New(uint8)` + `Parse(string)`     |
-| 4   | Delete `ConvertImportance`/`ConvertImportanceToMeta` from adapter  | 15m    | Blocked on PMA Importance type alias                                                  |
-| 5   | Root `go.work` for all 5 projects                                  | 30m    | Risk: could break builds of unrelated projects                                        |
-| 6   | CI workflow updates (3 projects)                                   | 1-2h   | PMA, project-meta, PDG CI pipelines need CBT SDK reference                            |
-| 7   | `doctor --fix-tags` migration command in project-meta              | 1h     | Tag regex changed: underscores → hyphens. Existing YAML files may have underscores    |
-| 8   | Fix pre-existing project-meta `cliutil`/`storage` test failures    | 30m    | `TestResolveProjectNameFromPath` and `TestDetectProjectRoot` — unrelated to migration |
+| # | Task                                                               | Effort | Why                                                                                   |
+| - | ------------------------------------------------------------------ | ------ | ------------------------------------------------------------------------------------- |
+| 1 | Extract `ProjectType` from PMA's Language enum                     | 2-4h   | Requires touching 50+ switch statements across PMA                                    |
+| 2 | Auto-generate PMA Language string maps via `go-enum` or `stringer` | 30m    | `stringToLanguage`/`languageStrings` are manually maintained inverse maps             |
+| 3 | Make PMA `Importance` a true type alias to CBT                     | 1h     | Need to update `NewImportance(int)` callers to use `New(uint8)` + `Parse(string)`     |
+| 4 | Delete `ConvertImportance`/`ConvertImportanceToMeta` from adapter  | 15m    | Blocked on PMA Importance type alias                                                  |
+| 5 | Root `go.work` for all 5 projects                                  | 30m    | Risk: could break builds of unrelated projects                                        |
+| 6 | CI workflow updates (3 projects)                                   | 1-2h   | PMA, project-meta, PDG CI pipelines need CBT SDK reference                            |
+| 7 | `doctor --fix-tags` migration command in project-meta              | 1h     | Tag regex changed: underscores → hyphens. Existing YAML files may have underscores    |
+| 8 | Fix pre-existing project-meta `cliutil`/`storage` test failures    | 30m    | `TestResolveProjectNameFromPath` and `TestDetectProjectRoot` — unrelated to migration |
 
 ---
 
@@ -168,33 +168,33 @@ PMA's `Language uint8` enum includes project-type categories that don't exist in
 
 Sorted by Impact × Value / Effort (highest first):
 
-| #   | Task                                                                              | Project  | Effort | Impact |
-| --- | --------------------------------------------------------------------------------- | -------- | ------ | ------ |
-| 1   | Make PMA `Importance` a type alias to CBT `importance.Importance`                 | PMA      | 1h     | HIGH   |
-| 2   | Delete `ConvertImportance`/`ConvertImportanceToMeta` from adapter                 | PMA      | 15m    | MED    |
-| 3   | Delete or gut `meta/adapter.go` (all conversions now identity/cast)               | PMA      | 30m    | MED    |
-| 4   | Fix pre-existing project-meta `cliutil`/`storage` test failures                   | meta     | 30m    | MED    |
-| 5   | Implement `doctor --fix-tags` in project-meta                                     | meta     | 1h     | HIGH   |
-| 6   | Add `go.work` to project-meta (if missing)                                        | meta     | 5m     | LOW    |
-| 7   | Extract `ProjectType` from PMA Language enum                                      | PMA      | 2-4h   | HIGH   |
-| 8   | Auto-generate PMA Language maps with `go-enum` or `stringer`                      | PMA      | 30m    | MED    |
-| 9   | Create root `go.work` for all 5 projects                                          | root     | 30m    | MED    |
-| 10  | Update CI workflows for CBT dependency (3 projects)                               | CI       | 1-2h   | HIGH   |
-| 11  | Add `ParseTags` to CBT `tag` package (reusable everywhere)                        | CBT      | 15m    | MED    |
-| 12  | Replace PMA `NewImportance(int)` with CBT `New(uint8)` everywhere                 | PMA      | 30m    | MED    |
-| 13  | Replace PMA `NewImportanceFromString` with CBT `Parse(string)`                    | PMA      | 30m    | MED    |
-| 14  | Add `PercentString()` to CBT Importance (done), use it in PMA                     | PMA      | 10m    | LOW    |
-| 15  | Add integration test: round-trip Importance through all 3 projects                | tests    | 1h     | MED    |
-| 16  | Add integration test: round-trip Tag through all 3 projects                       | tests    | 1h     | MED    |
-| 17  | Verify CBT `go:generate` works with new importance methods                        | CBT      | 15m    | LOW    |
-| 18  | Update `LIBRARY_GUIDE.md` with Tag/Importance method reference                    | CBT      | 30m    | LOW    |
-| 19  | Add fuzz tests for Tag validation edge cases (unicode, long strings)              | CBT      | 30m    | LOW    |
-| 20  | Audit all YAML files in PMA testdata for underscore tags                          | PMA      | 15m    | MED    |
-| 21  | Add benchmark: Tag conversion before/after (was O(n) normalization, now identity) | PMA      | 15m    | LOW    |
-| 22  | Consider `ProjectType` as a shared type in CBT (for PMA/PDG)                      | CBT      | 2h     | MED    |
-| 23  | Update `CONTEXT.md` in PDG with new dependency info                               | PDG      | 10m    | LOW    |
-| 24  | Clean up `PUBLIC_OR_PRIVATE.md` files in SDK and project-meta                     | meta/sdk | 5m     | LOW    |
-| 25  | Verify `GOEXPERIMENT=jsonv2` is set in all flake.nix devShells                    | all      | 15m    | MED    |
+| #  | Task                                                                              | Project  | Effort | Impact |
+| -- | --------------------------------------------------------------------------------- | -------- | ------ | ------ |
+| 1  | Make PMA `Importance` a type alias to CBT `importance.Importance`                 | PMA      | 1h     | HIGH   |
+| 2  | Delete `ConvertImportance`/`ConvertImportanceToMeta` from adapter                 | PMA      | 15m    | MED    |
+| 3  | Delete or gut `meta/adapter.go` (all conversions now identity/cast)               | PMA      | 30m    | MED    |
+| 4  | Fix pre-existing project-meta `cliutil`/`storage` test failures                   | meta     | 30m    | MED    |
+| 5  | Implement `doctor --fix-tags` in project-meta                                     | meta     | 1h     | HIGH   |
+| 6  | Add `go.work` to project-meta (if missing)                                        | meta     | 5m     | LOW    |
+| 7  | Extract `ProjectType` from PMA Language enum                                      | PMA      | 2-4h   | HIGH   |
+| 8  | Auto-generate PMA Language maps with `go-enum` or `stringer`                      | PMA      | 30m    | MED    |
+| 9  | Create root `go.work` for all 5 projects                                          | root     | 30m    | MED    |
+| 10 | Update CI workflows for CBT dependency (3 projects)                               | CI       | 1-2h   | HIGH   |
+| 11 | Add `ParseTags` to CBT `tag` package (reusable everywhere)                        | CBT      | 15m    | MED    |
+| 12 | Replace PMA `NewImportance(int)` with CBT `New(uint8)` everywhere                 | PMA      | 30m    | MED    |
+| 13 | Replace PMA `NewImportanceFromString` with CBT `Parse(string)`                    | PMA      | 30m    | MED    |
+| 14 | Add `PercentString()` to CBT Importance (done), use it in PMA                     | PMA      | 10m    | LOW    |
+| 15 | Add integration test: round-trip Importance through all 3 projects                | tests    | 1h     | MED    |
+| 16 | Add integration test: round-trip Tag through all 3 projects                       | tests    | 1h     | MED    |
+| 17 | Verify CBT `go:generate` works with new importance methods                        | CBT      | 15m    | LOW    |
+| 18 | Update `LIBRARY_GUIDE.md` with Tag/Importance method reference                    | CBT      | 30m    | LOW    |
+| 19 | Add fuzz tests for Tag validation edge cases (unicode, long strings)              | CBT      | 30m    | LOW    |
+| 20 | Audit all YAML files in PMA testdata for underscore tags                          | PMA      | 15m    | MED    |
+| 21 | Add benchmark: Tag conversion before/after (was O(n) normalization, now identity) | PMA      | 15m    | LOW    |
+| 22 | Consider `ProjectType` as a shared type in CBT (for PMA/PDG)                      | CBT      | 2h     | MED    |
+| 23 | Update `CONTEXT.md` in PDG with new dependency info                               | PDG      | 10m    | LOW    |
+| 24 | Clean up `PUBLIC_OR_PRIVATE.md` files in SDK and project-meta                     | meta/sdk | 5m     | LOW    |
+| 25 | Verify `GOEXPERIMENT=jsonv2` is set in all flake.nix devShells                    | all      | 15m    | MED    |
 
 ---
 

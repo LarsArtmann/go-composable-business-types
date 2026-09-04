@@ -249,78 +249,78 @@ flowchart TD
 
 ### Sprint 1: Immediate Actions
 
-| #   | Task                                         | Time  | Priority |
-| --- | -------------------------------------------- | ----- | -------- |
-| 1   | Commit planning doc                          | 5min  | P1       |
-| 2   | Update README with enums limitation          | 5min  | P1       |
-| 3   | Create .gitattributes for linguist-generated | 3min  | P2       |
-| 4   | Run buildflow to verify current state        | 5min  | P1       |
-| 5   | Research buildflow --exclude patterns        | 10min | P2       |
+| # | Task                                         | Time  | Priority |
+| - | -------------------------------------------- | ----- | -------- |
+| 1 | Commit planning doc                          | 5min  | P1       |
+| 2 | Update README with enums limitation          | 5min  | P1       |
+| 3 | Create .gitattributes for linguist-generated | 3min  | P2       |
+| 4 | Run buildflow to verify current state        | 5min  | P1       |
+| 5 | Research buildflow --exclude patterns        | 10min | P2       |
 
 ### Sprint 2: Test Coverage - bounded
 
-| #   | Task                                         | Time  | Priority |
-| --- | -------------------------------------------- | ----- | -------- |
-| 6   | Review bounded/bounded.go for untested paths | 5min  | P2       |
-| 7   | Add tests for edge cases (empty, max length) | 10min | P2       |
-| 8   | Add tests for error conditions               | 10min | P2       |
-| 9   | Verify bounded coverage >= 80%               | 5min  | P2       |
+| # | Task                                         | Time  | Priority |
+| - | -------------------------------------------- | ----- | -------- |
+| 6 | Review bounded/bounded.go for untested paths | 5min  | P2       |
+| 7 | Add tests for edge cases (empty, max length) | 10min | P2       |
+| 8 | Add tests for error conditions               | 10min | P2       |
+| 9 | Verify bounded coverage >= 80%               | 5min  | P2       |
 
 ### Sprint 3: Test Coverage - enums
 
-| #   | Task                                     | Time  | Priority |
-| --- | ---------------------------------------- | ----- | -------- |
-| 10  | Review enums/enums.go for untested paths | 5min  | P2       |
-| 11  | Add tests for all enum values            | 10min | P2       |
-| 12  | Add tests for SQL marshal/unmarshal      | 10min | P2       |
-| 13  | Verify enums coverage >= 80%             | 5min  | P2       |
+| #  | Task                                     | Time  | Priority |
+| -- | ---------------------------------------- | ----- | -------- |
+| 10 | Review enums/enums.go for untested paths | 5min  | P2       |
+| 11 | Add tests for all enum values            | 10min | P2       |
+| 12 | Add tests for SQL marshal/unmarshal      | 10min | P2       |
+| 13 | Verify enums coverage >= 80%             | 5min  | P2       |
 
 ### Sprint 4: Test Coverage - id
 
-| #   | Task                                            | Time  | Priority |
-| --- | ----------------------------------------------- | ----- | -------- |
-| 14  | Review id/id.go for untested paths              | 5min  | P2       |
-| 15  | Add tests for edge cases (empty, special chars) | 10min | P2       |
-| 16  | Add tests for binary encoding edge cases        | 10min | P2       |
-| 17  | Add tests for SQL Value/Scan edge cases         | 10min | P2       |
-| 18  | Verify id coverage >= 80%                       | 5min  | P2       |
+| #  | Task                                            | Time  | Priority |
+| -- | ----------------------------------------------- | ----- | -------- |
+| 14 | Review id/id.go for untested paths              | 5min  | P2       |
+| 15 | Add tests for edge cases (empty, special chars) | 10min | P2       |
+| 16 | Add tests for binary encoding edge cases        | 10min | P2       |
+| 17 | Add tests for SQL Value/Scan edge cases         | 10min | P2       |
+| 18 | Verify id coverage >= 80%                       | 5min  | P2       |
 
 ### Sprint 5: Test Coverage - nanoid
 
-| #   | Task                                       | Time  | Priority |
-| --- | ------------------------------------------ | ----- | -------- |
-| 19  | Review nanoid/nanoid.go for untested paths | 5min  | P2       |
-| 20  | Add tests for validation errors            | 10min | P2       |
-| 21  | Add tests for custom length                | 10min | P2       |
-| 22  | Verify nanoid coverage >= 80%              | 5min  | P2       |
+| #  | Task                                       | Time  | Priority |
+| -- | ------------------------------------------ | ----- | -------- |
+| 19 | Review nanoid/nanoid.go for untested paths | 5min  | P2       |
+| 20 | Add tests for validation errors            | 10min | P2       |
+| 21 | Add tests for custom length                | 10min | P2       |
+| 22 | Verify nanoid coverage >= 80%              | 5min  | P2       |
 
 ### Sprint 6: Test Coverage - datapoint
 
-| #   | Task                                             | Time  | Priority |
-| --- | ------------------------------------------------ | ----- | -------- |
-| 23  | Review datapoint/datapoint.go for untested paths | 5min  | P2       |
-| 24  | Add tests for DataPoint builder methods          | 10min | P2       |
-| 25  | Add tests for Context, Reference, Cause          | 15min | P2       |
-| 26  | Add tests for JSON serialization                 | 10min | P2       |
-| 27  | Verify datapoint coverage >= 80%                 | 5min  | P2       |
+| #  | Task                                             | Time  | Priority |
+| -- | ------------------------------------------------ | ----- | -------- |
+| 23 | Review datapoint/datapoint.go for untested paths | 5min  | P2       |
+| 24 | Add tests for DataPoint builder methods          | 10min | P2       |
+| 25 | Add tests for Context, Reference, Cause          | 15min | P2       |
+| 26 | Add tests for JSON serialization                 | 10min | P2       |
+| 27 | Verify datapoint coverage >= 80%                 | 5min  | P2       |
 
 ### Sprint 7: Quality Improvements
 
-| #   | Task                                    | Time  | Priority |
-| --- | --------------------------------------- | ----- | -------- |
-| 28  | Add Example\* functions for ID          | 10min | P3       |
-| 29  | Add Example\* functions for DataPoint   | 10min | P3       |
-| 30  | Add Example\* functions for types       | 10min | P3       |
-| 31  | Run go test -cover to verify all >= 80% | 5min  | P2       |
+| #  | Task                                    | Time  | Priority |
+| -- | --------------------------------------- | ----- | -------- |
+| 28 | Add Example\* functions for ID          | 10min | P3       |
+| 29 | Add Example\* functions for DataPoint   | 10min | P3       |
+| 30 | Add Example\* functions for types       | 10min | P3       |
+| 31 | Run go test -cover to verify all >= 80% | 5min  | P2       |
 
 ### Sprint 8: Final Cleanup
 
-| #   | Task                                    | Time  | Priority |
-| --- | --------------------------------------- | ----- | -------- |
-| 32  | Update README with architecture diagram | 10min | P3       |
-| 33  | Run full test suite                     | 5min  | P1       |
-| 34  | Commit all changes                      | 5min  | P1       |
-| 35  | Push to origin                          | 2min  | P1       |
+| #  | Task                                    | Time  | Priority |
+| -- | --------------------------------------- | ----- | -------- |
+| 32 | Update README with architecture diagram | 10min | P3       |
+| 33 | Run full test suite                     | 5min  | P1       |
+| 34 | Commit all changes                      | 5min  | P1       |
+| 35 | Push to origin                          | 2min  | P1       |
 
 ---
 

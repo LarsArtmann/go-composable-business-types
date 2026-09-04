@@ -45,28 +45,28 @@
 
 ### Immediate (High Priority)
 
-| #   | Improvement                               | Rationale                        | Effort |
-| --- | ----------------------------------------- | -------------------------------- | ------ |
-| 1   | **Fix bounded lint issues**               | Clean bounded package completely | 30 min |
-| 2   | **Decide on golangci.yml formatting**     | Keep consistency                 | 5 min  |
-| 3   | **Decide on BDD_TESTS_REVIEW.md changes** | Documentation consistency        | 5 min  |
+| # | Improvement                               | Rationale                        | Effort |
+| - | ----------------------------------------- | -------------------------------- | ------ |
+| 1 | **Fix bounded lint issues**               | Clean bounded package completely | 30 min |
+| 2 | **Decide on golangci.yml formatting**     | Keep consistency                 | 5 min  |
+| 3 | **Decide on BDD_TESTS_REVIEW.md changes** | Documentation consistency        | 5 min  |
 
 ### Short-term (Medium Priority)
 
-| #   | Improvement                      | Rationale                    | Effort    |
-| --- | -------------------------------- | ---------------------------- | --------- |
-| 4   | **Fix monorepo lint debt**       | 96 issues across 9+ packages | 4-8 hours |
-| 5   | **Add comprehensive benchmarks** | Performance validation       | 2 hours   |
-| 6   | **Add property-based tests**     | Edge case coverage           | 2 hours   |
-| 7   | **Update README with uint API**  | Documentation accuracy       | 30 min    |
+| # | Improvement                      | Rationale                    | Effort    |
+| - | -------------------------------- | ---------------------------- | --------- |
+| 4 | **Fix monorepo lint debt**       | 96 issues across 9+ packages | 4-8 hours |
+| 5 | **Add comprehensive benchmarks** | Performance validation       | 2 hours   |
+| 6 | **Add property-based tests**     | Edge case coverage           | 2 hours   |
+| 7 | **Update README with uint API**  | Documentation accuracy       | 30 min    |
 
 ### Long-term (Low Priority)
 
-| #   | Improvement                               | Rationale                                  | Effort |
-| --- | ----------------------------------------- | ------------------------------------------ | ------ |
-| 8   | **Rename `BoundedString` → `String`**     | Avoid stuttering (`bounded.BoundedString`) | 1 hour |
-| 9   | **Rename `BoundedStringOf` → `StringOf`** | Avoid stuttering                           | 30 min |
-| 10  | **Add `bounded` examples to `examples/`** | Better documentation                       | 1 hour |
+| #  | Improvement                               | Rationale                                  | Effort |
+| -- | ----------------------------------------- | ------------------------------------------ | ------ |
+| 8  | **Rename `BoundedString` → `String`**     | Avoid stuttering (`bounded.BoundedString`) | 1 hour |
+| 9  | **Rename `BoundedStringOf` → `StringOf`** | Avoid stuttering                           | 30 min |
+| 10 | **Add `bounded` examples to `examples/`** | Better documentation                       | 1 hour |
 
 ---
 

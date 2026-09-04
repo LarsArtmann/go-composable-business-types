@@ -24,8 +24,8 @@ The `id/` package provides branded, strongly-typed identifiers using phantom typ
 
 ### b) PARTIALLY DONE
 
-| Task                    | Status     | Notes                                                      |
-| ----------------------- | ---------- | ---------------------------------------------------------- |
+| Task                    | Status    | Notes                                                      |
+| ----------------------- | --------- | ---------------------------------------------------------- |
 | Type safety enforcement | ⚠️ Partial | Phantom types work, but value type constraint is too loose |
 
 ### c) NOT STARTED
@@ -296,13 +296,13 @@ type UserID = ID[UserBrand, string]
 
 ## Updated Priority List (After User Feedback)
 
-| #   | Task                      | Priority | Status              |
-| --- | ------------------------- | -------- | ------------------- |
-| 1   | Split id.go into 5 files  | CRITICAL | Pending             |
-| 2   | Keep `V comparable`       | DECIDED  | ✅ No change needed |
-| 3   | Keep `B any`              | DECIDED  | ✅ No change needed |
-| 4   | Fix test type arguments   | LOW      | Pending             |
-| 5   | Add MustNewID constructor | MEDIUM   | Pending             |
+| # | Task                      | Priority | Status              |
+| - | ------------------------- | -------- | ------------------- |
+| 1 | Split id.go into 5 files  | CRITICAL | Pending             |
+| 2 | Keep `V comparable`       | DECIDED  | ✅ No change needed |
+| 3 | Keep `B any`              | DECIDED  | ✅ No change needed |
+| 4 | Fix test type arguments   | LOW      | Pending             |
+| 5 | Add MustNewID constructor | MEDIUM   | Pending             |
 
 ---
 

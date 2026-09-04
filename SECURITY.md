@@ -11,7 +11,7 @@ Security updates are provided for the following versions:
 | Version             | Status         | Security Support    |
 | ------------------- | -------------- | ------------------- |
 | Latest minor (v0.x) | ✅ Active      | Full support        |
-| Previous minor      | ⚠️ Maintenance | Security fixes only |
+| Previous minor      | ⚠️ Maintenance  | Security fixes only |
 | Older versions      | ❌ End-of-life | No support          |
 
 ---

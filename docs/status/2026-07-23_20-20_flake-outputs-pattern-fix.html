@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -834,9 +858,9 @@
           <div class="hero-badge">Status Report</div>
           <h1>Flake.nix Outputs Pattern Fix</h1>
           <p class="hero-subtitle">
-            Session focused on a single critical Nix flake evaluation bug that blocked
-            all build automation. Fixed in one line. Report covers what was done, what
-            was missed, and what remains.
+            Session focused on a single critical Nix flake evaluation bug that
+            blocked all build automation. Fixed in one line. Report covers what
+            was done, what was missed, and what remains.
           </p>
         </div>
 
@@ -880,17 +904,22 @@
           <h4>Root Cause</h4>
           <p>
             The <code>outputs</code> function in <code>flake.nix</code> used a
-            destructuring pattern <code>inputs@{ self, flake-parts, systems, treefmt-nix }</code>
+            destructuring pattern
+            <code>inputs@{ self, flake-parts, systems, treefmt-nix }</code>
             <strong>without an ellipsis</strong> (<code>...</code>). Nix passes
-            <strong>all</strong> declared inputs to <code>outputs</code>, including
-            <code>nixpkgs</code>. Because <code>nixpkgs</code> was not listed and there
-            was no <code>...</code> catch-all, Nix rejected it:
-            <code>function 'outputs' called with unexpected argument 'nixpkgs'</code>.
+            <strong>all</strong> declared inputs to <code>outputs</code>,
+            including <code>nixpkgs</code>. Because <code>nixpkgs</code> was not
+            listed and there was no <code>...</code> catch-all, Nix rejected it:
+            <code
+              >function 'outputs' called with unexpected argument
+              'nixpkgs'</code
+            >.
           </p>
           <p>
-            This single missing <code>...</code> blocked <strong>every</strong> Nix
-            check &mdash; <code>nix-fmt</code>, <code>nix-build-verify</code>, and
-            <code>nix-hash-fix</code> &mdash; before they could even start building.
+            This single missing <code>...</code> blocked
+            <strong>every</strong> Nix check &mdash; <code>nix-fmt</code>,
+            <code>nix-build-verify</code>, and <code>nix-hash-fix</code> &mdash;
+            before they could even start building.
           </p>
         </div>
 
@@ -902,9 +931,10 @@
           <h3>Flake outputs pattern &mdash; missing ellipsis</h3>
           <div class="where">flake.nix:18-23</div>
           <p>
-            Added <code>...</code> to the <code>inputs@{ ... }</code> destructuring
-            pattern. The full input set (including <code>nixpkgs</code>) is still
-            captured by the <code>inputs@</code> binding for
+            Added <code>...</code> to the
+            <code>inputs@{ ... }</code> destructuring pattern. The full input
+            set (including <code>nixpkgs</code>) is still captured by the
+            <code>inputs@</code> binding for
             <code>flake-parts.lib.mkFlake { inherit inputs; }</code>.
           </p>
           <div class="callout callout-solution">
@@ -920,20 +950,25 @@
           <h3>Format check passes</h3>
           <div class="where">checks.x86_64-linux.format</div>
           <p>
-            Ran <code>nix build .#checks.x86_64-linux.format</code> &mdash; builds and
-            passes. treefmt (gofumpt, goimports, nixfmt) all pass.
+            Ran <code>nix build .#checks.x86_64-linux.format</code> &mdash;
+            builds and passes. treefmt (gofumpt, goimports, nixfmt) all pass.
           </p>
         </div>
 
         <div class="issue issue-nice">
           <span class="severity severity-nice">Committed</span>
           <h3>Fix auto-committed as dd68bf8</h3>
-          <div class="where">commit dd68bf8 &mdash; 2026-07-23 20:19:01 +0200</div>
+          <div class="where">
+            commit dd68bf8 &mdash; 2026-07-23 20:19:01 +0200
+          </div>
           <p>
             The one-line fix was auto-committed by the buildflow tool as commit
-            <code>dd68bf8 chore(nix): add Nix flake configuration for development environment</code>.
-            The commit message is misleading (it describes adding a flake, not fixing
-            a pattern), but the diff is correct: a single line adding <code>...</code>.
+            <code
+              >dd68bf8 chore(nix): add Nix flake configuration for development
+              environment</code
+            >. The commit message is misleading (it describes adding a flake,
+            not fixing a pattern), but the diff is correct: a single line adding
+            <code>...</code>.
           </p>
         </div>
 
@@ -943,49 +978,59 @@
         <div class="issue issue-important">
           <span class="severity severity-important">Partial</span>
           <h3>Nix build &amp; lint checks &mdash; network blocked</h3>
-          <div class="where">checks.x86_64-linux.build, checks.x86_64-linux.lint, checks.x86_64-linux.test</div>
+          <div class="where">
+            checks.x86_64-linux.build, checks.x86_64-linux.lint,
+            checks.x86_64-linux.test
+          </div>
           <p>
-            The flake now <strong>evaluates</strong> (the original bug is fixed), but
-            <code>build</code> and <code>lint</code> checks fail at runtime because
-            the Nix sandbox cannot reach <code>proxy.golang.org</code>:
-            <code>dial tcp: lookup proxy.golang.org on [::1]:53: read: connection refused</code>.
+            The flake now <strong>evaluates</strong> (the original bug is
+            fixed), but <code>build</code> and <code>lint</code> checks fail at
+            runtime because the Nix sandbox cannot reach
+            <code>proxy.golang.org</code>:
+            <code
+              >dial tcp: lookup proxy.golang.org on [::1]:53: read: connection
+              refused</code
+            >.
           </p>
           <p>
-            This is a <strong>sandbox networking limitation</strong>, not a code issue.
-            The <code>mkGoCheck</code> derivation calls <code>go mod download</code>
-            inside the sandbox, which requires network access. In CI this would work
-            (CI has network), but locally without
+            This is a <strong>sandbox networking limitation</strong>, not a code
+            issue. The <code>mkGoCheck</code> derivation calls
+            <code>go mod download</code>
+            inside the sandbox, which requires network access. In CI this would
+            work (CI has network), but locally without
             <code>--option sandbox relaxed</code> or a local proxy, it fails.
           </p>
           <div class="callout callout-warning">
             <strong>Not addressed</strong>
-            Did not configure <code>__noChroot</code>, <code>outputHashes</code>, or
-            a vendor-based approach. This is a pre-existing issue that predates this
-            session.
+            Did not configure <code>__noChroot</code>,
+            <code>outputHashes</code>, or a vendor-based approach. This is a
+            pre-existing issue that predates this session.
           </div>
         </div>
 
         <!-- Not Started -->
-        <h2 id="not-started"><span class="num">03</span>Not Started (Pre-existing)</h2>
+        <h2 id="not-started">
+          <span class="num">03</span>Not Started (Pre-existing)
+        </h2>
 
         <div class="card">
           <h4>Pre-existing changes in working tree</h4>
           <p>
-            <code>enums/enums_enum.go</code> has uncommitted changes: replacing manual
-            <code>make + copy</code> patterns with <code>slices.Clone()</code> across
-            5 enum types (ActorKind, CauseKind, Priority, Status, Trigger). These
-            changes were present <strong>before</strong> this session started and were
-            not touched.
+            <code>enums/enums_enum.go</code> has uncommitted changes: replacing
+            manual <code>make + copy</code> patterns with
+            <code>slices.Clone()</code> across 5 enum types (ActorKind,
+            CauseKind, Priority, Status, Trigger). These changes were present
+            <strong>before</strong> this session started and were not touched.
           </p>
         </div>
 
         <div class="card">
           <h4>Missing .golangci.yml staged change</h4>
           <p>
-            At session start, <code>.golangci.yml</code> was staged (first-column
-            <code>M</code> in <code>git status</code>). By end of session, it no longer
-            appears in <code>git status</code>. It was either committed by buildflow
-            or restored. Not investigated.
+            At session start, <code>.golangci.yml</code> was staged
+            (first-column <code>M</code> in <code>git status</code>). By end of
+            session, it no longer appears in <code>git status</code>. It was
+            either committed by buildflow or restored. Not investigated.
           </p>
         </div>
 
@@ -997,11 +1042,11 @@
           <h3>Did not report the auto-commit to the user</h3>
           <div class="where">Session communication</div>
           <p>
-            The buildflow tool auto-committed my fix as <code>dd68bf8</code> during
-            the session. I did not mention this to the user &mdash; my final message
-            said the fix was applied but did not flag that a commit was created with
-            a misleading message. The user may not realize a new commit exists on
-            their branch.
+            The buildflow tool auto-committed my fix as
+            <code>dd68bf8</code> during the session. I did not mention this to
+            the user &mdash; my final message said the fix was applied but did
+            not flag that a commit was created with a misleading message. The
+            user may not realize a new commit exists on their branch.
           </p>
         </div>
 
@@ -1010,10 +1055,10 @@
           <h3>Did not investigate the .golangci.yml disappearance</h3>
           <div class="where">.golangci.yml</div>
           <p>
-            A staged file disappeared from <code>git status</code> during the session.
-            I noticed it in the initial snapshot but never verified whether it was
-            committed, reverted, or lost. This is a data safety concern that should
-            have been investigated immediately.
+            A staged file disappeared from <code>git status</code> during the
+            session. I noticed it in the initial snapshot but never verified
+            whether it was committed, reverted, or lost. This is a data safety
+            concern that should have been investigated immediately.
           </p>
         </div>
 
@@ -1022,12 +1067,12 @@
           <h3>Did not attempt to fix the network sandbox issue</h3>
           <div class="where">flake.nix mkGoCheck derivations</div>
           <p>
-            The build/lint/test checks fail due to sandbox network restrictions. I
-            dismissed this as a "known limitation" without attempting any of the
-            standard solutions: <code>outputHashes</code> for reproducible fetches,
-            vendoring, <code>--no-sandbox</code> for local testing, or configuring
-            <code>extra-experimental-features</code>. I should have at least tried
-            one approach.
+            The build/lint/test checks fail due to sandbox network restrictions.
+            I dismissed this as a "known limitation" without attempting any of
+            the standard solutions: <code>outputHashes</code> for reproducible
+            fetches, vendoring, <code>--no-sandbox</code> for local testing, or
+            configuring <code>extra-experimental-features</code>. I should have
+            at least tried one approach.
           </p>
         </div>
 
@@ -1036,10 +1081,10 @@
           <h3>Misleading auto-commit message not corrected</h3>
           <div class="where">commit dd68bf8</div>
           <p>
-            The auto-commit message says "add Nix flake configuration for development
-            environment" but the actual change is a one-line pattern fix. I should
-            have amended or corrected this. Now the git history has a misleading
-            commit message for a critical bug fix.
+            The auto-commit message says "add Nix flake configuration for
+            development environment" but the actual change is a one-line pattern
+            fix. I should have amended or corrected this. Now the git history
+            has a misleading commit message for a critical bug fix.
           </p>
         </div>
 
@@ -1052,12 +1097,14 @@
             <div class="text">
               <strong>Fix the Nix sandbox network issue</strong>
               <span>
-                The <code>mkGoCheck</code> derivations use <code>go mod download</code>
-                inside the Nix sandbox, which blocks network. Standard approaches:
-                (1) use <code>buildGoModule</code> with <code>vendorHash</code> instead
-                of manual <code>runCommand</code>, (2) add <code>outputHashes</code>
-                for fixed-output derivations, (3) use <code>goModules</code> trick.
-                This would make all checks work locally AND in CI.
+                The <code>mkGoCheck</code> derivations use
+                <code>go mod download</code> inside the Nix sandbox, which
+                blocks network. Standard approaches: (1) use
+                <code>buildGoModule</code> with <code>vendorHash</code> instead
+                of manual <code>runCommand</code>, (2) add
+                <code>outputHashes</code> for fixed-output derivations, (3) use
+                <code>goModules</code> trick. This would make all checks work
+                locally AND in CI.
               </span>
             </div>
           </div>
@@ -1081,9 +1128,9 @@
                 <code>importance/importance_test.go</code>,
                 <code>tag/tag_test.go</code>,
                 <code>projectcore/project_core_test.go</code> still import
-                <code>stretchr/testify</code>. AGENTS.md says testify is banned and
-                should be replaced with ginkgo/gomega. Zero ginkgo usage found
-                anywhere in the codebase.
+                <code>stretchr/testify</code>. AGENTS.md says testify is banned
+                and should be replaced with ginkgo/gomega. Zero ginkgo usage
+                found anywhere in the codebase.
               </span>
             </div>
           </div>
@@ -1093,8 +1140,8 @@
               <strong>Create ROADMAP.md</strong>
               <span>
                 Missing per AGENTS.md documentation structure. The project has
-                FEATURES.md, TODO_LIST.md, CHANGELOG.md, and DOMAIN_LANGUAGE.md, but
-                no ROADMAP.md for long-term vision and raw ideas.
+                FEATURES.md, TODO_LIST.md, CHANGELOG.md, and DOMAIN_LANGUAGE.md,
+                but no ROADMAP.md for long-term vision and raw ideas.
               </span>
             </div>
           </div>
@@ -1103,10 +1150,10 @@
             <div class="text">
               <strong>Address CI billing issue</strong>
               <span>
-                GitHub Actions CI is completely broken due to billing/spending limit
-                errors. All CI runs fail. This is an account-level issue documented
-                in AGENTS.md but unresolved. Without CI, the Nix checks and lint
-                pipeline have no automated enforcement.
+                GitHub Actions CI is completely broken due to billing/spending
+                limit errors. All CI runs fail. This is an account-level issue
+                documented in AGENTS.md but unresolved. Without CI, the Nix
+                checks and lint pipeline have no automated enforcement.
               </span>
             </div>
           </div>
@@ -1116,9 +1163,9 @@
               <strong>Commit or revert the enums/enums_enum.go changes</strong>
               <span>
                 The <code>slices.Clone</code> refactoring in
-                <code>enums/enums_enum.go</code> has been sitting uncommitted. Either
-                commit it with a proper message or revert it. Uncommitted changes in
-                a generated file create confusion.
+                <code>enums/enums_enum.go</code> has been sitting uncommitted.
+                Either commit it with a proper message or revert it. Uncommitted
+                changes in a generated file create confusion.
               </span>
             </div>
           </div>
@@ -1155,334 +1202,475 @@
         </div>
 
         <!-- Next 50 Tasks -->
-        <h2 id="next"><span class="num">06</span>Next 50 Tasks (Sorted by Impact)</h2>
+        <h2 id="next">
+          <span class="num">06</span>Next 50 Tasks (Sorted by Impact)
+        </h2>
         <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Priority</th>
-              <th>Task</th>
-              <th>Category</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>1</td>
-              <td><span class="badge badge-critical">P0</span></td>
-              <td>Fix Nix sandbox network: use <code>buildGoModule</code> + <code>vendorHash</code> instead of manual <code>runCommand</code> with <code>go mod download</code></td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>2</td>
-              <td><span class="badge badge-critical">P0</span></td>
-              <td>Resolve GitHub Actions CI billing issue &mdash; all CI is dead</td>
-              <td>CI</td>
-            </tr>
-            <tr>
-              <td>3</td>
-              <td><span class="badge badge-critical">P0</span></td>
-              <td>Commit or revert the uncommitted <code>enums/enums_enum.go</code> slices.Clone changes</td>
-              <td>Hygiene</td>
-            </tr>
-            <tr>
-              <td>4</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Correct misleading commit message on dd68bf8 (amend or follow-up commit)</td>
-              <td>Git</td>
-            </tr>
-            <tr>
-              <td>5</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Investigate and document what happened to the staged <code>.golangci.yml</code> change</td>
-              <td>Git</td>
-            </tr>
-            <tr>
-              <td>6</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Replace testify with ginkgo/gomega in <code>importance/importance_test.go</code></td>
-              <td>Testing</td>
-            </tr>
-            <tr>
-              <td>7</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Replace testify with ginkgo/gomega in <code>tag/tag_test.go</code></td>
-              <td>Testing</td>
-            </tr>
-            <tr>
-              <td>8</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Replace testify with ginkgo/gomega in <code>projectcore/project_core_test.go</code></td>
-              <td>Testing</td>
-            </tr>
-            <tr>
-              <td>9</td>
-              <td><span class="badge badge-high">P1</span></td>
-              <td>Create <code>ROADMAP.md</code> for long-term project vision</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>10</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Add <code>nix flake check</code> as a CI step (once CI billing is fixed)</td>
-              <td>CI</td>
-            </tr>
-            <tr>
-              <td>11</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Verify all 6 sub-modules build independently with <code>go build ./...</code></td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>12</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Run full test suite locally: <code>GOEXPERIMENT=jsonv2 go test -race ./...</code></td>
-              <td>Testing</td>
-            </tr>
-            <tr>
-              <td>13</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Run lint across all modules: <code>golangci-lint run ./...</code></td>
-              <td>Lint</td>
-            </tr>
-            <tr>
-              <td>14</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Add vendor directory or FOD (fixed-output derivation) for offline Nix builds</td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>15</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Verify <code>go generate ./...</code> produces clean output (enums)</td>
-              <td>CodeGen</td>
-            </tr>
-            <tr>
-              <td>16</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Review whether <code>go.work</code> workspace is correctly referenced in all sub-module <code>go.mod</code> replace directives</td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>17</td>
-              <td><span class="badge badge-medium">P2</span></td>
-              <td>Update <code>AGENTS.md</code> with the flake.nix fix details and the sandbox network limitation</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>18</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Run <code>nix flake update</code> to check for newer nixpkgs/flake-parts versions</td>
-              <td>Deps</td>
-            </tr>
-            <tr>
-              <td>19</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the 57 Go source files for any other linter issues</td>
-              <td>Lint</td>
-            </tr>
-            <tr>
-              <td>20</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Add integration tests that exercise the multi-module workspace</td>
-              <td>Testing</td>
-            </tr>
-            <tr>
-              <td>21</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Verify the <code>datapoint</code> module correctly depends on <code>nanoid</code> and <code>go-branded-id</code></td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>22</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Document the <code>GOEXPERIMENT=jsonv2</code> requirement more prominently in README</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>23</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review whether Go 1.27 would eliminate the <code>GOEXPERIMENT=jsonv2</code> need</td>
-              <td>Deps</td>
-            </tr>
-            <tr>
-              <td>24</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Audit all <code>Must*</code> constructor variants for correct panic behavior</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>25</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Add examples that demonstrate multi-module selective imports</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>26</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Verify the <code>money</code> module uses <code>bojanz/currency</code> correctly</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>27</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Verify the <code>locale</code> module uses <code>golang.org/x/text</code> BCP 47 correctly</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>28</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>examples/</code> module for completeness and accuracy</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>29</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Check if the <code>golangci-lint</code> v2 config format is fully correct</td>
-              <td>Lint</td>
-            </tr>
-            <tr>
-              <td>30</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>build-tags</code> in golangci.yml (<code>goexperiment.arenas</code>, <code>simd</code>, etc.)</td>
-              <td>Lint</td>
-            </tr>
-            <tr>
-              <td>31</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Add a <code>flake.lock</code> audit step to CI</td>
-              <td>CI</td>
-            </tr>
-            <tr>
-              <td>32</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Consider adding <code>nixpkgs-fmt</code> or <code>alejandra</code> alongside <code>nixfmt</code></td>
-              <td>Build</td>
-            </tr>
-            <tr>
-              <td>33</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Run a full code quality scan (<code>nix run .#code-quality-scan</code> equivalent)</td>
-              <td>Quality</td>
-            </tr>
-            <tr>
-              <td>34</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review if <code>testify</code> can be fully removed from <code>go.sum</code></td>
-              <td>Deps</td>
-            </tr>
-            <tr>
-              <td>35</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Document the modularization architecture in a D2 diagram</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>36</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>pkg/errors</code> package for Go 1.26+ error handling patterns</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>37</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Check if <code>errors.AsType</code> (Go 1.26+) should replace any <code>errors.As</code> calls</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>38</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>temporal</code> package for completeness</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>39</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>bounded</code> package for type safety completeness</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>40</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>validate</code> package for completeness</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>41</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>scanutil</code> package for edge cases</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>42</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>version</code> package for semver compliance</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>43</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>address</code> and <code>contact</code> types</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>44</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review the <code>actor</code> package for generic type correctness</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>45</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Consider whether the <code>programminglanguage/</code> removal is fully clean (no dangling imports)</td>
-              <td>Code</td>
-            </tr>
-            <tr>
-              <td>46</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Update <code>FEATURES.md</code> to reflect current module status</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>47</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Update <code>TODO_LIST.md</code> with current priorities</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>48</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review <code>CHANGELOG.md</code> for accuracy since v0.5.0</td>
-              <td>Docs</td>
-            </tr>
-            <tr>
-              <td>49</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Consider a public release / tag for the current state (v0.6.0?)</td>
-              <td>Release</td>
-            </tr>
-            <tr>
-              <td>50</td>
-              <td><span class="badge badge-low">P3</span></td>
-              <td>Review whether the repo transition from private to public is complete</td>
-              <td>Release</td>
-            </tr>
-          </tbody>
-        </table>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Priority</th>
+                <th>Task</th>
+                <th>Category</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>
+                  Fix Nix sandbox network: use <code>buildGoModule</code> +
+                  <code>vendorHash</code> instead of manual
+                  <code>runCommand</code> with <code>go mod download</code>
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>
+                  Resolve GitHub Actions CI billing issue &mdash; all CI is dead
+                </td>
+                <td>CI</td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td><span class="badge badge-critical">P0</span></td>
+                <td>
+                  Commit or revert the uncommitted
+                  <code>enums/enums_enum.go</code> slices.Clone changes
+                </td>
+                <td>Hygiene</td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Correct misleading commit message on dd68bf8 (amend or
+                  follow-up commit)
+                </td>
+                <td>Git</td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Investigate and document what happened to the staged
+                  <code>.golangci.yml</code> change
+                </td>
+                <td>Git</td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Replace testify with ginkgo/gomega in
+                  <code>importance/importance_test.go</code>
+                </td>
+                <td>Testing</td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Replace testify with ginkgo/gomega in
+                  <code>tag/tag_test.go</code>
+                </td>
+                <td>Testing</td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Replace testify with ginkgo/gomega in
+                  <code>projectcore/project_core_test.go</code>
+                </td>
+                <td>Testing</td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td><span class="badge badge-high">P1</span></td>
+                <td>
+                  Create <code>ROADMAP.md</code> for long-term project vision
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Add <code>nix flake check</code> as a CI step (once CI billing
+                  is fixed)
+                </td>
+                <td>CI</td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Verify all 6 sub-modules build independently with
+                  <code>go build ./...</code>
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Run full test suite locally:
+                  <code>GOEXPERIMENT=jsonv2 go test -race ./...</code>
+                </td>
+                <td>Testing</td>
+              </tr>
+              <tr>
+                <td>13</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Run lint across all modules:
+                  <code>golangci-lint run ./...</code>
+                </td>
+                <td>Lint</td>
+              </tr>
+              <tr>
+                <td>14</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Add vendor directory or FOD (fixed-output derivation) for
+                  offline Nix builds
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>15</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Verify <code>go generate ./...</code> produces clean output
+                  (enums)
+                </td>
+                <td>CodeGen</td>
+              </tr>
+              <tr>
+                <td>16</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Review whether <code>go.work</code> workspace is correctly
+                  referenced in all sub-module <code>go.mod</code> replace
+                  directives
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>17</td>
+                <td><span class="badge badge-medium">P2</span></td>
+                <td>
+                  Update <code>AGENTS.md</code> with the flake.nix fix details
+                  and the sandbox network limitation
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>18</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Run <code>nix flake update</code> to check for newer
+                  nixpkgs/flake-parts versions
+                </td>
+                <td>Deps</td>
+              </tr>
+              <tr>
+                <td>19</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the 57 Go source files for any other linter issues
+                </td>
+                <td>Lint</td>
+              </tr>
+              <tr>
+                <td>20</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add integration tests that exercise the multi-module workspace
+                </td>
+                <td>Testing</td>
+              </tr>
+              <tr>
+                <td>21</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Verify the <code>datapoint</code> module correctly depends on
+                  <code>nanoid</code> and <code>go-branded-id</code>
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>22</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Document the <code>GOEXPERIMENT=jsonv2</code> requirement more
+                  prominently in README
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>23</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review whether Go 1.27 would eliminate the
+                  <code>GOEXPERIMENT=jsonv2</code> need
+                </td>
+                <td>Deps</td>
+              </tr>
+              <tr>
+                <td>24</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Audit all <code>Must*</code> constructor variants for correct
+                  panic behavior
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>25</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Add examples that demonstrate multi-module selective imports
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>26</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Verify the <code>money</code> module uses
+                  <code>bojanz/currency</code> correctly
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>27</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Verify the <code>locale</code> module uses
+                  <code>golang.org/x/text</code> BCP 47 correctly
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>28</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>examples/</code> module for completeness and
+                  accuracy
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>29</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Check if the <code>golangci-lint</code> v2 config format is
+                  fully correct
+                </td>
+                <td>Lint</td>
+              </tr>
+              <tr>
+                <td>30</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>build-tags</code> in golangci.yml
+                  (<code>goexperiment.arenas</code>, <code>simd</code>, etc.)
+                </td>
+                <td>Lint</td>
+              </tr>
+              <tr>
+                <td>31</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Add a <code>flake.lock</code> audit step to CI</td>
+                <td>CI</td>
+              </tr>
+              <tr>
+                <td>32</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Consider adding <code>nixpkgs-fmt</code> or
+                  <code>alejandra</code> alongside <code>nixfmt</code>
+                </td>
+                <td>Build</td>
+              </tr>
+              <tr>
+                <td>33</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Run a full code quality scan (<code
+                    >nix run .#code-quality-scan</code
+                  >
+                  equivalent)
+                </td>
+                <td>Quality</td>
+              </tr>
+              <tr>
+                <td>34</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review if <code>testify</code> can be fully removed from
+                  <code>go.sum</code>
+                </td>
+                <td>Deps</td>
+              </tr>
+              <tr>
+                <td>35</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Document the modularization architecture in a D2 diagram
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>36</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>pkg/errors</code> package for Go 1.26+ error
+                  handling patterns
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>37</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Check if <code>errors.AsType</code> (Go 1.26+) should replace
+                  any <code>errors.As</code> calls
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>38</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>temporal</code> package for completeness
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>39</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>bounded</code> package for type safety
+                  completeness
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>40</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>validate</code> package for completeness
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>41</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>Review the <code>scanutil</code> package for edge cases</td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>42</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>version</code> package for semver compliance
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>43</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>address</code> and <code>contact</code> types
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>44</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review the <code>actor</code> package for generic type
+                  correctness
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>45</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Consider whether the <code>programminglanguage/</code> removal
+                  is fully clean (no dangling imports)
+                </td>
+                <td>Code</td>
+              </tr>
+              <tr>
+                <td>46</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Update <code>FEATURES.md</code> to reflect current module
+                  status
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>47</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Update <code>TODO_LIST.md</code> with current priorities
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>48</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review <code>CHANGELOG.md</code> for accuracy since v0.5.0
+                </td>
+                <td>Docs</td>
+              </tr>
+              <tr>
+                <td>49</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Consider a public release / tag for the current state
+                  (v0.6.0?)
+                </td>
+                <td>Release</td>
+              </tr>
+              <tr>
+                <td>50</td>
+                <td><span class="badge badge-low">P3</span></td>
+                <td>
+                  Review whether the repo transition from private to public is
+                  complete
+                </td>
+                <td>Release</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- Questions -->
-        <h2 id="questions"><span class="num">07</span>3 Questions I Cannot Answer Myself</h2>
+        <h2 id="questions">
+          <span class="num">07</span>3 Questions I Cannot Answer Myself
+        </h2>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Q1</span>
           <h3>Did you intentionally let buildflow auto-commit the fix?</h3>
           <p>
-            Commit <code>dd68bf8</code> was created by buildflow during my session,
-            not by me. The commit message ("add Nix flake configuration for development
-            environment") is misleading &mdash; it describes adding a flake, not fixing
-            a one-line pattern bug. Should I amend this commit message, or is the
-            auto-commit behavior intentional and preferred?
+            Commit <code>dd68bf8</code> was created by buildflow during my
+            session, not by me. The commit message ("add Nix flake configuration
+            for development environment") is misleading &mdash; it describes
+            adding a flake, not fixing a one-line pattern bug. Should I amend
+            this commit message, or is the auto-commit behavior intentional and
+            preferred?
           </p>
         </div>
 
@@ -1490,29 +1678,36 @@
           <span class="severity severity-important">Q2</span>
           <h3>What happened to the staged .golangci.yml change?</h3>
           <p>
-            At session start, <code>.golangci.yml</code> showed as staged
-            (<code>M .golangci.yml</code> in the first column). By the end of the
-            session, it no longer appears in <code>git status</code>. I cannot tell
-            whether it was committed by buildflow, restored by a hook, or lost.
-            Should I investigate the reflog to trace it, or do you know what happened?
+            At session start, <code>.golangci.yml</code> showed as staged (<code
+              >M .golangci.yml</code
+            >
+            in the first column). By the end of the session, it no longer
+            appears in <code>git status</code>. I cannot tell whether it was
+            committed by buildflow, restored by a hook, or lost. Should I
+            investigate the reflog to trace it, or do you know what happened?
           </p>
         </div>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Q3</span>
-          <h3>Should the Nix sandbox network issue be fixed now or deferred?</h3>
+          <h3>
+            Should the Nix sandbox network issue be fixed now or deferred?
+          </h3>
           <p>
-            The build/lint/test checks fail locally because the Nix sandbox blocks
-            <code>go mod download</code>. Fixing this properly means either switching
-            to <code>buildGoModule</code> with <code>vendorHash</code> (significant
-            refactor of the flake), or adding <code>--no-sandbox</code> /
-            fixed-output derivation tricks. Do you want me to tackle this now, or is
-            it acceptable that checks only pass in CI (where network is available)?
+            The build/lint/test checks fail locally because the Nix sandbox
+            blocks
+            <code>go mod download</code>. Fixing this properly means either
+            switching to <code>buildGoModule</code> with
+            <code>vendorHash</code> (significant refactor of the flake), or
+            adding <code>--no-sandbox</code> / fixed-output derivation tricks.
+            Do you want me to tackle this now, or is it acceptable that checks
+            only pass in CI (where network is available)?
           </p>
         </div>
 
         <footer class="footer">
-          Generated 2026-07-23 20:20 &middot; Based solely on this session's work and observations &middot; No external research conducted
+          Generated 2026-07-23 20:20 &middot; Based solely on this session's
+          work and observations &middot; No external research conducted
         </footer>
       </main>
     </div>

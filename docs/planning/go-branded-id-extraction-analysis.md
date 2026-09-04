@@ -7,31 +7,31 @@
 
 ## PRO (Arguments For Extraction)
 
-| #   | Benefit                                 | Details                                                                                                                             |
-| --- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Focused Domain**                      | A library dedicated to "branded IDs" has clearer purpose than one of 15 types in "business types". Single-responsibility principle. |
-| 2   | **Independent Versioning**              | ID patterns are stable; they change rarely compared to DataPoint, money, or temporal types. Separate release cadence makes sense.   |
-| 3   | **Reduced Coupling for ID-Heavy Users** | Applications needing only ID safety (not DataPoint, Money, etc.) can depend on a minimal, focused package.                          |
-| 4   | **NanoID is a Natural Companion**       | Both are about creating/handling identifiers. They compose naturally: `ID[Brand, NanoID]`.                                          |
-| 5   | **Simpler Dependency Graph**            | `id/` currently has **zero** external dependencies. Clean, extractable unit.                                                        |
-| 6   | **Easier Adoption**                     | Users can adopt "branded IDs" without buying into the full "composable business types" philosophy.                                  |
-| 7   | **NanoID Already Conceptually Split**   | It has its own README, tests, and error definitions — extraction formalizes this.                                                   |
-| 8   | **Go Best Practice**                    | Small, focused modules align with Go's philosophy of minimal dependency trees.                                                      |
+| # | Benefit                                 | Details                                                                                                                             |
+| - | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Focused Domain**                      | A library dedicated to "branded IDs" has clearer purpose than one of 15 types in "business types". Single-responsibility principle. |
+| 2 | **Independent Versioning**              | ID patterns are stable; they change rarely compared to DataPoint, money, or temporal types. Separate release cadence makes sense.   |
+| 3 | **Reduced Coupling for ID-Heavy Users** | Applications needing only ID safety (not DataPoint, Money, etc.) can depend on a minimal, focused package.                          |
+| 4 | **NanoID is a Natural Companion**       | Both are about creating/handling identifiers. They compose naturally: `ID[Brand, NanoID]`.                                          |
+| 5 | **Simpler Dependency Graph**            | `id/` currently has **zero** external dependencies. Clean, extractable unit.                                                        |
+| 6 | **Easier Adoption**                     | Users can adopt "branded IDs" without buying into the full "composable business types" philosophy.                                  |
+| 7 | **NanoID Already Conceptually Split**   | It has its own README, tests, and error definitions — extraction formalizes this.                                                   |
+| 8 | **Go Best Practice**                    | Small, focused modules align with Go's philosophy of minimal dependency trees.                                                      |
 
 ---
 
 ## CONTRA (Arguments Against Extraction)
 
-| #   | Risk                                       | Details                                                                                                                                  |
-| --- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **New Repo Maintenance Overhead**          | Separate CI/CD, releases, security scans, dependabot configs, issue tracking.                                                            |
-| 2   | **Version Coordination Complexity**        | When to bump `go-branded-id` vs `go-composable-business-types`? Which depends on which?                                                  |
-| 3   | **Internal Dependency Chain**              | `nanoid/` depends on `scanutil/` and `pkg/errors/`. These must either (a) extract too, (b) be duplicated, or (c) `nanoid/` stays in cbt. |
-| 4   | **`actor/` Depends on `id/`**              | `ActorEntry[T]` uses `id.ID[struct{}, T]`. Extracting `id/` means actor must import external package.                                    |
-| 5   | **`datapoint/` Depends on `nanoid/`**      | `DataPoint.ID()` returns `nanoid.NanoID`. Extracting nanoid means datapoint must import external package.                                |
-| 6   | **Two Import Paths to Maintain**           | Documentation, examples, tests need updating in both repos. Risk of stale docs.                                                          |
-| 7   | **Circular Dependency Risk**               | If `go-branded-id` ever needs something from cbt, we're stuck with a circular import.                                                    |
-| 8   | **PROJECT_SPLIT_EXECUTIVE_REPORT Says No** | Previous analysis concluded splitting creates "dependency hell" and "fragments user experience".                                         |
+| # | Risk                                       | Details                                                                                                                                  |
+| - | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **New Repo Maintenance Overhead**          | Separate CI/CD, releases, security scans, dependabot configs, issue tracking.                                                            |
+| 2 | **Version Coordination Complexity**        | When to bump `go-branded-id` vs `go-composable-business-types`? Which depends on which?                                                  |
+| 3 | **Internal Dependency Chain**              | `nanoid/` depends on `scanutil/` and `pkg/errors/`. These must either (a) extract too, (b) be duplicated, or (c) `nanoid/` stays in cbt. |
+| 4 | **`actor/` Depends on `id/`**              | `ActorEntry[T]` uses `id.ID[struct{}, T]`. Extracting `id/` means actor must import external package.                                    |
+| 5 | **`datapoint/` Depends on `nanoid/`**      | `DataPoint.ID()` returns `nanoid.NanoID`. Extracting nanoid means datapoint must import external package.                                |
+| 6 | **Two Import Paths to Maintain**           | Documentation, examples, tests need updating in both repos. Risk of stale docs.                                                          |
+| 7 | **Circular Dependency Risk**               | If `go-branded-id` ever needs something from cbt, we're stuck with a circular import.                                                    |
+| 8 | **PROJECT_SPLIT_EXECUTIVE_REPORT Says No** | Previous analysis concluded splitting creates "dependency hell" and "fragments user experience".                                         |
 
 ---
 

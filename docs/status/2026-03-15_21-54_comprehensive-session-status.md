@@ -143,33 +143,33 @@ Successfully integrated `go-composable-business-types` (CBT) as a **REQUIRED** l
 
 ## F) TOP 25 THINGS TO DO NEXT 📋
 
-| #   | Task                                                  | Project        | Priority | Est. Time |
-| --- | ----------------------------------------------------- | -------------- | -------- | --------- |
-| 1   | Commit or revert `bounded/bounded.go` changes         | CBT            | CRITICAL | 1 min     |
-| 2   | Commit or revert `.golangci.yml` changes              | CBT            | HIGH     | 1 min     |
-| 3   | Decide: JSON v2 migration strategy                    | CBT            | CRITICAL | 5 min     |
-| 4   | Document GOEXPERIMENT=jsonv2 requirement (if needed)  | CBT            | HIGH     | 3 min     |
-| 5   | Create PR: `feat/architectural-excellence` → `master` | library-policy | HIGH     | 2 min     |
-| 6   | Merge library-policy PR                               | library-policy | HIGH     | 1 min     |
-| 7   | Address Dependabot vulnerability                      | library-policy | MEDIUM   | 10 min    |
-| 8   | Archive old status reports (keep last 5)              | CBT            | LOW      | 2 min     |
-| 9   | Remove or externalize `architecture.png`              | CBT            | MEDIUM   | 5 min     |
-| 10  | Add test coverage for `enums` (6.8% → 50%)            | CBT            | HIGH     | 30 min    |
-| 11  | Add test coverage for `types` (25.9% → 50%)           | CBT            | HIGH     | 30 min    |
-| 12  | Add test coverage for `locale` (28.9% → 50%)          | CBT            | MEDIUM   | 20 min    |
-| 13  | Fix golangci-lint warnings (331 → 100)                | CBT            | MEDIUM   | 1 hour    |
-| 14  | Fix golangci-lint warnings (100 → 0)                  | CBT            | MEDIUM   | 1 hour    |
-| 15  | Add package doc comments (50% → 100%)                 | CBT            | LOW      | 30 min    |
-| 16  | Test SQL interfaces (Scan/Value methods)              | CBT            | HIGH     | 30 min    |
-| 17  | Verify json/v2 compatibility without GOEXPERIMENT     | CBT            | CRITICAL | 5 min     |
-| 18  | Update README with json/v2 status                     | CBT            | MEDIUM   | 5 min     |
-| 19  | Update AGENTS.md build commands                       | CBT            | LOW      | 3 min     |
-| 20  | Fix library-policy pre-commit lint issues             | library-policy | MEDIUM   | 2 hours   |
-| 21  | Add path-based pre-commit filtering for docs          | library-policy | LOW      | 15 min    |
-| 22  | Run full test suite with race detector                | CBT            | HIGH     | 5 min     |
-| 23  | Verify CI/CD passes on both projects                  | Both           | HIGH     | 5 min     |
-| 24  | Create release tag for CBT                            | CBT            | LOW      | 2 min     |
-| 25  | Document CBT version requirement in library-policy    | library-policy | LOW      | 3 min     |
+| #  | Task                                                  | Project        | Priority | Est. Time |
+| -- | ----------------------------------------------------- | -------------- | -------- | --------- |
+| 1  | Commit or revert `bounded/bounded.go` changes         | CBT            | CRITICAL | 1 min     |
+| 2  | Commit or revert `.golangci.yml` changes              | CBT            | HIGH     | 1 min     |
+| 3  | Decide: JSON v2 migration strategy                    | CBT            | CRITICAL | 5 min     |
+| 4  | Document GOEXPERIMENT=jsonv2 requirement (if needed)  | CBT            | HIGH     | 3 min     |
+| 5  | Create PR: `feat/architectural-excellence` → `master` | library-policy | HIGH     | 2 min     |
+| 6  | Merge library-policy PR                               | library-policy | HIGH     | 1 min     |
+| 7  | Address Dependabot vulnerability                      | library-policy | MEDIUM   | 10 min    |
+| 8  | Archive old status reports (keep last 5)              | CBT            | LOW      | 2 min     |
+| 9  | Remove or externalize `architecture.png`              | CBT            | MEDIUM   | 5 min     |
+| 10 | Add test coverage for `enums` (6.8% → 50%)            | CBT            | HIGH     | 30 min    |
+| 11 | Add test coverage for `types` (25.9% → 50%)           | CBT            | HIGH     | 30 min    |
+| 12 | Add test coverage for `locale` (28.9% → 50%)          | CBT            | MEDIUM   | 20 min    |
+| 13 | Fix golangci-lint warnings (331 → 100)                | CBT            | MEDIUM   | 1 hour    |
+| 14 | Fix golangci-lint warnings (100 → 0)                  | CBT            | MEDIUM   | 1 hour    |
+| 15 | Add package doc comments (50% → 100%)                 | CBT            | LOW      | 30 min    |
+| 16 | Test SQL interfaces (Scan/Value methods)              | CBT            | HIGH     | 30 min    |
+| 17 | Verify json/v2 compatibility without GOEXPERIMENT     | CBT            | CRITICAL | 5 min     |
+| 18 | Update README with json/v2 status                     | CBT            | MEDIUM   | 5 min     |
+| 19 | Update AGENTS.md build commands                       | CBT            | LOW      | 3 min     |
+| 20 | Fix library-policy pre-commit lint issues             | library-policy | MEDIUM   | 2 hours   |
+| 21 | Add path-based pre-commit filtering for docs          | library-policy | LOW      | 15 min    |
+| 22 | Run full test suite with race detector                | CBT            | HIGH     | 5 min     |
+| 23 | Verify CI/CD passes on both projects                  | Both           | HIGH     | 5 min     |
+| 24 | Create release tag for CBT                            | CBT            | LOW      | 2 min     |
+| 25 | Document CBT version requirement in library-policy    | library-policy | LOW      | 3 min     |
 
 ---
 

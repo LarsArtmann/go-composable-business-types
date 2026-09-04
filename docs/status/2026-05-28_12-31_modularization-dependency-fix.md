@@ -189,33 +189,33 @@ Root was 1.26.3, sub-modules were 1.26.2. Fixed to 1.26.3 everywhere.
 
 ## F) Top 25 Things We Should Get Done Next
 
-| #   | Priority | Task                                                              | Impact                           | Effort   |
-| --- | -------- | ----------------------------------------------------------------- | -------------------------------- | -------- |
-| 1   | **P0**   | Merge `modularize/split-modules` into `master`                    | Unblocks all downstream work     | Low      |
-| 2   | **P0**   | Fix GitHub Actions billing/spending limit                         | Restores CI                      | External |
-| 3   | **P0**   | Update CI workflow for multi-module testing                       | Ensures all modules tested       | Medium   |
-| 4   | **P1**   | Create first versioned release (v0.5.0) with sub-module tags      | Enables external consumers       | Low      |
-| 5   | **P1**   | Remove `replace` directives after new root release                | Eliminates scaffolding tech debt | Low      |
-| 6   | **P1**   | Update flake.nix for multi-module build/test                      | Restores Nix CI                  | Medium   |
-| 7   | **P1**   | Replace testify with ginkgo/gomega (3 files)                      | Policy compliance                | Medium   |
-| 8   | **P1**   | Move nanoid-specific errors from `pkg/errors` to nanoid module    | Cleaner dep isolation            | Medium   |
-| 9   | **P2**   | Add compilation test for examples module                          | Catches build regressions        | Low      |
-| 10  | **P2**   | Write integration test verifying external consumer imports        | Validates consumer experience    | Medium   |
-| 11  | **P2**   | Update README.md to reflect multi-module structure                | Consumer documentation           | Low      |
-| 12  | **P2**   | Verify pkg.go.dev renders all sub-modules correctly               | Documentation                    | Low      |
-| 13  | **P2**   | Add `go work edit -fmt` to CI pipeline                            | Prevents go.work drift           | Low      |
-| 14  | **P2**   | Create release automation script (justfile → flake.nix)           | Operational                      | Medium   |
-| 15  | **P3**   | Improve `pkg/errors` coverage to 95%+ (87.5% → 95%)               | Quality                          | Low      |
-| 16  | **P3**   | Improve `scanutil` coverage to 95%+ (79.2% → 95%)                 | Quality                          | Low      |
-| 17  | **P3**   | Improve `version` coverage to 95%+ (81.0% → 95%)                  | Quality                          | Low      |
-| 18  | **P3**   | Improve `projectcore` coverage to 95%+ (82.9% → 95%)              | Quality                          | Low      |
-| 19  | **P3**   | Consider extracting `testutil` to its own module                  | Cleaner test dep isolation       | Medium   |
-| 20  | **P3**   | Add `//go:build` constraints if any platform-specific code exists | Correctness                      | Low      |
-| 21  | **P3**   | Add benchmark suite for hot paths (nanoid generation, parsing)    | Performance visibility           | Medium   |
-| 22  | **P3**   | Add CHANGELOG entry for v0.5.0 modularization release             | Documentation                    | Low      |
-| 23  | **P4**   | Evaluate `internal/` packages for cross-module access safety      | Correctness                      | Low      |
-| 24  | **P4**   | Set up Dependabot for sub-module go.mod files                     | Security                         | Low      |
-| 25  | **P4**   | Add pre-commit hook for `go mod tidy` verification                | Developer experience             | Low      |
+| #  | Priority | Task                                                              | Impact                           | Effort   |
+| -- | -------- | ----------------------------------------------------------------- | -------------------------------- | -------- |
+| 1  | **P0**   | Merge `modularize/split-modules` into `master`                    | Unblocks all downstream work     | Low      |
+| 2  | **P0**   | Fix GitHub Actions billing/spending limit                         | Restores CI                      | External |
+| 3  | **P0**   | Update CI workflow for multi-module testing                       | Ensures all modules tested       | Medium   |
+| 4  | **P1**   | Create first versioned release (v0.5.0) with sub-module tags      | Enables external consumers       | Low      |
+| 5  | **P1**   | Remove `replace` directives after new root release                | Eliminates scaffolding tech debt | Low      |
+| 6  | **P1**   | Update flake.nix for multi-module build/test                      | Restores Nix CI                  | Medium   |
+| 7  | **P1**   | Replace testify with ginkgo/gomega (3 files)                      | Policy compliance                | Medium   |
+| 8  | **P1**   | Move nanoid-specific errors from `pkg/errors` to nanoid module    | Cleaner dep isolation            | Medium   |
+| 9  | **P2**   | Add compilation test for examples module                          | Catches build regressions        | Low      |
+| 10 | **P2**   | Write integration test verifying external consumer imports        | Validates consumer experience    | Medium   |
+| 11 | **P2**   | Update README.md to reflect multi-module structure                | Consumer documentation           | Low      |
+| 12 | **P2**   | Verify pkg.go.dev renders all sub-modules correctly               | Documentation                    | Low      |
+| 13 | **P2**   | Add `go work edit -fmt` to CI pipeline                            | Prevents go.work drift           | Low      |
+| 14 | **P2**   | Create release automation script (justfile → flake.nix)           | Operational                      | Medium   |
+| 15 | **P3**   | Improve `pkg/errors` coverage to 95%+ (87.5% → 95%)               | Quality                          | Low      |
+| 16 | **P3**   | Improve `scanutil` coverage to 95%+ (79.2% → 95%)                 | Quality                          | Low      |
+| 17 | **P3**   | Improve `version` coverage to 95%+ (81.0% → 95%)                  | Quality                          | Low      |
+| 18 | **P3**   | Improve `projectcore` coverage to 95%+ (82.9% → 95%)              | Quality                          | Low      |
+| 19 | **P3**   | Consider extracting `testutil` to its own module                  | Cleaner test dep isolation       | Medium   |
+| 20 | **P3**   | Add `//go:build` constraints if any platform-specific code exists | Correctness                      | Low      |
+| 21 | **P3**   | Add benchmark suite for hot paths (nanoid generation, parsing)    | Performance visibility           | Medium   |
+| 22 | **P3**   | Add CHANGELOG entry for v0.5.0 modularization release             | Documentation                    | Low      |
+| 23 | **P4**   | Evaluate `internal/` packages for cross-module access safety      | Correctness                      | Low      |
+| 24 | **P4**   | Set up Dependabot for sub-module go.mod files                     | Security                         | Low      |
+| 25 | **P4**   | Add pre-commit hook for `go mod tidy` verification                | Developer experience             | Low      |
 
 ---
 
@@ -261,18 +261,18 @@ The current `replace` directives in sub-module go.mod files exist because the pu
 ## Files Changed This Session
 
 ```
- AGENTS.md                               |  10 ++-
- datapoint/go.mod                        |  21 ++++++-
- datapoint/go.sum                        |  25 +++++++-
- docs/modularization/DEPENDENCY_GRAPH.md | 107 ++++++++++++++++++--------------
- docs/modularization/PROPOSAL.md         |  21 +++++--
- examples/go.mod                         |  23 ++++++-
- examples/go.sum                         |  25 +++++++-
- locale/go.mod                           |   9 ++-
- locale/go.sum                           |   1 +
- money/go.mod                            |  17 +++--
- money/go.sum                            |   9 ++-
- nanoid/go.mod                           |  15 +++--
- nanoid/go.sum                           |  15 ++++-
- 13 files changed, 221 insertions(+), 77 deletions(-)
+AGENTS.md                               |  10 ++-
+datapoint/go.mod                        |  21 ++++++-
+datapoint/go.sum                        |  25 +++++++-
+docs/modularization/DEPENDENCY_GRAPH.md | 107 ++++++++++++++++++--------------
+docs/modularization/PROPOSAL.md         |  21 +++++--
+examples/go.mod                         |  23 ++++++-
+examples/go.sum                         |  25 +++++++-
+locale/go.mod                           |   9 ++-
+locale/go.sum                           |   1 +
+money/go.mod                            |  17 +++--
+money/go.sum                            |   9 ++-
+nanoid/go.mod                           |  15 +++--
+nanoid/go.sum                           |  15 ++++-
+13 files changed, 221 insertions(+), 77 deletions(-)
 ```

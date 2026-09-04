@@ -100,7 +100,6 @@ func main() {
 Any error messages, stack traces, or relevant logs.
 
 ````
-
 ### Feature Requests
 
 Include in your feature request:

@@ -11,16 +11,16 @@
 
 From "100 Things I hate in modern Software Development":
 
-| #   | Pain Point                    | How DataPoint Solves It                                       |
-| --- | ----------------------------- | ------------------------------------------------------------- |
-| 1   | No Event Sourcing             | DataPoint IS event-sourcing inspired - every change is a fact |
-| 2   | Easy to do wrong thing        | Strong types make invalid states unrepresentable              |
-| 25  | Metadata management           | Core problem this design solves                               |
-| 26  | Long unreadable UUIDs         | Use `NanoId` - shorter, readable, same uniqueness             |
-| 27  | Errors not isolated/recovered | `Cause` captures full context for debugging                   |
-| 36  | Not learning from mistakes    | Full causal chain enables analysis                            |
-| 41  | No event log on data access   | Every DataPoint IS an auditable event                         |
-| 44  | MEGA files (+1000 lines)      | Implementation kept under 250 lines per file                  |
+| #  | Pain Point                    | How DataPoint Solves It                                       |
+| -- | ----------------------------- | ------------------------------------------------------------- |
+| 1  | No Event Sourcing             | DataPoint IS event-sourcing inspired - every change is a fact |
+| 2  | Easy to do wrong thing        | Strong types make invalid states unrepresentable              |
+| 25 | Metadata management           | Core problem this design solves                               |
+| 26 | Long unreadable UUIDs         | Use `NanoId` - shorter, readable, same uniqueness             |
+| 27 | Errors not isolated/recovered | `Cause` captures full context for debugging                   |
+| 36 | Not learning from mistakes    | Full causal chain enables analysis                            |
+| 41 | No event log on data access   | Every DataPoint IS an auditable event                         |
+| 44 | MEGA files (+1000 lines)      | Implementation kept under 250 lines per file                  |
 
 ---
 

@@ -2,7 +2,7 @@
 
 > Tracking implementation of library policies defined in POLICY.md
 
-**Created:** 2026-03-27  
+**Created:** 2026-03-27\
 **Policy Version:** 1.0.0
 
 ---
@@ -41,26 +41,26 @@
 
 ### 2.3 Labels
 
-| Label              | Color   | Purpose                    | Status    |
-| ------------------ | ------- | -------------------------- | --------- |
+| Label              | Color   | Purpose                    | Status   |
+| ------------------ | ------- | -------------------------- | -------- |
 | `breaking-change`  | #b60205 | API breaking changes       | ⚠️ Manual |
 | `security`         | #d93f0b | Security-related issues    | ⚠️ Manual |
 | `deprecation`      | #f9d0c4 | Deprecation notices        | ⚠️ Manual |
 | `documentation`    | #0052cc | Documentation updates      | ⚠️ Manual |
 | `good-first-issue` | #7057ff | Beginner-friendly issues   | ⚠️ Manual |
 | `help-wanted`      | #008672 | Community help needed      | ⚠️ Manual |
-| `bug`              | -       | Bug reports (default)      | ✅        |
-| `enhancement`      | -       | Feature requests (default) | ✅        |
+| `bug`              | -       | Bug reports (default)      | ✅       |
+| `enhancement`      | -       | Feature requests (default) | ✅       |
 
 ### 2.4 Branch Protection
 
 | Rule                           | Status           |
 | ------------------------------ | ---------------- |
-| Require PR reviews (1 minimum) | ⚠️ Manual        |
+| Require PR reviews (1 minimum) | ⚠️ Manual         |
 | Require status checks to pass  | ✅ CI configured |
-| Require up-to-date branches    | ⚠️ Manual        |
-| Require linear history         | ⚠️ Manual        |
-| Restrict push to main          | ⚠️ Manual        |
+| Require up-to-date branches    | ⚠️ Manual         |
+| Require linear history         | ⚠️ Manual         |
+| Restrict push to main          | ⚠️ Manual         |
 
 ---
 
@@ -77,17 +77,17 @@
 
 ### 3.2 Pre-commit Hooks
 
-| Hook                 | Purpose                          | Status                     |
-| -------------------- | -------------------------------- | -------------------------- |
+| Hook                 | Purpose                          | Status                    |
+| -------------------- | -------------------------------- | ------------------------- |
 | Conventional commits | Enforce commit message format    | ⚠️ Manual - see .git/hooks |
-| Lint checks          | Prevent commits with lint errors | ⏳                         |
-| Test execution       | Require tests to pass            | ⏳                         |
+| Lint checks          | Prevent commits with lint errors | ⏳                        |
+| Test execution       | Require tests to pass            | ⏳                        |
 
 ### 3.3 Release Automation
 
-| Task                           | Status                    |
-| ------------------------------ | ------------------------- |
-| Automated changelog generation | ⏳                        |
+| Task                           | Status                   |
+| ------------------------------ | ------------------------ |
+| Automated changelog generation | ⏳                       |
 | Automated GitHub releases      | ⚠️ Manual - see POLICY.md |
 | Automated version tagging      | ⚠️ Manual - see POLICY.md |
 
@@ -97,11 +97,11 @@
 
 ### 4.1 Security
 
-| Task                                 | Status                     |
-| ------------------------------------ | -------------------------- |
+| Task                                 | Status                    |
+| ------------------------------------ | ------------------------- |
 | Set up security@lars.software email  | ⚠️ External setup required |
-| Create SECURITY.md (GitHub standard) | ✅                         |
-| Document CVE process                 | ✅ In SECURITY.md          |
+| Create SECURITY.md (GitHub standard) | ✅                        |
+| Document CVE process                 | ✅ In SECURITY.md         |
 
 ### 4.2 Legal
 
@@ -129,25 +129,25 @@
 | ---------------------- | ---------------------- | ---------------- |
 | Security vulnerability | govulncheck failure    | ✅ CI configured |
 | Breaking build         | CI failure             | ✅ Built-in      |
-| Deprecation deadline   | 30 days before removal | ⚠️ Manual        |
+| Deprecation deadline   | 30 days before removal | ⚠️ Manual         |
 
 ---
 
 ## Implementation Priority Matrix
 
-| Priority | Task                  | Effort | Impact | Timeline | Status      |
-| -------- | --------------------- | ------ | ------ | -------- | ----------- |
+| Priority | Task                  | Effort | Impact | Timeline | Status     |
+| -------- | --------------------- | ------ | ------ | -------- | ---------- |
 | P0       | Set up security email | Low    | High   | Week 1   | ⚠️ External |
-| P0       | Create SECURITY.md    | Low    | High   | Week 1   | ✅ Done     |
-| P1       | Issue templates       | Medium | Medium | Week 1-2 | ✅ Done     |
+| P0       | Create SECURITY.md    | Low    | High   | Week 1   | ✅ Done    |
+| P1       | Issue templates       | Medium | Medium | Week 1-2 | ✅ Done    |
 | P1       | Branch protection     | Low    | High   | Week 1   | ⚠️ Manual   |
 | P1       | Labels setup          | Low    | Medium | Week 1   | ⚠️ Manual   |
-| P2       | Dependabot            | Low    | Medium | Week 2   | ✅ Done     |
-| P2       | govulncheck           | Low    | High   | Week 2   | ✅ Done     |
-| P2       | Coverage reporting    | Medium | Medium | Week 2-3 | ✅ Done     |
-| P3       | Pre-commit hooks      | Medium | Low    | Week 3-4 | ⏳          |
-| P3       | Release automation    | Medium | Low    | Week 4   | ⏳          |
-| P4       | Benchmark comparison  | High   | Low    | Month 2  | ✅ CI done  |
+| P2       | Dependabot            | Low    | Medium | Week 2   | ✅ Done    |
+| P2       | govulncheck           | Low    | High   | Week 2   | ✅ Done    |
+| P2       | Coverage reporting    | Medium | Medium | Week 2-3 | ✅ Done    |
+| P3       | Pre-commit hooks      | Medium | Low    | Week 3-4 | ⏳         |
+| P3       | Release automation    | Medium | Low    | Week 4   | ⏳         |
+| P4       | Benchmark comparison  | High   | Low    | Month 2  | ✅ CI done |
 
 ---
 

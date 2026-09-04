@@ -35,18 +35,18 @@
 
 | #                                                          | Category | Task                                              | Impact   | Effort | Value  | Est. |
 | ---------------------------------------------------------- | -------- | ------------------------------------------------- | -------- | ------ | ------ | ---- |
-| **PHASE 1: STABILIZATION**                                 |
+| **PHASE 1: STABILIZATION**                                 |          |                                                   |          |        |        |      |
 | 1                                                          | P0       | Fix json/v2 imports → json (id/id.go)             | Critical | 1m     | High   | 1m   |
 | 2                                                          | P0       | Fix json/v2 imports → json (temporal/temporal.go) | Critical | 1m     | High   | 1m   |
 | 3                                                          | P0       | Fix json/v2 imports → json (bounded/bounded.go)   | Critical | 1m     | High   | 1m   |
 | 4                                                          | P0       | Verify build passes with go build ./...           | Critical | 2m     | High   | 2m   |
 | 5                                                          | P0       | Verify tests pass with go test -race ./...        | Critical | 3m     | High   | 3m   |
 | 6                                                          | P0       | Commit json/v2 → json fixes                       | Critical | 2m     | High   | 2m   |
-| **PHASE 2: LINTER CONFIG**                                 |
+| **PHASE 2: LINTER CONFIG**                                 |          |                                                   |          |        |        |      |
 | 7                                                          | P1       | Fix golangci.yml depguard pattern (add /\*\*)     | High     | 1m     | High   | 1m   |
 | 8                                                          | P1       | Run golangci-lint to verify config works          | High     | 2m     | Medium | 2m   |
 | 9                                                          | P1       | Commit golangci.yml fix                           | High     | 2m     | Medium | 2m   |
-| **PHASE 3: PACKAGE DOCUMENTATION**                         |
+| **PHASE 3: PACKAGE DOCUMENTATION**                         |          |                                                   |          |        |        |      |
 | 10                                                         | P1       | Add package comment to enums/enums.go             | High     | 2m     | Medium | 2m   |
 | 11                                                         | P1       | Add package comment to money/money.go             | High     | 2m     | Medium | 2m   |
 | 12                                                         | P1       | Add package comment to locale/locale.go           | High     | 2m     | Medium | 2m   |
@@ -54,7 +54,7 @@
 | 14                                                         | P1       | Add package comment to datapoint/datapoint.go     | High     | 2m     | Medium | 2m   |
 | 15                                                         | P1       | Verify godoc renders correctly                    | Medium   | 3m     | Medium | 3m   |
 | 16                                                         | P1       | Commit package documentation                      | High     | 2m     | Medium | 2m   |
-| **PHASE 4: TEST COVERAGE - TYPES PACKAGE (25.9% → 60%)**   |
+| **PHASE 4: TEST COVERAGE - TYPES PACKAGE (25.9% → 60%)**   |          |                                                   |          |        |        |      |
 | 17                                                         | P1       | Add tests for Percentage.Compare                  | High     | 3m     | High   | 3m   |
 | 18                                                         | P1       | Add tests for Cents.Compare                       | High     | 3m     | High   | 3m   |
 | 19                                                         | P1       | Add tests for Timestamp.Compare                   | High     | 3m     | High   | 3m   |
@@ -71,7 +71,7 @@
 | 30                                                         | P1       | Add tests for Timestamp.Value                     | High     | 3m     | High   | 4m   |
 | 31                                                         | P1       | Run tests and verify types coverage               | High     | 2m     | High   | 2m   |
 | 32                                                         | P1       | Commit types test improvements                    | High     | 2m     | High   | 2m   |
-| **PHASE 5: TEST COVERAGE - ENUMS PACKAGE (6.8% → 50%)**    |
+| **PHASE 5: TEST COVERAGE - ENUMS PACKAGE (6.8% → 50%)**    |          |                                                   |          |        |        |      |
 | 33                                                         | P1       | Add tests for ActorKind enum methods              | High     | 5m     | High   | 5m   |
 | 34                                                         | P1       | Add tests for Priority enum methods               | High     | 5m     | High   | 5m   |
 | 35                                                         | P1       | Add tests for Status enum methods                 | High     | 5m     | High   | 5m   |
@@ -80,7 +80,7 @@
 | 38                                                         | P1       | Add tests for SQL Scan/Value                      | High     | 5m     | High   | 5m   |
 | 39                                                         | P1       | Run tests and verify enums coverage               | High     | 2m     | High   | 2m   |
 | 40                                                         | P1       | Commit enums test improvements                    | High     | 2m     | High   | 2m   |
-| **PHASE 6: TEST COVERAGE - LOCALE PACKAGE (28.9% → 60%)**  |
+| **PHASE 6: TEST COVERAGE - LOCALE PACKAGE (28.9% → 60%)**  |          |                                                   |          |        |        |      |
 | 41                                                         | P1       | Add tests for Locale.Scan                         | High     | 4m     | High   | 4m   |
 | 42                                                         | P1       | Add tests for Locale.Value                        | High     | 3m     | High   | 3m   |
 | 43                                                         | P1       | Add tests for Locale JSON marshal/unmarshal       | High     | 4m     | High   | 4m   |
@@ -88,7 +88,7 @@
 | 45                                                         | P1       | Add tests for edge cases (empty, invalid)         | High     | 4m     | High   | 4m   |
 | 46                                                         | P1       | Run tests and verify locale coverage              | High     | 2m     | High   | 2m   |
 | 47                                                         | P1       | Commit locale test improvements                   | High     | 2m     | High   | 2m   |
-| **PHASE 7: TEST COVERAGE - BOUNDED PACKAGE (43.8% → 60%)** |
+| **PHASE 7: TEST COVERAGE - BOUNDED PACKAGE (43.8% → 60%)** |          |                                                   |          |        |        |      |
 | 48                                                         | P1       | Add tests for BoundedString.MarshalJSON           | High     | 4m     | High   | 4m   |
 | 49                                                         | P1       | Add tests for BoundedString.UnmarshalJSON         | High     | 4m     | High   | 4m   |
 | 50                                                         | P1       | Add tests for BoundedString.Scan                  | High     | 4m     | High   | 4m   |
@@ -96,14 +96,14 @@
 | 52                                                         | P1       | Add tests for MustBoundedString                   | High     | 3m     | High   | 3m   |
 | 53                                                         | P1       | Run tests and verify bounded coverage             | High     | 2m     | High   | 2m   |
 | 54                                                         | P1       | Commit bounded test improvements                  | High     | 2m     | High   | 2m   |
-| **PHASE 8: TEST COVERAGE - ID PACKAGE (41.9% → 55%)**      |
+| **PHASE 8: TEST COVERAGE - ID PACKAGE (41.9% → 55%)**      |          |                                                   |          |        |        |      |
 | 55                                                         | P1       | Add tests for ID.Compare with all types           | High     | 8m     | High   | 8m   |
 | 56                                                         | P1       | Add tests for ID.Or                               | High     | 3m     | High   | 3m   |
 | 57                                                         | P1       | Add tests for ID binary marshal/unmarshal         | High     | 6m     | High   | 6m   |
 | 58                                                         | P1       | Add tests for ID gob encode/decode                | High     | 4m     | High   | 4m   |
 | 59                                                         | P1       | Run tests and verify id coverage                  | High     | 2m     | High   | 2m   |
 | 60                                                         | P1       | Commit id test improvements                       | High     | 2m     | High   | 2m   |
-| **PHASE 9: TEST COVERAGE - DATAPOINT PACKAGE (50% → 65%)** |
+| **PHASE 9: TEST COVERAGE - DATAPOINT PACKAGE (50% → 65%)** |          |                                                   |          |        |        |      |
 | 61                                                         | P1       | Add tests for Cause constructors                  | High     | 4m     | High   | 4m   |
 | 62                                                         | P1       | Add tests for Reference constructors              | High     | 4m     | High   | 4m   |
 | 63                                                         | P1       | Add tests for Context.With\* methods              | High     | 5m     | High   | 5m   |
@@ -111,7 +111,7 @@
 | 65                                                         | P1       | Add tests for DataPoint JSON round-trip           | High     | 5m     | High   | 5m   |
 | 66                                                         | P1       | Run tests and verify datapoint coverage           | High     | 2m     | High   | 2m   |
 | 67                                                         | P1       | Commit datapoint test improvements                | High     | 2m     | High   | 2m   |
-| **PHASE 10: STATUS REPORT & FINALIZATION**                 |
+| **PHASE 10: STATUS REPORT & FINALIZATION**                 |          |                                                   |          |        |        |      |
 | 68                                                         | P1       | Write comprehensive status report                 | High     | 5m     | High   | 5m   |
 | 69                                                         | P1       | Commit status report                              | High     | 2m     | Medium | 2m   |
 | 70                                                         | P1       | Push all commits to remote                        | High     | 2m     | Medium | 2m   |

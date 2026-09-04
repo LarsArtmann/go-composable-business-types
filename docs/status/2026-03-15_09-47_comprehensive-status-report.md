@@ -58,13 +58,13 @@ ac859aa fix(locale): improve error messages with context
 | actor     | 100.0%   | ✓      |
 | money     | 100.0%   | ✓      |
 | temporal  | 96.3%    | ✓      |
-| datapoint | 50.0%    | ⚠️     |
-| nanoid    | 48.1%    | ⚠️     |
-| bounded   | 43.8%    | ⚠️     |
-| id        | 41.9%    | ⚠️     |
-| locale    | 28.9%    | ⚠️     |
-| types     | 25.9%    | ⚠️     |
-| enums     | 6.8%     | ⚠️     |
+| datapoint | 50.0%    | ⚠️      |
+| nanoid    | 48.1%    | ⚠️      |
+| bounded   | 43.8%    | ⚠️      |
+| id        | 41.9%    | ⚠️      |
+| locale    | 28.9%    | ⚠️      |
+| types     | 25.9%    | ⚠️      |
+| enums     | 6.8%     | ⚠️      |
 
 ---
 

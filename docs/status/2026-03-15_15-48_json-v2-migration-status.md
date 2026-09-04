@@ -27,8 +27,8 @@
 
 ## B) PARTIALLY DONE ⚠️
 
-| Item                    | Status    | Details                                              |
-| ----------------------- | --------- | ---------------------------------------------------- |
+| Item                    | Status   | Details                                              |
+| ----------------------- | -------- | ---------------------------------------------------- |
 | Import replacement      | ⚠️ FAILED | sed/perl commands executed but changes NOT persisted |
 | Build with GOEXPERIMENT | ⚠️ WORKS  | `GOEXPERIMENT=jsonv2 go build ./...` succeeds        |
 | Tests with GOEXPERIMENT | ⚠️ FAILS  | Race detector tests fail with build errors           |
@@ -82,33 +82,33 @@
 
 ## F) TOP 25 THINGS TO DO NEXT 📋
 
-| #   | Task                                                 | Priority | Est. Time |
-| --- | ---------------------------------------------------- | -------- | --------- |
-| 1   | Fix `temporal/temporal.go` import                    | CRITICAL | 1 min     |
-| 2   | Fix `datapoint/datapoint.go` import                  | CRITICAL | 1 min     |
-| 3   | Fix `datapoint/datapoint_test.go` import             | CRITICAL | 1 min     |
-| 4   | Fix `datapoint/cause.go` import                      | CRITICAL | 1 min     |
-| 5   | Fix `datapoint/reference.go` import                  | CRITICAL | 1 min     |
-| 6   | Fix `datapoint/context.go` import                    | CRITICAL | 1 min     |
-| 7   | Fix `bounded/bounded.go` import                      | CRITICAL | 1 min     |
-| 8   | Fix `id/id.go` import                                | CRITICAL | 1 min     |
-| 9   | Fix `id/id_test.go` import                           | CRITICAL | 1 min     |
-| 10  | Fix `examples/datapoint/main.go` import + API        | CRITICAL | 2 min     |
-| 11  | Verify all imports changed                           | HIGH     | 1 min     |
-| 12  | Build with `go build ./...`                          | CRITICAL | 1 min     |
-| 13  | Test with `go test ./...`                            | CRITICAL | 2 min     |
-| 14  | Investigate: Does Go 1.26.1 have json/v2 by default? | CRITICAL | 5 min     |
-| 15  | Update README if GOEXPERIMENT required               | HIGH     | 3 min     |
-| 16  | Update AGENTS.md with build commands                 | MEDIUM   | 2 min     |
-| 17  | Run tests with race detector                         | HIGH     | 5 min     |
-| 18  | Verify examples compile and run                      | HIGH     | 2 min     |
-| 19  | Check for other json v1 API calls                    | HIGH     | 2 min     |
-| 20  | Update go.mod if needed                              | MEDIUM   | 1 min     |
-| 21  | Run golangci-lint                                    | MEDIUM   | 3 min     |
-| 22  | Generate enum code                                   | LOW      | 1 min     |
-| 23  | Update project documentation                         | LOW      | 5 min     |
-| 24  | Create git commit with detailed message              | HIGH     | 2 min     |
-| 25  | Verify CI/CD still works                             | LOW      | 5 min     |
+| #  | Task                                                 | Priority | Est. Time |
+| -- | ---------------------------------------------------- | -------- | --------- |
+| 1  | Fix `temporal/temporal.go` import                    | CRITICAL | 1 min     |
+| 2  | Fix `datapoint/datapoint.go` import                  | CRITICAL | 1 min     |
+| 3  | Fix `datapoint/datapoint_test.go` import             | CRITICAL | 1 min     |
+| 4  | Fix `datapoint/cause.go` import                      | CRITICAL | 1 min     |
+| 5  | Fix `datapoint/reference.go` import                  | CRITICAL | 1 min     |
+| 6  | Fix `datapoint/context.go` import                    | CRITICAL | 1 min     |
+| 7  | Fix `bounded/bounded.go` import                      | CRITICAL | 1 min     |
+| 8  | Fix `id/id.go` import                                | CRITICAL | 1 min     |
+| 9  | Fix `id/id_test.go` import                           | CRITICAL | 1 min     |
+| 10 | Fix `examples/datapoint/main.go` import + API        | CRITICAL | 2 min     |
+| 11 | Verify all imports changed                           | HIGH     | 1 min     |
+| 12 | Build with `go build ./...`                          | CRITICAL | 1 min     |
+| 13 | Test with `go test ./...`                            | CRITICAL | 2 min     |
+| 14 | Investigate: Does Go 1.26.1 have json/v2 by default? | CRITICAL | 5 min     |
+| 15 | Update README if GOEXPERIMENT required               | HIGH     | 3 min     |
+| 16 | Update AGENTS.md with build commands                 | MEDIUM   | 2 min     |
+| 17 | Run tests with race detector                         | HIGH     | 5 min     |
+| 18 | Verify examples compile and run                      | HIGH     | 2 min     |
+| 19 | Check for other json v1 API calls                    | HIGH     | 2 min     |
+| 20 | Update go.mod if needed                              | MEDIUM   | 1 min     |
+| 21 | Run golangci-lint                                    | MEDIUM   | 3 min     |
+| 22 | Generate enum code                                   | LOW      | 1 min     |
+| 23 | Update project documentation                         | LOW      | 5 min     |
+| 24 | Create git commit with detailed message              | HIGH     | 2 min     |
+| 25 | Verify CI/CD still works                             | LOW      | 5 min     |
 
 ---
 

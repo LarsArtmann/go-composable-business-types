@@ -99,33 +99,33 @@
 
 Sorted by **Impact × Ease** (highest first):
 
-| #   | Task                                                                                        | Impact   | Effort | Why                                    |
-| --- | ------------------------------------------------------------------------------------------- | -------- | ------ | -------------------------------------- |
-| 1   | Remove `id/` from old project (git rm + commit)                                             | Critical | 5min   | Can't ship with duplicate packages     |
-| 2   | Sync sentinel error changes from old → new repo                                             | High     | 15min  | Drift will cause confusion             |
-| 3   | Add LICENSE to go-branded-id                                                                | High     | 2min   | Can't publish without it               |
-| 4   | Migrate id/README.md → go-branded-id README.md                                              | High     | 10min  | pkg.go.dev needs it                    |
-| 5   | Run `go mod tidy` in old project after id/ removal                                          | Critical | 2min   | Module won't build without it          |
-| 6   | Commit all changes in old project                                                           | Critical | 5min   | Uncommitted work = lost work           |
-| 7   | Commit synced changes in go-branded-id                                                      | High     | 5min   | Get both repos in clean state          |
-| 8   | Add `.golangci.yml` to go-branded-id                                                        | Medium   | 10min  | Lint consistency                       |
-| 9   | Fix linter warnings in go-branded-id (varnamelen, funlen, err113)                           | Medium   | 30min  | Clean slate, clean code                |
-| 10  | Add GitHub Actions CI for go-branded-id                                                     | Medium   | 20min  | Automated testing                      |
-| 11  | Tag go-branded-id as v0.1.0                                                                 | Medium   | 2min   | Versioned dependency                   |
-| 12  | Push both repos to GitHub                                                                   | High     | 5min   | Backup + collaboration                 |
-| 13  | Update extraction analysis doc as completed                                                 | Low      | 5min   | Documentation hygiene                  |
-| 14  | Add `justfile` to go-branded-id                                                             | Low      | 10min  | Consistent build commands              |
-| 15  | Consider extracting `scanutil/` into go-branded-id                                          | Medium   | 30min  | Natural dependency for ID SQL scanning |
-| 16  | Consider extracting `pkg/errors/` into go-branded-id                                        | Medium   | 30min  | Shared error infrastructure            |
-| 17  | Consider extracting `nanoid/` into go-branded-id                                            | Medium   | 1hr    | Natural companion: `ID[Brand, NanoID]` |
-| 18  | Add `encoding.TextMarshaler`/`TextUnmarshaler` interface assertions for more types          | Low      | 10min  | Compile-time safety                    |
-| 19  | Fix pre-existing enums test failures                                                        | Medium   | 1hr    | Unrelated but embarrassing             |
-| 20  | Add Go doc examples to go-branded-id README                                                 | Low      | 15min  | Adoption                               |
-| 21  | Add dependabot config for go-branded-id                                                     | Low      | 5min   | Security                               |
-| 22  | Consider `ID[B,V]` implementing `encoding.BinaryMarshaler` for custom V types via interface | Low      | 20min  | Extensibility                          |
-| 23  | Add release workflow (goreleaser or similar) to go-branded-id                               | Low      | 30min  | Automated releases                     |
-| 24  | Update PROJECT_SPLIT_EXECUTIVE_REPORT.md to reflect partial extraction done                 | Low      | 10min  | Accuracy                               |
-| 25  | Evaluate if `bounded.BoundedString` could be a valid ID value type                          | Low      | 15min  | Type composition exploration           |
+| #  | Task                                                                                        | Impact   | Effort | Why                                    |
+| -- | ------------------------------------------------------------------------------------------- | -------- | ------ | -------------------------------------- |
+| 1  | Remove `id/` from old project (git rm + commit)                                             | Critical | 5min   | Can't ship with duplicate packages     |
+| 2  | Sync sentinel error changes from old → new repo                                             | High     | 15min  | Drift will cause confusion             |
+| 3  | Add LICENSE to go-branded-id                                                                | High     | 2min   | Can't publish without it               |
+| 4  | Migrate id/README.md → go-branded-id README.md                                              | High     | 10min  | pkg.go.dev needs it                    |
+| 5  | Run `go mod tidy` in old project after id/ removal                                          | Critical | 2min   | Module won't build without it          |
+| 6  | Commit all changes in old project                                                           | Critical | 5min   | Uncommitted work = lost work           |
+| 7  | Commit synced changes in go-branded-id                                                      | High     | 5min   | Get both repos in clean state          |
+| 8  | Add `.golangci.yml` to go-branded-id                                                        | Medium   | 10min  | Lint consistency                       |
+| 9  | Fix linter warnings in go-branded-id (varnamelen, funlen, err113)                           | Medium   | 30min  | Clean slate, clean code                |
+| 10 | Add GitHub Actions CI for go-branded-id                                                     | Medium   | 20min  | Automated testing                      |
+| 11 | Tag go-branded-id as v0.1.0                                                                 | Medium   | 2min   | Versioned dependency                   |
+| 12 | Push both repos to GitHub                                                                   | High     | 5min   | Backup + collaboration                 |
+| 13 | Update extraction analysis doc as completed                                                 | Low      | 5min   | Documentation hygiene                  |
+| 14 | Add `justfile` to go-branded-id                                                             | Low      | 10min  | Consistent build commands              |
+| 15 | Consider extracting `scanutil/` into go-branded-id                                          | Medium   | 30min  | Natural dependency for ID SQL scanning |
+| 16 | Consider extracting `pkg/errors/` into go-branded-id                                        | Medium   | 30min  | Shared error infrastructure            |
+| 17 | Consider extracting `nanoid/` into go-branded-id                                            | Medium   | 1hr    | Natural companion: `ID[Brand, NanoID]` |
+| 18 | Add `encoding.TextMarshaler`/`TextUnmarshaler` interface assertions for more types          | Low      | 10min  | Compile-time safety                    |
+| 19 | Fix pre-existing enums test failures                                                        | Medium   | 1hr    | Unrelated but embarrassing             |
+| 20 | Add Go doc examples to go-branded-id README                                                 | Low      | 15min  | Adoption                               |
+| 21 | Add dependabot config for go-branded-id                                                     | Low      | 5min   | Security                               |
+| 22 | Consider `ID[B,V]` implementing `encoding.BinaryMarshaler` for custom V types via interface | Low      | 20min  | Extensibility                          |
+| 23 | Add release workflow (goreleaser or similar) to go-branded-id                               | Low      | 30min  | Automated releases                     |
+| 24 | Update PROJECT_SPLIT_EXECUTIVE_REPORT.md to reflect partial extraction done                 | Low      | 10min  | Accuracy                               |
+| 25 | Evaluate if `bounded.BoundedString` could be a valid ID value type                          | Low      | 15min  | Type composition exploration           |
 
 ---
 

@@ -310,11 +310,11 @@ Review the disabled linter list and selectively re-enable any that align with pr
 ### BuildFlow Project
 
 ```
- M .auto-deduplicate/false-positives.json
- M docs/status/2026-03-10_05-19_COMPREHENSIVE_STATUS_REPORT.md
- M docs/status/2026-03-14_06-31_COMPREHENSIVE_STATUS_REPORT.md
- M go.mod
- M go.sum
+M .auto-deduplicate/false-positives.json
+M docs/status/2026-03-10_05-19_COMPREHENSIVE_STATUS_REPORT.md
+M docs/status/2026-03-14_06-31_COMPREHENSIVE_STATUS_REPORT.md
+M go.mod
+M go.sum
 ```
 
 ### go-composable-business-types Project

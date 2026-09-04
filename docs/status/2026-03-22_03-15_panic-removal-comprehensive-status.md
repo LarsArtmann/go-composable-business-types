@@ -1,7 +1,7 @@
 # Comprehensive Status Report: Panic Removal & Architecture Improvements
 
-**Date:** 2026-03-22 03:15  
-**Project:** go-composable-business-types  
+**Date:** 2026-03-22 03:15\
+**Project:** go-composable-business-types\
 **Session Focus:** Panic elimination, type safety improvements, code organization
 
 ---
@@ -168,42 +168,42 @@ This is the idiomatic Go way to check for specific errors, supporting error wrap
 
 ### High Impact / Low Effort
 
-| #   | Task                            | Impact | Effort | Files                          |
-| --- | ------------------------------- | ------ | ------ | ------------------------------ |
-| 1   | **Add CauseKind enum**          | Medium | Low    | `enums/`, `datapoint/cause.go` |
-| 2   | **Fix integer overflow (G115)** | Medium | Low    | `types/types.go:247`           |
-| 3   | **Add missing documentation**   | Low    | Medium | `bounded/`, `types/`           |
-| 4   | **Fix receiver consistency**    | Medium | Medium | `types/types.go`, `bounded/`   |
+| # | Task                            | Impact | Effort | Files                          |
+| - | ------------------------------- | ------ | ------ | ------------------------------ |
+| 1 | **Add CauseKind enum**          | Medium | Low    | `enums/`, `datapoint/cause.go` |
+| 2 | **Fix integer overflow (G115)** | Medium | Low    | `types/types.go:247`           |
+| 3 | **Add missing documentation**   | Low    | Medium | `bounded/`, `types/`           |
+| 4 | **Fix receiver consistency**    | Medium | Medium | `types/types.go`, `bounded/`   |
 
 ### High Impact / High Effort
 
-| #   | Task                            | Impact | Effort  | Files                |
-| --- | ------------------------------- | ------ | ------- | -------------------- |
-| 5   | **Complete ID package split**   | High   | Medium  | `id/id.go` → 4 files |
-| 6   | **Rename BoundedString→String** | Medium | Low-Med | `bounded/bounded.go` |
-| 7   | **Fix locale global variables** | Low    | Low     | `locale/locale.go`   |
-| 8   | **Add BDD/TDD test structure**  | High   | High    | New test files       |
+| # | Task                            | Impact | Effort  | Files                |
+| - | ------------------------------- | ------ | ------- | -------------------- |
+| 5 | **Complete ID package split**   | High   | Medium  | `id/id.go` → 4 files |
+| 6 | **Rename BoundedString→String** | Medium | Low-Med | `bounded/bounded.go` |
+| 7 | **Fix locale global variables** | Low    | Low     | `locale/locale.go`   |
+| 8 | **Add BDD/TDD test structure**  | High   | High    | New test files       |
 
 ### Code Quality Improvements
 
-| #   | Task                            | Impact | Effort | Notes                  |
-| --- | ------------------------------- | ------ | ------ | ---------------------- |
-| 9   | **Add Compare to all types**    | Low    | Medium | `types/`, `bounded/`   |
-| 10  | **Add SQL support to temporal** | Medium | Medium | `temporal/temporal.go` |
-| 11  | **Create integration tests**    | High   | High   | `tests/` directory     |
-| 12  | **Add fuzz tests**              | Medium | Medium | `*_fuzz_test.go`       |
-| 13  | **Add benchmarks**              | Low    | Medium | `*_bench_test.go`      |
-| 14  | **Review uint usage**           | Low    | Low    | Check appropriateness  |
-| 15  | **Add gci/fieldalignment**      | Low    | Low    | `.golangci.yml`        |
+| #  | Task                            | Impact | Effort | Notes                  |
+| -- | ------------------------------- | ------ | ------ | ---------------------- |
+| 9  | **Add Compare to all types**    | Low    | Medium | `types/`, `bounded/`   |
+| 10 | **Add SQL support to temporal** | Medium | Medium | `temporal/temporal.go` |
+| 11 | **Create integration tests**    | High   | High   | `tests/` directory     |
+| 12 | **Add fuzz tests**              | Medium | Medium | `*_fuzz_test.go`       |
+| 13 | **Add benchmarks**              | Low    | Medium | `*_bench_test.go`      |
+| 14 | **Review uint usage**           | Low    | Low    | Check appropriateness  |
+| 15 | **Add gci/fieldalignment**      | Low    | Low    | `.golangci.yml`        |
 
 ### Documentation & Architecture
 
-| #   | Task                              | Impact | Effort | Notes                    |
-| --- | --------------------------------- | ------ | ------ | ------------------------ |
-| 16  | **Create architecture.md**        | Medium | Medium | Document design patterns |
-| 17  | **Add example tests**             | Low    | Medium | `*_example_test.go`      |
-| 18  | **Document type safety patterns** | Medium | Low    | README updates           |
-| 19  | **Create migration guide**        | High   | Medium | For v1→v2 if needed      |
+| #  | Task                              | Impact | Effort | Notes                    |
+| -- | --------------------------------- | ------ | ------ | ------------------------ |
+| 16 | **Create architecture.md**        | Medium | Medium | Document design patterns |
+| 17 | **Add example tests**             | Low    | Medium | `*_example_test.go`      |
+| 18 | **Document type safety patterns** | Medium | Low    | README updates           |
+| 19 | **Create migration guide**        | High   | Medium | For v1→v2 if needed      |
 
 ---
 
@@ -370,5 +370,5 @@ This session successfully eliminated all user-facing panic conditions from the l
 
 ---
 
-_Generated with Crush_  
+_Generated with Crush_\
 _Assisted-by: Kimi K2.5 via Crush <crush@charm.land>_

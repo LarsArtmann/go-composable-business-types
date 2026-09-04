@@ -167,33 +167,33 @@ The library is in **good shape** — 86.8% test coverage, zero lint issues, clea
 
 ## F) TOP 25 THINGS TO DO NEXT
 
-| #   | Task                                                                | Impact   | Effort      | Category       |
-| --- | ------------------------------------------------------------------- | -------- | ----------- | -------------- |
-| 1   | Fix GitHub Actions billing                                          | CRITICAL | 5min        | Infrastructure |
-| 2   | Remove `justfile` (migrate to flake.nix or drop)                    | HIGH     | 30min       | Cleanup        |
-| 3   | Clean `.golangci.yml` — remove `programminglanguage/` exclusion     | HIGH     | 5min        | Cleanup        |
-| 4   | Run `git-cliff` to generate real CHANGELOG.md                       | HIGH     | 15min       | Release prep   |
-| 5   | Decide on `encoding/json/v2`: adopt it or remove GOEXPERIMENT flag  | HIGH     | 2hr or 5min | Technical debt |
-| 6   | Update POLICY.md — replace `just` refs with `go`/`nix` commands     | MED      | 30min       | Docs           |
-| 7   | Update SUPPORT.md — replace `just` refs                             | MED      | 15min       | Docs           |
-| 8   | Add go-enry recommendation to README.md                             | MED      | 5min        | Docs           |
-| 9   | Add example for `money/` package                                    | MED      | 30min       | Docs           |
-| 10  | Add example for `actor/` package                                    | MED      | 30min       | Docs           |
-| 11  | Add example for `datapoint/` with bitemporal tracking               | MED      | 30min       | Docs           |
-| 12  | Increase `projectcore/` test coverage to 85%+                       | MED      | 30min       | Quality        |
-| 13  | Increase `version/` test coverage to 85%+                           | MED      | 30min       | Quality        |
-| 14  | Add benchmark tests for all core packages                           | MED      | 2hr         | Quality        |
-| 15  | Update PARTS.md — remove `programminglanguage/`, mark as removed    | LOW      | 10min       | Docs           |
-| 16  | Clean stale `programminglanguage/` refs in docs/ecosystem/          | LOW      | 15min       | Docs           |
-| 17  | Archive old status reports to `docs/status/archive/`                | LOW      | 15min       | Housekeeping   |
-| 18  | Remove empty `report/` directory                                    | LOW      | 1min        | Housekeeping   |
-| 19  | Remove `.auto-deduplicate/false-positives.json` (stale macOS paths) | LOW      | 1min        | Housekeeping   |
-| 20  | Remove `BDD_TESTS_REVIEW.md` (no BDD tests planned)                 | LOW      | 1min        | Housekeeping   |
-| 21  | Remove `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` (already migrated)     | LOW      | 1min        | Housekeeping   |
-| 22  | Remove `PROJECT_SPLIT_EXECUTIVE_REPORT.md` (completed)              | LOW      | 1min        | Housekeeping   |
-| 23  | Add fuzz tests for `bounded/`, `types/`, `money/`                   | LOW      | 2hr         | Quality        |
-| 24  | Plan v1.0.0 release — API stability review, migration guide         | MED      | 3hr         | Strategy       |
-| 25  | Add `go` doc examples (example functions) for key types             | LOW      | 3hr         | Docs           |
+| #  | Task                                                                | Impact   | Effort      | Category       |
+| -- | ------------------------------------------------------------------- | -------- | ----------- | -------------- |
+| 1  | Fix GitHub Actions billing                                          | CRITICAL | 5min        | Infrastructure |
+| 2  | Remove `justfile` (migrate to flake.nix or drop)                    | HIGH     | 30min       | Cleanup        |
+| 3  | Clean `.golangci.yml` — remove `programminglanguage/` exclusion     | HIGH     | 5min        | Cleanup        |
+| 4  | Run `git-cliff` to generate real CHANGELOG.md                       | HIGH     | 15min       | Release prep   |
+| 5  | Decide on `encoding/json/v2`: adopt it or remove GOEXPERIMENT flag  | HIGH     | 2hr or 5min | Technical debt |
+| 6  | Update POLICY.md — replace `just` refs with `go`/`nix` commands     | MED      | 30min       | Docs           |
+| 7  | Update SUPPORT.md — replace `just` refs                             | MED      | 15min       | Docs           |
+| 8  | Add go-enry recommendation to README.md                             | MED      | 5min        | Docs           |
+| 9  | Add example for `money/` package                                    | MED      | 30min       | Docs           |
+| 10 | Add example for `actor/` package                                    | MED      | 30min       | Docs           |
+| 11 | Add example for `datapoint/` with bitemporal tracking               | MED      | 30min       | Docs           |
+| 12 | Increase `projectcore/` test coverage to 85%+                       | MED      | 30min       | Quality        |
+| 13 | Increase `version/` test coverage to 85%+                           | MED      | 30min       | Quality        |
+| 14 | Add benchmark tests for all core packages                           | MED      | 2hr         | Quality        |
+| 15 | Update PARTS.md — remove `programminglanguage/`, mark as removed    | LOW      | 10min       | Docs           |
+| 16 | Clean stale `programminglanguage/` refs in docs/ecosystem/          | LOW      | 15min       | Docs           |
+| 17 | Archive old status reports to `docs/status/archive/`                | LOW      | 15min       | Housekeeping   |
+| 18 | Remove empty `report/` directory                                    | LOW      | 1min        | Housekeeping   |
+| 19 | Remove `.auto-deduplicate/false-positives.json` (stale macOS paths) | LOW      | 1min        | Housekeeping   |
+| 20 | Remove `BDD_TESTS_REVIEW.md` (no BDD tests planned)                 | LOW      | 1min        | Housekeeping   |
+| 21 | Remove `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` (already migrated)     | LOW      | 1min        | Housekeeping   |
+| 22 | Remove `PROJECT_SPLIT_EXECUTIVE_REPORT.md` (completed)              | LOW      | 1min        | Housekeeping   |
+| 23 | Add fuzz tests for `bounded/`, `types/`, `money/`                   | LOW      | 2hr         | Quality        |
+| 24 | Plan v1.0.0 release — API stability review, migration guide         | MED      | 3hr         | Strategy       |
+| 25 | Add `go` doc examples (example functions) for key types             | LOW      | 3hr         | Docs           |
 
 ---
 

@@ -294,80 +294,80 @@ Sorted by: Phase → Priority → Dependencies
 
 ### PHASE 1 TASKS (24 tasks)
 
-| #   | Task                                  | Time  | Deps  | Priority |
-| --- | ------------------------------------- | ----- | ----- | -------- |
-| 1   | Define NanoId type struct             | 10min | -     | CRITICAL |
-| 2   | Add NanoId length constant (21 chars) | 5min  | 1     | CRITICAL |
-| 3   | Add NewNanoId() with crypto/rand      | 15min | 1,2   | CRITICAL |
-| 4   | Add ParseNanoId() with validation     | 10min | 1,2   | CRITICAL |
-| 5   | Add MustParseNanoId() helper          | 5min  | 4     | HIGH     |
-| 6   | Add NanoId.String() method            | 3min  | 1     | HIGH     |
-| 7   | Add NanoId.IsEmpty() method           | 3min  | 1     | MEDIUM   |
-| 8   | Add NanoId.MarshalText()              | 10min | 1     | HIGH     |
-| 9   | Add NanoId.UnmarshalText()            | 10min | 8     | HIGH     |
-| 10  | Write NanoId constructor tests        | 10min | 3,4   | CRITICAL |
-| 11  | Write NanoId validation tests         | 10min | 4     | HIGH     |
-| 12  | Write NanoId JSON tests               | 10min | 8,9   | HIGH     |
-| 13  | Define minimal DataPoint[T] struct    | 10min | -     | CRITICAL |
-| 14  | Add NewDataPoint() constructor        | 10min | 13    | CRITICAL |
-| 15  | Add NewDataPointNow() helper          | 5min  | 14    | HIGH     |
-| 16  | Add DataPoint.Id() accessor           | 3min  | 13    | HIGH     |
-| 17  | Add DataPoint.Payload() accessor      | 3min  | 13    | HIGH     |
-| 18  | Add DataPoint.Actor() accessor        | 3min  | 13    | HIGH     |
-| 19  | Add DataPoint.Occurred() accessor     | 3min  | 13    | HIGH     |
-| 20  | Add DataPoint.Recorded() accessor     | 3min  | 13    | HIGH     |
-| 21  | Add DataPoint.Reason() accessor       | 3min  | 13    | HIGH     |
-| 22  | Add DataPoint.MarshalJSON()           | 10min | 13    | HIGH     |
-| 23  | Add DataPoint.UnmarshalJSON()         | 15min | 22    | HIGH     |
-| 24  | Write DataPoint constructor tests     | 15min | 14,15 | CRITICAL |
-| 25  | Write DataPoint accessor tests        | 10min | 16-21 | HIGH     |
-| 26  | Write DataPoint JSON tests            | 15min | 22,23 | HIGH     |
-| 27  | Update README with NanoId section     | 10min | 1-9   | MEDIUM   |
-| 28  | Update README with DataPoint section  | 15min | 13-23 | MEDIUM   |
-| 29  | Run go test ./... verify pass         | 5min  | all   | CRITICAL |
-| 30  | Run go build ./... verify pass        | 3min  | all   | CRITICAL |
+| #  | Task                                  | Time  | Deps  | Priority |
+| -- | ------------------------------------- | ----- | ----- | -------- |
+| 1  | Define NanoId type struct             | 10min | -     | CRITICAL |
+| 2  | Add NanoId length constant (21 chars) | 5min  | 1     | CRITICAL |
+| 3  | Add NewNanoId() with crypto/rand      | 15min | 1,2   | CRITICAL |
+| 4  | Add ParseNanoId() with validation     | 10min | 1,2   | CRITICAL |
+| 5  | Add MustParseNanoId() helper          | 5min  | 4     | HIGH     |
+| 6  | Add NanoId.String() method            | 3min  | 1     | HIGH     |
+| 7  | Add NanoId.IsEmpty() method           | 3min  | 1     | MEDIUM   |
+| 8  | Add NanoId.MarshalText()              | 10min | 1     | HIGH     |
+| 9  | Add NanoId.UnmarshalText()            | 10min | 8     | HIGH     |
+| 10 | Write NanoId constructor tests        | 10min | 3,4   | CRITICAL |
+| 11 | Write NanoId validation tests         | 10min | 4     | HIGH     |
+| 12 | Write NanoId JSON tests               | 10min | 8,9   | HIGH     |
+| 13 | Define minimal DataPoint[T] struct    | 10min | -     | CRITICAL |
+| 14 | Add NewDataPoint() constructor        | 10min | 13    | CRITICAL |
+| 15 | Add NewDataPointNow() helper          | 5min  | 14    | HIGH     |
+| 16 | Add DataPoint.Id() accessor           | 3min  | 13    | HIGH     |
+| 17 | Add DataPoint.Payload() accessor      | 3min  | 13    | HIGH     |
+| 18 | Add DataPoint.Actor() accessor        | 3min  | 13    | HIGH     |
+| 19 | Add DataPoint.Occurred() accessor     | 3min  | 13    | HIGH     |
+| 20 | Add DataPoint.Recorded() accessor     | 3min  | 13    | HIGH     |
+| 21 | Add DataPoint.Reason() accessor       | 3min  | 13    | HIGH     |
+| 22 | Add DataPoint.MarshalJSON()           | 10min | 13    | HIGH     |
+| 23 | Add DataPoint.UnmarshalJSON()         | 15min | 22    | HIGH     |
+| 24 | Write DataPoint constructor tests     | 15min | 14,15 | CRITICAL |
+| 25 | Write DataPoint accessor tests        | 10min | 16-21 | HIGH     |
+| 26 | Write DataPoint JSON tests            | 15min | 22,23 | HIGH     |
+| 27 | Update README with NanoId section     | 10min | 1-9   | MEDIUM   |
+| 28 | Update README with DataPoint section  | 15min | 13-23 | MEDIUM   |
+| 29 | Run go test ./... verify pass         | 5min  | all   | CRITICAL |
+| 30 | Run go build ./... verify pass        | 3min  | all   | CRITICAL |
 
 ### PHASE 2 TASKS (28 tasks)
 
-| #   | Task                                    | Time  | Deps     | Priority |
-| --- | --------------------------------------- | ----- | -------- | -------- |
-| 31  | Define Bitemporal struct                | 10min | -        | CRITICAL |
-| 32  | Add NewBitemporal() constructor         | 10min | 31       | CRITICAL |
-| 33  | Add NewBitemporalNow() helper           | 5min  | 32       | HIGH     |
-| 34  | Add Bitemporal.Occurred() accessor      | 3min  | 31       | HIGH     |
-| 35  | Add Bitemporal.Recorded() accessor      | 3min  | 31       | HIGH     |
-| 36  | Add Bitemporal.ValidFrom() accessor     | 3min  | 31       | HIGH     |
-| 37  | Add Bitemporal.ValidUntil() accessor    | 3min  | 31       | HIGH     |
-| 38  | Add Bitemporal.IsValidAt(t) method      | 10min | 31       | HIGH     |
-| 39  | Add Bitemporal.IsValidNow() method      | 5min  | 38       | HIGH     |
-| 40  | Add Bitemporal.WithValidUntil() builder | 5min  | 31       | MEDIUM   |
-| 41  | Add Bitemporal.MarshalJSON()            | 10min | 31       | HIGH     |
-| 42  | Add Bitemporal.UnmarshalJSON()          | 10min | 41       | HIGH     |
-| 43  | Write Bitemporal constructor tests      | 10min | 32,33    | CRITICAL |
-| 44  | Write Bitemporal IsValidAt tests        | 15min | 38,39    | HIGH     |
-| 45  | Write Bitemporal JSON tests             | 10min | 41,42    | HIGH     |
-| 46  | Add Trigger to enum.go                  | 5min  | -        | CRITICAL |
-| 47  | Run go generate ./...                   | 5min  | 46       | CRITICAL |
-| 48  | Write Trigger enum tests                | 10min | 47       | HIGH     |
-| 49  | Define Context struct (minimal)         | 10min | 1        | CRITICAL |
-| 50  | Add NewContext() constructor            | 10min | 49       | CRITICAL |
-| 51  | Add Context.Correlation() accessor      | 3min  | 49       | HIGH     |
-| 52  | Add Context.Service() accessor          | 3min  | 49       | HIGH     |
-| 53  | Add Context.WithSession() builder       | 5min  | 49       | MEDIUM   |
-| 54  | Add Context.WithEnvironment() builder   | 5min  | 49       | MEDIUM   |
-| 55  | Add Context.MarshalJSON()               | 10min | 49       | HIGH     |
-| 56  | Add Context.UnmarshalJSON()             | 10min | 55       | HIGH     |
-| 57  | Write Context constructor tests         | 10min | 50       | CRITICAL |
-| 58  | Write Context builder tests             | 10min | 53,54    | HIGH     |
-| 59  | Update DataPoint with Bitemporal field  | 10min | 13,31    | CRITICAL |
-| 60  | Update DataPoint with Context field     | 10min | 13,49    | CRITICAL |
-| 61  | Update NewDataPoint() signature         | 10min | 14,59,60 | CRITICAL |
-| 62  | Add DataPoint.Temporal() accessor       | 3min  | 59       | HIGH     |
-| 63  | Add DataPoint.Context() accessor        | 3min  | 60       | HIGH     |
-| 64  | Update DataPoint JSON for new fields    | 10min | 22,59,60 | HIGH     |
-| 65  | Update DataPoint tests for Phase 2      | 15min | 59-64    | CRITICAL |
-| 66  | Run go test ./... verify pass           | 5min  | all      | CRITICAL |
-| 67  | Run go build ./... verify pass          | 3min  | all      | CRITICAL |
+| #  | Task                                    | Time  | Deps     | Priority |
+| -- | --------------------------------------- | ----- | -------- | -------- |
+| 31 | Define Bitemporal struct                | 10min | -        | CRITICAL |
+| 32 | Add NewBitemporal() constructor         | 10min | 31       | CRITICAL |
+| 33 | Add NewBitemporalNow() helper           | 5min  | 32       | HIGH     |
+| 34 | Add Bitemporal.Occurred() accessor      | 3min  | 31       | HIGH     |
+| 35 | Add Bitemporal.Recorded() accessor      | 3min  | 31       | HIGH     |
+| 36 | Add Bitemporal.ValidFrom() accessor     | 3min  | 31       | HIGH     |
+| 37 | Add Bitemporal.ValidUntil() accessor    | 3min  | 31       | HIGH     |
+| 38 | Add Bitemporal.IsValidAt(t) method      | 10min | 31       | HIGH     |
+| 39 | Add Bitemporal.IsValidNow() method      | 5min  | 38       | HIGH     |
+| 40 | Add Bitemporal.WithValidUntil() builder | 5min  | 31       | MEDIUM   |
+| 41 | Add Bitemporal.MarshalJSON()            | 10min | 31       | HIGH     |
+| 42 | Add Bitemporal.UnmarshalJSON()          | 10min | 41       | HIGH     |
+| 43 | Write Bitemporal constructor tests      | 10min | 32,33    | CRITICAL |
+| 44 | Write Bitemporal IsValidAt tests        | 15min | 38,39    | HIGH     |
+| 45 | Write Bitemporal JSON tests             | 10min | 41,42    | HIGH     |
+| 46 | Add Trigger to enum.go                  | 5min  | -        | CRITICAL |
+| 47 | Run go generate ./...                   | 5min  | 46       | CRITICAL |
+| 48 | Write Trigger enum tests                | 10min | 47       | HIGH     |
+| 49 | Define Context struct (minimal)         | 10min | 1        | CRITICAL |
+| 50 | Add NewContext() constructor            | 10min | 49       | CRITICAL |
+| 51 | Add Context.Correlation() accessor      | 3min  | 49       | HIGH     |
+| 52 | Add Context.Service() accessor          | 3min  | 49       | HIGH     |
+| 53 | Add Context.WithSession() builder       | 5min  | 49       | MEDIUM   |
+| 54 | Add Context.WithEnvironment() builder   | 5min  | 49       | MEDIUM   |
+| 55 | Add Context.MarshalJSON()               | 10min | 49       | HIGH     |
+| 56 | Add Context.UnmarshalJSON()             | 10min | 55       | HIGH     |
+| 57 | Write Context constructor tests         | 10min | 50       | CRITICAL |
+| 58 | Write Context builder tests             | 10min | 53,54    | HIGH     |
+| 59 | Update DataPoint with Bitemporal field  | 10min | 13,31    | CRITICAL |
+| 60 | Update DataPoint with Context field     | 10min | 13,49    | CRITICAL |
+| 61 | Update NewDataPoint() signature         | 10min | 14,59,60 | CRITICAL |
+| 62 | Add DataPoint.Temporal() accessor       | 3min  | 59       | HIGH     |
+| 63 | Add DataPoint.Context() accessor        | 3min  | 60       | HIGH     |
+| 64 | Update DataPoint JSON for new fields    | 10min | 22,59,60 | HIGH     |
+| 65 | Update DataPoint tests for Phase 2      | 15min | 59-64    | CRITICAL |
+| 66 | Run go test ./... verify pass           | 5min  | all      | CRITICAL |
+| 67 | Run go build ./... verify pass          | 3min  | all      | CRITICAL |
 
 ### PHASE 3 TASKS (28 tasks)
 

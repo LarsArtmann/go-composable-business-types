@@ -154,33 +154,33 @@
 
 ## F) TOP 25 THINGS TO DO NEXT 📋
 
-| #   | Task                                              | Project        | Priority    | Est. Time |
-| --- | ------------------------------------------------- | -------------- | ----------- | --------- |
-| 1   | Test JSON v2 on clean Go 1.26 installation        | CBT            | 🔴 CRITICAL | 5 min     |
-| 2   | Document GOEXPERIMENT requirement (if needed)     | CBT            | 🔴 CRITICAL | 3 min     |
-| 3   | Update README with JSON v2 status                 | CBT            | 🔴 HIGH     | 5 min     |
-| 4   | Create PR: feat/architectural-excellence → master | library-policy | 🔴 HIGH     | 2 min     |
-| 5   | Merge library-policy PR                           | library-policy | 🔴 HIGH     | 1 min     |
-| 6   | Run full test suite: `go test -race ./...`        | CBT            | 🔴 HIGH     | 5 min     |
-| 7   | Verify CI/CD passes on both projects              | Both           | 🔴 HIGH     | 5 min     |
-| 8   | Add test coverage: enums (6.8% → 50%)             | CBT            | 🟠 HIGH     | 30 min    |
-| 9   | Add test coverage: types (25.9% → 50%)            | CBT            | 🟠 HIGH     | 30 min    |
-| 10  | Add test coverage: locale (28.9% → 50%)           | CBT            | 🟠 MEDIUM   | 20 min    |
-| 11  | Add SQL interface tests (Scan/Value)              | CBT            | 🟠 HIGH     | 30 min    |
-| 12  | Address Dependabot vulnerability                  | library-policy | 🟠 MEDIUM   | 10 min    |
-| 13  | Archive old status reports (keep last 10)         | CBT            | 🟢 LOW      | 2 min     |
-| 14  | Remove/externalize architecture.png (3.4MB)       | CBT            | 🟢 LOW      | 5 min     |
-| 15  | Fix golangci-lint: 300 → 100 warnings             | CBT            | 🟠 MEDIUM   | 1 hour    |
-| 16  | Fix golangci-lint: 100 → 0 warnings               | CBT            | 🟠 MEDIUM   | 1 hour    |
-| 17  | Add package doc comments (50% → 100%)             | CBT            | 🟢 LOW      | 30 min    |
-| 18  | Update AGENTS.md with JSON v2 commands            | CBT            | 🟢 LOW      | 3 min     |
-| 19  | Add path-based pre-commit filtering               | library-policy | 🟢 LOW      | 15 min    |
-| 20  | Fix library-policy lint issues (299)              | library-policy | 🟠 MEDIUM   | 2 hours   |
-| 21  | Test JSON marshaling/unmarshaling                 | CBT            | 🟠 HIGH     | 15 min    |
-| 22  | Create release tag for CBT                        | CBT            | 🟢 LOW      | 2 min     |
-| 23  | Document CBT version in library-policy            | library-policy | 🟢 LOW      | 3 min     |
-| 24  | Add examples/ compilation test                    | CBT            | 🟠 MEDIUM   | 2 min     |
-| 25  | Review and update all README examples             | CBT            | 🟢 LOW      | 10 min    |
+| #  | Task                                              | Project        | Priority    | Est. Time |
+| -- | ------------------------------------------------- | -------------- | ----------- | --------- |
+| 1  | Test JSON v2 on clean Go 1.26 installation        | CBT            | 🔴 CRITICAL | 5 min     |
+| 2  | Document GOEXPERIMENT requirement (if needed)     | CBT            | 🔴 CRITICAL | 3 min     |
+| 3  | Update README with JSON v2 status                 | CBT            | 🔴 HIGH     | 5 min     |
+| 4  | Create PR: feat/architectural-excellence → master | library-policy | 🔴 HIGH     | 2 min     |
+| 5  | Merge library-policy PR                           | library-policy | 🔴 HIGH     | 1 min     |
+| 6  | Run full test suite: `go test -race ./...`        | CBT            | 🔴 HIGH     | 5 min     |
+| 7  | Verify CI/CD passes on both projects              | Both           | 🔴 HIGH     | 5 min     |
+| 8  | Add test coverage: enums (6.8% → 50%)             | CBT            | 🟠 HIGH     | 30 min    |
+| 9  | Add test coverage: types (25.9% → 50%)            | CBT            | 🟠 HIGH     | 30 min    |
+| 10 | Add test coverage: locale (28.9% → 50%)           | CBT            | 🟠 MEDIUM   | 20 min    |
+| 11 | Add SQL interface tests (Scan/Value)              | CBT            | 🟠 HIGH     | 30 min    |
+| 12 | Address Dependabot vulnerability                  | library-policy | 🟠 MEDIUM   | 10 min    |
+| 13 | Archive old status reports (keep last 10)         | CBT            | 🟢 LOW      | 2 min     |
+| 14 | Remove/externalize architecture.png (3.4MB)       | CBT            | 🟢 LOW      | 5 min     |
+| 15 | Fix golangci-lint: 300 → 100 warnings             | CBT            | 🟠 MEDIUM   | 1 hour    |
+| 16 | Fix golangci-lint: 100 → 0 warnings               | CBT            | 🟠 MEDIUM   | 1 hour    |
+| 17 | Add package doc comments (50% → 100%)             | CBT            | 🟢 LOW      | 30 min    |
+| 18 | Update AGENTS.md with JSON v2 commands            | CBT            | 🟢 LOW      | 3 min     |
+| 19 | Add path-based pre-commit filtering               | library-policy | 🟢 LOW      | 15 min    |
+| 20 | Fix library-policy lint issues (299)              | library-policy | 🟠 MEDIUM   | 2 hours   |
+| 21 | Test JSON marshaling/unmarshaling                 | CBT            | 🟠 HIGH     | 15 min    |
+| 22 | Create release tag for CBT                        | CBT            | 🟢 LOW      | 2 min     |
+| 23 | Document CBT version in library-policy            | library-policy | 🟢 LOW      | 3 min     |
+| 24 | Add examples/ compilation test                    | CBT            | 🟠 MEDIUM   | 2 min     |
+| 25 | Review and update all README examples             | CBT            | 🟢 LOW      | 10 min    |
 
 ---
 

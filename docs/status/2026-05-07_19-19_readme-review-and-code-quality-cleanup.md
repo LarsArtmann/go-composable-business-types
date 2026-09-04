@@ -55,25 +55,25 @@ The library is in **good shape** — all 19 testable packages pass with 86.9% co
 | `validate.Validator` interface consistency | Partially implemented                                                                                                                                   | `Email`, `URL`, `Cents`, `Percentage` implement it. `Timestamp`, `Duration`, `NanoID`, `Locale`, `Tag`, `Importance` do **not**. Either all types should implement it, or it shouldn't be part of the package contract. |
 | `emailRegex` double validation             | Identified but not fixed                                                                                                                                | `NewEmail` runs both `mail.ParseAddress` (RFC 5322) AND `emailRegex`. The regex is strictly less capable than the stdlib parser. One or the other suffices.                                                             |
 | `Timestamp`/`Duration` `Scan()` methods    | Not using `scanutil` helpers                                                                                                                            | `Duration.Scan()` has a hand-rolled 50-line type switch while `Email.Scan()` uses the clean `scanStringType` helper. Inconsistent patterns.                                                                             |
-| `Timestamp`/`Duration` `Compare()` methods | `Duration.Compare()` uses `compare[T]()` ✅ but `Timestamp.Compare()` delegates to `time.Time.Compare()` ✅ — both are correct but the patterns differ. |
+| `Timestamp`/`Duration` `Compare()` methods | `Duration.Compare()` uses `compare[T]()` ✅ but `Timestamp.Compare()` delegates to `time.Time.Compare()` ✅ — both are correct but the patterns differ. |                                                                                                                                                                                                                         |
 
 ---
 
 ## C. Not Started ❌
 
-| #   | Item                                                                                                | Priority | Effort  |
-| --- | --------------------------------------------------------------------------------------------------- | -------- | ------- |
-| 1   | Add `Timestamp.Validate()` and `Duration.Validate()` to implement `validate.Validator`              | Medium   | Tiny    |
-| 2   | Remove `emailRegex` — trust `mail.ParseAddress` alone, or keep regex and remove `mail.ParseAddress` | Medium   | Tiny    |
-| 3   | Document `Cents` vs `Money` usage guidance in README                                                | Medium   | Small   |
-| 4   | Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil` helpers                         | Low      | Small   |
-| 5   | Add `Locale` to README Usage examples                                                               | Low      | Tiny    |
-| 6   | Add `Importance` to README Usage examples                                                           | Low      | Tiny    |
-| 7   | Add `Tag` to README Usage examples                                                                  | Low      | Tiny    |
-| 8   | `report/` package — purpose unknown, appears empty or unused                                        | Unknown  | Unknown |
-| 9   | `BDD_TESTS_REVIEW.md` — stale document from earlier session                                         | Low      | Tiny    |
-| 10  | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — proposal exists but not executed                            | Low      | Large   |
-| 11  | `PROJECT_SPLIT_EXECUTIVE_REPORT.md` — historical, could be archived                                 | Low      | Tiny    |
+| #  | Item                                                                                                | Priority | Effort  |
+| -- | --------------------------------------------------------------------------------------------------- | -------- | ------- |
+| 1  | Add `Timestamp.Validate()` and `Duration.Validate()` to implement `validate.Validator`              | Medium   | Tiny    |
+| 2  | Remove `emailRegex` — trust `mail.ParseAddress` alone, or keep regex and remove `mail.ParseAddress` | Medium   | Tiny    |
+| 3  | Document `Cents` vs `Money` usage guidance in README                                                | Medium   | Small   |
+| 4  | Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil` helpers                         | Low      | Small   |
+| 5  | Add `Locale` to README Usage examples                                                               | Low      | Tiny    |
+| 6  | Add `Importance` to README Usage examples                                                           | Low      | Tiny    |
+| 7  | Add `Tag` to README Usage examples                                                                  | Low      | Tiny    |
+| 8  | `report/` package — purpose unknown, appears empty or unused                                        | Unknown  | Unknown |
+| 9  | `BDD_TESTS_REVIEW.md` — stale document from earlier session                                         | Low      | Tiny    |
+| 10 | `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` — proposal exists but not executed                            | Low      | Large   |
+| 11 | `PROJECT_SPLIT_EXECUTIVE_REPORT.md` — historical, could be archived                                 | Low      | Tiny    |
 
 ---
 
@@ -124,43 +124,43 @@ Sorted by impact × effort (Pareto ranking):
 
 ### P0 — Do Now (high impact, low effort)
 
-| #   | Task                                                       | Effort                  | Impact                                                 |
-| --- | ---------------------------------------------------------- | ----------------------- | ------------------------------------------------------ |
-| 1   | **Fix CI billing** — resolve GitHub Actions spending limit | 5min (account settings) | Critical — no CI = no safety net                       |
-| 2   | **Add `Validate()` to `Timestamp` and `Duration`**         | 5min                    | Consistency — completes `validate.Validator` contract  |
-| 3   | **Remove or justify `emailRegex`**                         | 5min                    | DRY — eliminates redundant double validation           |
-| 4   | **Add `CauseKind` to `enums` table in PARTS.md**           | 2min                    | Accuracy — already in code, just missing from analysis |
+| # | Task                                                       | Effort                  | Impact                                                 |
+| - | ---------------------------------------------------------- | ----------------------- | ------------------------------------------------------ |
+| 1 | **Fix CI billing** — resolve GitHub Actions spending limit | 5min (account settings) | Critical — no CI = no safety net                       |
+| 2 | **Add `Validate()` to `Timestamp` and `Duration`**         | 5min                    | Consistency — completes `validate.Validator` contract  |
+| 3 | **Remove or justify `emailRegex`**                         | 5min                    | DRY — eliminates redundant double validation           |
+| 4 | **Add `CauseKind` to `enums` table in PARTS.md**           | 2min                    | Accuracy — already in code, just missing from analysis |
 
 ### P1 — Do Soon (good impact, moderate effort)
 
-| #   | Task                                                                    | Effort | Impact                                                 |
-| --- | ----------------------------------------------------------------------- | ------ | ------------------------------------------------------ |
-| 5   | **Document `Cents` vs `Money` guidance in README**                      | 15min  | Prevents consumer confusion                            |
-| 6   | **Add usage examples for `Locale`, `Importance`, `Tag` in README**      | 20min  | Discoverability — 3 types completely unexampled        |
-| 7   | **Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil`** | 30min  | DRY — eliminates 80 lines of hand-rolled type switches |
-| 8   | **Fix `depguard` linter config** — allow intra-project imports          | 10min  | Eliminates ~20 false-positive warnings                 |
-| 9   | **Add `Locale.Validate()`, `Tag.Validate()` consistency**               | 10min  | All types should implement `validate.Validator`        |
-| 10  | **Update POLICY.md to reference `flake.nix` instead of `just`**         | 15min  | Eliminates tooling confusion                           |
+| #  | Task                                                                    | Effort | Impact                                                 |
+| -- | ----------------------------------------------------------------------- | ------ | ------------------------------------------------------ |
+| 5  | **Document `Cents` vs `Money` guidance in README**                      | 15min  | Prevents consumer confusion                            |
+| 6  | **Add usage examples for `Locale`, `Importance`, `Tag` in README**      | 20min  | Discoverability — 3 types completely unexampled        |
+| 7  | **Refactor `Duration.Scan()` and `Timestamp.Scan()` to use `scanutil`** | 30min  | DRY — eliminates 80 lines of hand-rolled type switches |
+| 8  | **Fix `depguard` linter config** — allow intra-project imports          | 10min  | Eliminates ~20 false-positive warnings                 |
+| 9  | **Add `Locale.Validate()`, `Tag.Validate()` consistency**               | 10min  | All types should implement `validate.Validator`        |
+| 10 | **Update POLICY.md to reference `flake.nix` instead of `just`**         | 15min  | Eliminates tooling confusion                           |
 
 ### P2 — Do Eventually (nice to have)
 
-| #   | Task                                                              | Effort | Impact                                                     |
-| --- | ----------------------------------------------------------------- | ------ | ---------------------------------------------------------- |
-| 11  | **Add doc comments to all exported symbols** (~50 items)          | 2hr    | pkg.go.dev rendering, eliminates ~100 linter warnings      |
-| 12  | **Replace dynamic errors with sentinels from `pkg/errors/`**      | 2hr    | Consistent error handling, eliminates `err113` warnings    |
-| 13  | **Standardize receiver types** (value vs pointer)                 | 1hr    | Code consistency, eliminates `recvcheck` warnings          |
-| 14  | **Add `Money` example to `examples/`**                            | 30min  | Most complex type, deserves dedicated example              |
-| 15  | **Add `BoundedString` example to `examples/`**                    | 15min  | Common type, no example exists                             |
-| 16  | **Add `Temporal` example to `examples/`**                         | 15min  | Complex type, no example exists                            |
-| 17  | **Archive `BDD_TESTS_REVIEW.md`** to `docs/status/archive/`       | 1min   | Housekeeping                                               |
-| 18  | **Archive `PROJECT_SPLIT_EXECUTIVE_REPORT.md`** to `docs/`        | 1min   | Housekeeping                                               |
-| 19  | **Investigate `report/` package** — what is it? Used?             | 10min  | Either document or remove                                  |
-| 20  | **Fix `testutil/parse.go` unused `name` parameter**               | 2min   | Eliminates linter warning                                  |
-| 21  | **Add `Locale` SQL round-trip tests**                             | 15min  | `Locale.Scan()`/`Value()` lack direct test coverage        |
-| 22  | **Add `Importance` SQL round-trip tests**                         | 15min  | Same as above                                              |
-| 23  | **Consider adding `encoding.TextAppender` to types** (Go 1.24+)   | 1hr    | Modern Go patterns, already identified in earlier analysis |
-| 24  | **Consider adding `encoding.BinaryAppender` to types** (Go 1.24+) | 1hr    | Modern Go patterns                                         |
-| 25  | **Consider `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` execution**      | 4hr    | Build system unification                                   |
+| #  | Task                                                              | Effort | Impact                                                     |
+| -- | ----------------------------------------------------------------- | ------ | ---------------------------------------------------------- |
+| 11 | **Add doc comments to all exported symbols** (~50 items)          | 2hr    | pkg.go.dev rendering, eliminates ~100 linter warnings      |
+| 12 | **Replace dynamic errors with sentinels from `pkg/errors/`**      | 2hr    | Consistent error handling, eliminates `err113` warnings    |
+| 13 | **Standardize receiver types** (value vs pointer)                 | 1hr    | Code consistency, eliminates `recvcheck` warnings          |
+| 14 | **Add `Money` example to `examples/`**                            | 30min  | Most complex type, deserves dedicated example              |
+| 15 | **Add `BoundedString` example to `examples/`**                    | 15min  | Common type, no example exists                             |
+| 16 | **Add `Temporal` example to `examples/`**                         | 15min  | Complex type, no example exists                            |
+| 17 | **Archive `BDD_TESTS_REVIEW.md`** to `docs/status/archive/`       | 1min   | Housekeeping                                               |
+| 18 | **Archive `PROJECT_SPLIT_EXECUTIVE_REPORT.md`** to `docs/`        | 1min   | Housekeeping                                               |
+| 19 | **Investigate `report/` package** — what is it? Used?             | 10min  | Either document or remove                                  |
+| 20 | **Fix `testutil/parse.go` unused `name` parameter**               | 2min   | Eliminates linter warning                                  |
+| 21 | **Add `Locale` SQL round-trip tests**                             | 15min  | `Locale.Scan()`/`Value()` lack direct test coverage        |
+| 22 | **Add `Importance` SQL round-trip tests**                         | 15min  | Same as above                                              |
+| 23 | **Consider adding `encoding.TextAppender` to types** (Go 1.24+)   | 1hr    | Modern Go patterns, already identified in earlier analysis |
+| 24 | **Consider adding `encoding.BinaryAppender` to types** (Go 1.24+) | 1hr    | Modern Go patterns                                         |
+| 25 | **Consider `MIGRATION_TO_NIX_FLAKES_PROPOSAL.md` execution**      | 4hr    | Build system unification                                   |
 
 ---
 
