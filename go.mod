@@ -1,11 +1,11 @@
 module github.com/larsartmann/go-composable-business-types
 
-go 1.26.7
+go 1.27
 
 tool github.com/abice/go-enum
 
 require (
-	github.com/larsartmann/go-branded-id v0.5.1
+	github.com/larsartmann/go-branded-id v0.6.0
 	github.com/stretchr/testify v1.11.1
 )
 

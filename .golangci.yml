@@ -39,7 +39,7 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
+    - exhaustruct_v5
     - exptostd
     - fatcontext
     - forbidigo
@@ -124,8 +124,8 @@ linters:
   settings:
     cyclop:
       max-complexity: 40
-    exhaustruct:
-      exclude:
+    exhaustruct_v5:
+      ignore-patterns:
         - .+test.*
         - .+Case
         - .+projectcore\.ProjectCore
@@ -276,6 +276,7 @@ linters:
           - recvcheck
           - contextcheck
           - exhaustive
+          - exhaustruct_v5
       - path: examples/
         linters:
           - err113
