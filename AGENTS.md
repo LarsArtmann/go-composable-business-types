@@ -106,6 +106,7 @@ func main() {
 - **GitHub Actions:** CI runs on push to master (test, lint, security, generate, benchmark)
 - **Release workflow:** triggers on `v*` and `*/v*` tag pushes
 - **CI known issue:** GitHub Actions billing is currently failing — all runs fail with billing/spending limit error. This is an account-level issue, not a code problem.
+- **Local nix checks known issue (environmental, not code):** `nix build .#check-*` fail inside the sandbox because the Go steps try to download the go1.27 toolchain and DNS is refused (`lookup proxy.golang.org ... connection refused`). The treefmt error "failed to finalise formatting: formatting failures detected" is misleading — it reports 0 changed files; the failures are toolchain-download errors. `go-licenses` (license-check) also fails on Go 1.27 ("Non go modules projects are no longer supported", upstream go-licenses issue #128). Verify locally with `GOEXPERIMENT=jsonv2 go test -race ./...` and `buildflow --build-mode dev` instead.
 
 ## Notes
 
