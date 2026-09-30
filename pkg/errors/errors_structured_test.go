@@ -22,7 +22,7 @@ func testStructuredError(err, original error, want string, checkFn func()) {
 	checkFn()
 }
 
-func testAs[E any](t *testing.T, err error, checkFn func(E)) {
+func testAs[E error](t *testing.T, err error, checkFn func(E)) {
 	t.Helper()
 
 	if target, ok := errors.AsType[E](err); !ok {
