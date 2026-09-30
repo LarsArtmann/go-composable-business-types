@@ -118,6 +118,19 @@ func (c *Cents) Scan(src any) error {
 	})
 }
 
+// setFrom parses a textual timestamp (RFC3339Nano) and stores it.
+// source names the value's origin ("string", "[]byte") for error context.
+func (t *Timestamp) setFrom(value, source string) error {
+	parsed, err := time.Parse(time.RFC3339Nano, value)
+	if err != nil {
+		return fmt.Errorf("timestamp: cannot parse %q from %s: %w", value, source, err)
+	}
+
+	t.Time = parsed
+
+	return nil
+}
+
 // Scan implements sql.Scanner for Timestamp.
 // Supports time.Time, string (RFC3339), and []byte sources.
 func (t *Timestamp) Scan(src any) error {
@@ -135,23 +148,9 @@ func (t *Timestamp) Scan(src any) error {
 
 		return nil
 	case string:
-		parsed, err := time.Parse(time.RFC3339Nano, v)
-		if err != nil {
-			return fmt.Errorf("timestamp: cannot parse %q from string: %w", v, err)
-		}
-
-		t.Time = parsed
-
-		return nil
+		return t.setFrom(v, "string")
 	case []byte:
-		parsed, err := time.Parse(time.RFC3339Nano, string(v))
-		if err != nil {
-			return fmt.Errorf("timestamp: cannot parse %q from []byte: %w", string(v), err)
-		}
-
-		t.Time = parsed
-
-		return nil
+		return t.setFrom(string(v), "[]byte")
 	default:
 		return fmt.Errorf("%w: got %T", errTimestampCannotScan, src)
 	}

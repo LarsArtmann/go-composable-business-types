@@ -55,6 +55,26 @@ func (d Duration) Compare(other Duration) int {
 	return compare(d.Duration, other.Duration)
 }
 
+// setFrom parses a textual duration ("300ms", "1h30m") and stores it.
+// Empty text resets the duration to zero. source names the value's origin
+// ("string", "[]byte", "JSON") for error context.
+func (d *Duration) setFrom(value, source string) error {
+	if value == "" {
+		d.Duration = 0
+
+		return nil
+	}
+
+	parsed, err := time.ParseDuration(value)
+	if err != nil {
+		return fmt.Errorf("duration: cannot parse %q from %s: %w", value, source, err)
+	}
+
+	d.Duration = parsed
+
+	return nil
+}
+
 // Scan implements sql.Scanner for Duration.
 // Supports int64 (nanoseconds), float64, string (parseable duration), and []byte sources.
 func (d *Duration) Scan(src any) error {
@@ -64,9 +84,7 @@ func (d *Duration) Scan(src any) error {
 
 	switch v := src.(type) {
 	case nil:
-		d.Duration = 0
-
-		return nil
+		return d.setFrom("", "SQL NULL")
 	case int64:
 		d.Duration = time.Duration(v)
 
@@ -76,35 +94,9 @@ func (d *Duration) Scan(src any) error {
 
 		return nil
 	case string:
-		if v == "" {
-			d.Duration = 0
-
-			return nil
-		}
-
-		parsed, err := time.ParseDuration(v)
-		if err != nil {
-			return fmt.Errorf("duration: cannot parse %q from string: %w", v, err)
-		}
-
-		d.Duration = parsed
-
-		return nil
+		return d.setFrom(v, "string")
 	case []byte:
-		if len(v) == 0 {
-			d.Duration = 0
-
-			return nil
-		}
-
-		parsed, err := time.ParseDuration(string(v))
-		if err != nil {
-			return fmt.Errorf("duration: cannot parse %q from []byte: %w", string(v), err)
-		}
-
-		d.Duration = parsed
-
-		return nil
+		return d.setFrom(string(v), "[]byte")
 	default:
 		return fmt.Errorf("%w: got %T", errDurationCannotScan, src)
 	}
@@ -133,18 +125,5 @@ func (d *Duration) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	if s == "" {
-		d.Duration = 0
-
-		return nil
-	}
-
-	parsed, err := time.ParseDuration(s)
-	if err != nil {
-		return fmt.Errorf("duration: cannot parse %q: %w", s, err)
-	}
-
-	d.Duration = parsed
-
-	return nil
+	return d.setFrom(s, "JSON")
 }
