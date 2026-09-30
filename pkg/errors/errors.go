@@ -280,9 +280,9 @@ func WrapContextual[T ContextualError](err error, constructor func(err error) T)
 func WrapScan(err error, sourceType, targetType string) error {
 	return WrapContextual(err, func(e error) *ScanError {
 		return &ScanError{
-			SourceType:   sourceType,
-			TargetType:   targetType,
-			wrappedError: wrappedError{Err: e},
+			SourceType: sourceType,
+			TargetType: targetType,
+			Err:        e,
 		}
 	})
 }
@@ -290,7 +290,7 @@ func WrapScan(err error, sourceType, targetType string) error {
 // WrapUnmarshal wraps an error as an unmarshal error.
 func WrapUnmarshal(err error, typeName, input string) error {
 	return WrapContextual(err, func(e error) *UnmarshalError {
-		return &UnmarshalError{Type: typeName, Input: input, wrappedError: wrappedError{Err: e}}
+		return &UnmarshalError{Type: typeName, Input: input, Err: e}
 	})
 }
 

@@ -25,8 +25,7 @@ func testStructuredError(err, original error, want string, checkFn func()) {
 func testAs[E any](t *testing.T, err error, checkFn func(E)) {
 	t.Helper()
 
-	var target E
-	if !errors.As(err, &target) {
+	if target, ok := errors.AsType[E](err); !ok {
 		t.Error("expected errors.As() to succeed")
 	} else {
 		checkFn(target)
@@ -38,9 +37,9 @@ func TestUnmarshalError(t *testing.T) {
 
 	original := errors.New("parse failed")
 	err := &UnmarshalError{
-		Type:         "JSON",
-		Input:        `{invalid}`,
-		wrappedError: wrappedError{Err: original},
+		Type:  "JSON",
+		Input: `{invalid}`,
+		Err:   original,
 	}
 	testStructuredError(err, original, "unmarshal JSON: {invalid}: parse failed", func() {
 		testAs[*UnmarshalError](t, err, func(target *UnmarshalError) {
@@ -144,9 +143,9 @@ func TestAsErrors(t *testing.T) {
 		{
 			name: "UnmarshalError",
 			err: &UnmarshalError{
-				Type:         "JSON",
-				Input:        `{bad}`,
-				wrappedError: wrappedError{Err: errors.New("fail")},
+				Type:  "JSON",
+				Input: `{bad}`,
+				Err:   errors.New("fail"),
 			},
 			asFn:      func(err error) (any, bool) { return AsUnmarshalError(err) },
 			fnName:    "AsUnmarshalError",
@@ -175,9 +174,9 @@ func TestAsErrors(t *testing.T) {
 		{
 			name: "ScanError",
 			err: &ScanError{
-				SourceType:   "int64",
-				TargetType:   "string",
-				wrappedError: wrappedError{Err: errors.New("fail")},
+				SourceType: "int64",
+				TargetType: "string",
+				Err:        errors.New("fail"),
 			},
 			asFn:      func(err error) (any, bool) { return AsScanError(err) },
 			fnName:    "AsScanError",
