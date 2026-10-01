@@ -18,8 +18,12 @@ import (
 // OrderBrand is the phantom type for OrderID.
 type OrderBrand struct{}
 
+func (OrderBrand) Name() string { return "Order" }
+
 // CustomerBrand is the phantom type for CustomerID.
 type CustomerBrand struct{}
+
+func (CustomerBrand) Name() string { return "Customer" }
 
 // OrderID is a strong ID type for order identifiers.
 type OrderID = id.ID[OrderBrand, string]
