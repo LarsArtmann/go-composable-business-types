@@ -63,8 +63,8 @@ func TestWrapInvalid(t *testing.T) {
 		inner := errors.New("invalid value")
 		err := WrapInvalid(inner, "email", "test@")
 
-		var target *ValidationError
-		if !errors.As(err, &target) {
+		target, ok := errors.AsType[*ValidationError](err)
+		if !ok {
 			t.Error("expected errors.As() to succeed")
 		}
 
@@ -85,8 +85,8 @@ func TestWrapRange(t *testing.T) {
 
 	err := WrapRange(150, 10, 100, true)
 
-	var target *RangeError
-	if !errors.As(err, &target) {
+	target, ok := errors.AsType[*RangeError](err)
+	if !ok {
 		t.Error("expected errors.As() to succeed")
 	}
 
@@ -132,8 +132,8 @@ var wrapScanUnmarshalTestCases = []WrapScanUnmarshalTests{
 // assertErrorAs checks that err can be asserted to type T using errors.As().
 // It logs a test error if the assertion fails and returns the typed error.
 func assertErrorAs[T error](t *testing.T, err error) T {
-	var target T
-	if !errors.As(err, &target) {
+	target, ok := errors.AsType[T](err)
+	if !ok {
 		t.Error("expected errors.As() to succeed")
 	}
 

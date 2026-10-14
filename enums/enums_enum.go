@@ -9,7 +9,6 @@ import (
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"slices"
 	"strings"
 )
 
@@ -36,7 +35,11 @@ var _ActorKindNames = []string{
 }
 
 // ActorKindNames returns a list of possible string values of ActorKind.
-func ActorKindNames() []string { return slices.Clone(_ActorKindNames) }
+func ActorKindNames() []string {
+	tmp := make([]string, len(_ActorKindNames))
+	copy(tmp, _ActorKindNames)
+	return tmp
+}
 
 // ActorKindValues returns a list of the values for ActorKind
 func ActorKindValues() []ActorKind {
@@ -205,7 +208,11 @@ var _CauseKindNames = []string{
 }
 
 // CauseKindNames returns a list of possible string values of CauseKind.
-func CauseKindNames() []string { return slices.Clone(_CauseKindNames) }
+func CauseKindNames() []string {
+	tmp := make([]string, len(_CauseKindNames))
+	copy(tmp, _CauseKindNames)
+	return tmp
+}
 
 // CauseKindValues returns a list of the values for CauseKind
 func CauseKindValues() []CauseKind {
@@ -371,7 +378,11 @@ var _PriorityNames = []string{
 }
 
 // PriorityNames returns a list of possible string values of Priority.
-func PriorityNames() []string { return slices.Clone(_PriorityNames) }
+func PriorityNames() []string {
+	tmp := make([]string, len(_PriorityNames))
+	copy(tmp, _PriorityNames)
+	return tmp
+}
 
 // PriorityValues returns a list of the values for Priority
 func PriorityValues() []Priority {
@@ -543,7 +554,11 @@ var _StatusNames = []string{
 }
 
 // StatusNames returns a list of possible string values of Status.
-func StatusNames() []string { return slices.Clone(_StatusNames) }
+func StatusNames() []string {
+	tmp := make([]string, len(_StatusNames))
+	copy(tmp, _StatusNames)
+	return tmp
+}
 
 // StatusValues returns a list of the values for Status
 func StatusValues() []Status {
@@ -731,7 +746,11 @@ var _TriggerNames = []string{
 }
 
 // TriggerNames returns a list of possible string values of Trigger.
-func TriggerNames() []string { return slices.Clone(_TriggerNames) }
+func TriggerNames() []string {
+	tmp := make([]string, len(_TriggerNames))
+	copy(tmp, _TriggerNames)
+	return tmp
+}
 
 // TriggerValues returns a list of the values for Trigger
 func TriggerValues() []Trigger {
