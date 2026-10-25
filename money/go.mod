@@ -1,6 +1,6 @@
 module github.com/larsartmann/go-composable-business-types/money
 
-go 1.26.5
+go 1.27
 
 require (
 	github.com/bojanz/currency v1.5.0
@@ -10,5 +10,5 @@ require (
 require (
 	github.com/cockroachdb/apd/v3 v3.2.3 // indirect
 	github.com/larsartmann/go-composable-business-types v0.7.0 // indirect
-	golang.org/x/text v0.42.0 // indirect
+	golang.org/x/text v0.43.0 // indirect
 )
