@@ -20,7 +20,7 @@ require (
 	github.com/golang/mock v1.6.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
 	github.com/google/uuid v1.6.0 // indirect
-	github.com/huandu/xstrings v1.6.2 // indirect
+	github.com/huandu/xstrings v1.6.3 // indirect
 	github.com/labstack/gommon v0.5.0 // indirect
 	github.com/mattn/go-colorable v0.1.16 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
@@ -30,7 +30,7 @@ require (
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/rogpeppe/go-internal v1.15.0 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
-	github.com/shopspring/decimal v1.5.0 // indirect
+	github.com/shopspring/decimal v1.6.0 // indirect
 	github.com/spf13/cast v1.10.0 // indirect
 	github.com/urfave/cli/v2 v2.27.7 // indirect
 	github.com/xrash/smetrics v0.0.0-20261013231157-39c47d93efba // indirect
@@ -39,7 +39,7 @@ require (
 	golang.org/x/mod v0.42.0 // indirect
 	golang.org/x/sync v0.24.0 // indirect
 	golang.org/x/sys v0.49.0 // indirect
-	golang.org/x/telemetry v0.0.0-20261016163328-824aa3d1d8dd // indirect
+	golang.org/x/telemetry v0.0.0-20261021172232-6cd571d43fbb // indirect
 	golang.org/x/text v0.43.0 // indirect
 	golang.org/x/tools v0.52.0 // indirect
 	golang.org/x/tools/cmd/cover v0.1.0-deprecated // indirect
