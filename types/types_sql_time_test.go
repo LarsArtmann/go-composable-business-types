@@ -96,6 +96,7 @@ func TestTimestampSQL(t *testing.T) {
 	}
 }
 
+//nolint:gocyclo // table-driven test covering every duration wire mapping.
 func TestDurationSQL(t *testing.T) {
 	t.Parallel()
 	// Test Value

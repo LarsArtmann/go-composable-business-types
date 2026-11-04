@@ -549,6 +549,9 @@ func TestEnumScanPointerTypes(t *testing.T) {
 	})
 }
 
+// wire types one-to-one by design.
+//
+//nolint:gocyclo // table-driven test: the case list mirrors the supported
 func testEnumScanPointerCases[T comparable](
 	t *testing.T,
 	zeroVal, nonZeroVal T,

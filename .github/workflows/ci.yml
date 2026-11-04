@@ -44,7 +44,10 @@ jobs:
         with:
           flags: unittests
           files: coverage.out
-          fail_ci_if_error: true
+          # codecov.io requires a token for uploads now; without the
+          # CODECOV_TOKEN secret the upload is best-effort. The in-repo
+          # threshold check below is the actual coverage gate.
+          fail_ci_if_error: false
 
       - name: Verify coverage threshold
         if: matrix.go-version == '1.27'

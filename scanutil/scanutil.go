@@ -150,6 +150,10 @@ var errNilPtr = errors.New("scanutil: value pointer is nil")
 //	func (x *ActorKind) Scan(value interface{}) error {
 //	    return scanutil.ScanEnum(x, value, ParseActorKind)
 //	}
+//
+// the switch would hide the mapping table this function exists to expose.
+//
+//nolint:gocyclo // flat SQL-scan dispatcher: one case per wire type; splitting
 func ScanEnum[T ~uint8](ptr *T, src any, parseFunc func(string) (T, error)) error {
 	if src == nil {
 		*ptr = T(0)
