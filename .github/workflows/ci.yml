@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: ["1.26", "1.27", "1.28"]
+        go-version: ["1.27"]
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
@@ -39,7 +39,7 @@ jobs:
         run: go test -race -coverprofile=coverage.out ./...
 
       - name: Upload coverage
-        if: matrix.go-version == '1.26'
+        if: matrix.go-version == '1.27'
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           flags: unittests
@@ -47,7 +47,7 @@ jobs:
           fail_ci_if_error: true
 
       - name: Verify coverage threshold
-        if: matrix.go-version == '1.26'
+        if: matrix.go-version == '1.27'
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | grep -E '^total:' | awk '{print $3}' | sed 's/%//')
           echo "Coverage: $COVERAGE%"
@@ -64,13 +64,16 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.26"
+          go-version: "1.27"
           cache: true
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
         with:
-          version: v1.64
+          # v2.14.0 is built with go1.27 (matches the go.mod floor and the v2
+          # config in .golangci.yml); action v7 rejects v1.x binaries and
+          # go1.26-built binaries fail the "targeted Go version (1.27)" check.
+          version: v2.14.0
           args: --timeout=5m
 
   security:
@@ -81,7 +84,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.26"
+          go-version: "1.27"
           cache: true
 
       - name: Install govulncheck
@@ -98,7 +101,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.26"
+          go-version: "1.27"
           cache: true
 
       - name: Run go generate
@@ -125,7 +128,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
-          go-version: "1.26"
+          go-version: "1.27"
           cache: true
 
       - name: Run benchmarks
