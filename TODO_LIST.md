@@ -32,3 +32,15 @@
 | Task                                                     | Status | Impact | Effort | Evidence                                                                     |
 | -------------------------------------------------------- | ------ | ------ | ------ | ---------------------------------------------------------------------------- |
 | Fill in docs/DOMAIN_LANGUAGE.md with actual domain terms | TODO   | Low    | 1h     | `docs/DOMAIN_LANGUAGE.md` is still a blank template with placeholder content |
+
+## Cross-Repo Verification Notes (2026-11-08)
+
+Recorded from the cmdguard repo's HTFC (hyperframes-creative) verification
+sweep — verdicts for this repo, kept here so they survive cmdguard report
+purges:
+
+- `gopls check` (infertypeargs): clean — no findings on this repo (verified
+  2026-11-08 from the cmdguard Tier A session).
+- `git-town.toml`: main branch is `master`, github connector is `api`.
+- `library-policy.yaml`: does not exist in this repo (nothing to audit
+  against; add one only if this repo adopts library policies).
