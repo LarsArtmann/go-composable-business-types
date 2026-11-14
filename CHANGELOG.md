@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
-
+### Changed- CI lint stack raised to v2.15.0 (action `version:` pin, was v2.14.0), with the errorfamily `wrapcheck` exemption added to `.golangci.yml` (`- go-error-family.` import-path sig — the fleet convention; v2.15's signature-based wrapcheck otherwise flags errorfamily constructors as unwrapped externals). Verified green locally with the v2.15.0 binary across the root and the nanoid, locale, money, datapoint, and examples sub-modules.
 ## [0.7.0] - 2026-07-23
 
 > Sub-modules (`nanoid`, `locale`, `money`, `datapoint`, `examples`) ship as **v0.6.0** in this cycle.
